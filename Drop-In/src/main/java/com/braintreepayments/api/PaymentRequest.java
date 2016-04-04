@@ -16,6 +16,8 @@ import java.util.List;
  */
 public class PaymentRequest implements Parcelable {
 
+    public static final String EXTRA_CHECKOUT_REQUEST = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST";
+
     private String mAuthorization;
 
     private String mAmount;
@@ -263,79 +265,79 @@ public class PaymentRequest implements Parcelable {
      * @return {@link Intent} containing all of the options set in {@link PaymentRequest}.
      */
     public Intent getIntent(Context context) {
-        return new Intent(context, BraintreePaymentActivity.class)
-                .putExtra(BraintreePaymentActivity.EXTRA_CHECKOUT_REQUEST, this);
+        return new Intent(context, GridViewPaymentActivity.class)
+                .putExtra(EXTRA_CHECKOUT_REQUEST, this);
     }
 
-    String getAuthorization() {
+    public String getAuthorization() {
         return mAuthorization;
     }
 
-    String getAmount() {
+    public String getAmount() {
         return mAmount;
     }
 
-    boolean shouldCollectDeviceData() {
+    public boolean shouldCollectDeviceData() {
         return mCollectDeviceData;
     }
 
-    Cart getAndroidPayCart() throws NoClassDefFoundError {
+    public Cart getAndroidPayCart() throws NoClassDefFoundError {
         return mAndroidPayCart;
     }
 
-    boolean isAndroidPayShippingAddressRequired() {
+    public boolean isAndroidPayShippingAddressRequired() {
         return mAndroidPayShippingAddressRequired;
     }
 
-    boolean isAndroidPayPhoneNumberRequired() {
+    public boolean isAndroidPayPhoneNumberRequired() {
         return mAndroidPayPhoneNumberRequired;
     }
 
-    int getAndroidPayRequestCode() {
+    public int getAndroidPayRequestCode() {
         return mAndroidPayRequestCode;
     }
 
-    boolean isAndroidPayEnabled() {
+    public boolean isAndroidPayEnabled() {
         return mAndroidPayEnabled;
     }
 
-    List<CountrySpecification> getAndroidPayAllowedCountriesForShipping() {
+    public List<CountrySpecification> getAndroidPayAllowedCountriesForShipping() {
         return mAndroidAllowedCountriesForShipping;
     }
 
-    List<String> getPayPalAdditionalScopes() {
+    public List<String> getPayPalAdditionalScopes() {
         return mPayPalAdditionalScopes;
     }
 
-    boolean isPayPalEnabled() {
+    public boolean isPayPalEnabled() {
         return mPayPalEnabled;
     }
 
-    boolean isVenmoEnabled() {
+    public boolean isVenmoEnabled() {
         return mVenmoEnabled;
     }
 
-    String getActionBarTitle() {
+    public String getActionBarTitle() {
         return mActionBarTitle;
     }
 
-    int getActionBarLogo() {
+    public int getActionBarLogo() {
         return mActionBarLogo;
     }
 
-    String getPrimaryDescription() {
+    public String getPrimaryDescription() {
         return mPrimaryDescription;
     }
 
-    String getSecondaryDescription() {
+    public String getSecondaryDescription() {
         return mSecondaryDescription;
     }
 
-    String getSubmitButtonText() {
+    public String getSubmitButtonText() {
         return mSubmitButtonText;
     }
 
-    boolean isDefaultFirst() {
+    public boolean isDefaultFirst() {
         return mDefaultFirst;
     }
 

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="com.braintreepayments.api.AddCardActivity">
+
+    <com.braintreepayments.cardform.view.CardForm
+        android:id="@+id/bt_card_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <Button
+        android:id="@+id/bt_card_form_submit_button"
+        style="@style/bt_submit_button"
+        android:text="@string/bt_add_card"
+        android:layout_alignParentBottom="true"
+        android:background="@color/bt_button_disabled_color"
+        android:onClick="addCard" />
+
+</RelativeLayout>

@@ -12,6 +12,7 @@
     <dimen name="bt_payment_method_button_divider_height">30dp</dimen>
     <dimen name="bt_payment_method_button_divider_width">1dp</dimen>
     <dimen name="bt_payment_method_button_type_padding">16dp</dimen>
+    <dimen name="bt_add_payment_method_view_radius">5dp</dimen>
 
     <!-- http://stackoverflow.com/a/19043952/1486568 -->
     <integer name="bt_match_parent">-1</integer>

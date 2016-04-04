@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="bt_base_textview_bold">
         <item name="android:textSize">@dimen/bt_default_text_size</item>
         <item name="android:textStyle">bold</item>
@@ -46,5 +46,47 @@
         <item name="android:background">@color/bt_border_color</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="bt_payment_activity_theme" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@color/bt_black_54</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation</item>
+    </style>
+
+    <style name="bt_bottom_sheet_dialog" parent="@android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowAnimationStyle">@style/bt_bottom_sheet_dialog_animation</item>
+    </style>
+
+    <style name="bt_bottom_sheet_dialog_animation">
+        <item name="android:windowEnterAnimation">@anim/bt_bottom_sheet_dialog_open</item>
+        <item name="android:windowExitAnimation">@anim/bt_bottom_sheet_dialog_close</item>
+    </style>
+    <style name="bt_payment_method_card">
+        <item name="android:layout_width">100dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:elevation">4dp</item>
+        <item name="android:background">@drawable/bt_payment_method_background</item>
+    </style>
+    <style name="bt_payment_method_description">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/bt_black</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:layout_marginTop">8dp</item>
+    </style>
+    <style name="bt_payment_method_item">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:layout_marginLeft">16dp</item>
     </style>
 </resources>

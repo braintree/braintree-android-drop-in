@@ -31,4 +31,9 @@
     <string name="bt_descriptor_pay_with_venmo" tools:ignore="MissingTranslation">Venmo</string>
     <string name="bt_descriptor_android_pay" tools:ignore="MissingTranslation">Android Pay</string>
     <string name="bt_descriptor_unknown">Card</string>
+
+    <string name="bt_add_card">Add card</string>
+    <string name="bt_add_paypal_account">Add PayPal Account</string>
+    <string name="bt_add_android_pay">Add Android Pay</string>
+    <string name="bt_add_venmo">Add Venmo Account</string>
 </resources>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="100dp"
+    android:orientation="horizontal"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp">
+
+    <LinearLayout
+        android:id="@+id/bt_card"
+        style="@style/bt_payment_method_item">
+
+        <ImageView
+            android:src="@drawable/bt_visa"
+            style="@style/bt_payment_method_card" />
+
+        <TextView
+            android:text="@string/bt_add_card"
+            style="@style/bt_payment_method_description" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bt_paypal"
+        style="@style/bt_payment_method_item">
+
+        <ImageView
+            android:id="@+id/bt_paypal_image_view"
+            android:src="@drawable/bt_logo_paypal"
+            style="@style/bt_payment_method_card" />
+
+        <TextView
+            style="@style/bt_payment_method_description"
+            android:text="@string/bt_add_paypal_account" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bt_android_pay"
+        style="@style/bt_payment_method_item">
+
+        <ImageView
+            android:src="@drawable/bt_logo_android_pay"
+            style="@style/bt_payment_method_card" />
+
+        <TextView
+            style="@style/bt_payment_method_description"
+            android:text="@string/bt_add_android_pay" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bt_venmo"
+        style="@style/bt_payment_method_item">
+
+        <ImageView
+            android:src="@drawable/bt_logo_venmo"
+            style="@style/bt_payment_method_card" />
+
+        <TextView
+            style="@style/bt_payment_method_description"
+            android:text="@string/bt_add_venmo" />
+
+    </LinearLayout>
+
+</LinearLayout>

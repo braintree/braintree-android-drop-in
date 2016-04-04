@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/bt_payment_method_item"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/bt_payment_method_icon"
+        style="@style/bt_payment_method_card" />
+
+    <TextView
+        android:id="@+id/bt_payment_method_description"
+        style="@style/bt_payment_method_description" />
+
+</LinearLayout>

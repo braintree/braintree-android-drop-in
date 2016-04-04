@@ -9,4 +9,13 @@
     <color name="bt_paypal_monogram_button_background">#009CDE</color>
     <color name="bt_paypal_monogram_button_background_pressed">#008AC5</color>
     <color name="bt_border_color">#99999A</color>
+
+    <color name="bt_black_12">#1e000000</color>
+    <color name="bt_white_12">#1effffff</color>
+    <color name="bt_black_38">#61000000</color>
+    <color name="bt_white_38">#61ffffff</color>
+    <color name="bt_black_54">#8a000000</color>
+    <color name="bt_white_54">#8affffff</color>
+    <color name="bt_black_87">#de000000</color>
+    <color name="bt_white_87">#deffffff</color>
 </resources>

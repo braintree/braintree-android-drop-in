@@ -42,6 +42,7 @@ dependencies {
     compile 'com.braintreepayments.api:braintree:2.3.7-SNAPSHOT'
     compile 'com.braintreepayments:card-form:2.3.1'
     compile 'com.google.android.gms:play-services-wallet:[9.0.0,10.0.0)'
+    compile 'com.android.support:design:[23.2.0,24.0.0)'
 
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
