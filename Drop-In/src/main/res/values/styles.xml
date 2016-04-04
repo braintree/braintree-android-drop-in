@@ -76,24 +76,44 @@
         <item name="android:windowEnterAnimation">@anim/bt_bottom_sheet_dialog_open</item>
         <item name="android:windowExitAnimation">@anim/bt_bottom_sheet_dialog_close</item>
     </style>
+
     <style name="bt_payment_method_card">
-        <item name="android:layout_width">100dp</item>
-        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_width">@dimen/bt_payment_method_card_width</item>
+        <item name="android:layout_height">@dimen/bt_payment_method_card_height</item>
+        <item name="android:layout_marginLeft">@dimen/bt_payment_method_card_margin</item>
+        <item name="android:layout_marginStart" tools:ignore="NewApi">@dimen/bt_payment_method_card_margin</item>
+        <item name="android:layout_marginRight">@dimen/bt_payment_method_card_margin</item>
+        <item name="android:layout_marginEnd" tools:ignore="NewApi">@dimen/bt_payment_method_card_margin</item>
         <item name="android:layout_gravity">center</item>
-        <item name="android:elevation">4dp</item>
-        <item name="android:background">@drawable/bt_payment_method_background</item>
     </style>
+
     <style name="bt_payment_method_description">
-        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_width">@dimen/bt_payment_method_card_width</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/bt_black</item>
         <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:textColor">@color/bt_black_54</item>
+        <item name="android:gravity">center</item>
+        <item name="android:lines">1</item>
+        <item name="android:layout_marginTop">@dimen/bt_payment_method_description_padding</item>
+        <item name="android:paddingRight">@dimen/bt_payment_method_description_padding</item>
+        <item name="android:paddingLeft">@dimen/bt_payment_method_description_padding</item>
+        <item name="android:ellipsize">end</item>
     </style>
+
     <style name="bt_payment_method_item">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">match_parent</item>
         <item name="android:orientation">vertical</item>
-        <item name="android:layout_marginLeft">16dp</item>
+    </style>
+    <style name="bt_choose_payment_label">
+       <item name="android:textSize">21.3sp</item>
+       <item name="android:layout_marginLeft">20dp</item>
+       <item name="android:textColor">@color/bt_black_54</item>
+    </style>
+
+    <style name="bt_choose_payment_label">
+        <item name="android:textSize">21.3sp</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:textColor">@color/bt_black_54</item>
     </style>
 </resources>

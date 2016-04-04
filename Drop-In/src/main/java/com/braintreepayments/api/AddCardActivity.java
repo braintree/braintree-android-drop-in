@@ -221,7 +221,6 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
                     .expirationDate(mEditCardView.getExpirationDate())
                     .cvv(mEditCardView.getCvv());
             Card.tokenize(mBraintreeFragment, cardBuilder);
-
         }
     }
 

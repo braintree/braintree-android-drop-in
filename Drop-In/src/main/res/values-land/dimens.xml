@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="bt_choose_existing_payment_label_padding_top">36dp</dimen>
+    <dimen name="bt_choose_existing_payment_label_padding_bottom">6dp</dimen>
+    <dimen name="bt_choose_new_payment_label_padding_top">16dp</dimen>
+    <dimen name="bt_choose_new_payment_label_padding_bottom">6dp</dimen>
+    <dimen name="bt_payment_method_card_width">96dp</dimen>
+    <dimen name="bt_payment_method_card_height">60dp</dimen>
+</resources>

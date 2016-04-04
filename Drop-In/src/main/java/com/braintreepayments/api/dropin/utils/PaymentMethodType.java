@@ -15,7 +15,7 @@ public enum PaymentMethodType {
     PAYPAL(R.drawable.bt_paypal, R.string.bt_descriptor_paypal, "PayPal"),
     VISA(CardType.VISA.getFrontResource(), R.string.bt_descriptor_visa, "Visa"),
     PAY_WITH_VENMO(R.drawable.bt_venmo, R.string.bt_descriptor_pay_with_venmo, "Venmo"),
-    UNKNOWN(0, R.string.bt_descriptor_unknown, "unknown");
+    UNKNOWN(R.drawable.bt_ic_payment_method_card, R.string.bt_descriptor_unknown, "Credit or Debit Card");
 
     private final int mDrawable;
     private final int mLocalizedName;

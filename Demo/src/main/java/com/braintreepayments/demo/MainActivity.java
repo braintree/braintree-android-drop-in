@@ -95,7 +95,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
     public void launchDropInTwo(View v) {
         Intent intent = getPaymentRequest().getIntent(this)
-                .setClass(this, GridViewPaymentActivity.class);
+                .setClass(this, NewDropInActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivityForResult(intent, DROP_IN_REQUEST);
     }
 
