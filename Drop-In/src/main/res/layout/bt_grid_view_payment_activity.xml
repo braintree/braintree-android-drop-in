@@ -41,9 +41,34 @@
 
         </ViewSwitcher>
 
+        <LinearLayout
+            android:id="@+id/bt_selected_payment_method_view_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
+            <com.braintreepayments.api.dropin.view.PaymentMethodNonceView
+                android:id="@+id/bt_selected_payment_method_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/bt_form_padding"
+                android:layout_marginLeft="@dimen/bt_form_padding"
+                android:layout_marginRight="@dimen/bt_form_padding"
+                android:background="@drawable/bt_white_with_border_background" />
+
+        </LinearLayout>
+
         <include layout="@layout/bt_section_divider" />
 
         <include layout="@layout/bt_checkout_summary"/>
+
+        <Button
+            android:id="@+id/bt_submit_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Purchase"
+            android:visibility="gone"
+            android:onClick="onClick"/>
 
     </LinearLayout>
 

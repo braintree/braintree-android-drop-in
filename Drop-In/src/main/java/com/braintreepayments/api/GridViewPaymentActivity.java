@@ -3,18 +3,21 @@ package com.braintreepayments.api;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.dropin.adapters.PaymentMethodGridViewAdapter;
 import com.braintreepayments.api.dropin.interfaces.PaymentMethodClickListener;
+import com.braintreepayments.api.dropin.view.PaymentMethodNonceView;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.dropin.R;
 
 public class GridViewPaymentActivity extends Activity implements ConfigurationListener, PaymentMethodClickListener,
         PaymentMethodNonceCreatedListener {
@@ -24,6 +27,10 @@ public class GridViewPaymentActivity extends Activity implements ConfigurationLi
     private PaymentRequest mPaymentRequest;
     private BraintreeFragment mBraintreeFragment;
     private ViewSwitcher mViewSwitcher;
+    private View mPaymentMethodViewContainer;
+    private PaymentMethodNonceView mPaymentMethodNonceView;
+    private PaymentMethodNonce mPaymentMethodNonce;
+    private Button mButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +40,9 @@ public class GridViewPaymentActivity extends Activity implements ConfigurationLi
         mPaymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
 
         mViewSwitcher = (ViewSwitcher) findViewById(R.id.bt_loading_view_switcher);
+        mPaymentMethodViewContainer = findViewById(R.id.bt_selected_payment_method_view_container);
+        mPaymentMethodNonceView = (PaymentMethodNonceView) findViewById(R.id.bt_selected_payment_method_view);
+        mButton = (Button) findViewById(R.id.bt_submit_button);
 
         ((TextView) findViewById(R.id.bt_primary_description)).setText(mPaymentRequest.getPrimaryDescription());
         ((TextView) findViewById(R.id.bt_secondary_description)).setText(mPaymentRequest.getSecondaryDescription());
@@ -78,8 +88,16 @@ public class GridViewPaymentActivity extends Activity implements ConfigurationLi
 
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
+        mPaymentMethodNonce = paymentMethodNonce;
+        mPaymentMethodNonceView.setPaymentMethodNonceDetails(paymentMethodNonce);
+        mButton.setVisibility(View.VISIBLE);
+        mPaymentMethodViewContainer.setVisibility(View.VISIBLE);
+        mViewSwitcher.setVisibility(View.GONE);
+    }
+
+    public void onClick(View v) {
         setResult(Activity.RESULT_OK,
-                new Intent().putExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE, paymentMethodNonce));
+                new Intent().putExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE, mPaymentMethodNonce));
         finish();
     }
 
