@@ -1,119 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#fff"
-    android:orientation="vertical"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:layout=""
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--<android.support.v7.widget.Toolbar-->
-        <!--android:id="@+id/toolbar"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="?attr/actionBarSize"-->
-        <!--android:background="?attr/colorPrimary"-->
-        <!--android:title="Enter Card Details"-->
-         <!--/>-->
+    <ImageView
+        android:id="@+id/card_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+       android:src="@drawable/bt_card_highlighted"
+    /> <!-- TODO not this drawable -->
 
-    <LinearLayout
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/card_number_layout"
+        android:layout_toRightOf="@id/card_icon"
+        android:layout_centerVertical="@id/card_icon"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:orientation="vertical"
-        >
+        android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:background="#fff"
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/bt_visa"
-                />
-
-            <LinearLayout
-                android:background="#fff"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="#199ddc"
-                    android:text="[TR] Card Number"
-                    />
-
-                <EditText
-                    android:id="@+id/card_number"
-                    android:layout_weight="1"
-                    android:textColorHighlight="#199ddc"
-                    android:textColorLink="#199ddc"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    />
-
-                <LinearLayout
-                    android:background="#fff"
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/bt_visa"
-                        />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/bt_visa"
-                        />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/bt_visa"
-                        />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/bt_visa"
-                        />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/bt_visa"
-                        />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/bt_visa"
-                        />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/bt_visa"
-                        />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/bt_visa"
-                        />
-                </LinearLayout>
-           </LinearLayout>
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/next_button"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/card_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#199ddc"
-            android:textColor="#fff"
-            android:text="[TR] Next"/>
+            android:layout_alignParentRight="true"
+            android:inputType="number"
+            android:hint="Card Number"/>
 
-    </LinearLayout>
-</LinearLayout>
+    </android.support.design.widget.TextInputLayout>
+
+    <GridLayout
+        android:id="@+id/accepted_cards"
+        android:layout_below="@id/card_number_layout"
+        android:layout_alignLeft="@id/card_number_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="5"
+        android:alignmentMode="alignBounds"
+        android:useDefaultMargins="true"
+        android:rowOrderPreserved="true" />
+
+    <Button
+        android:id="@+id/next_button"
+        android:layout_below="@id/accepted_cards"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#199ddc"
+        android:textColor="#fff"
+        android:text="[TR] Next"/>
+
+</merge>
