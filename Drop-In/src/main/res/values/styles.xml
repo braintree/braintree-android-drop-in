@@ -58,6 +58,13 @@
         <item name="android:windowAnimationStyle">@android:style/Animation</item>
     </style>
 
+    <style name="bt_add_payment_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimary">#f0f</item>
+        <item name="colorPrimaryDark">#a0a</item>
+        <item name="android:textColorPrimary">#000</item>
+    </style>
+
     <style name="bt_bottom_sheet_dialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowNoTitle">true</item>
         <item name="android:backgroundDimEnabled">true</item>

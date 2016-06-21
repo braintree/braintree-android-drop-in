@@ -16,7 +16,7 @@
         <activity android:name="com.braintreepayments.api.GridViewPaymentActivity"
             android:theme="@style/bt_payment_activity_theme"/>
         <activity android:name="com.braintreepayments.api.AddCardActivity"
-            android:theme="@style/Theme.AppCompat.Light" />
+            android:theme="@style/bt_add_payment_activity_theme" />
     </application>
 
 </manifest>

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -21,7 +23,7 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-public class AddCardActivity extends Activity implements AddPaymentUpdateListener,
+public class AddCardActivity extends AppCompatActivity implements AddPaymentUpdateListener,
         PaymentMethodNonceCreatedListener, BraintreeErrorListener {
 
     @Retention(RetentionPolicy.SOURCE)
@@ -35,6 +37,7 @@ public class AddCardActivity extends Activity implements AddPaymentUpdateListene
     public static final int DETAILS_ENTRY = 2;
     public static final int SUBMIT = 3;
 
+    private Toolbar mToolbar;
     private AddCardView mAddCardView;
     private EditCardView mEditCardView;
     private EnrollmentCardView mEnrollmentCardView;
@@ -49,10 +52,14 @@ public class AddCardActivity extends Activity implements AddPaymentUpdateListene
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_add_payment_activity);
+        mToolbar = (Toolbar)findViewById(R.id.toobar);
         mAddCardView = (AddCardView)findViewById(R.id.add_card_view);
         mEditCardView = (EditCardView)findViewById(R.id.edit_card_view);
         mEnrollmentCardView = (EnrollmentCardView)findViewById(R.id.enrollment_card_view);
 
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
         mAddCardView.setAddPaymentUpdatedListener(this);
         mEditCardView.setAddPaymentUpdatedListener(this);
         mEnrollmentCardView.setAddPaymentUpdatedListener(this);
@@ -99,12 +106,15 @@ public class AddCardActivity extends Activity implements AddPaymentUpdateListene
 
                 switch(nextState) {
                     case CARD_ENTRY:
+                        getSupportActionBar().setTitle("Enter Card Details");
                         mAddCardView.setVisibility(View.VISIBLE);
                         break;
                     case DETAILS_ENTRY:
+                        getSupportActionBar().setTitle("Card Details");
                         mEditCardView.setVisibility(View.VISIBLE);
                         break;
 //                    case ENROLLMENT_ENTRY:
+//                        getSupportActionBar().setTitle("Confirm Enrollment");
 //                        mEnrollmentCardView.setVisibility(View.VISIBLE);
 //                        break;
                     case SUBMIT:
