@@ -50,25 +50,30 @@ public class AddCardActivity extends Activity implements AddPaymentUpdateListene
     }
 
     @Override
-    public void onPaymentUpdated(View v) {
-        if (v.getId() == mAddCardView.getId()) {
-            if (mAddCardView.getNumber() != null) {
-                Log.d("CardNumber", mAddCardView.getNumber());
-                mAddCardView.setVisibility(View.GONE);
-                mCardBuilder.cardNumber(mAddCardView.getNumber());
-                mEditCardView.setCardNumber(mAddCardView.getNumber());
-                mEditCardView.setVisibility(View.VISIBLE);
-                // Switch views
+    public void onPaymentUpdated(final View v) {
+        // Mimic network
+        v.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (v.getId() == mAddCardView.getId()) {
+                    if (mAddCardView.getNumber() != null) {
+                        Log.d("CardNumber", mAddCardView.getNumber());
+                        mAddCardView.setVisibility(View.GONE);
+                        mCardBuilder.cardNumber(mAddCardView.getNumber());
+                        mEditCardView.setCardNumber(mAddCardView.getNumber());
+                        mEditCardView.setVisibility(View.VISIBLE);
+                    }
+                } else if (v.getId() == mEditCardView.getId()) {
+                    mEditCardView.setVisibility(View.GONE);
+
+                    mCardBuilder.expirationDate(mEditCardView.getExpirationDate());
+                    mCardBuilder.cvv(mEditCardView.getSecurityCode());
+                    createCard();
+
+                    // TODO Possibly show enrollment
+                }
             }
-        } else if (v.getId() == mEditCardView.getId()) {
-            mEditCardView.setVisibility(View.GONE);
-
-            mCardBuilder.expirationDate(mEditCardView.getExpirationDate());
-            mCardBuilder.cvv(mEditCardView.getSecurityCode());
-            createCard();
-
-            // TODO Possibly show enrollment
-        }
+        }, 5000);
     }
 
     private void createCard() {
