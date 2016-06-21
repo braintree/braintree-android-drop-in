@@ -6,15 +6,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 
-/**
- * Created by qneumiiller on 6/21/16.
- */
-public class EditCardView extends LinearLayout {
+public class EditCardView extends RelativeLayout {
 
     private EditText mCardNumber;
     private EditText mExpirationDate;
@@ -43,7 +40,6 @@ public class EditCardView extends LinearLayout {
         if (isInEditMode()) {
             return;
         }
-        setOrientation(VERTICAL);
         LayoutInflater.from(context).inflate(R.layout.bt_edit_card, this);
 
         mCardNumber = (EditText)findViewById(R.id.card_number);

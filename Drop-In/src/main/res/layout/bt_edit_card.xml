@@ -1,41 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/card_number"
-        android:hint="12345678"/>
-
-    <EditText
+    <ImageView
+        android:id="@+id/card_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/expiration_date"
-        android:layout_below="@id/card_number"
-        android:hint="06/2016" />
+        android:padding="16dp"
+        android:src="@drawable/bt_card_highlighted"
+    /> <!-- TODO not this drawable -->
 
-    <EditText
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/security_code"
-        android:layout_below="@id/card_number"
-        android:layout_toRightOf="@id/expiration_date"
-        android:hint="123" />
-
-    <EditText
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/card_number_layout"
+        android:layout_toRightOf="@id/card_icon"
+        android:layout_centerVertical="@id/card_icon"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/phone_number"
-        android:layout_below="@id/expiration_date"
-        android:hint="1234567890" />
+        android:layout_height="wrap_content">
 
-    <Button
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/card_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:inputType="number"
+            android:hint="Card Number"/>
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/security_code_layout"
+        android:layout_below="@id/card_number_layout"
+        android:layout_alignParentRight="true"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/security_code"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="CVN2" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/expiration_date_layout"
+        android:layout_toLeftOf="@id/security_code_layout"
+        android:layout_below="@id/card_number_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/add_card_button"
-        android:layout_below="@id/phone_number"
-        android:text="ADD CARD" />
+        android:layout_height="wrap_content">
 
-</RelativeLayout>
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/expiration_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Expiration Date" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/phone_number_layout"
+        android:layout_below="@id/expiration_date_layout"
+        android:layout_alignLeft="@id/expiration_date_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/phone_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Mobile Number" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <ViewAnimator
+        android:id="@+id/view_animator"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/phone_number_layout"
+        android:layout_width="match_parent">
+
+        <Button
+            android:id="@+id/add_card_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#199ddc"
+            android:textColor="#fff"
+            android:text="[TR] Next"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </ViewAnimator>
+
+</merge>
