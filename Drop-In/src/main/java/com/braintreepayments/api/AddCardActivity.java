@@ -3,7 +3,8 @@ package com.braintreepayments.api;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.annotation.IntDef;
+import android.text.TextUtils;
 import android.view.View;
 
 import com.braintreepayments.api.dropin.R;
@@ -17,8 +18,22 @@ import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 public class AddCardActivity extends Activity implements AddPaymentUpdateListener,
         PaymentMethodNonceCreatedListener, BraintreeErrorListener {
+
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({
+            CARD_ENTRY,
+            DETAILS_ENTRY,
+            SUBMIT
+    })
+    private @interface State {}
+    public static final int CARD_ENTRY = 1;
+    public static final int DETAILS_ENTRY = 2;
+    public static final int SUBMIT = 3;
 
     private AddCardView mAddCardView;
     private EditCardView mEditCardView;
@@ -26,6 +41,9 @@ public class AddCardActivity extends Activity implements AddPaymentUpdateListene
 
     private BraintreeFragment mBraintreeFragment;
     private final CardBuilder mCardBuilder = new CardBuilder();
+
+    @State
+    private int mState = CARD_ENTRY;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,25 +73,59 @@ public class AddCardActivity extends Activity implements AddPaymentUpdateListene
         v.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (v.getId() == mAddCardView.getId()) {
-                    if (mAddCardView.getNumber() != null) {
-                        Log.d("CardNumber", mAddCardView.getNumber());
+                int lastState = mState;
+                int nextState = determineNextState(v);
+                if (nextState == lastState) {
+                    return;
+                } else {
+                    mState = nextState;
+                }
+
+                switch (lastState) {
+                    case CARD_ENTRY:
                         mAddCardView.setVisibility(View.GONE);
                         mCardBuilder.cardNumber(mAddCardView.getNumber());
                         mEditCardView.setCardNumber(mAddCardView.getNumber());
+                        break;
+                    case DETAILS_ENTRY:
+                        mEditCardView.setVisibility(View.GONE);
+                        mCardBuilder.expirationDate(mEditCardView.getExpirationDate());
+                        mCardBuilder.cvv(mEditCardView.getSecurityCode());
+                        break;
+//                    case ENROLLMENT_ENTRY:
+//                        mEnrollmentCardView.setVisibility(View.GONE);
+//                        break;
+                }
+
+                switch(nextState) {
+                    case CARD_ENTRY:
+                        mAddCardView.setVisibility(View.VISIBLE);
+                        break;
+                    case DETAILS_ENTRY:
                         mEditCardView.setVisibility(View.VISIBLE);
-                    }
-                } else if (v.getId() == mEditCardView.getId()) {
-                    mEditCardView.setVisibility(View.GONE);
-
-                    mCardBuilder.expirationDate(mEditCardView.getExpirationDate());
-                    mCardBuilder.cvv(mEditCardView.getSecurityCode());
-                    createCard();
-
-                    // TODO Possibly show enrollment
+                        break;
+//                    case ENROLLMENT_ENTRY:
+//                        mEnrollmentCardView.setVisibility(View.VISIBLE);
+//                        break;
+                    case SUBMIT:
+                        createCard();
+                        break;
                 }
             }
         }, 5000);
+    }
+
+    @State
+    private int determineNextState(View v) {
+        int nextState = mState;
+        if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getNumber())) {
+            nextState = DETAILS_ENTRY;
+        }
+        else if (v.getId() == mEditCardView.getId()) {
+            nextState = SUBMIT;
+        }
+
+        return nextState;
     }
 
     private void createCard() {
