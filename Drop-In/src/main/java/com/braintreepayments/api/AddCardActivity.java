@@ -3,96 +3,84 @@ package com.braintreepayments.api;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 
 import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.api.dropin.view.AddCardView;
+import com.braintreepayments.api.dropin.view.EditCardView;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.interfaces.ConfigurationListener;
+import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.CardBuilder;
-import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.cardform.OnCardFormSubmitListener;
-import com.braintreepayments.cardform.view.CardForm;
 
-public class AddCardActivity extends Activity implements ConfigurationListener,
-        OnCardFormSubmitListener, PaymentMethodNonceCreatedListener {
+public class AddCardActivity extends Activity implements AddPaymentUpdateListener,
+        PaymentMethodNonceCreatedListener, BraintreeErrorListener {
 
-    private CardForm mCardForm;
+    private AddCardView mAddCardView;
+    private EditCardView mEditCardView;
+
     private BraintreeFragment mBraintreeFragment;
+    private final CardBuilder mCardBuilder = new CardBuilder();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bt_add_card_activity);
+        setContentView(R.layout.bt_add_payment_activity);
+        mAddCardView = (AddCardView)findViewById(R.id.add_card_view);
+        mEditCardView = (EditCardView)findViewById(R.id.edit_card_view);
 
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        mAddCardView.setAddPaymentUpdatedListener(this);
+        mEditCardView.setAddPaymentUpdatedListener(this);
 
-        mCardForm = (CardForm) findViewById(R.id.bt_card_form);
+        PaymentRequest paymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
 
+//        String authorization = getIntent().getStringExtra(EXTRA_AUTHORIZATION_TOKEN);
         try {
-            mBraintreeFragment = BraintreeFragment.newInstance(this,
-                    ((PaymentRequest) getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST)).getAuthorization());
+            mBraintreeFragment = BraintreeFragment.newInstance(this, paymentRequest.getAuthorization());
         } catch (InvalidArgumentException e) {
-            setResult(RESULT_FIRST_USER);
-            finish();
-            return;
+            // TODO alert the merchant their authorization may be incorrect.
+            throw new RuntimeException(e);
         }
-
-        mBraintreeFragment.addListener(this);
     }
 
     @Override
-    public void onConfigurationFetched(Configuration configuration) {
-        mCardForm.setRequiredFields(this, true, true, configuration.isCvvChallengePresent(),
-                configuration.isPostalCodeChallengePresent(), getString(R.string.bt_add_card));
-        mCardForm.setOnCardFormSubmitListener(this);
+    public void onPaymentUpdated(View v) {
+        if (v.getId() == mAddCardView.getId()) {
+            if (mAddCardView.getNumber() != null) {
+                Log.d("CardNumber", mAddCardView.getNumber());
+                mAddCardView.setVisibility(View.GONE);
+                mEditCardView.setVisibility(View.VISIBLE);
+                mCardBuilder.cardNumber(mAddCardView.getNumber());
+                // Switch views
+            }
+        } else if (v.getId() == mEditCardView.getId()) {
+            mEditCardView.setVisibility(View.GONE);
+
+            // TODO real values
+            mCardBuilder.expirationDate("expiration date");
+            mCardBuilder.cvv("cvv");
+            createCard();
+
+            // Possibly show enrollment
+        }
     }
 
-    public void addCard(View v) {
-        onCardFormSubmit();
+    private void createCard() {
+        Card.tokenize(mBraintreeFragment, mCardBuilder);
     }
 
     @Override
-    public void onCardFormSubmit() {
-        if (!mCardForm.isValid()) {
-            mCardForm.validate();
-            return;
-        }
-
-        CardBuilder cardBuilder = new CardBuilder()
-                .cardNumber(mCardForm.getCardNumber())
-                .expirationMonth(mCardForm.getExpirationMonth())
-                .expirationYear(mCardForm.getExpirationYear());
-
-        if (mBraintreeFragment.getConfiguration().isCvvChallengePresent()) {
-            cardBuilder.cvv(mCardForm.getCvv());
-        }
-
-        if (mBraintreeFragment.getConfiguration().isPostalCodeChallengePresent()) {
-            cardBuilder.postalCode(mCardForm.getPostalCode());
-        }
-
-        Card.tokenize(mBraintreeFragment, cardBuilder);
+    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
+        Intent result = new Intent();
+        result.putExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE, paymentMethod);
+        setResult(Activity.RESULT_OK, result);
     }
 
     @Override
-    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-        setResult(Activity.RESULT_OK,
-                new Intent().putExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE, paymentMethodNonce));
-        finish();
+    public void onError(Exception e) {
+        throw new RuntimeException(e);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
-            onBackPressed();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
 }

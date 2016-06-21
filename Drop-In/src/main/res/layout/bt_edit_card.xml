@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/card_number"
+        android:hint="12345678"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/expiration_date"
+        android:layout_below="@id/card_number"
+        android:hint="06/2016" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/security_code"
+        android:layout_below="@id/card_number"
+        android:layout_toRightOf="@id/expiration_date"
+        android:hint="123" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/phone_number"
+        android:layout_below="@id/expiration_date"
+        android:hint="1234567890" />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/add_card_button"
+        android:layout_below="@id/phone_number"
+        android:text="ADD CARD" />
+
+</RelativeLayout>
