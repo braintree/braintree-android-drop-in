@@ -10,6 +10,7 @@ import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.dropin.view.AddCardView;
 import com.braintreepayments.api.dropin.view.EditCardView;
+import com.braintreepayments.api.dropin.view.EnrollmentCardView;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
@@ -21,6 +22,7 @@ public class AddCardActivity extends Activity implements AddPaymentUpdateListene
 
     private AddCardView mAddCardView;
     private EditCardView mEditCardView;
+    private EnrollmentCardView mEnrollmentCardView;
 
     private BraintreeFragment mBraintreeFragment;
     private final CardBuilder mCardBuilder = new CardBuilder();
@@ -31,9 +33,11 @@ public class AddCardActivity extends Activity implements AddPaymentUpdateListene
         setContentView(R.layout.bt_add_payment_activity);
         mAddCardView = (AddCardView)findViewById(R.id.add_card_view);
         mEditCardView = (EditCardView)findViewById(R.id.edit_card_view);
+        mEnrollmentCardView = (EnrollmentCardView)findViewById(R.id.enrollment_card_view);
 
         mAddCardView.setAddPaymentUpdatedListener(this);
         mEditCardView.setAddPaymentUpdatedListener(this);
+        mEnrollmentCardView.setAddPaymentUpdatedListener(this);
 
         PaymentRequest paymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
 
@@ -76,6 +80,7 @@ public class AddCardActivity extends Activity implements AddPaymentUpdateListene
         Intent result = new Intent();
         result.putExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE, paymentMethod);
         setResult(Activity.RESULT_OK, result);
+        finish();
     }
 
     @Override

@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
+    android:padding="16dp"
     android:layout_height="match_parent">
 
     <com.braintreepayments.api.dropin.view.AddCardView
@@ -12,6 +13,13 @@
     <com.braintreepayments.api.dropin.view.EditCardView
         android:id="@+id/edit_card_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <com.braintreepayments.api.dropin.view.EnrollmentCardView
+        android:id="@+id/enrollment_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
 </LinearLayout>
