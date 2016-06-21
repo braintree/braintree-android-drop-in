@@ -65,4 +65,20 @@ public class EditCardView extends LinearLayout {
     public void setAddPaymentUpdatedListener(AddPaymentUpdateListener listener) {
         mListener = listener;
     }
+
+    public String getSecurityCode() {
+        return mSecurityCode.getText().toString();
+    }
+
+    public String getExpirationDate() {
+        return mExpirationDate.getText().toString();
+    }
+
+    public String getPhoneNumber() {
+        return mPhoneNumber.getText().toString();
+    }
+
+    public void setCardNumber(String cardNumber) {
+        mCardNumber.setText(cardNumber);
+    }
 }

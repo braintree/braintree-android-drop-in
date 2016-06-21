@@ -37,7 +37,6 @@ public class AddCardActivity extends Activity implements AddPaymentUpdateListene
 
         PaymentRequest paymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
 
-//        String authorization = getIntent().getStringExtra(EXTRA_AUTHORIZATION_TOKEN);
         try {
             mBraintreeFragment = BraintreeFragment.newInstance(this, paymentRequest.getAuthorization());
         } catch (InvalidArgumentException e) {
@@ -52,19 +51,19 @@ public class AddCardActivity extends Activity implements AddPaymentUpdateListene
             if (mAddCardView.getNumber() != null) {
                 Log.d("CardNumber", mAddCardView.getNumber());
                 mAddCardView.setVisibility(View.GONE);
-                mEditCardView.setVisibility(View.VISIBLE);
                 mCardBuilder.cardNumber(mAddCardView.getNumber());
+                mEditCardView.setCardNumber(mAddCardView.getNumber());
+                mEditCardView.setVisibility(View.VISIBLE);
                 // Switch views
             }
         } else if (v.getId() == mEditCardView.getId()) {
             mEditCardView.setVisibility(View.GONE);
 
-            // TODO real values
-            mCardBuilder.expirationDate("expiration date");
-            mCardBuilder.cvv("cvv");
+            mCardBuilder.expirationDate(mEditCardView.getExpirationDate());
+            mCardBuilder.cvv(mEditCardView.getSecurityCode());
             createCard();
 
-            // Possibly show enrollment
+            // TODO Possibly show enrollment
         }
     }
 
