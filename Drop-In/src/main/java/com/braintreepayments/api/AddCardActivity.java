@@ -51,7 +51,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bt_add_payment_activity);
+        setContentView(R.layout.bt_add_card_activity);
         mToolbar = (Toolbar)findViewById(R.id.toobar);
         mAddCardView = (AddCardView)findViewById(R.id.add_card_view);
         mEditCardView = (EditCardView)findViewById(R.id.edit_card_view);

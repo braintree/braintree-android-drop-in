@@ -1,21 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context="com.braintreepayments.api.AddCardActivity">
+    android:layout_height="match_parent">
 
-    <com.braintreepayments.cardform.view.CardForm
-        android:id="@+id/bt_card_form"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toobar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"/>
 
-    <Button
-        android:id="@+id/bt_card_form_submit_button"
-        style="@style/bt_submit_button"
-        android:text="@string/bt_add_card"
-        android:layout_alignParentBottom="true"
-        android:background="@color/bt_button_disabled_color"
-        android:onClick="addCard" />
+    <com.braintreepayments.api.dropin.view.AddCardView
+        android:id="@+id/add_card_view"
+        android:layout_width="match_parent"
+        android:layout_margin="16dp"
+        android:layout_height="wrap_content" />
 
-</RelativeLayout>
+    <com.braintreepayments.api.dropin.view.EditCardView
+        android:id="@+id/edit_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:visibility="gone" />
+
+    <com.braintreepayments.api.dropin.view.EnrollmentCardView
+        android:id="@+id/enrollment_card_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:visibility="gone" />
+
+</LinearLayout>
