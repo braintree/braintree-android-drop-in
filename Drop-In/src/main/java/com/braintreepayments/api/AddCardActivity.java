@@ -21,6 +21,7 @@ import com.braintreepayments.api.interfaces.UnionPayListener;
 import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.UnionPayCapabilities;
+import com.braintreepayments.api.models.UnionPayCardBuilder;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -29,17 +30,20 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
         PaymentMethodNonceCreatedListener, BraintreeErrorListener, UnionPayListener {
 
     private UnionPayCapabilities mCapabilities;
+    private String mEnrollmentId;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
             CARD_ENTRY,
             DETAILS_ENTRY,
+            ENROLLMENT_ENTRY,
             SUBMIT
     })
     private @interface State {}
     public static final int CARD_ENTRY = 1;
     public static final int DETAILS_ENTRY = 2;
-    public static final int SUBMIT = 3;
+    public static final int ENROLLMENT_ENTRY = 3;
+    public static final int SUBMIT = 4;
 
     private Toolbar mToolbar;
     private AddCardView mAddCardView;
@@ -47,7 +51,6 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     private EnrollmentCardView mEnrollmentCardView;
 
     private BraintreeFragment mBraintreeFragment;
-    private final CardBuilder mCardBuilder = new CardBuilder();
 
     @State
     private int mState = CARD_ENTRY;
@@ -91,17 +94,15 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
         switch (lastState) {
             case CARD_ENTRY:
                 mAddCardView.setVisibility(View.GONE);
-                mCardBuilder.cardNumber(mAddCardView.getNumber());
                 mEditCardView.setCardNumber(mAddCardView.getNumber());
                 break;
             case DETAILS_ENTRY:
                 mEditCardView.setVisibility(View.GONE);
-                mCardBuilder.expirationDate(mEditCardView.getExpirationDate());
-                mCardBuilder.cvv(mEditCardView.getCvv());
                 break;
-//                    case ENROLLMENT_ENTRY:
-//                        mEnrollmentCardView.setVisibility(View.GONE);
-//                        break;
+            case ENROLLMENT_ENTRY:
+                mEnrollmentCardView.setVisibility(View.GONE);
+                // Collect sms from mEnrollmentCardView
+                break;
         }
 
         switch(nextState) {
@@ -113,10 +114,10 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
                 getSupportActionBar().setTitle("Card Details");
                 mEditCardView.setVisibility(View.VISIBLE);
                 break;
-//                    case ENROLLMENT_ENTRY:
-//                        getSupportActionBar().setTitle("Confirm Enrollment");
-//                        mEnrollmentCardView.setVisibility(View.VISIBLE);
-//                        break;
+            case ENROLLMENT_ENTRY:
+                getSupportActionBar().setTitle("Confirm Enrollment");
+                mEnrollmentCardView.setVisibility(View.VISIBLE);
+                break;
             case SUBMIT:
                 createCard();
                 break;
@@ -126,14 +127,32 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     @State
     private int determineNextState(View v) {
         int nextState = mState;
+        boolean unionPayEnabled = mBraintreeFragment.getConfiguration().getUnionPay().isEnabled();
         if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getNumber())) {
-            if (mBraintreeFragment.getConfiguration().getUnionPay().isEnabled() && mCapabilities == null) {
+            if (!unionPayEnabled) {
+                mEditCardView.useUnionPay(false);
+            } else if (unionPayEnabled && mCapabilities == null) {
                 UnionPay.fetchCapabilities(mBraintreeFragment, mAddCardView.getNumber());
             } else {
                 nextState = DETAILS_ENTRY;
             }
-        }
-        else if (v.getId() == mEditCardView.getId()) {
+        } else if (v.getId() == mEditCardView.getId()) {
+            if (unionPayEnabled && mCapabilities.isUnionPay()) {
+                if (TextUtils.isEmpty(mEnrollmentId)) {
+                    UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
+                            .cardNumber(mAddCardView.getNumber())
+                            .mobileCountryCode("62")
+                            .mobilePhoneNumber(mEditCardView.getPhoneNumber())
+                            .expirationDate(mEditCardView.getExpirationDate())
+                            .cvv(mEditCardView.getCvv());
+                    UnionPay.enroll(mBraintreeFragment, unionPayCardBuilder);
+                } else {
+                    nextState = ENROLLMENT_ENTRY;
+                }
+            } else {
+                nextState = SUBMIT;
+            }
+        } else if (v.getId() == mEnrollmentCardView.getId()) {
             nextState = SUBMIT;
         }
 
@@ -141,7 +160,24 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     }
 
     private void createCard() {
-        Card.tokenize(mBraintreeFragment, mCardBuilder);
+        if (mBraintreeFragment.getConfiguration().getUnionPay().isEnabled() && mCapabilities.isUnionPay()) {
+            UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
+                    .cardNumber(mAddCardView.getNumber())
+                    .expirationDate(mEditCardView.getExpirationDate())
+                    .cvv(mEditCardView.getCvv())
+                    .mobileCountryCode("62") //TODO
+                    .mobilePhoneNumber(mEditCardView.getPhoneNumber())
+                    .enrollmentId(mEnrollmentId)
+                    .smsCode(mEnrollmentCardView.getSmsCode());
+            UnionPay.tokenize(mBraintreeFragment, unionPayCardBuilder);
+        } else {
+            CardBuilder cardBuilder = new CardBuilder()
+                    .cardNumber(mAddCardView.getNumber())
+                    .expirationDate(mEditCardView.getExpirationDate())
+                    .cvv(mEditCardView.getCvv());
+            Card.tokenize(mBraintreeFragment, cardBuilder);
+
+        }
     }
 
     @Override
@@ -161,7 +197,8 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
 
     @Override
     public void onSmsCodeSent(String enrollmentId) {
-
+        mEnrollmentId = enrollmentId;
+        onPaymentUpdated(mEditCardView);
     }
 
     @Override

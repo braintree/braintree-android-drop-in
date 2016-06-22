@@ -36,19 +36,30 @@
         android:layout_alignLeft="@id/sms_code_layout"
         android:text="Enter the SMS code sent to +8688888888888" />
 
-    <Button
-        android:id="@+id/confirm_button"
-        android:layout_below="@id/sms_sent_text"
-        android:layout_width="match_parent"
+    <ViewAnimator
+        android:id="@+id/view_animator"
         android:layout_height="wrap_content"
-        android:background="#199ddc"
-        android:textColor="#fff"
-        android:textAllCaps="true"
-        android:text="Confirm"/>
+        android:layout_below="@id/sms_sent_text"
+        android:layout_width="match_parent">
+
+        <Button
+            android:id="@+id/confirm_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#199ddc"
+            android:textColor="#fff"
+            android:text="Confirm"/>
+
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </ViewAnimator>
 
     <Button
         android:id="@+id/sms_help_button"
-        android:layout_below="@id/confirm_button"
+        android:layout_below="@id/view_animator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
