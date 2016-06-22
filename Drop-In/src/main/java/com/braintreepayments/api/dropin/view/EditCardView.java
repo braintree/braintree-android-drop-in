@@ -20,6 +20,7 @@ public class EditCardView extends RelativeLayout {
     private EditText mCardNumber;
     private EditText mExpirationDate;
     private EditText mCvv;
+    private View mUnionPayGroup;
     private EditText mPhoneNumber;
     private ViewAnimator mViewAnimator;
     private Button mNext;
@@ -51,6 +52,7 @@ public class EditCardView extends RelativeLayout {
         mCardNumber = (EditText)findViewById(R.id.card_number);
         mExpirationDate = (EditText)findViewById(R.id.expiration_date);
         mCvv = (EditText)findViewById(R.id.cvv);
+        mUnionPayGroup = findViewById(R.id.union_pay_group);
         mPhoneNumber = (EditText)findViewById(R.id.phone_number);
         mViewAnimator = (ViewAnimator)findViewById(R.id.view_animator);
         mNext = (Button)findViewById(R.id.add_card_button);
@@ -89,5 +91,9 @@ public class EditCardView extends RelativeLayout {
 
     public void setCardNumber(String cardNumber) {
         mCardNumber.setText(cardNumber);
+    }
+
+    public void useUnionPay(boolean useUnionPay) {
+        mUnionPayGroup.setVisibility(useUnionPay? VISIBLE : GONE);
     }
 }

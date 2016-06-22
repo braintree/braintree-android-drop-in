@@ -17,14 +17,18 @@ import com.braintreepayments.api.dropin.view.EnrollmentCardView;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
+import com.braintreepayments.api.interfaces.UnionPayListener;
 import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.models.UnionPayCapabilities;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 public class AddCardActivity extends AppCompatActivity implements AddPaymentUpdateListener,
-        PaymentMethodNonceCreatedListener, BraintreeErrorListener {
+        PaymentMethodNonceCreatedListener, BraintreeErrorListener, UnionPayListener {
+
+    private UnionPayCapabilities mCapabilities;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
@@ -76,60 +80,58 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
 
     @Override
     public void onPaymentUpdated(final View v) {
-        // Mimic network
-        v.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                int lastState = mState;
-                int nextState = determineNextState(v);
-                if (nextState == lastState) {
-                    return;
-                } else {
-                    mState = nextState;
-                }
+        int lastState = mState;
+        int nextState = determineNextState(v);
+        if (nextState == lastState) {
+            return;
+        } else {
+            mState = nextState;
+        }
 
-                switch (lastState) {
-                    case CARD_ENTRY:
-                        mAddCardView.setVisibility(View.GONE);
-                        mCardBuilder.cardNumber(mAddCardView.getNumber());
-                        mEditCardView.setCardNumber(mAddCardView.getNumber());
-                        break;
-                    case DETAILS_ENTRY:
-                        mEditCardView.setVisibility(View.GONE);
-                        mCardBuilder.expirationDate(mEditCardView.getExpirationDate());
-                        mCardBuilder.cvv(mEditCardView.getCvv());
-                        break;
+        switch (lastState) {
+            case CARD_ENTRY:
+                mAddCardView.setVisibility(View.GONE);
+                mCardBuilder.cardNumber(mAddCardView.getNumber());
+                mEditCardView.setCardNumber(mAddCardView.getNumber());
+                break;
+            case DETAILS_ENTRY:
+                mEditCardView.setVisibility(View.GONE);
+                mCardBuilder.expirationDate(mEditCardView.getExpirationDate());
+                mCardBuilder.cvv(mEditCardView.getCvv());
+                break;
 //                    case ENROLLMENT_ENTRY:
 //                        mEnrollmentCardView.setVisibility(View.GONE);
 //                        break;
-                }
+        }
 
-                switch(nextState) {
-                    case CARD_ENTRY:
-                        getSupportActionBar().setTitle("Enter Card Details");
-                        mAddCardView.setVisibility(View.VISIBLE);
-                        break;
-                    case DETAILS_ENTRY:
-                        getSupportActionBar().setTitle("Card Details");
-                        mEditCardView.setVisibility(View.VISIBLE);
-                        break;
+        switch(nextState) {
+            case CARD_ENTRY:
+                getSupportActionBar().setTitle("Enter Card Details");
+                mAddCardView.setVisibility(View.VISIBLE);
+                break;
+            case DETAILS_ENTRY:
+                getSupportActionBar().setTitle("Card Details");
+                mEditCardView.setVisibility(View.VISIBLE);
+                break;
 //                    case ENROLLMENT_ENTRY:
 //                        getSupportActionBar().setTitle("Confirm Enrollment");
 //                        mEnrollmentCardView.setVisibility(View.VISIBLE);
 //                        break;
-                    case SUBMIT:
-                        createCard();
-                        break;
-                }
-            }
-        }, 5000);
+            case SUBMIT:
+                createCard();
+                break;
+        }
     }
 
     @State
     private int determineNextState(View v) {
         int nextState = mState;
         if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getNumber())) {
-            nextState = DETAILS_ENTRY;
+            if (mBraintreeFragment.getConfiguration().getUnionPay().isEnabled() && mCapabilities == null) {
+                UnionPay.fetchCapabilities(mBraintreeFragment, mAddCardView.getNumber());
+            } else {
+                nextState = DETAILS_ENTRY;
+            }
         }
         else if (v.getId() == mEditCardView.getId()) {
             nextState = SUBMIT;
@@ -148,6 +150,18 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
         result.putExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE, paymentMethod);
         setResult(Activity.RESULT_OK, result);
         finish();
+    }
+
+    @Override
+    public void onCapabilitiesFetched(UnionPayCapabilities capabilities) {
+        mCapabilities = capabilities;
+        mEditCardView.useUnionPay(capabilities.isUnionPayEnrollmentRequired());
+        onPaymentUpdated(mAddCardView);
+    }
+
+    @Override
+    public void onSmsCodeSent(String enrollmentId) {
+
     }
 
     @Override

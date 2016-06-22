@@ -58,25 +58,32 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/phone_number_layout"
+    <RelativeLayout
+        android:id="@+id/union_pay_group"
+        android:layout_width="match_parent"
         android:layout_below="@id/expiration_date_layout"
         android:layout_alignLeft="@id/expiration_date_layout"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/phone_number"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/phone_number_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Mobile Number" />
+            android:layout_height="wrap_content">
 
-    </android.support.design.widget.TextInputLayout>
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/phone_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mobile Number" />
+
+        </android.support.design.widget.TextInputLayout>
+
+    </RelativeLayout>
 
     <ViewAnimator
         android:id="@+id/view_animator"
         android:layout_height="wrap_content"
-        android:layout_below="@id/phone_number_layout"
+        android:layout_below="@id/union_pay_group"
         android:layout_width="match_parent">
 
         <Button
