@@ -97,7 +97,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
                     case DETAILS_ENTRY:
                         mEditCardView.setVisibility(View.GONE);
                         mCardBuilder.expirationDate(mEditCardView.getExpirationDate());
-                        mCardBuilder.cvv(mEditCardView.getSecurityCode());
+                        mCardBuilder.cvv(mEditCardView.getCvv());
                         break;
 //                    case ENROLLMENT_ENTRY:
 //                        mEnrollmentCardView.setVisibility(View.GONE);

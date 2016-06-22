@@ -19,7 +19,7 @@ public class EditCardView extends RelativeLayout {
 
     private EditText mCardNumber;
     private EditText mExpirationDate;
-    private EditText mSecurityCode;
+    private EditText mCvv;
     private EditText mPhoneNumber;
     private ViewAnimator mViewAnimator;
     private Button mNext;
@@ -50,7 +50,7 @@ public class EditCardView extends RelativeLayout {
 
         mCardNumber = (EditText)findViewById(R.id.card_number);
         mExpirationDate = (EditText)findViewById(R.id.expiration_date);
-        mSecurityCode = (EditText)findViewById(R.id.security_code);
+        mCvv = (EditText)findViewById(R.id.cvv);
         mPhoneNumber = (EditText)findViewById(R.id.phone_number);
         mViewAnimator = (ViewAnimator)findViewById(R.id.view_animator);
         mNext = (Button)findViewById(R.id.add_card_button);
@@ -75,8 +75,8 @@ public class EditCardView extends RelativeLayout {
         mListener = listener;
     }
 
-    public String getSecurityCode() {
-        return mSecurityCode.getText().toString();
+    public String getCvv() {
+        return mCvv.getText().toString();
     }
 
     public String getExpirationDate() {
