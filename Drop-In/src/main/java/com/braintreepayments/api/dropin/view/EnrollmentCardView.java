@@ -53,6 +53,7 @@ public class EnrollmentCardView extends RelativeLayout {
                 }
             }
         });
+        mAnimatedButtonView.setNextButtonText("[TR] Confirm");
     }
 
     public void setAddPaymentUpdatedListener(AddPaymentUpdateListener listener) {

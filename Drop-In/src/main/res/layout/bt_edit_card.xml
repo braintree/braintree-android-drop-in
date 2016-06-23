@@ -24,7 +24,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:inputType="number"
-            android:hint="Card Number"/>
+            android:hint="Card Number"
+            android:focusable="false"
+            android:focusableInTouchMode="false" />
+        <!-- TODO: instead of disabling the edit text via focusable*="false", should change the flow if card number is edited -->
 
     </android.support.design.widget.TextInputLayout>
 
