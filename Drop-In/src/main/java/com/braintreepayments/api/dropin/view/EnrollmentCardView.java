@@ -18,9 +18,7 @@ import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 public class EnrollmentCardView extends RelativeLayout {
 
     private EditText mSmsCode;
-    private ViewAnimator mViewAnimator;
-    private Button mConfirm;
-    private ProgressBar mProgressBar;
+    private AnimatedButtonView mAnimatedButtonView;
 
     private AddPaymentUpdateListener mListener;
 
@@ -45,18 +43,11 @@ public class EnrollmentCardView extends RelativeLayout {
         }
         LayoutInflater.from(context).inflate(R.layout.bt_enrollment_card, this, true);
         mSmsCode = (EditText)findViewById(R.id.sms_code);
-        mViewAnimator = (ViewAnimator)findViewById(R.id.view_animator);
-        mConfirm = (Button)findViewById(R.id.confirm_button);
-        mProgressBar = (ProgressBar)findViewById(R.id.progress_bar);
+        mAnimatedButtonView = (AnimatedButtonView)findViewById(R.id.animated_button_view);
 
-        Animation fadeIn = AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in);
-        Animation fadeOut = AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out);
-        mViewAnimator.setInAnimation(fadeIn);
-        mViewAnimator.setOutAnimation(fadeOut);
-        mConfirm.setOnClickListener(new OnClickListener() {
+        mAnimatedButtonView.setNextButtonOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mViewAnimator.showNext();
                 if (mListener != null) {
                     mListener.onPaymentUpdated(EnrollmentCardView.this);
                 }

@@ -24,11 +24,9 @@ public class AddCardView extends RelativeLayout {
 
     private EditText mCardNumber;
     private GridLayout mAcceptedCards;
-    private ViewAnimator mViewAnimator;
-    private Button mNext;
-    private ProgressBar mProgressBar;
-
+    private AnimatedButtonView mAnimatedButtonView;
     private AddPaymentUpdateListener mListener;
+
     private final List<Integer> validCardTypes = Arrays.asList(
             R.drawable.bt_visa,
             R.drawable.bt_mastercard,
@@ -63,20 +61,13 @@ public class AddCardView extends RelativeLayout {
         LayoutInflater.from(context).inflate(R.layout.bt_add_card, this, true);
         mCardNumber = (EditText)findViewById(R.id.card_number);
         mAcceptedCards = (GridLayout)findViewById(R.id.accepted_cards);
-        mViewAnimator = (ViewAnimator)findViewById(R.id.view_animator);
-        mNext = (Button)findViewById(R.id.next_button);
-        mProgressBar = (ProgressBar)findViewById(R.id.progress_bar);
+        mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.animated_button_view);
 
         updateValidCardTypes();
 
-        Animation fadeIn = AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in);
-        Animation fadeOut = AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out);
-        mViewAnimator.setInAnimation(fadeIn);
-        mViewAnimator.setOutAnimation(fadeOut);
-        mNext.setOnClickListener(new OnClickListener() {
+        mAnimatedButtonView.setNextButtonOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mViewAnimator.showNext();
                 if (mListener != null) {
                     mListener.onPaymentUpdated(AddCardView.this);
                 }

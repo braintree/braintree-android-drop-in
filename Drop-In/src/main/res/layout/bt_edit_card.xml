@@ -80,25 +80,10 @@
 
     </RelativeLayout>
 
-    <ViewAnimator
-        android:id="@+id/view_animator"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/union_pay_group"
-        android:layout_width="match_parent">
-
-        <Button
-            android:id="@+id/add_card_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#199ddc"
-            android:textColor="#fff"
-            android:text="[TR] Next"/>
-
-        <ProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-    </ViewAnimator>
+    <com.braintreepayments.api.dropin.view.AnimatedButtonView
+        android:id="@+id/animated_button_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/union_pay_group" />
 
 </merge>
