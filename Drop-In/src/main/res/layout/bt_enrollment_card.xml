@@ -39,7 +39,7 @@
     <com.braintreepayments.api.dropin.view.AnimatedButtonView
         android:id="@+id/animated_button_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/sms_sent_text" />
 
     <Button
