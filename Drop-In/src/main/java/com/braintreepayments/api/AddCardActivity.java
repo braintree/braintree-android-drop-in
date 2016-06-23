@@ -101,7 +101,6 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
                 break;
             case ENROLLMENT_ENTRY:
                 mEnrollmentCardView.setVisibility(View.GONE);
-                // Collect sms from mEnrollmentCardView
                 break;
         }
 
@@ -141,7 +140,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
                 if (TextUtils.isEmpty(mEnrollmentId)) {
                     UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
                             .cardNumber(mAddCardView.getNumber())
-                            .mobileCountryCode("62")
+                            .mobileCountryCode(mEditCardView.getMobileCountryCode())
                             .mobilePhoneNumber(mEditCardView.getPhoneNumber())
                             .expirationDate(mEditCardView.getExpirationDate())
                             .cvv(mEditCardView.getCvv());
@@ -165,7 +164,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
                     .cardNumber(mAddCardView.getNumber())
                     .expirationDate(mEditCardView.getExpirationDate())
                     .cvv(mEditCardView.getCvv())
-                    .mobileCountryCode("62") //TODO
+                    .mobileCountryCode(mEditCardView.getMobileCountryCode())
                     .mobilePhoneNumber(mEditCardView.getPhoneNumber())
                     .enrollmentId(mEnrollmentId)
                     .smsCode(mEnrollmentCardView.getSmsCode());

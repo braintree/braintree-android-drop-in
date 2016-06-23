@@ -61,12 +61,26 @@
 
     </android.support.design.widget.TextInputLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/union_pay_group"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_below="@id/expiration_date_layout"
         android:layout_alignLeft="@id/expiration_date_layout"
         android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/country_code_number_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/country_code_number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Mobile Country Code" />
+
+        </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/phone_number_layout"
@@ -77,16 +91,16 @@
                 android:id="@+id/phone_number"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Mobile Number" />
+                android:hint="Mobile Phone Number" />
 
         </android.support.design.widget.TextInputLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <com.braintreepayments.api.dropin.view.AnimatedButtonView
         android:id="@+id/animated_button_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/union_pay_group" />
 
 </merge>

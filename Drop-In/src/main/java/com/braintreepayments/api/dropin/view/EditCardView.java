@@ -4,13 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ViewAnimator;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
@@ -21,6 +16,7 @@ public class EditCardView extends RelativeLayout {
     private EditText mExpirationDate;
     private EditText mCvv;
     private View mUnionPayGroup;
+    private EditText mMobileCountryCode;
     private EditText mPhoneNumber;
     private AnimatedButtonView mAnimatedButtonView;
 
@@ -51,6 +47,7 @@ public class EditCardView extends RelativeLayout {
         mExpirationDate = (EditText)findViewById(R.id.expiration_date);
         mCvv = (EditText)findViewById(R.id.cvv);
         mUnionPayGroup = findViewById(R.id.union_pay_group);
+        mMobileCountryCode = (EditText)findViewById(R.id.country_code_number);
         mPhoneNumber = (EditText)findViewById(R.id.phone_number);
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.animated_button_view);
 
@@ -74,6 +71,10 @@ public class EditCardView extends RelativeLayout {
 
     public String getExpirationDate() {
         return mExpirationDate.getText().toString();
+    }
+
+    public String getMobileCountryCode() {
+        return mMobileCountryCode.getText().toString();
     }
 
     public String getPhoneNumber() {
