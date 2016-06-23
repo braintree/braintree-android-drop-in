@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.ViewAnimator;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 
 public class AnimatedButtonView extends RelativeLayout {
 
@@ -56,6 +55,14 @@ public class AnimatedButtonView extends RelativeLayout {
                 }
             }
         });
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        if(VISIBLE == visibility) {
+            mViewAnimator.setDisplayedChild(0);
+        }
     }
 
     public void setNextButtonOnClickListener(OnClickListener onClickListener) {

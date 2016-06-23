@@ -87,10 +87,12 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
         int nextState = determineNextState(v);
         if (nextState == lastState) {
             return;
-        } else {
-            mState = nextState;
         }
+        updateState(lastState, nextState);
 
+    }
+
+    private void updateState(int lastState, int nextState) {
         switch (lastState) {
             case CARD_ENTRY:
                 mAddCardView.setVisibility(View.GONE);
@@ -120,6 +122,16 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
             case SUBMIT:
                 createCard();
                 break;
+        }
+        mState = nextState;
+    }
+
+    @Override
+    public void onBackRequested(View v) {
+        if (v.getId() == mEditCardView.getId()) {
+            updateState(DETAILS_ENTRY, CARD_ENTRY);
+        } else if (v.getId() == mEnrollmentCardView.getId()) {
+            updateState(ENROLLMENT_ENTRY, DETAILS_ENTRY);
         }
     }
 

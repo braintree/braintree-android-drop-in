@@ -4,15 +4,10 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.ViewAnimator;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
@@ -82,6 +77,12 @@ public class AddCardView extends RelativeLayout {
             iv.setImageDrawable(getResources().getDrawable(drawable));
             mAcceptedCards.addView(iv);
         }
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        mAnimatedButtonView.setVisibility(visibility);
     }
 
     public String getNumber() {

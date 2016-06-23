@@ -51,6 +51,14 @@ public class EditCardView extends RelativeLayout {
         mPhoneNumber = (EditText)findViewById(R.id.phone_number);
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.animated_button_view);
 
+        mCardNumber.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onBackRequested(EditCardView.this);
+                }
+            }
+        });
         mAnimatedButtonView.setNextButtonOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,6 +67,12 @@ public class EditCardView extends RelativeLayout {
                 }
             }
         });
+    }
+
+    @Override
+    public void setVisibility(int visibility) {
+        super.setVisibility(visibility);
+        mAnimatedButtonView.setVisibility(visibility);
     }
 
     public void setAddPaymentUpdatedListener(AddPaymentUpdateListener listener) {
