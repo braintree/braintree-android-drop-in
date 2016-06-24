@@ -1,6 +1,8 @@
 package com.braintreepayments.api.dropin.view;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,9 @@ import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 
 public class EnrollmentCardView extends RelativeLayout {
+
+    private static final String EXTRA_SUPER_STATE = "com.braintreepayments.api.dropin.view.EXTRA_SUPER_STATE";
+    private static final String EXTRA_VISIBLE = "com.braintreepayments.api.dropin.view.EXTRA_VISIBLE";
 
     private EditText mSmsCode;
     private AnimatedButtonView mAnimatedButtonView;
@@ -61,6 +66,26 @@ public class EnrollmentCardView extends RelativeLayout {
                 }
             }
         });
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        Bundle state = new Bundle();
+        state.putParcelable(EXTRA_SUPER_STATE, superState);
+        state.putBoolean(EXTRA_VISIBLE, getVisibility() == VISIBLE);
+        return state;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle)state;
+            setVisibility(bundle.getBoolean(EXTRA_VISIBLE)? VISIBLE : GONE);
+            super.onRestoreInstanceState(bundle.getParcelable(EXTRA_SUPER_STATE));
+        } else {
+            super.onRestoreInstanceState(state);
+        }
     }
 
     @Override

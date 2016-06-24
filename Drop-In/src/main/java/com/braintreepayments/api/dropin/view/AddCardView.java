@@ -1,6 +1,8 @@
 package com.braintreepayments.api.dropin.view;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class AddCardView extends RelativeLayout {
+
+    private static final String EXTRA_SUPER_STATE = "com.braintreepayments.api.dropin.view.EXTRA_SUPER_STATE";
+    private static final String EXTRA_VISIBLE = "com.braintreepayments.api.dropin.view.EXTRA_VISIBLE";
 
     private EditText mCardNumber;
     private GridLayout mAcceptedCards;
@@ -54,7 +59,7 @@ public class AddCardView extends RelativeLayout {
             return;
         }
         LayoutInflater.from(context).inflate(R.layout.bt_add_card, this, true);
-        mCardNumber = (EditText)findViewById(R.id.card_number);
+        mCardNumber = (EditText)findViewById(R.id.add_card_number);
         mAcceptedCards = (GridLayout)findViewById(R.id.accepted_cards);
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.animated_button_view);
 
@@ -68,6 +73,26 @@ public class AddCardView extends RelativeLayout {
                 }
             }
         });
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        Bundle state = new Bundle();
+        state.putParcelable(EXTRA_SUPER_STATE, superState);
+        state.putBoolean(EXTRA_VISIBLE, getVisibility() == VISIBLE);
+        return state;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle)state;
+            setVisibility(bundle.getBoolean(EXTRA_VISIBLE)? VISIBLE : GONE);
+            super.onRestoreInstanceState(bundle.getParcelable(EXTRA_SUPER_STATE));
+        } else {
+            super.onRestoreInstanceState(state);
+        }
     }
 
     private void updateValidCardTypes() {

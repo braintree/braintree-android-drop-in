@@ -12,14 +12,14 @@
     /> <!-- TODO not this drawable -->
 
     <android.support.design.widget.TextInputLayout
-        android:id="@+id/card_number_layout"
+        android:id="@+id/edit_card_number_layout"
         android:layout_toRightOf="@id/card_icon"
         android:layout_centerVertical="@id/card_icon"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <android.support.design.widget.TextInputEditText
-            android:id="@+id/card_number"
+            android:id="@+id/edit_card_number"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
@@ -32,7 +32,7 @@
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/cvv_layout"
-        android:layout_below="@id/card_number_layout"
+        android:layout_below="@id/edit_card_number_layout"
         android:layout_alignParentRight="true"
         android:layout_width="100dp"
         android:layout_height="wrap_content">
@@ -48,7 +48,7 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/expiration_date_layout"
         android:layout_toLeftOf="@id/cvv_layout"
-        android:layout_below="@id/card_number_layout"
+        android:layout_below="@id/edit_card_number_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

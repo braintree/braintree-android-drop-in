@@ -29,6 +29,10 @@ import java.lang.annotation.RetentionPolicy;
 public class AddCardActivity extends AppCompatActivity implements AddPaymentUpdateListener,
         PaymentMethodNonceCreatedListener, BraintreeErrorListener, UnionPayListener {
 
+    private static final String EXTRA_STATE = "com.braintreepayments.api.EXTRA_STATE";
+    private static final String EXTRA_ENROLLMENT_ID = "com.braintreepayments.api.EXTRA_ENROLLMENT_ID";
+    private static final String EXTRA_CAPABILITIES = "com.braintreepayments.api.EXTRA_CAPABILITIES";
+
     private UnionPayCapabilities mCapabilities;
     private String mEnrollmentId;
 
@@ -79,6 +83,23 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
             // TODO alert the merchant their authorization may be incorrect.
             throw new RuntimeException(e);
         }
+        
+        if (savedInstanceState != null) {
+            //TODO is there a better way to respect this State interface?
+            @State int state = savedInstanceState.getInt(EXTRA_STATE);
+            mState = state;
+            mEnrollmentId = savedInstanceState.getString(EXTRA_ENROLLMENT_ID);
+            mCapabilities = savedInstanceState.getParcelable(EXTRA_CAPABILITIES);
+        }
+        enterState(mState);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(EXTRA_STATE, mState);
+        outState.putString(EXTRA_ENROLLMENT_ID, mEnrollmentId);
+        outState.putParcelable(EXTRA_CAPABILITIES, mCapabilities);
     }
 
     @Override
@@ -88,15 +109,14 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
         if (nextState == lastState) {
             return;
         }
-        updateState(lastState, nextState);
-
+        leaveState(lastState);
+        enterState(nextState);
     }
 
-    private void updateState(int lastState, int nextState) {
-        switch (lastState) {
+    private void leaveState(int state) {
+        switch (state) {
             case CARD_ENTRY:
                 mAddCardView.setVisibility(View.GONE);
-                mEditCardView.setCardNumber(mAddCardView.getNumber());
                 break;
             case DETAILS_ENTRY:
                 mEditCardView.setVisibility(View.GONE);
@@ -105,14 +125,18 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
                 mEnrollmentCardView.setVisibility(View.GONE);
                 break;
         }
+    }
 
-        switch(nextState) {
+    private void enterState(int state) {
+        switch(state) {
             case CARD_ENTRY:
                 getSupportActionBar().setTitle("Enter Card Details");
                 mAddCardView.setVisibility(View.VISIBLE);
                 break;
             case DETAILS_ENTRY:
                 getSupportActionBar().setTitle("Card Details");
+                mEditCardView.setCardNumber(mAddCardView.getNumber());
+                mEditCardView.useUnionPay(isCardUnionPay());
                 mEditCardView.setVisibility(View.VISIBLE);
                 break;
             case ENROLLMENT_ENTRY:
@@ -123,15 +147,17 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
                 createCard();
                 break;
         }
-        mState = nextState;
+        mState = state;
     }
 
     @Override
     public void onBackRequested(View v) {
         if (v.getId() == mEditCardView.getId()) {
-            updateState(DETAILS_ENTRY, CARD_ENTRY);
+            leaveState(DETAILS_ENTRY);
+            enterState(CARD_ENTRY);
         } else if (v.getId() == mEnrollmentCardView.getId()) {
-            updateState(ENROLLMENT_ENTRY, DETAILS_ENTRY);
+            leaveState(ENROLLMENT_ENTRY);
+            enterState(DETAILS_ENTRY);
         }
     }
 
@@ -148,7 +174,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
                 nextState = DETAILS_ENTRY;
             }
         } else if (v.getId() == mEditCardView.getId()) {
-            if (unionPayEnabled && mCapabilities.isUnionPay()) {
+            if (isCardUnionPay()) {
                 if (TextUtils.isEmpty(mEnrollmentId)) {
                     UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
                             .cardNumber(mAddCardView.getNumber())
@@ -171,7 +197,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     }
 
     private void createCard() {
-        if (mBraintreeFragment.getConfiguration().getUnionPay().isEnabled() && mCapabilities.isUnionPay()) {
+        if (isCardUnionPay()) {
             UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
                     .cardNumber(mAddCardView.getNumber())
                     .expirationDate(mEditCardView.getExpirationDate())
@@ -189,6 +215,11 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
             Card.tokenize(mBraintreeFragment, cardBuilder);
 
         }
+    }
+
+    private boolean isCardUnionPay() {
+        return mBraintreeFragment.getConfiguration().getUnionPay().isEnabled() && mCapabilities != null &&
+                mCapabilities.isUnionPay();
     }
 
     @Override
