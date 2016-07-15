@@ -7,6 +7,7 @@ import android.support.annotation.IntDef;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.braintreepayments.api.dropin.R;
@@ -63,14 +64,13 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_add_card_activity);
-        mToolbar = (Toolbar)findViewById(R.id.toobar);
+        mToolbar = (Toolbar) findViewById(R.id.toobar);
         mAddCardView = (AddCardView)findViewById(R.id.add_card_view);
         mEditCardView = (EditCardView)findViewById(R.id.edit_card_view);
         mEnrollmentCardView = (EnrollmentCardView)findViewById(R.id.enrollment_card_view);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         mAddCardView.setAddPaymentUpdatedListener(this);
         mEditCardView.setAddPaymentUpdatedListener(this);
         mEnrollmentCardView.setAddPaymentUpdatedListener(this);
@@ -246,5 +246,14 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     @Override
     public void onError(Exception e) {
         throw new RuntimeException(e);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
