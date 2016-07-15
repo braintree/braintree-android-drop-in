@@ -36,4 +36,7 @@
     <string name="bt_add_paypal_account">Add PayPal Account</string>
     <string name="bt_add_android_pay">Add Android Pay</string>
     <string name="bt_add_venmo">Add Venmo Account</string>
+
+    <string name="bt_next">Next</string>
+    <string name="bt_confirm">Confirm</string>
 </resources>

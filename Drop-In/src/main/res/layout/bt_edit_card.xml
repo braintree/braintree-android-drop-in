@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,8 +9,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
-        android:src="@drawable/bt_card_highlighted"
-    /> <!-- TODO not this drawable -->
+        android:src="@drawable/bt_card_highlighted"/> <!-- TODO not this drawable -->
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/edit_card_number_layout"
@@ -35,7 +35,8 @@
         android:layout_below="@id/edit_card_number_layout"
         android:layout_alignParentRight="true"
         android:layout_width="100dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="32dp">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/cvv"
@@ -50,7 +51,9 @@
         android:layout_toLeftOf="@id/cvv_layout"
         android:layout_below="@id/edit_card_number_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/edit_card_number_layout"
+        android:paddingTop="32dp">
 
         <android.support.design.widget.TextInputEditText
             android:id="@+id/expiration_date"
@@ -71,7 +74,8 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/country_code_number_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingTop="32dp">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/country_code_number"
@@ -84,7 +88,8 @@
         <android.support.design.widget.TextInputLayout
             android:id="@+id/phone_number_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingTop="32dp">
 
             <android.support.design.widget.TextInputEditText
                 android:id="@+id/phone_number"
@@ -100,6 +105,8 @@
         android:id="@+id/animated_button_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/union_pay_group" />
+        android:layout_below="@id/union_pay_group"
+        android:layout_marginTop="40dp"
+        bt:bt_buttonText="@string/bt_add_card"/>
 
 </merge>

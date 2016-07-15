@@ -56,7 +56,7 @@ public class EnrollmentCardView extends RelativeLayout {
                 }
             }
         });
-        mAnimatedButtonView.setNextButtonText("[TR] Confirm");
+        mAnimatedButtonView.setNextButtonText(getContext().getString(R.string.bt_confirm));
 
         mSmsHelpButton.setOnClickListener(new OnClickListener() {
             @Override

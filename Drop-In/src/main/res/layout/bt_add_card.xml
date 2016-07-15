@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -8,8 +9,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
-       android:src="@drawable/bt_card_highlighted"
-    /> <!-- TODO not this drawable -->
+        android:src="@drawable/bt_card_highlighted"/>
+    <!-- TODO not this drawable -->
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/add_card_number_layout"
@@ -24,7 +25,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:inputType="number"
-            android:hint="Card Number"/>
+            android:hint="@string/bt_form_hint_card_number"/>
 
     </android.support.design.widget.TextInputLayout>
 
@@ -43,6 +44,8 @@
         android:id="@+id/animated_button_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/accepted_cards" />
+        android:layout_below="@id/accepted_cards"
+        android:layout_marginTop="40dp"
+        bt:bt_buttonText="@string/bt_next"/>
 
 </merge>

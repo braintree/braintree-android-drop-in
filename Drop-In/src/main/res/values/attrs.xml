@@ -3,4 +3,7 @@
     <declare-styleable name="bt_PaymentButtonAttributes">
         <attr name="tokenizationKey" format="string" tools:ignore="ResourceName" />
     </declare-styleable>
+    <declare-styleable name="bt_AnimatedButtonAttributes">
+        <attr name="bt_buttonText" format="string"/>
+    </declare-styleable>
 </resources>

@@ -13,14 +13,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#199ddc"
-            android:textColor="#fff"
-            android:text="[TR] Next" />
+            android:textColor="#fff"/>
 
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
     </ViewAnimator>
 
 </merge>
