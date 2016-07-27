@@ -265,7 +265,7 @@ public class PaymentRequest implements Parcelable {
      * @return {@link Intent} containing all of the options set in {@link PaymentRequest}.
      */
     public Intent getIntent(Context context) {
-        return new Intent(context, GridViewPaymentActivity.class)
+        return new Intent(context, BraintreePaymentActivity.class)
                 .putExtra(EXTRA_CHECKOUT_REQUEST, this);
     }
 

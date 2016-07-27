@@ -21,6 +21,14 @@
             android:enabled="false" />
 
         <Button
+            android:id="@+id/drop_in_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/drop_in_2"
+            android:onClick="launchDropInTwo"
+            android:enabled="false"/>
+
+        <Button
             android:id="@+id/payment_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

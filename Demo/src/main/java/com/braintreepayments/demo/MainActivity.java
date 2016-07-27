@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.BraintreePaymentActivity;
+import com.braintreepayments.api.GridViewPaymentActivity;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.PaymentRequest;
 import com.braintreepayments.api.ThreeDSecure;
@@ -53,6 +54,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     private TextView mDeviceData;
 
     private Button mDropInButton;
+    private Button mDropIn2Button;
     private Button mPaymentButtonButton;
     private Button mCreateTransactionButton;
     private ProgressDialog mLoading;
@@ -68,6 +70,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         mDeviceData = (TextView) findViewById(R.id.device_data);
 
         mDropInButton = (Button) findViewById(R.id.drop_in);
+        mDropIn2Button = (Button) findViewById(R.id.drop_in_2);
         mPaymentButtonButton = (Button) findViewById(R.id.payment_button);
         mCreateTransactionButton = (Button) findViewById(R.id.create_transaction);
 
@@ -88,6 +91,12 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
     public void launchDropIn(View v) {
         startActivityForResult(getPaymentRequest().getIntent(this), DROP_IN_REQUEST);
+    }
+
+    public void launchDropInTwo(View v) {
+        Intent intent = getPaymentRequest().getIntent(this)
+                .setClass(this, GridViewPaymentActivity.class);
+        startActivityForResult(intent, DROP_IN_REQUEST);
     }
 
     public void launchPaymentButton(View v) {
@@ -280,6 +289,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
     private void enableButtons(boolean enable) {
         mDropInButton.setEnabled(enable);
+        mDropIn2Button.setEnabled(enable);
         mPaymentButtonButton.setEnabled(enable);
     }
 
