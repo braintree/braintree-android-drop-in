@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 
 import com.braintreepayments.api.dropin.view.LoadingHeader;
+import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.BraintreeError;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
@@ -56,12 +57,12 @@ public class AddPaymentMethodViewController extends BraintreeViewController impl
     }
 
     private void initViews() {
-        mLoadingHeader = findView(com.braintreepayments.api.dropin.R.id.bt_header_container);
-        mDescription = findView(com.braintreepayments.api.dropin.R.id.bt_description_container);
+        mLoadingHeader = findView(R.id.bt_header_container);
+        mDescription = findView(R.id.bt_description_container);
         mPaymentButton = (PaymentButton) mActivity.getFragmentManager()
-                .findFragmentById(com.braintreepayments.api.dropin.R.id.bt_payment_button);
-        mCardForm = findView(com.braintreepayments.api.dropin.R.id.bt_card_form);
-        mSubmitButton = findView(com.braintreepayments.api.dropin.R.id.bt_card_form_submit_button);
+                .findFragmentById(R.id.bt_payment_button);
+        mCardForm = findView(R.id.bt_card_form);
+        mSubmitButton = findView(R.id.bt_card_form_submit_button);
 
         mPaymentButton.setOnClickListener(this);
 
@@ -72,10 +73,12 @@ public class AddPaymentMethodViewController extends BraintreeViewController impl
             // already checked in BraintreePaymentActivity
         }
 
-        mCardForm.setRequiredFields(mActivity, true, true,
-                mBraintreeFragment.getConfiguration().isCvvChallengePresent(),
-                mBraintreeFragment.getConfiguration().isPostalCodeChallengePresent(),
-                getCustomizedCallToAction());
+        mCardForm.cardRequired(true)
+                .expirationRequired(true)
+                .cvvRequired(mBraintreeFragment.getConfiguration().isCvvChallengePresent())
+                .postalCodeRequired(mBraintreeFragment.getConfiguration().isPostalCodeChallengePresent())
+                .actionLabel(getCustomizedCallToAction())
+                .setup(mActivity);
         mCardForm.useDialogForExpirationDateEntry(mActivity, false);
         mCardForm.setOnCardFormValidListener(this);
         mCardForm.setOnCardFormSubmitListener(this);
@@ -130,7 +133,7 @@ public class AddPaymentMethodViewController extends BraintreeViewController impl
 
     @Override
     public void onCardFormValid(boolean valid) {
-        ImageButton paypalButton = ((ImageButton) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_paypal_monogram_button));
+        ImageButton paypalButton = ((ImageButton) mActivity.findViewById(R.id.bt_paypal_monogram_button));
         if(valid) {
             setEnabledSubmitButtonStyle();
 
@@ -190,21 +193,21 @@ public class AddPaymentMethodViewController extends BraintreeViewController impl
             mBraintreeFragment.sendAnalyticsEvent("add-card.failed");
 
             if(cardErrors.errorFor("number") != null) {
-                mCardForm.setCardNumberError();
+                mCardForm.setCardNumberError(mActivity.getString(R.string.bt_card_number_invalid));
             }
 
             if(cardErrors.errorFor("expirationYear") != null ||
                     cardErrors.errorFor("expirationMonth") != null ||
                     cardErrors.errorFor("expirationDate") != null ) {
-                mCardForm.setExpirationError();
+                mCardForm.setExpirationError(mActivity.getString(R.string.bt_expiration_invalid));
             }
 
             if (cardErrors.errorFor("cvv") != null) {
-                mCardForm.setCvvError();
+                mCardForm.setCvvError(mActivity.getString(R.string.bt_cvv_invalid));
             }
 
             if(cardErrors.errorFor("billingAddress") != null) {
-                mCardForm.setPostalCodeError();
+                mCardForm.setPostalCodeError(mActivity.getString(R.string.bt_postal_code_required));
             }
 
             showErrorUI();
@@ -214,7 +217,7 @@ public class AddPaymentMethodViewController extends BraintreeViewController impl
     }
 
     private void showErrorUI() {
-        mLoadingHeader.setError(mActivity.getString(com.braintreepayments.api.dropin.R.string.bt_invalid_card));
+        mLoadingHeader.setError(mActivity.getString(R.string.bt_invalid_card));
     }
 
     protected boolean isSubmitting() {
@@ -247,10 +250,10 @@ public class AddPaymentMethodViewController extends BraintreeViewController impl
     }
 
     private void setEnabledSubmitButtonStyle() {
-        mSubmitButton.setBackgroundResource(com.braintreepayments.api.dropin.R.drawable.bt_submit_button_background);
+        mSubmitButton.setBackgroundResource(R.drawable.bt_submit_button_background);
     }
 
     private void setDisabledSubmitButtonStyle() {
-        mSubmitButton.setBackgroundResource(com.braintreepayments.api.dropin.R.color.bt_button_disabled_color);
+        mSubmitButton.setBackgroundResource(R.color.bt_button_disabled_color);
     }
 }

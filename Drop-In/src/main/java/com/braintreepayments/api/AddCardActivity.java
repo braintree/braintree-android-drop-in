@@ -71,7 +71,9 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mAddCardView.setup(this);
         mAddCardView.setAddPaymentUpdatedListener(this);
+        mEditCardView.setup(this);
         mEditCardView.setAddPaymentUpdatedListener(this);
         mEnrollmentCardView.setAddPaymentUpdatedListener(this);
 
@@ -136,7 +138,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
             case DETAILS_ENTRY:
                 getSupportActionBar().setTitle("Card Details");
                 mEditCardView.setCardNumber(mAddCardView.getNumber());
-                mEditCardView.useUnionPay(isCardUnionPay());
+                mEditCardView.useUnionPay(this, isCardUnionPay());
                 mEditCardView.setVisibility(View.VISIBLE);
                 break;
             case ENROLLMENT_ENTRY:
@@ -167,7 +169,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
         boolean unionPayEnabled = mBraintreeFragment.getConfiguration().getUnionPay().isEnabled();
         if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getNumber())) {
             if (!unionPayEnabled) {
-                mEditCardView.useUnionPay(false);
+                mEditCardView.useUnionPay(this, false);
             } else if (unionPayEnabled && mCapabilities == null) {
                 UnionPay.fetchCapabilities(mBraintreeFragment, mAddCardView.getNumber());
             } else {
@@ -239,7 +241,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     @Override
     public void onSmsCodeSent(String enrollmentId, boolean smsRequired) {
         mEnrollmentId = enrollmentId;
-        mEditCardView.useUnionPay(smsRequired);
+        mEditCardView.useUnionPay(this, smsRequired);
         onPaymentUpdated(mEditCardView);
     }
 

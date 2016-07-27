@@ -1,5 +1,6 @@
 package com.braintreepayments.api.dropin.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -11,18 +12,16 @@ import android.widget.RelativeLayout;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.cardform.OnCardFormFieldFocusedListener;
+import com.braintreepayments.cardform.view.CardEditText;
+import com.braintreepayments.cardform.view.CardForm;
 
-public class EditCardView extends RelativeLayout {
+public class EditCardView extends RelativeLayout implements OnCardFormFieldFocusedListener {
 
     private static final String EXTRA_SUPER_STATE = "com.braintreepayments.api.dropin.view.EXTRA_SUPER_STATE";
     private static final String EXTRA_VISIBLE = "com.braintreepayments.api.dropin.view.EXTRA_VISIBLE";
 
-    private EditText mCardNumber;
-    private EditText mExpirationDate;
-    private EditText mCvv;
-    private View mUnionPayGroup;
-    private EditText mMobileCountryCode;
-    private EditText mPhoneNumber;
+    private CardForm mCardForm;
     private AnimatedButtonView mAnimatedButtonView;
 
     private AddPaymentUpdateListener mListener;
@@ -46,24 +45,13 @@ public class EditCardView extends RelativeLayout {
         if (isInEditMode()) {
             return;
         }
+
         LayoutInflater.from(context).inflate(R.layout.bt_edit_card, this);
 
-        mCardNumber = (EditText)findViewById(R.id.edit_card_number);
-        mExpirationDate = (EditText)findViewById(R.id.expiration_date);
-        mCvv = (EditText)findViewById(R.id.cvv);
-        mUnionPayGroup = findViewById(R.id.union_pay_group);
-        mMobileCountryCode = (EditText)findViewById(R.id.country_code_number);
-        mPhoneNumber = (EditText)findViewById(R.id.phone_number);
-        mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.animated_button_view);
+        mCardForm = (CardForm) findViewById(R.id.bt_card_form);
+        mCardForm.setOnFormFieldFocusedListener(this);
 
-        mCardNumber.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onBackRequested(EditCardView.this);
-                }
-            }
-        });
+        mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.animated_button_view);
         mAnimatedButtonView.setNextButtonOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +60,21 @@ public class EditCardView extends RelativeLayout {
                 }
             }
         });
+    }
+
+    public void setup(Activity activity) {
+        mCardForm.cardRequired(true)
+                .expirationRequired(true)
+                .cvvRequired(true)
+                .postalCodeRequired(true)
+                .setup(activity);
+    }
+
+    @Override
+    public void onCardFormFieldFocused(View field) {
+        if (field instanceof CardEditText && mListener != null) {
+            mListener.onBackRequested(EditCardView.this);
+        }
     }
 
     @Override
@@ -105,26 +108,33 @@ public class EditCardView extends RelativeLayout {
     }
 
     public String getCvv() {
-        return mCvv.getText().toString();
+        return mCardForm.getCvv();
     }
 
     public String getExpirationDate() {
-        return mExpirationDate.getText().toString();
+        return mCardForm.getExpirationMonth() + "/" + mCardForm.getExpirationYear();
     }
 
     public String getMobileCountryCode() {
-        return mMobileCountryCode.getText().toString();
+        return mCardForm.getCountryCode();
     }
 
     public String getPhoneNumber() {
-        return mPhoneNumber.getText().toString();
+        return mCardForm.getMobileNumber();
     }
 
     public void setCardNumber(String cardNumber) {
-        mCardNumber.setText(cardNumber);
+        ((EditText) findViewById(R.id.bt_card_form_card_number)).setText(cardNumber);
     }
 
-    public void useUnionPay(boolean useUnionPay) {
-        mUnionPayGroup.setVisibility(useUnionPay? VISIBLE : GONE);
+    public void useUnionPay(Activity activity, boolean useUnionPay) {
+        if (useUnionPay) {
+            mCardForm.cardRequired(true)
+                    .expirationRequired(true)
+                    .cvvRequired(true)
+                    .postalCodeRequired(false)
+                    .mobileNumberRequired(useUnionPay)
+                    .setup(activity);
+        }
     }
 }

@@ -1,8 +1,5 @@
 package com.braintreepayments.demo;
 
-import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
@@ -11,7 +8,10 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,8 +38,9 @@ import retrofit.client.Response;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 @SuppressWarnings("deprecation")
-public abstract class BaseActivity extends Activity implements ActivityCompat.OnRequestPermissionsResultCallback,
-        PaymentMethodNonceCreatedListener, BraintreeCancelListener, BraintreeErrorListener, OnNavigationListener {
+public abstract class BaseActivity extends AppCompatActivity implements OnRequestPermissionsResultCallback,
+        PaymentMethodNonceCreatedListener, BraintreeCancelListener, BraintreeErrorListener,
+        ActionBar.OnNavigationListener {
 
     private static final String KEY_AUTHORIZATION = "com.braintreepayments.demo.KEY_AUTHORIZATION";
 
@@ -195,7 +196,7 @@ public abstract class BaseActivity extends Activity implements ActivityCompat.On
 
     @SuppressWarnings("ConstantConditions")
     private void setupActionBar() {
-        ActionBar actionBar = getActionBar();
+        ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 

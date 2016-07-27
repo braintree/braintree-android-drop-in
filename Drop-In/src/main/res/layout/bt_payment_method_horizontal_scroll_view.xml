@@ -11,7 +11,7 @@
         style="@style/bt_payment_method_item">
 
         <ImageView
-            android:src="@drawable/bt_visa"
+            android:src="@drawable/bt_ic_payment_method_card"
             style="@style/bt_payment_method_card" />
 
         <TextView

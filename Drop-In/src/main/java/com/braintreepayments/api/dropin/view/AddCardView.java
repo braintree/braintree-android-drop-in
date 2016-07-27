@@ -1,43 +1,32 @@
 package com.braintreepayments.api.dropin.view;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.GridLayout;
-import android.widget.ImageView;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.cardform.utils.CardType;
+import com.braintreepayments.cardform.view.CardEditText;
+import com.braintreepayments.cardform.view.CardForm;
+import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class AddCardView extends RelativeLayout {
+public class AddCardView extends LinearLayout {
 
     private static final String EXTRA_SUPER_STATE = "com.braintreepayments.api.dropin.view.EXTRA_SUPER_STATE";
     private static final String EXTRA_VISIBLE = "com.braintreepayments.api.dropin.view.EXTRA_VISIBLE";
 
-    private EditText mCardNumber;
-    private GridLayout mAcceptedCards;
+    private CardForm mCardForm;
+    private SupportedCardTypesView mSupportedCardTypesView;
     private AnimatedButtonView mAnimatedButtonView;
     private AddPaymentUpdateListener mListener;
-
-    private final List<Integer> validCardTypes = Arrays.asList(
-            R.drawable.bt_visa,
-            R.drawable.bt_mastercard,
-            R.drawable.bt_discover,
-            R.drawable.bt_amex,
-            R.drawable.bt_diners,
-            R.drawable.bt_visa, //TODO UnionPay
-            R.drawable.bt_jcb,
-            R.drawable.bt_maestro
-
-    );
 
     public AddCardView(Context context) {
         super(context);
@@ -55,15 +44,18 @@ public class AddCardView extends RelativeLayout {
     }
 
     private void init(Context context) {
-        if(isInEditMode()) {
+        if (isInEditMode()) {
             return;
         }
+
+        setOrientation(VERTICAL);
+
         LayoutInflater.from(context).inflate(R.layout.bt_add_card, this, true);
-        mCardNumber = (EditText)findViewById(R.id.add_card_number);
-        mAcceptedCards = (GridLayout)findViewById(R.id.accepted_cards);
+        mCardForm = (CardForm) findViewById(R.id.bt_card_form);
+        mSupportedCardTypesView = (SupportedCardTypesView) findViewById(R.id.bt_supported_card_types);
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.animated_button_view);
 
-        updateValidCardTypes();
+        updateSupportedCardTypes();
 
         mAnimatedButtonView.setNextButtonOnClickListener(new OnClickListener() {
             @Override
@@ -73,6 +65,15 @@ public class AddCardView extends RelativeLayout {
                 }
             }
         });
+    }
+
+    public void setup(Activity activity) {
+        mCardForm.cardRequired(true)
+                .setup(activity);
+
+        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
+
+        ((CardEditText) findViewById(R.id.bt_card_form_card_number)).setDisplayCardTypeIcon(false);
     }
 
     @Override
@@ -95,13 +96,8 @@ public class AddCardView extends RelativeLayout {
         }
     }
 
-    private void updateValidCardTypes() {
-        mAcceptedCards.removeAllViews();
-        for(int drawable : validCardTypes) {
-            ImageView iv = new ImageView(getContext());
-            iv.setImageDrawable(getResources().getDrawable(drawable));
-            mAcceptedCards.addView(iv);
-        }
+    private void updateSupportedCardTypes() {
+        mSupportedCardTypesView.setSupportedCardTypes(CardType.values());
     }
 
     @Override
@@ -111,7 +107,7 @@ public class AddCardView extends RelativeLayout {
     }
 
     public String getNumber() {
-        return mCardNumber.getText().toString();
+        return mCardForm.getCardNumber();
     }
 
     public void setAddPaymentUpdatedListener(AddPaymentUpdateListener listener) {
