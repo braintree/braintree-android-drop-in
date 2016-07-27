@@ -233,13 +233,13 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     @Override
     public void onCapabilitiesFetched(UnionPayCapabilities capabilities) {
         mCapabilities = capabilities;
-        mEditCardView.useUnionPay(capabilities.isUnionPayEnrollmentRequired());
         onPaymentUpdated(mAddCardView);
     }
 
     @Override
-    public void onSmsCodeSent(String enrollmentId) {
+    public void onSmsCodeSent(String enrollmentId, boolean smsRequired) {
         mEnrollmentId = enrollmentId;
+        mEditCardView.useUnionPay(smsRequired);
         onPaymentUpdated(mEditCardView);
     }
 
