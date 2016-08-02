@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.BraintreePaymentActivity;
-import com.braintreepayments.api.GridViewPaymentActivity;
+import com.braintreepayments.api.NewDropInActivity;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.PaymentRequest;
 import com.braintreepayments.api.ThreeDSecure;
