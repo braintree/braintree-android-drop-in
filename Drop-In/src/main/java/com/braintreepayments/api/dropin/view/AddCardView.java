@@ -7,18 +7,21 @@ import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.cardform.OnCardFormSubmitListener;
+import com.braintreepayments.cardform.OnCardFormValidListener;
 import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
-public class AddCardView extends LinearLayout {
+public class AddCardView extends LinearLayout implements OnCardFormSubmitListener, OnCardFormValidListener,
+        OnClickListener {
 
     private static final String EXTRA_SUPER_STATE = "com.braintreepayments.api.dropin.view.EXTRA_SUPER_STATE";
     private static final String EXTRA_VISIBLE = "com.braintreepayments.api.dropin.view.EXTRA_VISIBLE";
@@ -52,19 +55,15 @@ public class AddCardView extends LinearLayout {
 
         LayoutInflater.from(context).inflate(R.layout.bt_add_card, this, true);
         mCardForm = (CardForm) findViewById(R.id.bt_card_form);
+        mCardForm.setOnCardFormSubmitListener(this);
+        mCardForm.setOnCardFormValidListener(this);
+
         mSupportedCardTypesView = (SupportedCardTypesView) findViewById(R.id.bt_supported_card_types);
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.animated_button_view);
 
         updateSupportedCardTypes();
 
-        mAnimatedButtonView.setNextButtonOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onPaymentUpdated(AddCardView.this);
-                }
-            }
-        });
+        mAnimatedButtonView.setNextButtonOnClickListener(this);
     }
 
     public void setup(Activity activity) {
@@ -74,6 +73,17 @@ public class AddCardView extends LinearLayout {
         activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
 
         ((CardEditText) findViewById(R.id.bt_card_form_card_number)).setDisplayCardTypeIcon(false);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (mListener != null) {
+            mListener.onPaymentUpdated(this);
+        }
+    }
+
+    public CardForm getCardForm() {
+        return mCardForm;
     }
 
     @Override
@@ -112,5 +122,21 @@ public class AddCardView extends LinearLayout {
 
     public void setAddPaymentUpdatedListener(AddPaymentUpdateListener listener) {
         mListener = listener;
+    }
+
+    @Override
+    public void onCardFormSubmit() {
+        mAnimatedButtonView.showLoadingAnimation();
+        if (mListener != null) {
+            mListener.onPaymentUpdated(this);
+        }
+    }
+
+    @Override
+    public void onCardFormValid(boolean valid) {
+        mAnimatedButtonView.showLoadingAnimation();
+        if (mListener != null) {
+            mListener.onPaymentUpdated(this);
+        }
     }
 }

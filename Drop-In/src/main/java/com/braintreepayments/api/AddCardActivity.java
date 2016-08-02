@@ -7,8 +7,11 @@ import android.support.annotation.IntDef;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.WindowManager.LayoutParams;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
@@ -26,6 +29,9 @@ import com.braintreepayments.api.models.UnionPayCardBuilder;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import io.card.payment.CardIOActivity;
+import io.card.payment.CreditCard;
 
 public class AddCardActivity extends AppCompatActivity implements AddPaymentUpdateListener,
         PaymentMethodNonceCreatedListener, BraintreeErrorListener, UnionPayListener {
@@ -251,11 +257,26 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        super.onCreateOptionsMenu(menu);
+
+        if (mAddCardView.getCardForm().isCardScanningAvailable()) {
+            getMenuInflater().inflate(R.menu.bt_card_io, menu);
+        }
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == android.R.id.home) {
+        if (item.getItemId() == R.id.bt_card_io_button) {
+            mAddCardView.getCardForm().scanCard(this);
+            return true;
+        } else if (item.getItemId() == android.R.id.home) {
             finish();
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }

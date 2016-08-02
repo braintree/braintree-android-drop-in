@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -13,7 +14,7 @@ import android.widget.ViewAnimator;
 
 import com.braintreepayments.api.dropin.R;
 
-public class AnimatedButtonView extends RelativeLayout {
+public class AnimatedButtonView extends RelativeLayout implements OnClickListener {
 
     private ViewAnimator mViewAnimator;
     private Button mNext;
@@ -42,19 +43,19 @@ public class AnimatedButtonView extends RelativeLayout {
         Animation fadeOut = AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out);
         mViewAnimator.setInAnimation(fadeIn);
         mViewAnimator.setOutAnimation(fadeOut);
-        mNext.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mViewAnimator.showNext();
-                if (mNextOnClickListener != null) {
-                    mNextOnClickListener.onClick(v);
-                }
-            }
-        });
+        mNext.setOnClickListener(this);
 
         TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.bt_AnimatedButtonAttributes);
         mNext.setText(attributes.getString(R.styleable.bt_AnimatedButtonAttributes_bt_buttonText));
         attributes.recycle();
+    }
+
+    @Override
+    public void onClick(View view) {
+        showLoadingAnimation();
+        if (mNextOnClickListener != null) {
+            mNextOnClickListener.onClick(view);
+        }
     }
 
     @Override
@@ -63,6 +64,10 @@ public class AnimatedButtonView extends RelativeLayout {
         if(VISIBLE == visibility) {
             mViewAnimator.setDisplayedChild(0);
         }
+    }
+
+    public void showLoadingAnimation() {
+        mViewAnimator.showNext();
     }
 
     public void setNextButtonOnClickListener(OnClickListener onClickListener) {

@@ -39,4 +39,5 @@
 
     <string name="bt_next">Next</string>
     <string name="bt_confirm">Confirm</string>
+    <string name="bt_scan_with_card_io">Scan with card.io</string>
 </resources>
