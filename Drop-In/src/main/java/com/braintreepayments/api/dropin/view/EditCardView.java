@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.cardform.OnCardFormFieldFocusedListener;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
@@ -62,7 +63,7 @@ public class EditCardView extends RelativeLayout implements OnCardFormFieldFocus
         });
     }
 
-    public void setup(Activity activity) {
+    public void setup(Activity activity, Configuration configuration) {
         mCardForm.cardRequired(true)
                 .expirationRequired(true)
                 .cvvRequired(true)

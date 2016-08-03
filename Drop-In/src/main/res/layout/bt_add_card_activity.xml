@@ -5,7 +5,7 @@
     android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
-        android:id="@+id/toobar"
+        android:id="@+id/bt_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"/>
@@ -19,25 +19,32 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.braintreepayments.api.dropin.view.AddCardView
-                android:id="@+id/add_card_view"
-                android:layout_width="match_parent"
-                android:layout_margin="16dp"
+            <ProgressBar
+                android:id="@+id/bt_progress_bar"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 
-            <com.braintreepayments.api.dropin.view.EditCardView
-                android:id="@+id/edit_card_view"
+            <com.braintreepayments.api.dropin.view.AddCardView
+                android:id="@+id/bt_add_card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:visibility="gone" />
+                android:visibility="gone"/>
+
+            <com.braintreepayments.api.dropin.view.EditCardView
+                android:id="@+id/bt_edit_card_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:visibility="gone"/>
 
             <com.braintreepayments.api.dropin.view.EnrollmentCardView
-                android:id="@+id/enrollment_card_view"
+                android:id="@+id/bt_enrollment_card_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:visibility="gone" />
+                android:visibility="gone"/>
 
         </LinearLayout>
 

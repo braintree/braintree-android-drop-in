@@ -8,11 +8,11 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.OnCardFormValidListener;
 import com.braintreepayments.cardform.utils.CardType;
@@ -66,13 +66,15 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         mAnimatedButtonView.setNextButtonOnClickListener(this);
     }
 
-    public void setup(Activity activity) {
+    public void setup(Activity activity, Configuration configuration) {
         mCardForm.cardRequired(true)
                 .setup(activity);
 
-        activity.getWindow().clearFlags(WindowManager.LayoutParams.FLAG_SECURE);
-
         ((CardEditText) findViewById(R.id.bt_card_form_card_number)).setDisplayCardTypeIcon(false);
+
+        if (!configuration.getUnionPay().isEnabled()) {
+            mAnimatedButtonView.setVisibility(GONE);
+        }
     }
 
     @Override
@@ -99,7 +101,7 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
     protected void onRestoreInstanceState(Parcelable state) {
         if (state instanceof Bundle) {
             Bundle bundle = (Bundle)state;
-            setVisibility(bundle.getBoolean(EXTRA_VISIBLE)? VISIBLE : GONE);
+            setVisibility(bundle.getBoolean(EXTRA_VISIBLE) ? VISIBLE : GONE);
             super.onRestoreInstanceState(bundle.getParcelable(EXTRA_SUPER_STATE));
         } else {
             super.onRestoreInstanceState(state);
@@ -134,9 +136,11 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
 
     @Override
     public void onCardFormValid(boolean valid) {
-        mAnimatedButtonView.showLoadingAnimation();
-        if (mListener != null) {
-            mListener.onPaymentUpdated(this);
+        if (valid) {
+            mAnimatedButtonView.showLoadingAnimation();
+            if (mListener != null) {
+                mListener.onPaymentUpdated(this);
+            }
         }
     }
 }

@@ -10,8 +10,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
-import android.view.WindowManager.LayoutParams;
+import android.widget.ProgressBar;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
@@ -20,9 +19,11 @@ import com.braintreepayments.api.dropin.view.EditCardView;
 import com.braintreepayments.api.dropin.view.EnrollmentCardView;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
+import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.UnionPayListener;
 import com.braintreepayments.api.models.CardBuilder;
+import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.UnionPayCapabilities;
 import com.braintreepayments.api.models.UnionPayCardBuilder;
@@ -30,10 +31,10 @@ import com.braintreepayments.api.models.UnionPayCardBuilder;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import io.card.payment.CardIOActivity;
-import io.card.payment.CreditCard;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 
-public class AddCardActivity extends AppCompatActivity implements AddPaymentUpdateListener,
+public class AddCardActivity extends AppCompatActivity implements ConfigurationListener, AddPaymentUpdateListener,
         PaymentMethodNonceCreatedListener, BraintreeErrorListener, UnionPayListener {
 
     private static final String EXTRA_STATE = "com.braintreepayments.api.EXTRA_STATE";
@@ -41,6 +42,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     private static final String EXTRA_CAPABILITIES = "com.braintreepayments.api.EXTRA_CAPABILITIES";
 
     private UnionPayCapabilities mCapabilities;
+    private String mCardNumber;
     private String mEnrollmentId;
 
     @Retention(RetentionPolicy.SOURCE)
@@ -57,6 +59,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     public static final int SUBMIT = 4;
 
     private Toolbar mToolbar;
+    private ProgressBar mLoadingView;
     private AddCardView mAddCardView;
     private EditCardView mEditCardView;
     private EnrollmentCardView mEnrollmentCardView;
@@ -70,16 +73,16 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_add_card_activity);
-        mToolbar = (Toolbar) findViewById(R.id.toobar);
-        mAddCardView = (AddCardView)findViewById(R.id.add_card_view);
-        mEditCardView = (EditCardView)findViewById(R.id.edit_card_view);
-        mEnrollmentCardView = (EnrollmentCardView)findViewById(R.id.enrollment_card_view);
+
+        mToolbar = (Toolbar) findViewById(R.id.bt_toolbar);
+        mLoadingView = (ProgressBar) findViewById(R.id.bt_progress_bar);
+        mAddCardView = (AddCardView)findViewById(R.id.bt_add_card_view);
+        mEditCardView = (EditCardView)findViewById(R.id.bt_edit_card_view);
+        mEnrollmentCardView = (EnrollmentCardView)findViewById(R.id.bt_enrollment_card_view);
 
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mAddCardView.setup(this);
         mAddCardView.setAddPaymentUpdatedListener(this);
-        mEditCardView.setup(this);
         mEditCardView.setAddPaymentUpdatedListener(this);
         mEnrollmentCardView.setAddPaymentUpdatedListener(this);
 
@@ -100,6 +103,15 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
             mCapabilities = savedInstanceState.getParcelable(EXTRA_CAPABILITIES);
         }
         enterState(mState);
+    }
+
+    @Override
+    public void onConfigurationFetched(Configuration configuration) {
+        mAddCardView.setup(this, configuration);
+        mEditCardView.setup(this, configuration);
+
+        mLoadingView.setVisibility(GONE);
+        mAddCardView.setVisibility(VISIBLE);
     }
 
     @Override
@@ -124,13 +136,13 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
     private void leaveState(int state) {
         switch (state) {
             case CARD_ENTRY:
-                mAddCardView.setVisibility(View.GONE);
+                mAddCardView.setVisibility(GONE);
                 break;
             case DETAILS_ENTRY:
-                mEditCardView.setVisibility(View.GONE);
+                mEditCardView.setVisibility(GONE);
                 break;
             case ENROLLMENT_ENTRY:
-                mEnrollmentCardView.setVisibility(View.GONE);
+                mEnrollmentCardView.setVisibility(GONE);
                 break;
         }
     }
@@ -139,17 +151,17 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
         switch(state) {
             case CARD_ENTRY:
                 getSupportActionBar().setTitle("Enter Card Details");
-                mAddCardView.setVisibility(View.VISIBLE);
+                mAddCardView.setVisibility(VISIBLE);
                 break;
             case DETAILS_ENTRY:
                 getSupportActionBar().setTitle("Card Details");
                 mEditCardView.setCardNumber(mAddCardView.getNumber());
                 mEditCardView.useUnionPay(this, isCardUnionPay());
-                mEditCardView.setVisibility(View.VISIBLE);
+                mEditCardView.setVisibility(VISIBLE);
                 break;
             case ENROLLMENT_ENTRY:
                 getSupportActionBar().setTitle("Confirm Enrollment");
-                mEnrollmentCardView.setVisibility(View.VISIBLE);
+                mEnrollmentCardView.setVisibility(VISIBLE);
                 break;
             case SUBMIT:
                 createCard();
@@ -176,7 +188,8 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
         if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getNumber())) {
             if (!unionPayEnabled) {
                 mEditCardView.useUnionPay(this, false);
-            } else if (unionPayEnabled && mCapabilities == null) {
+                nextState = DETAILS_ENTRY;
+            } else if (mCapabilities == null || !mCardNumber.equals(mAddCardView.getNumber())) {
                 UnionPay.fetchCapabilities(mBraintreeFragment, mAddCardView.getNumber());
             } else {
                 nextState = DETAILS_ENTRY;
@@ -239,6 +252,7 @@ public class AddCardActivity extends AppCompatActivity implements AddPaymentUpda
 
     @Override
     public void onCapabilitiesFetched(UnionPayCapabilities capabilities) {
+        mCardNumber = mAddCardView.getNumber();
         mCapabilities = capabilities;
         onPaymentUpdated(mAddCardView);
     }
