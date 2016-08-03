@@ -41,7 +41,7 @@ public class PaymentRequestUnitTest {
                 .disablePayPal()
                 .disableVenmo()
                 .actionBarTitle("title")
-                .actionBarLogo(R.drawable.bt_amex)
+                .actionBarLogo(R.drawable.bt_ic_amex)
                 .primaryDescription("primary description")
                 .secondaryDescription("secondary description")
                 .submitButtonText("submit")
@@ -65,7 +65,7 @@ public class PaymentRequestUnitTest {
         assertFalse(paymentRequest.isPayPalEnabled());
         assertFalse(paymentRequest.isVenmoEnabled());
         assertEquals("title", paymentRequest.getActionBarTitle());
-        assertEquals(R.drawable.bt_amex, paymentRequest.getActionBarLogo());
+        assertEquals(R.drawable.bt_ic_amex, paymentRequest.getActionBarLogo());
         assertEquals("primary description", paymentRequest.getPrimaryDescription());
         assertEquals("secondary description", paymentRequest.getSecondaryDescription());
         assertEquals("submit", paymentRequest.getSubmitButtonText());
@@ -119,7 +119,7 @@ public class PaymentRequestUnitTest {
                 .disablePayPal()
                 .disableVenmo()
                 .actionBarTitle("title")
-                .actionBarLogo(R.drawable.bt_amex)
+                .actionBarLogo(R.drawable.bt_ic_amex)
                 .primaryDescription("primary description")
                 .secondaryDescription("secondary description")
                 .defaultFirst(true)
@@ -144,7 +144,7 @@ public class PaymentRequestUnitTest {
         assertFalse(parceledPaymentRequest.isPayPalEnabled());
         assertFalse(parceledPaymentRequest.isVenmoEnabled());
         assertEquals("title", parceledPaymentRequest.getActionBarTitle());
-        assertEquals(R.drawable.bt_amex, parceledPaymentRequest.getActionBarLogo());
+        assertEquals(R.drawable.bt_ic_amex, parceledPaymentRequest.getActionBarLogo());
         assertEquals("primary description", parceledPaymentRequest.getPrimaryDescription());
         assertEquals("secondary description", parceledPaymentRequest.getSecondaryDescription());
         assertTrue(parceledPaymentRequest.isDefaultFirst());

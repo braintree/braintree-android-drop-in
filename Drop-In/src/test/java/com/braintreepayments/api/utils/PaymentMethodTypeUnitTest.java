@@ -34,13 +34,13 @@ public class PaymentMethodTypeUnitTest {
 
     @Test
     public void getDrawable_returnsCorrectDrawables() {
-        assertEquals(R.drawable.bt_visa, PaymentMethodType.VISA.getDrawable());
-        assertEquals(R.drawable.bt_mastercard, PaymentMethodType.MASTERCARD.getDrawable());
-        assertEquals(R.drawable.bt_discover, PaymentMethodType.DISCOVER.getDrawable());
-        assertEquals(R.drawable.bt_amex, PaymentMethodType.AMEX.getDrawable());
-        assertEquals(R.drawable.bt_jcb, PaymentMethodType.JCB.getDrawable());
-        assertEquals(R.drawable.bt_diners, PaymentMethodType.DINERS.getDrawable());
-        assertEquals(R.drawable.bt_maestro, PaymentMethodType.MAESTRO.getDrawable());
+        assertEquals(R.drawable.bt_ic_visa, PaymentMethodType.VISA.getDrawable());
+        assertEquals(R.drawable.bt_ic_mastercard, PaymentMethodType.MASTERCARD.getDrawable());
+        assertEquals(R.drawable.bt_ic_discover, PaymentMethodType.DISCOVER.getDrawable());
+        assertEquals(R.drawable.bt_ic_amex, PaymentMethodType.AMEX.getDrawable());
+        assertEquals(R.drawable.bt_ic_jcb, PaymentMethodType.JCB.getDrawable());
+        assertEquals(R.drawable.bt_ic_diners_club, PaymentMethodType.DINERS.getDrawable());
+        assertEquals(R.drawable.bt_ic_maestro, PaymentMethodType.MAESTRO.getDrawable());
         assertEquals(R.drawable.bt_paypal, PaymentMethodType.PAYPAL.getDrawable());
         assertEquals(R.drawable.bt_android_pay, PaymentMethodType.ANDROID_PAY.getDrawable());
         assertEquals(0, PaymentMethodType.UNKNOWN.getDrawable());
