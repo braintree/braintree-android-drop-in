@@ -43,7 +43,7 @@ public class PaymentMethodTypeUnitTest {
         assertEquals(R.drawable.bt_ic_maestro, PaymentMethodType.MAESTRO.getDrawable());
         assertEquals(R.drawable.bt_paypal, PaymentMethodType.PAYPAL.getDrawable());
         assertEquals(R.drawable.bt_android_pay, PaymentMethodType.ANDROID_PAY.getDrawable());
-        assertEquals(0, PaymentMethodType.UNKNOWN.getDrawable());
+        assertEquals(R.drawable.bt_ic_payment_method_card, PaymentMethodType.UNKNOWN.getDrawable());
         assertEquals(R.drawable.bt_venmo, PaymentMethodType.PAY_WITH_VENMO.getDrawable());
     }
 
@@ -73,7 +73,7 @@ public class PaymentMethodTypeUnitTest {
         assertEquals("Maestro", PaymentMethodType.MAESTRO.getCanonicalName());
         assertEquals("PayPal", PaymentMethodType.PAYPAL.getCanonicalName());
         assertEquals("Android Pay", PaymentMethodType.ANDROID_PAY.getCanonicalName());
-        assertEquals("unknown", PaymentMethodType.UNKNOWN.getCanonicalName());
+        assertEquals("Unknown", PaymentMethodType.UNKNOWN.getCanonicalName());
         assertEquals("Venmo", PaymentMethodType.PAY_WITH_VENMO.getCanonicalName());
     }
 
