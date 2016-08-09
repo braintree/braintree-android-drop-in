@@ -41,7 +41,6 @@ android.buildTypes.debug { type ->
 dependencies {
     compile 'com.braintreepayments.api:braintree:2.3.7-SNAPSHOT'
     compile 'com.braintreepayments:card-form:3.0.0-SNAPSHOT'
-    compile 'io.card:android-sdk:5.4.0'
     compile 'com.google.android.gms:play-services-wallet:[9.0.0,10.0.0)'
 
     androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
@@ -138,10 +137,6 @@ uploadArchives {
             pom.whenConfigured { MavenPom pom ->
                 pom.dependencies.each {
                     if (it.artifactId == 'play-services-wallet') {
-                        it.optional = true
-                    }
-
-                    if (it.artifactId == 'android-sdk') {
                         it.optional = true
                     }
                 }
