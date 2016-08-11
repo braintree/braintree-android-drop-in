@@ -1,24 +1,32 @@
 package com.braintreepayments.api.dropin.view;
 
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.cardform.utils.ViewUtils;
 
-public class EnrollmentCardView extends RelativeLayout {
+public class EnrollmentCardView extends LinearLayout implements OnClickListener {
 
     private static final String EXTRA_SUPER_STATE = "com.braintreepayments.api.dropin.view.EXTRA_SUPER_STATE";
     private static final String EXTRA_VISIBLE = "com.braintreepayments.api.dropin.view.EXTRA_VISIBLE";
 
     private EditText mSmsCode;
+    private TextView mSmsSentTextView;
     private AnimatedButtonView mAnimatedButtonView;
     private Button mSmsHelpButton;
 
@@ -26,46 +34,72 @@ public class EnrollmentCardView extends RelativeLayout {
 
     public EnrollmentCardView(Context context) {
         super(context);
-        init(context);
+        init();
     }
 
     public EnrollmentCardView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        init();
     }
 
     public EnrollmentCardView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        init();
     }
 
-    private void init(Context context) {
-        if(isInEditMode()) {
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    public EnrollmentCardView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init();
+    }
+
+    private void init() {
+        if (isInEditMode()) {
             return;
         }
-        LayoutInflater.from(context).inflate(R.layout.bt_enrollment_card, this, true);
-        mSmsCode = (EditText)findViewById(R.id.sms_code);
-        mSmsHelpButton = (Button)findViewById(R.id.sms_help_button);
-        mAnimatedButtonView = (AnimatedButtonView)findViewById(R.id.animated_button_view);
 
-        mAnimatedButtonView.setNextButtonOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onPaymentUpdated(EnrollmentCardView.this);
-                }
-            }
-        });
-        mAnimatedButtonView.setNextButtonText(getContext().getString(R.string.bt_confirm));
+        setOrientation(VERTICAL);
 
-        mSmsHelpButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onBackRequested(EnrollmentCardView.this);
-                }
-            }
-        });
+        LayoutInflater.from(getContext()).inflate(R.layout.bt_enrollment_card, this, true);
+
+        mSmsCode = (EditText) findViewById(R.id.bt_sms_code);
+        mSmsSentTextView = (TextView) findViewById(R.id.bt_sms_sent_text);
+        mSmsHelpButton = (Button) findViewById(R.id.bt_sms_help_button);
+        mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.bt_animated_button_view);
+
+        mAnimatedButtonView.setClickListener(this);
+        mSmsHelpButton.setOnClickListener(this);
+    }
+
+    public void setup(Activity activity) {
+        boolean isDarkBackground = ViewUtils.isDarkBackground(activity);
+        ((ImageView) findViewById(R.id.bt_sms_code_icon))
+                .setImageResource(isDarkBackground ? R.drawable.bt_ic_sms_code_dark : R.drawable.bt_ic_sms_code);
+    }
+
+    public void setAddPaymentUpdatedListener(AddPaymentUpdateListener listener) {
+        mListener = listener;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        mSmsSentTextView.setText(getContext().getString(R.string.bt_sms_code_sent_to, phoneNumber));
+    }
+
+    public String getSmsCode() {
+        return mSmsCode.getText().toString();
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (mListener == null) {
+            return;
+        }
+
+        if (view == mAnimatedButtonView) {
+            mListener.onPaymentUpdated(this);
+        } else if (view == mSmsHelpButton) {
+            mListener.onBackRequested(this);
+        }
     }
 
     @Override
@@ -92,13 +126,5 @@ public class EnrollmentCardView extends RelativeLayout {
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
         mAnimatedButtonView.setVisibility(visibility);
-    }
-
-    public void setAddPaymentUpdatedListener(AddPaymentUpdateListener listener) {
-        mListener = listener;
-    }
-
-    public String getSmsCode() {
-        return mSmsCode.getText().toString();
     }
 }

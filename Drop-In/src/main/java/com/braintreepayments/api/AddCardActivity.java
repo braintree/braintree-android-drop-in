@@ -4,8 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
+import android.support.annotation.VisibleForTesting;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +20,15 @@ import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.dropin.view.AddCardView;
 import com.braintreepayments.api.dropin.view.EditCardView;
 import com.braintreepayments.api.dropin.view.EnrollmentCardView;
+import com.braintreepayments.api.exceptions.AuthenticationException;
+import com.braintreepayments.api.exceptions.AuthorizationException;
+import com.braintreepayments.api.exceptions.ConfigurationException;
+import com.braintreepayments.api.exceptions.DownForMaintenanceException;
+import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.braintreepayments.api.exceptions.ServerException;
+import com.braintreepayments.api.exceptions.UnexpectedException;
+import com.braintreepayments.api.exceptions.UpgradeRequiredException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
@@ -33,6 +44,10 @@ import java.lang.annotation.RetentionPolicy;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
+import static com.braintreepayments.api.BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR;
+import static com.braintreepayments.api.BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR;
+import static com.braintreepayments.api.BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE;
+import static com.braintreepayments.api.BraintreePaymentActivity.EXTRA_ERROR_MESSAGE;
 
 public class AddCardActivity extends AppCompatActivity implements ConfigurationListener, AddPaymentUpdateListener,
         PaymentMethodNonceCreatedListener, BraintreeErrorListener, UnionPayListener {
@@ -47,18 +62,20 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
+            LOADING,
             CARD_ENTRY,
             DETAILS_ENTRY,
             ENROLLMENT_ENTRY,
             SUBMIT
     })
     private @interface State {}
-    public static final int CARD_ENTRY = 1;
-    public static final int DETAILS_ENTRY = 2;
-    public static final int ENROLLMENT_ENTRY = 3;
-    public static final int SUBMIT = 4;
+    public static final int LOADING = 1;
+    public static final int CARD_ENTRY = 2;
+    public static final int DETAILS_ENTRY = 3;
+    public static final int ENROLLMENT_ENTRY = 4;
+    public static final int SUBMIT = 5;
 
-    private Toolbar mToolbar;
+    private ActionBar mActionBar;
     private ProgressBar mLoadingView;
     private AddCardView mAddCardView;
     private EditCardView mEditCardView;
@@ -74,35 +91,50 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_add_card_activity);
 
-        mToolbar = (Toolbar) findViewById(R.id.bt_toolbar);
         mLoadingView = (ProgressBar) findViewById(R.id.bt_progress_bar);
-        mAddCardView = (AddCardView)findViewById(R.id.bt_add_card_view);
-        mEditCardView = (EditCardView)findViewById(R.id.bt_edit_card_view);
-        mEnrollmentCardView = (EnrollmentCardView)findViewById(R.id.bt_enrollment_card_view);
+        mAddCardView = (AddCardView) findViewById(R.id.bt_add_card_view);
+        mEditCardView = (EditCardView) findViewById(R.id.bt_edit_card_view);
+        mEnrollmentCardView = (EnrollmentCardView) findViewById(R.id.bt_enrollment_card_view);
+        mEnrollmentCardView.setup(this);
 
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setSupportActionBar((Toolbar) findViewById(R.id.bt_toolbar));
+        mActionBar = getSupportActionBar();
+        mActionBar.setDisplayHomeAsUpEnabled(true);
         mAddCardView.setAddPaymentUpdatedListener(this);
         mEditCardView.setAddPaymentUpdatedListener(this);
         mEnrollmentCardView.setAddPaymentUpdatedListener(this);
 
-        PaymentRequest paymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
-
-        try {
-            mBraintreeFragment = BraintreeFragment.newInstance(this, paymentRequest.getAuthorization());
-        } catch (InvalidArgumentException e) {
-            // TODO alert the merchant their authorization may be incorrect.
-            throw new RuntimeException(e);
-        }
-        
         if (savedInstanceState != null) {
             //TODO is there a better way to respect this State interface?
             @State int state = savedInstanceState.getInt(EXTRA_STATE);
             mState = state;
             mEnrollmentId = savedInstanceState.getString(EXTRA_ENROLLMENT_ID);
             mCapabilities = savedInstanceState.getParcelable(EXTRA_CAPABILITIES);
+        } else {
+            mState = CARD_ENTRY;
         }
-        enterState(mState);
+
+        enterState(LOADING);
+
+        try {
+            mBraintreeFragment = getBraintreeFragment();
+        } catch (InvalidArgumentException e) {
+            Intent intent = new Intent()
+                    .putExtra(EXTRA_ERROR_MESSAGE, e.getMessage());
+            setResult(BRAINTREE_RESULT_DEVELOPER_ERROR, intent);
+            finish();
+        }
+    }
+
+    @VisibleForTesting
+    protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
+        PaymentRequest paymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
+        if (TextUtils.isEmpty(paymentRequest.getAuthorization())) {
+            throw new InvalidArgumentException("A client token or client key must be specified " +
+                    "in the " + PaymentRequest.class.getSimpleName());
+        }
+
+        return BraintreeFragment.newInstance(this, paymentRequest.getAuthorization());
     }
 
     @Override
@@ -110,8 +142,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         mAddCardView.setup(this, configuration);
         mEditCardView.setup(this, configuration);
 
-        mLoadingView.setVisibility(GONE);
-        mAddCardView.setVisibility(VISIBLE);
+        setState(LOADING, mState);
     }
 
     @Override
@@ -123,18 +154,26 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     }
 
     @Override
-    public void onPaymentUpdated(final View v) {
-        int lastState = mState;
-        int nextState = determineNextState(v);
-        if (nextState == lastState) {
+    public void onPaymentUpdated(View v) {
+        setState(mState, determineNextState(v));
+    }
+
+    private void setState(int currentState, int nextState) {
+        if (currentState == nextState) {
             return;
         }
-        leaveState(lastState);
+
+        leaveState(currentState);
         enterState(nextState);
+
+        mState = nextState;
     }
 
     private void leaveState(int state) {
         switch (state) {
+            case LOADING:
+                mLoadingView.setVisibility(GONE);
+                break;
             case CARD_ENTRY:
                 mAddCardView.setVisibility(GONE);
                 break;
@@ -149,35 +188,39 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
     private void enterState(int state) {
         switch(state) {
+            case LOADING:
+                mActionBar.setTitle(R.string.bt_card_details);
+                mLoadingView.setVisibility(VISIBLE);
+                break;
             case CARD_ENTRY:
-                getSupportActionBar().setTitle("Enter Card Details");
+                mActionBar.setTitle(R.string.bt_card_details);
                 mAddCardView.setVisibility(VISIBLE);
                 break;
             case DETAILS_ENTRY:
-                getSupportActionBar().setTitle("Card Details");
-                mEditCardView.setCardNumber(mAddCardView.getNumber());
+                mActionBar.setTitle(R.string.bt_card_details);
+                mEditCardView.setCardNumber(mAddCardView.getCardForm().getCardNumber());
                 mEditCardView.useUnionPay(this, isCardUnionPay());
                 mEditCardView.setVisibility(VISIBLE);
                 break;
             case ENROLLMENT_ENTRY:
-                getSupportActionBar().setTitle("Confirm Enrollment");
+                mActionBar.setTitle(R.string.bt_confirm_enrollment);
+                mEnrollmentCardView.setPhoneNumber(
+                        PhoneNumberUtils.formatNumber(mEditCardView.getCardForm().getCountryCode() +
+                                mEditCardView.getCardForm().getMobileNumber()));
                 mEnrollmentCardView.setVisibility(VISIBLE);
                 break;
             case SUBMIT:
                 createCard();
                 break;
         }
-        mState = state;
     }
 
     @Override
     public void onBackRequested(View v) {
         if (v.getId() == mEditCardView.getId()) {
-            leaveState(DETAILS_ENTRY);
-            enterState(CARD_ENTRY);
+            setState(DETAILS_ENTRY, CARD_ENTRY);
         } else if (v.getId() == mEnrollmentCardView.getId()) {
-            leaveState(ENROLLMENT_ENTRY);
-            enterState(DETAILS_ENTRY);
+            setState(ENROLLMENT_ENTRY, DETAILS_ENTRY);
         }
     }
 
@@ -185,12 +228,12 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     private int determineNextState(View v) {
         int nextState = mState;
         boolean unionPayEnabled = mBraintreeFragment.getConfiguration().getUnionPay().isEnabled();
-        if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getNumber())) {
+        if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getCardForm().getCardNumber())) {
             if (!unionPayEnabled) {
                 mEditCardView.useUnionPay(this, false);
                 nextState = DETAILS_ENTRY;
-            } else if (mCapabilities == null || !mCardNumber.equals(mAddCardView.getNumber())) {
-                UnionPay.fetchCapabilities(mBraintreeFragment, mAddCardView.getNumber());
+            } else if (mCapabilities == null || !mCardNumber.equals(mAddCardView.getCardForm().getCardNumber())) {
+                UnionPay.fetchCapabilities(mBraintreeFragment, mAddCardView.getCardForm().getCardNumber());
             } else {
                 nextState = DETAILS_ENTRY;
             }
@@ -198,11 +241,14 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             if (isCardUnionPay()) {
                 if (TextUtils.isEmpty(mEnrollmentId)) {
                     UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
-                            .cardNumber(mAddCardView.getNumber())
-                            .mobileCountryCode(mEditCardView.getMobileCountryCode())
-                            .mobilePhoneNumber(mEditCardView.getPhoneNumber())
-                            .expirationDate(mEditCardView.getExpirationDate())
-                            .cvv(mEditCardView.getCvv());
+                            .cardNumber(mEditCardView.getCardForm().getCardNumber())
+                            .expirationMonth(mEditCardView.getCardForm().getExpirationMonth())
+                            .expirationYear(mEditCardView.getCardForm().getExpirationYear())
+                            .cvv(mEditCardView.getCardForm().getCvv())
+                            .postalCode(mEditCardView.getCardForm().getPostalCode())
+                            .mobileCountryCode(mEditCardView.getCardForm().getCountryCode())
+                            .mobilePhoneNumber(mEditCardView.getCardForm().getMobileNumber());
+
                     UnionPay.enroll(mBraintreeFragment, unionPayCardBuilder);
                 } else {
                     nextState = ENROLLMENT_ENTRY;
@@ -218,21 +264,29 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     }
 
     private void createCard() {
+        setState(mState, LOADING);
+
         if (isCardUnionPay()) {
             UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
-                    .cardNumber(mAddCardView.getNumber())
-                    .expirationDate(mEditCardView.getExpirationDate())
-                    .cvv(mEditCardView.getCvv())
-                    .mobileCountryCode(mEditCardView.getMobileCountryCode())
-                    .mobilePhoneNumber(mEditCardView.getPhoneNumber())
+                    .cardNumber(mEditCardView.getCardForm().getCardNumber())
+                    .expirationMonth(mEditCardView.getCardForm().getExpirationMonth())
+                    .expirationYear(mEditCardView.getCardForm().getExpirationYear())
+                    .cvv(mEditCardView.getCardForm().getCvv())
+                    .postalCode(mEditCardView.getCardForm().getPostalCode())
+                    .mobileCountryCode(mEditCardView.getCardForm().getCountryCode())
+                    .mobilePhoneNumber(mEditCardView.getCardForm().getMobileNumber())
                     .enrollmentId(mEnrollmentId)
                     .smsCode(mEnrollmentCardView.getSmsCode());
+
             UnionPay.tokenize(mBraintreeFragment, unionPayCardBuilder);
         } else {
             CardBuilder cardBuilder = new CardBuilder()
-                    .cardNumber(mAddCardView.getNumber())
-                    .expirationDate(mEditCardView.getExpirationDate())
-                    .cvv(mEditCardView.getCvv());
+                    .cardNumber(mEditCardView.getCardForm().getCardNumber())
+                    .expirationMonth(mEditCardView.getCardForm().getExpirationMonth())
+                    .expirationYear(mEditCardView.getCardForm().getExpirationYear())
+                    .cvv(mEditCardView.getCardForm().getCvv())
+                    .postalCode(mEditCardView.getCardForm().getPostalCode());
+
             Card.tokenize(mBraintreeFragment, cardBuilder);
         }
     }
@@ -252,7 +306,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
     @Override
     public void onCapabilitiesFetched(UnionPayCapabilities capabilities) {
-        mCardNumber = mAddCardView.getNumber();
+        mCardNumber = mAddCardView.getCardForm().getCardNumber();
         mCapabilities = capabilities;
         onPaymentUpdated(mAddCardView);
     }
@@ -265,8 +319,27 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     }
 
     @Override
-    public void onError(Exception e) {
-        throw new RuntimeException(e);
+    public void onError(Exception error) {
+        if (error instanceof ErrorWithResponse) {
+            setState(mState, DETAILS_ENTRY);
+            mEditCardView.setErrors((ErrorWithResponse) error);
+        } else {
+            if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
+                    error instanceof UpgradeRequiredException) {
+                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
+                setResult(BRAINTREE_RESULT_DEVELOPER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+            } else if (error instanceof ConfigurationException) {
+                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
+                setResult(BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+            } else if (error instanceof ServerException || error instanceof UnexpectedException) {
+                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
+                setResult(BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+            } else if (error instanceof DownForMaintenanceException) {
+                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
+                setResult(BRAINTREE_RESULT_SERVER_UNAVAILABLE, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+            }
+            finish();
+        }
     }
 
     @Override
@@ -286,6 +359,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             mAddCardView.getCardForm().scanCard(this);
             return true;
         } else if (item.getItemId() == android.R.id.home) {
+            setResult(Activity.RESULT_CANCELED);
             finish();
             return true;
         }

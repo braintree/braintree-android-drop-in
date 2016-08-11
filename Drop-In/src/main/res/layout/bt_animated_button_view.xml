@@ -1,25 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ViewAnimator
-        android:id="@+id/view_animator"
+        android:id="@+id/bt_view_animator"
         android:layout_height="wrap_content"
         android:layout_width="match_parent">
 
         <Button
-            android:id="@+id/next_button"
+            android:id="@+id/bt_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#199ddc"
-            android:textColor="#fff"/>
+            android:background="@color/bt_button_blue"
+            android:textColor="@color/bt_white"/>
 
         <ProgressBar
-            android:id="@+id/progress_bar"
+            android:id="@+id/bt_animated_button_loading_indicator"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"/>
 
     </ViewAnimator>
 

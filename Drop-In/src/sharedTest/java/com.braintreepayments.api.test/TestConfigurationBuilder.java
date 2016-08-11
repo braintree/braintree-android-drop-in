@@ -1,4 +1,4 @@
-package com.braintreepayments.testutils;
+package com.braintreepayments.api.test;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -100,6 +100,13 @@ public class TestConfigurationBuilder extends JSONBuilder {
         try {
             put(new JSONObject(venmoConfigurationBuilder.build()));
         } catch(JSONException ignored) {}
+        return this;
+    }
+
+    public TestConfigurationBuilder unionPay(TestUnionPayConfigurationBuilder unionPayConfigurationBuilder) {
+        try {
+            put(new JSONObject(unionPayConfigurationBuilder.build()));
+        } catch (JSONException ignored) {}
         return this;
     }
 
@@ -295,6 +302,18 @@ public class TestConfigurationBuilder extends JSONBuilder {
 
         public TestKountConfigurationBuilder kountMerchantId(String kountMerchantid) {
             put(kountMerchantid);
+            return this;
+        }
+    }
+
+    public static class TestUnionPayConfigurationBuilder extends JSONBuilder {
+
+        public TestUnionPayConfigurationBuilder() {
+            super();
+        }
+
+        public TestUnionPayConfigurationBuilder enabled(boolean enabled) {
+            put(enabled);
             return this;
         }
     }

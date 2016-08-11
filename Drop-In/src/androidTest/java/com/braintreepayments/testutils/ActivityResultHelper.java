@@ -1,4 +1,4 @@
-package com.braintreepayments.api.test;
+package com.braintreepayments.testutils;
 
 import android.app.Activity;
 
@@ -6,13 +6,12 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import static junit.framework.Assert.assertTrue;
 
 public class ActivityResultHelper {
 
     public static Map<String, Object> getActivityResult(Activity activity) {
-        assertThat("Activity did not finish", activity.isFinishing(), is(true));
+        assertTrue(activity.isFinishing());
         Map<String, Object> resultMap = new HashMap<String, Object>();
 
         try {
@@ -32,5 +31,4 @@ public class ActivityResultHelper {
             throw new RuntimeException(e);
         }
     }
-
 }

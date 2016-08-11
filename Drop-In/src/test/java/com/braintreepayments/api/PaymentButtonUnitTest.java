@@ -34,8 +34,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import static com.braintreepayments.api.test.FixturesHelper.stringFromFixture;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static org.mockito.Matchers.any;

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bt="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bt="http://schemas.android.com/apk/res-auto">
 
     <com.braintreepayments.cardform.view.CardForm
         android:id="@+id/bt_card_form"
@@ -10,11 +8,10 @@
         android:layout_height="wrap_content"/>
 
     <com.braintreepayments.api.dropin.view.AnimatedButtonView
-        android:id="@+id/animated_button_view"
+        android:id="@+id/bt_animated_button_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/bt_card_form"
         android:layout_marginTop="40dp"
         bt:bt_buttonText="@string/bt_add_card"/>
 
-</RelativeLayout>
+</merge>

@@ -30,6 +30,16 @@ android {
         textReport true
         textOutput 'stdout'
     }
+
+    sourceSets {
+        String sharedTestDir = 'src/sharedTest/java'
+        test {
+            java.srcDir sharedTestDir
+        }
+        androidTest {
+            java.srcDir sharedTestDir
+        }
+    }
 }
 
 android.buildTypes.debug { type ->
@@ -56,6 +66,7 @@ dependencies {
     testCompile 'org.powermock:powermock-classloading-xstream:1.6.4'
     testCompile 'org.robolectric:robolectric:3.0'
     testCompile 'org.skyscreamer:jsonassert:1.3.0'
+    testCompile 'com.squareup.assertj:assertj-android:1.1.1'
 }
 
 /* maven deploy + signing */

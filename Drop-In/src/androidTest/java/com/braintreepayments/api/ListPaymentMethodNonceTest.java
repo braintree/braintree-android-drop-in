@@ -27,7 +27,7 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static com.braintreepayments.api.test.ActivityResultHelper.getActivityResult;
+import static com.braintreepayments.testutils.ActivityResultHelper.getActivityResult;
 import static com.braintreepayments.api.test.WaitForActivityHelper.waitForActivityToFinish;
 import static com.braintreepayments.api.utils.Assertions.assertSelectedPaymentMethodIs;
 import static com.braintreepayments.api.utils.PaymentFormHelpers.onAddPaymentFormHeader;
@@ -82,7 +82,7 @@ public class ListPaymentMethodNonceTest extends BraintreePaymentActivityTestRunn
         Bitmap actual = ((BitmapDrawable) iv.getDrawable()).getBitmap();
 
         Bitmap expected = ((BitmapDrawable) activity.getResources().getDrawable(
-                com.braintreepayments.api.dropin.R.drawable.bt_visa))
+                com.braintreepayments.api.dropin.R.drawable.bt_ic_visa))
                 .getBitmap();
 
         assertTrue(expected.sameAs(actual));
@@ -176,7 +176,7 @@ public class ListPaymentMethodNonceTest extends BraintreePaymentActivityTestRunn
         Bitmap actual = ((BitmapDrawable) iv.getDrawable()).getBitmap();
 
         Bitmap expected = ((BitmapDrawable) activity.getResources()
-                .getDrawable(com.braintreepayments.api.dropin.R.drawable.bt_visa)).getBitmap();
+                .getDrawable(com.braintreepayments.api.dropin.R.drawable.bt_ic_visa)).getBitmap();
 
         assertTrue(expected.sameAs(actual));
     }

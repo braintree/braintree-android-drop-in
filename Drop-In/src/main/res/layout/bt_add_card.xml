@@ -16,7 +16,7 @@
         android:paddingStart="52dp"/>
 
     <com.braintreepayments.api.dropin.view.AnimatedButtonView
-        android:id="@+id/animated_button_view"
+        android:id="@+id/bt_animated_button_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"

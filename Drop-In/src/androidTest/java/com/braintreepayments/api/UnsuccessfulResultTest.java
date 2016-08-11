@@ -26,7 +26,7 @@ import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static com.braintreepayments.api.test.ActivityResultHelper.getActivityResult;
+import static com.braintreepayments.testutils.ActivityResultHelper.getActivityResult;
 import static com.braintreepayments.api.test.WaitForActivityHelper.waitForActivityToFinish;
 import static com.braintreepayments.api.utils.PaymentFormHelpers.waitForAddPaymentFormHeader;
 import static junit.framework.Assert.assertEquals;

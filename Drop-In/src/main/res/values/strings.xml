@@ -31,8 +31,8 @@
     <string name="bt_descriptor_diners">Diners</string>
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
-    <string name="bt_descriptor_pay_with_venmo" tools:ignore="MissingTranslation">Venmo</string>
-    <string name="bt_descriptor_android_pay" tools:ignore="MissingTranslation">Android Pay</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
     <string name="bt_descriptor_union_pay">UnionPay</string>
     <string name="bt_descriptor_unknown">Card or Debit Card</string>
 
@@ -40,8 +40,13 @@
     <string name="bt_add_paypal_account">Add PayPal Account</string>
     <string name="bt_add_android_pay">Add Android Pay</string>
     <string name="bt_add_venmo">Add Venmo Account</string>
-
     <string name="bt_next">Next</string>
     <string name="bt_confirm">Confirm</string>
     <string name="bt_scan_with_card_io">Scan with card.io</string>
+    <string name="bt_sms_code">SMS Code</string>
+    <string name="bt_missing_sms_code">Didn\'t get an SMS Code?</string>
+    <string name="bt_sms_code_sent_to">Enter the SMS code sent to %s</string>
+    <string name="bt_card_details">Card Details</string>
+    <string name="bt_confirm_enrollment">Confirm Enrollment</string>]
+    <string name="bt_postal_code_invalid">Postal code is invalid</string>
 </resources>

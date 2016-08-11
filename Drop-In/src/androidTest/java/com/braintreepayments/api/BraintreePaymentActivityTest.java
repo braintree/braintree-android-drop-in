@@ -8,7 +8,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
-import static com.braintreepayments.testutils.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static junit.framework.Assert.assertEquals;
 
 public class BraintreePaymentActivityTest {

@@ -21,6 +21,8 @@ import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.braintreepayments.api.test.CardNumber.AMEX;
+import static com.braintreepayments.api.test.CardNumber.VISA;
 import static com.braintreepayments.api.test.RotationHelper.rotateToLandscape;
 import static com.braintreepayments.api.test.RotationHelper.rotateToPortrait;
 import static com.braintreepayments.api.utils.Assertions.assertSelectedPaymentMethodIs;
@@ -32,8 +34,6 @@ import static com.braintreepayments.api.utils.PaymentFormHelpers.onExpirationFie
 import static com.braintreepayments.api.utils.PaymentFormHelpers.onPostalCodeField;
 import static com.braintreepayments.api.utils.PaymentFormHelpers.waitForAddPaymentFormHeader;
 import static com.braintreepayments.api.utils.PaymentFormHelpers.waitForPaymentMethodNonceList;
-import static com.braintreepayments.testutils.CardNumber.AMEX;
-import static com.braintreepayments.testutils.CardNumber.VISA;
 import static com.braintreepayments.testutils.FixturesHelper.stringFromFixture;
 import static com.braintreepayments.testutils.ui.Matchers.hasBackgroundResource;
 import static com.braintreepayments.testutils.ui.Matchers.withId;
