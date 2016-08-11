@@ -74,10 +74,7 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
                 .setup(activity);
 
         mCardForm.getCardEditText().setDisplayCardTypeIcon(false);
-
-        if (!configuration.getUnionPay().isEnabled()) {
-            mAnimatedButtonView.setVisibility(GONE);
-        }
+        mAnimatedButtonView.setVisibility(configuration.getUnionPay().isEnabled() ? VISIBLE : GONE);
     }
 
     public void setAddPaymentUpdatedListener(AddPaymentUpdateListener listener) {
@@ -96,7 +93,11 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
 
     @Override
     public void onClick(View view) {
-        callAddPaymentUpdateListener();
+        if (mCardForm.isValid()) {
+            callAddPaymentUpdateListener();
+        } else {
+            mCardForm.validate();
+        }
     }
 
     private void updateSupportedCardTypes() {
@@ -105,8 +106,12 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
 
     @Override
     public void onCardFormSubmit() {
-        mAnimatedButtonView.showLoading();
-        callAddPaymentUpdateListener();
+        if (mCardForm.isValid()) {
+            mAnimatedButtonView.showLoading();
+            callAddPaymentUpdateListener();
+        } else {
+            mCardForm.validate();
+        }
     }
 
     @Override

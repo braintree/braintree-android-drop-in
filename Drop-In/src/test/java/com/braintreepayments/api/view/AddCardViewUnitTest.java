@@ -2,6 +2,7 @@ package com.braintreepayments.api.view;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.Button;
 
@@ -19,6 +20,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.util.ActivityController;
 
 import static com.braintreepayments.api.test.CardNumber.VISA;
@@ -26,6 +28,7 @@ import static com.braintreepayments.api.test.TestConfigurationBuilder.basicConfi
 import static junit.framework.Assert.assertEquals;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -42,6 +45,7 @@ public class AddCardViewUnitTest {
         mActivityController = Robolectric.buildActivity(UnitTestActivity.class);
         mActivity = (Activity) mActivityController.setup().get();
         mView = (AddCardView) mActivity.findViewById(R.id.bt_add_card_view);
+        mView.setup(mActivity, (Configuration) basicConfig());
     }
 
     @Test
@@ -77,6 +81,7 @@ public class AddCardViewUnitTest {
 
     @Test
     public void setVisibility_toVisibleClearsButtonLoadingView() {
+        mView.getCardForm().getCardEditText().setText(VISA);
         mView.onCardFormSubmit();
         assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
 
@@ -87,17 +92,34 @@ public class AddCardViewUnitTest {
 
     @Test
     public void onClick_doesNothingIfListenerNotSet() {
+        mView.setAddPaymentUpdatedListener(null);
+        mView.getCardForm().getCardEditText().setText(VISA);
+
         mView.onClick(null);
     }
 
     @Test
-    public void onClick_callsListenerIfSet() {
+    public void onClick_showsErrorMessageIfCardFormInvalid() {
         AddPaymentUpdateListener listener = mock(AddPaymentUpdateListener.class);
         mView.setAddPaymentUpdatedListener(listener);
+        mView.getCardForm().getCardEditText().setText("4");
 
         mView.onClick(null);
 
-        verify(listener).onPaymentUpdated(mView);
+        verifyZeroInteractions(listener);
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
+                ((TextInputLayout) mView.getCardForm().getCardEditText().getParent()).getError());
+    }
+
+    @Test
+    public void onClick_callsListenerIfCardValidAndListenerSet() {
+        AddPaymentUpdateListener listener = mock(AddPaymentUpdateListener.class);
+        mView.setAddPaymentUpdatedListener(listener);
+        mView.getCardForm().getCardEditText().setText(VISA);
+
+        mView.onClick(null);
+
+        verify(listener, times(2)).onPaymentUpdated(mView);
     }
 
     @Test
@@ -139,13 +161,28 @@ public class AddCardViewUnitTest {
     }
 
     @Test
-    public void onCardFormSubmitPress_showsLoadingIndicatorAndCallsListener() {
+    public void onCardFormSubmit_showsLoadingIndicatorAndCallsListenerIfValid() {
         AddPaymentUpdateListener listener = mock(AddPaymentUpdateListener.class);
         mView.setAddPaymentUpdatedListener(listener);
+        mView.getCardForm().getCardEditText().setText(VISA);
 
         mView.onCardFormSubmit();
 
         assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
-        verify(listener).onPaymentUpdated(mView);
+        verify(listener, times(2)).onPaymentUpdated(mView);
+    }
+
+    @Test
+    public void onCardFormSubmit_showsErrorIfCardIsInvalid() {
+        AddPaymentUpdateListener listener = mock(AddPaymentUpdateListener.class);
+        mView.setAddPaymentUpdatedListener(listener);
+        mView.getCardForm().getCardEditText().setText("4");
+
+        mView.onCardFormSubmit();
+
+        verifyZeroInteractions(listener);
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
+                ((TextInputLayout) mView.getCardForm().getCardEditText().getParent()).getError());
     }
 }
