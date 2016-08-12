@@ -16,11 +16,12 @@ import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.OnCardFormValidListener;
 import com.braintreepayments.cardform.utils.CardType;
+import com.braintreepayments.cardform.view.CardEditText.OnCardTypeChangedListener;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
 public class AddCardView extends LinearLayout implements OnCardFormSubmitListener, OnCardFormValidListener,
-        OnClickListener {
+        OnClickListener, OnCardTypeChangedListener {
 
     private CardForm mCardForm;
     private SupportedCardTypesView mSupportedCardTypesView;
@@ -64,16 +65,17 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         mSupportedCardTypesView = (SupportedCardTypesView) findViewById(R.id.bt_supported_card_types);
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.bt_animated_button_view);
 
-        updateSupportedCardTypes();
-
         mAnimatedButtonView.setClickListener(this);
     }
 
     public void setup(Activity activity, Configuration configuration) {
         mCardForm.cardRequired(true)
                 .setup(activity);
-
         mCardForm.getCardEditText().setDisplayCardTypeIcon(false);
+        mCardForm.setOnCardTypeChangedListener(this);
+
+        mSupportedCardTypesView.setSupportedCardTypes(CardType.values());
+
         mAnimatedButtonView.setVisibility(configuration.getUnionPay().isEnabled() ? VISIBLE : GONE);
     }
 
@@ -92,16 +94,21 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
     }
 
     @Override
+    public void onCardTypeChanged(CardType cardType) {
+        if (cardType == CardType.EMPTY) {
+            mSupportedCardTypesView.setSupportedCardTypes(CardType.values());
+        } else {
+            mSupportedCardTypesView.setSelected(cardType);
+        }
+    }
+
+    @Override
     public void onClick(View view) {
         if (mCardForm.isValid()) {
             callAddPaymentUpdateListener();
         } else {
             mCardForm.validate();
         }
-    }
-
-    private void updateSupportedCardTypes() {
-        mSupportedCardTypesView.setSupportedCardTypes(CardType.values());
     }
 
     @Override
