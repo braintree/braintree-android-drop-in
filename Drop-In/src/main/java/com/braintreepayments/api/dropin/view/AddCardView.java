@@ -107,6 +107,7 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         if (mCardForm.isValid()) {
             callAddPaymentUpdateListener();
         } else {
+            mAnimatedButtonView.showButton();
             mCardForm.validate();
         }
     }

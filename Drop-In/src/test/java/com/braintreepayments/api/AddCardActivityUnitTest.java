@@ -32,6 +32,7 @@ import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.util.ActivityController;
 
 import static com.braintreepayments.api.test.Assertions.assertIsANonce;
+import static com.braintreepayments.api.test.CardNumber.AMEX;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_CREDIT;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.api.test.CardNumber.VISA;
@@ -142,6 +143,49 @@ public class AddCardActivityUnitTest {
         assertThat(mAddCardView).isGone();
         assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
         assertThat(mEnrollmentCardView).isGone();
+    }
+
+    @Test
+    public void editingANonUnionPayCardNumberIsPossible() {
+        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
+        assertThat(mEditCardView).isVisible();
+        assertThat(mAddCardView).isGone();
+
+        mEditCardView.findViewById(R.id.bt_card_form_card_number).requestFocus();
+        assertThat(mAddCardView).isVisible();
+        assertThat(mEditCardView).isGone();
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, "");
+        setText(mAddCardView, R.id.bt_card_form_card_number, AMEX);
+        assertThat(mEditCardView).isVisible();
+        assertThat(mAddCardView).isGone();
+    }
+
+    @Test
+    public void editingAUnionPayCardNumberIsPossible() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .unionPay(new TestUnionPayConfigurationBuilder()
+                                .enabled(true))
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
+                        stringFromFixture("responses/unionpay_capabilities_success_response.json"));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
+        assertThat(mEditCardView).isVisible();
+        assertThat(mAddCardView).isGone();
+
+        mEditCardView.findViewById(R.id.bt_card_form_card_number).requestFocus();
+        assertThat(mAddCardView).isVisible();
+        assertThat(mEditCardView).isGone();
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        assertThat(mEditCardView).isVisible();
+        assertThat(mAddCardView).isGone();
     }
 
     @Test

@@ -92,6 +92,7 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
 
     public void setCardNumber(String cardNumber) {
         mCardForm.getCardEditText().setText(cardNumber);
+        mCardForm.getCardEditText().focusNextView();
     }
 
     public void setErrors(ErrorWithResponse errors) {

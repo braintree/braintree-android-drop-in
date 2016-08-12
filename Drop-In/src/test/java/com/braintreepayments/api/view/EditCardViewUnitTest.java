@@ -84,6 +84,16 @@ public class EditCardViewUnitTest {
     }
 
     @Test
+    public void setCardNumber_focusesNextView() {
+        mView.setup(mActivity, (Configuration) basicConfig());
+        assertThat(mView.getCardForm().getExpirationDateEditText()).isNotFocused();
+
+        mView.setCardNumber(VISA);
+
+        assertThat(mView.getCardForm().getExpirationDateEditText()).isFocused();
+    }
+
+    @Test
     public void setErrors_displaysAllErrors() {
         Configuration configuration = new TestConfigurationBuilder()
                 .challenges("cvv", "postal_code")
