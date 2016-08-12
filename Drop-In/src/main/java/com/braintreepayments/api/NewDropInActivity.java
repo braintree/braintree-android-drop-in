@@ -52,7 +52,7 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_dropin_payment_activity);
+        setContentView(R.layout.bt_new_dropin_payment_activity);
 
         mPaymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
         mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
