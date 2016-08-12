@@ -9,6 +9,7 @@
     <color name="bt_border_color">#99999A</color>
     <color name="bt_light_border_color">#D5D5D5</color>
 
-    <color name="bt_button_blue">#009bde</color>
+    <color name="bt_color_primary">#3e3c42</color>
+    <color name="bt_color_primary_dark">#363439</color>
     <color name="bt_text_blue">#199ddc</color>
 </resources>
