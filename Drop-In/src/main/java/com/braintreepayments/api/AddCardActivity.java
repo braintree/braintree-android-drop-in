@@ -254,18 +254,18 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
                     nextState = ENROLLMENT_ENTRY;
                 }
             } else {
-                nextState = SUBMIT;
+                nextState = mState;
+                createCard();
             }
         } else if (v.getId() == mEnrollmentCardView.getId()) {
-            nextState = SUBMIT;
+            nextState = mState;
+            createCard();
         }
 
         return nextState;
     }
 
     private void createCard() {
-        setState(mState, LOADING);
-
         if (isCardUnionPay()) {
             UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
                     .cardNumber(mEditCardView.getCardForm().getCardNumber())

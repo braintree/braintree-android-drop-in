@@ -145,7 +145,7 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void addingACardShowsALoadingView() {
+    public void addingACardRemainsOnEditCardView() {
         setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
@@ -153,8 +153,10 @@ public class AddCardActivityUnitTest {
         setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
-        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isVisible();
-        assertThat(mEditCardView).isGone();
+        assertThat(mEditCardView).isVisible();
+        assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+        assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();
+        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
         assertThat(mAddCardView).isGone();
         assertThat(mEnrollmentCardView).isGone();
     }
@@ -276,13 +278,13 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
         setup(httpClient);
 
-        setText(mActivity.findViewById(R.id.bt_add_card_view), R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
-        mActivity.findViewById(R.id.bt_add_card_view).findViewById(R.id.bt_button).performClick();
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_cvv, "123");
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_country_code, "86");
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_mobile_number, "8888888888");
-        mActivity.findViewById(R.id.bt_edit_card_view).findViewById(R.id.bt_button).performClick();
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "86");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
 
         assertThat(mAddCardView).isGone();
         assertThat(mEditCardView).isGone();
@@ -323,13 +325,13 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
         setup(httpClient);
 
-        setText(mActivity.findViewById(R.id.bt_add_card_view), R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
-        mActivity.findViewById(R.id.bt_add_card_view).findViewById(R.id.bt_button).performClick();
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_cvv, "123");
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_country_code, "86");
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_mobile_number, "8888888888");
-        mActivity.findViewById(R.id.bt_edit_card_view).findViewById(R.id.bt_button).performClick();
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "86");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
 
         assertThat(mAddCardView).isGone();
         assertThat(mEditCardView).isGone();
@@ -351,13 +353,13 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("payment_methods/unionpay_credit_card.json"));
         setup(httpClient);
 
-        setText(mActivity.findViewById(R.id.bt_add_card_view), R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
-        mActivity.findViewById(R.id.bt_add_card_view).findViewById(R.id.bt_button).performClick();
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_cvv, "123");
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_country_code, "86");
-        setText(mActivity.findViewById(R.id.bt_edit_card_view), R.id.bt_card_form_mobile_number, "8888888888");
-        mActivity.findViewById(R.id.bt_edit_card_view).findViewById(R.id.bt_button).performClick();
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "86");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
 
         assertTrue(mActivity.isFinishing());
         PaymentMethodNonce nonce = mShadowActivity.getResultIntent()
@@ -365,6 +367,36 @@ public class AddCardActivityUnitTest {
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
         assertIsANonce(nonce.getNonce());
         assertEquals("85", ((CardNonce) nonce).getLastTwo());
+    }
+
+    @Test
+    public void enrollingAUnionPayCardRemainsOnEnrollmentCardView() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .unionPay(new TestUnionPayConfigurationBuilder()
+                                .enabled(true))
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
+                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
+                        stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "86");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEnrollmentCardView, R.id.bt_sms_code, "123456");
+        mEnrollmentCardView.findViewById(R.id.bt_button).performClick();
+
+        assertThat(mEnrollmentCardView).isVisible();
+        assertThat(mEnrollmentCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+        assertThat(mEnrollmentCardView.findViewById(R.id.bt_button)).isGone();
+        assertThat(mAddCardView).isGone();
+        assertThat(mEditCardView).isGone();
     }
 
     private void setup(BraintreeFragment fragment) {
