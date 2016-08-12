@@ -34,6 +34,7 @@ import org.robolectric.util.ActivityController;
 import static com.braintreepayments.api.test.Assertions.assertIsANonce;
 import static com.braintreepayments.api.test.CardNumber.AMEX;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_CREDIT;
+import static com.braintreepayments.api.test.CardNumber.UNIONPAY_DEBIT;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.api.test.CardNumber.VISA;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
@@ -411,6 +412,24 @@ public class AddCardActivityUnitTest {
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
         assertIsANonce(nonce.getNonce());
         assertEquals("85", ((CardNonce) nonce).getLastTwo());
+    }
+
+    @Test
+    public void unsupportedUnionPayCardsShowAnErrorMessage() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .unionPay(new TestUnionPayConfigurationBuilder()
+                                .enabled(true))
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
+                        stringFromFixture("responses/unionpay_capabilities_not_supported_response.json"));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_DEBIT);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_not_supported),
+                ((TextInputLayout) mAddCardView.findViewById(R.id.bt_card_form_card_number).getParent()).getError());
     }
 
     @Test

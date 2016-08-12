@@ -91,6 +91,21 @@ public class AddCardViewUnitTest {
     }
 
     @Test
+    public void showCardNotSupportedError_showsErrorMessage() {
+        mView.getCardForm().getCardEditText().setText(VISA);
+        mView.findViewById(R.id.bt_button).performClick();
+        assertThat(mView.findViewById(R.id.bt_button)).isGone();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+
+        mView.showCardNotSupportedError();
+
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_not_supported),
+                ((TextInputLayout) mView.getCardForm().getCardEditText().getParent()).getError());
+        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+    }
+
+    @Test
     public void onClick_doesNothingIfListenerNotSet() {
         mView.setAddPaymentUpdatedListener(null);
         mView.getCardForm().getCardEditText().setText(VISA);

@@ -56,8 +56,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     private static final String EXTRA_ENROLLMENT_ID = "com.braintreepayments.api.EXTRA_ENROLLMENT_ID";
     private static final String EXTRA_CAPABILITIES = "com.braintreepayments.api.EXTRA_CAPABILITIES";
 
-    private UnionPayCapabilities mCapabilities;
-    private String mCardNumber;
     private String mEnrollmentId;
 
     @Retention(RetentionPolicy.SOURCE)
@@ -80,6 +78,8 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     private AddCardView mAddCardView;
     private EditCardView mEditCardView;
     private EnrollmentCardView mEnrollmentCardView;
+
+    private boolean mUnionPayCard;
 
     private BraintreeFragment mBraintreeFragment;
 
@@ -109,7 +109,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             @State int state = savedInstanceState.getInt(EXTRA_STATE);
             mState = state;
             mEnrollmentId = savedInstanceState.getString(EXTRA_ENROLLMENT_ID);
-            mCapabilities = savedInstanceState.getParcelable(EXTRA_CAPABILITIES);
         } else {
             mState = CARD_ENTRY;
         }
@@ -150,7 +149,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         super.onSaveInstanceState(outState);
         outState.putInt(EXTRA_STATE, mState);
         outState.putString(EXTRA_ENROLLMENT_ID, mEnrollmentId);
-        outState.putParcelable(EXTRA_CAPABILITIES, mCapabilities);
     }
 
     @Override
@@ -199,7 +197,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             case DETAILS_ENTRY:
                 mActionBar.setTitle(R.string.bt_card_details);
                 mEditCardView.setCardNumber(mAddCardView.getCardForm().getCardNumber());
-                mEditCardView.useUnionPay(this, isCardUnionPay());
+                mEditCardView.useUnionPay(this, mUnionPayCard);
                 mEditCardView.setVisibility(VISIBLE);
                 break;
             case ENROLLMENT_ENTRY:
@@ -227,18 +225,15 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     @State
     private int determineNextState(View v) {
         int nextState = mState;
-        boolean unionPayEnabled = mBraintreeFragment.getConfiguration().getUnionPay().isEnabled();
         if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getCardForm().getCardNumber())) {
-            if (!unionPayEnabled) {
+            if (!mBraintreeFragment.getConfiguration().getUnionPay().isEnabled()) {
                 mEditCardView.useUnionPay(this, false);
                 nextState = DETAILS_ENTRY;
-            } else if (mCapabilities == null || !mCardNumber.equals(mAddCardView.getCardForm().getCardNumber())) {
-                UnionPay.fetchCapabilities(mBraintreeFragment, mAddCardView.getCardForm().getCardNumber());
             } else {
-                nextState = DETAILS_ENTRY;
+                UnionPay.fetchCapabilities(mBraintreeFragment, mAddCardView.getCardForm().getCardNumber());
             }
         } else if (v.getId() == mEditCardView.getId()) {
-            if (isCardUnionPay()) {
+            if (mUnionPayCard) {
                 if (TextUtils.isEmpty(mEnrollmentId)) {
                     UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
                             .cardNumber(mEditCardView.getCardForm().getCardNumber())
@@ -266,7 +261,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     }
 
     private void createCard() {
-        if (isCardUnionPay()) {
+        if (mUnionPayCard) {
             UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
                     .cardNumber(mEditCardView.getCardForm().getCardNumber())
                     .expirationMonth(mEditCardView.getCardForm().getExpirationMonth())
@@ -291,11 +286,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         }
     }
 
-    private boolean isCardUnionPay() {
-        return mBraintreeFragment.getConfiguration().getUnionPay().isEnabled() && mCapabilities != null &&
-                mCapabilities.isUnionPay();
-    }
-
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
         Intent result = new Intent();
@@ -306,9 +296,13 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
     @Override
     public void onCapabilitiesFetched(UnionPayCapabilities capabilities) {
-        mCardNumber = mAddCardView.getCardForm().getCardNumber();
-        mCapabilities = capabilities;
-        onPaymentUpdated(mAddCardView);
+        mUnionPayCard = capabilities.isUnionPay();
+
+        if (mUnionPayCard && !capabilities.isSupported()) {
+            mAddCardView.showCardNotSupportedError();
+        } else {
+            setState(mState, DETAILS_ENTRY);
+        }
     }
 
     @Override
