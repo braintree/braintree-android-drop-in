@@ -18,10 +18,12 @@ import com.braintreepayments.api.exceptions.BraintreeError;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.cardform.OnCardFormFieldFocusedListener;
+import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 
-public class EditCardView extends LinearLayout implements OnCardFormFieldFocusedListener, OnClickListener {
+public class EditCardView extends LinearLayout implements OnCardFormFieldFocusedListener, OnClickListener,
+        OnCardFormSubmitListener {
 
     private static final String EXTRA_SUPER_STATE = "com.braintreepayments.api.dropin.view.EXTRA_SUPER_STATE";
     private static final String EXTRA_VISIBLE = "com.braintreepayments.api.dropin.view.EXTRA_VISIBLE";
@@ -64,6 +66,7 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
 
         mCardForm = (CardForm) findViewById(R.id.bt_card_form);
         mCardForm.setOnFormFieldFocusedListener(this);
+        mCardForm.setOnCardFormSubmitListener(this);
 
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.bt_animated_button_view);
         mAnimatedButtonView.setClickListener(this);
@@ -126,10 +129,22 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
     }
 
     @Override
-    public void onClick(View view) {
-        if (mListener != null) {
-            mListener.onPaymentUpdated(this);
+    public void onCardFormSubmit() {
+        if (mCardForm.isValid()) {
+            mAnimatedButtonView.showLoading();
+
+            if (mListener != null) {
+                mListener.onPaymentUpdated(this);
+            }
+        } else {
+            mAnimatedButtonView.showButton();
+            mCardForm.validate();
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+        onCardFormSubmit();
     }
 
     @Override

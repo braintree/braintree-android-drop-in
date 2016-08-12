@@ -9,7 +9,6 @@ import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.dropin.view.EditCardView;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.test.CardNumber;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.api.test.UnitTestActivity;
 import com.braintreepayments.cardform.view.CardForm;
@@ -22,6 +21,8 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.util.ActivityController;
 
+import static com.braintreepayments.api.test.CardNumber.VISA;
+import static com.braintreepayments.api.test.ExpirationDate.VALID_EXPIRATION;
 import static com.braintreepayments.api.test.TestConfigurationBuilder.basicConfig;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
@@ -77,9 +78,9 @@ public class EditCardViewUnitTest {
 
     @Test
     public void setCardNumber_setsCardNumber() {
-        mView.setCardNumber(CardNumber.VISA);
+        mView.setCardNumber(VISA);
 
-        assertEquals(CardNumber.VISA, mView.getCardForm().getCardNumber());
+        assertEquals(VISA, mView.getCardForm().getCardNumber());
     }
 
     @Test
@@ -136,17 +137,106 @@ public class EditCardViewUnitTest {
    }
 
     @Test
+    public void onCardFormSubmit_showsErrorsIfFormIsInvalid() {
+        Configuration configuration = new TestConfigurationBuilder()
+                .challenges("cvv", "postal_code")
+                .buildConfiguration();
+        mView.setup(mActivity, configuration);
+
+        mView.onCardFormSubmit();
+
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_required),
+                ((TextInputLayout) mView.getCardForm().getCardEditText().getParent()).getError());
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_required),
+                ((TextInputLayout) mView.getCardForm().getExpirationDateEditText().getParent()).getError());
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_cvv_required),
+                ((TextInputLayout) mView.getCardForm().getCvvEditText().getParent()).getError());
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_required),
+                ((TextInputLayout) mView.getCardForm().getPostalCodeEditText().getParent()).getError());
+    }
+
+    @Test
+    public void onCardFormSubmit_doesNotCallListenerIfValidAndListenerIsNotSet() {
+        Configuration configuration = new TestConfigurationBuilder()
+                .challenges("cvv", "postal_code")
+                .buildConfiguration();
+        mView.setup(mActivity, configuration);
+        mView.setAddPaymentUpdatedListener(null);
+
+        mView.getCardForm().getCardEditText().setText(VISA);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+        mView.getCardForm().getCvvEditText().setText("123");
+        mView.getCardForm().getPostalCodeEditText().setText("12345");
+
+        mView.onCardFormSubmit();
+
+        assertThat(mView.findViewById(R.id.bt_animated_button_view)).isVisible();
+    }
+
+    @Test
+    public void onCardFormSubmit_callsListenerWhenValidAndSet() {
+        Configuration configuration = new TestConfigurationBuilder()
+                .challenges("cvv", "postal_code")
+                .buildConfiguration();
+        mView.setup(mActivity, configuration);
+        AddPaymentUpdateListener listener = mock(AddPaymentUpdateListener.class);
+        mView.setAddPaymentUpdatedListener(listener);
+
+        mView.getCardForm().getCardEditText().setText(VISA);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+        mView.getCardForm().getCvvEditText().setText("123");
+        mView.getCardForm().getPostalCodeEditText().setText("12345");
+
+        mView.onCardFormSubmit();
+
+        assertThat(mView.findViewById(R.id.bt_animated_button_view)).isVisible();
+        verify(listener).onPaymentUpdated(mView);
+    }
+
+    @Test
+    public void clickingNextDoesNotShowLoadingIndicatorIfFormIsInvalid() {
+        mView.setup(mActivity, (Configuration) basicConfig());
+
+        mView.findViewById(R.id.bt_button).performClick();
+
+        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+    }
+
+    @Test
+    public void clickingNextShowsLoadingIndicatorIfFormIsValid() {
+        mView.setup(mActivity, (Configuration) basicConfig());
+        mView.getCardForm().getCardEditText().setText(VISA);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+
+        mView.findViewById(R.id.bt_button).performClick();
+
+        assertThat(mView.findViewById(R.id.bt_button)).isGone();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+    }
+
+    @Test
     public void onClick_doesNothingIfListenerNotSet() {
+        mView.setup(mActivity, (Configuration) basicConfig());
+        mView.getCardForm().getCardEditText().setText(VISA);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+
         mView.onClick(null);
+
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
     }
 
     @Test
     public void onClick_callsListener() {
         AddPaymentUpdateListener listener = mock(AddPaymentUpdateListener.class);
         mView.setAddPaymentUpdatedListener(listener);
+        mView.setup(mActivity, (Configuration) basicConfig());
+        mView.getCardForm().getCardEditText().setText(VISA);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
 
         mView.onClick(null);
 
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
         verify(listener).onPaymentUpdated(mView);
     }
 
