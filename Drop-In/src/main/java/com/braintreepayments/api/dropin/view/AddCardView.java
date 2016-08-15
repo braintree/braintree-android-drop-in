@@ -91,6 +91,10 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
         mAnimatedButtonView.showButton();
+
+        if (visibility == VISIBLE) {
+            mCardForm.getCardEditText().requestFocus();
+        }
     }
 
     public void showCardNotSupportedError() {

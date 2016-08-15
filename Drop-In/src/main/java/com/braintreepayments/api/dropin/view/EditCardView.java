@@ -178,6 +178,10 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
-        mAnimatedButtonView.setVisibility(visibility);
+        mAnimatedButtonView.showButton();
+
+        if (visibility == VISIBLE) {
+            mCardForm.getExpirationDateEditText().requestFocus();
+        }
     }
 }

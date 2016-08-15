@@ -2,6 +2,7 @@ package com.braintreepayments.api.view;
 
 import android.app.Activity;
 import android.support.design.widget.TextInputLayout;
+import android.view.View;
 import android.widget.Button;
 
 import com.braintreepayments.api.dropin.R;
@@ -89,6 +90,29 @@ public class EditCardViewUnitTest {
         assertThat(mView.getCardForm().getExpirationDateEditText()).isNotFocused();
 
         mView.setCardNumber(VISA);
+
+        assertThat(mView.getCardForm().getExpirationDateEditText()).isFocused();
+    }
+
+    @Test
+    public void setVisibility_toVisibleClearsButtonLoadingView() {
+        mView.setup(mActivity, mock(Configuration.class));
+        mView.getCardForm().getCardEditText().setText(VISA);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+        mView.onCardFormSubmit();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+
+        mView.setVisibility(View.VISIBLE);
+
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+    }
+
+    @Test
+    public void setVisibility_toVisibleFocusesExpirationEditText() {
+        mView.setup(mActivity, mock(Configuration.class));
+        assertThat(mView.getCardForm().getExpirationDateEditText()).isNotFocused();
+
+        mView.setVisibility(View.VISIBLE);
 
         assertThat(mView.getCardForm().getExpirationDateEditText()).isFocused();
     }

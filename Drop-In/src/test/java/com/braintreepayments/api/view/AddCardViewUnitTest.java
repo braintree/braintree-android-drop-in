@@ -91,6 +91,15 @@ public class AddCardViewUnitTest {
     }
 
     @Test
+    public void setVisibility_toVisibleFocusesCardEditText() {
+        assertThat(mView.getCardForm().getCardEditText()).isNotFocused();
+
+        mView.setVisibility(View.VISIBLE);
+
+        assertThat(mView.getCardForm().getCardEditText()).isFocused();
+    }
+
+    @Test
     public void showCardNotSupportedError_showsErrorMessage() {
         mView.getCardForm().getCardEditText().setText(VISA);
         mView.findViewById(R.id.bt_button).performClick();
