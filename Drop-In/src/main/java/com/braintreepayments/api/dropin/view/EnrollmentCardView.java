@@ -6,26 +6,30 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.cardform.utils.ViewUtils;
+import com.braintreepayments.cardform.view.ErrorEditText;
 
-public class EnrollmentCardView extends LinearLayout implements OnClickListener {
+public class EnrollmentCardView extends LinearLayout implements OnClickListener, OnEditorActionListener {
 
     private static final String EXTRA_SUPER_STATE = "com.braintreepayments.api.dropin.view.EXTRA_SUPER_STATE";
     private static final String EXTRA_VISIBLE = "com.braintreepayments.api.dropin.view.EXTRA_VISIBLE";
 
-    private EditText mSmsCode;
+    private ErrorEditText mSmsCode;
     private TextView mSmsSentTextView;
     private AnimatedButtonView mAnimatedButtonView;
     private Button mSmsHelpButton;
@@ -62,7 +66,11 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener 
 
         LayoutInflater.from(getContext()).inflate(R.layout.bt_enrollment_card, this, true);
 
-        mSmsCode = (EditText) findViewById(R.id.bt_sms_code);
+        mSmsCode = (ErrorEditText) findViewById(R.id.bt_sms_code);
+        mSmsCode.setImeOptions(EditorInfo.IME_ACTION_GO);
+        mSmsCode.setImeActionLabel(getContext().getString(R.string.bt_confirm), EditorInfo.IME_ACTION_GO);
+        mSmsCode.setOnEditorActionListener(this);
+
         mSmsSentTextView = (TextView) findViewById(R.id.bt_sms_sent_text);
         mSmsHelpButton = (Button) findViewById(R.id.bt_sms_help_button);
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.bt_animated_button_view);
@@ -90,12 +98,20 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener 
     }
 
     @Override
-    public void onClick(View view) {
-        if (mListener == null) {
-            return;
-        }
+    public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
+        mAnimatedButtonView.showLoading();
+        onClick(mAnimatedButtonView);
+        return true;
+    }
 
-        if (view == mAnimatedButtonView) {
+    @Override
+    public void onClick(View view) {
+        if (view == mAnimatedButtonView && TextUtils.isEmpty(mSmsCode.getText())) {
+            mAnimatedButtonView.showButton();
+            mSmsCode.setError(getContext().getString(R.string.bt_sms_code_required));
+        } else if (mListener == null) {
+            return;
+        } else if (view == mAnimatedButtonView) {
             mListener.onPaymentUpdated(this);
         } else if (view == mSmsHelpButton) {
             mListener.onBackRequested(this);
@@ -125,6 +141,10 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener 
     @Override
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
-        mAnimatedButtonView.setVisibility(visibility);
+        mAnimatedButtonView.showButton();
+
+        if (visibility == VISIBLE) {
+            mSmsCode.requestFocus();
+        }
     }
 }
