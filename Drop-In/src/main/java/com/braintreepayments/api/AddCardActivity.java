@@ -119,6 +119,11 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
                     .putExtra(EXTRA_ERROR_MESSAGE, e.getMessage());
             setResult(BRAINTREE_RESULT_DEVELOPER_ERROR, intent);
             finish();
+            return;
+        }
+
+        if (mBraintreeFragment.getConfiguration() != null) {
+            onConfigurationFetched(mBraintreeFragment.getConfiguration());
         }
     }
 
