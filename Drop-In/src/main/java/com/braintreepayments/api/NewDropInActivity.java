@@ -36,8 +36,7 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
     private static final int ADD_CARD_REQUEST_CODE = 1;
 
     public static final String EXTRA_PAYMENT_METHOD_NONCE = "com.braintreepayments.api.dropin.EXTRA_PAYMENT_METHOD_NONCE";
-    private static final String EXTRA_SHEET_ANIMATION_PERFORMED =
-            "com.braintreepayments.api.EXTRA_SHEET_ANIMATION_PERFORMED";
+    private static final String EXTRA_SHEET_ANIMATION_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_ANIMATION_PERFORMED";
 
     private View mBottomSheet;
     private PaymentRequest mPaymentRequest;
@@ -89,61 +88,6 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
             slideUp();
             mSheetAnimationPerformed.set(true);
         }
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(EXTRA_SHEET_ANIMATION_PERFORMED, mSheetAnimationPerformed.get());
-    }
-
-    @Override
-    public void onBackPressed() {
-        slideDown(new AnimationFinishedListener() {
-            @Override
-            public void onAnimationFinished() {
-                finish();
-            }
-        });
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if ((requestCode == AndroidPay.ANDROID_PAY_MASKED_WALLET_REQUEST_CODE ||
-                requestCode == AndroidPay.ANDROID_PAY_FULL_WALLET_REQUEST_CODE) &&
-                resultCode == RESULT_OK) {
-            AndroidPay.onActivityResult(mBraintreeFragment, mPaymentRequest.getAndroidPayCart(), resultCode, data);
-        } else if (requestCode == ADD_CARD_REQUEST_CODE && resultCode == RESULT_OK) {
-            onPaymentMethodNonceCreated((PaymentMethodNonce) data.getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE));
-        }
-    }
-
-    private void slideUp() {
-        mBottomSheet.startAnimation(loadAnimation(this, R.anim.bt_slide_in_up));
-    }
-
-    private void slideDown(final AnimationFinishedListener listener) {
-        Animation slideOutAnimation = loadAnimation(this, R.anim.bt_slide_out_down);
-        slideOutAnimation.setFillAfter(true);
-        if (listener != null) {
-            slideOutAnimation.setAnimationListener(new AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    listener.onAnimationFinished();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-        }
-        mBottomSheet.startAnimation(slideOutAnimation);
     }
 
     @Override
@@ -200,9 +144,59 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
         }
     }
 
-    public void onBackgroundClicked(View v) {
-        if (v.getId() == R.id.bt_payment_method_activity_root) {
-            onBackPressed();
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(EXTRA_SHEET_ANIMATION_PERFORMED, mSheetAnimationPerformed.get());
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if ((requestCode == AndroidPay.ANDROID_PAY_MASKED_WALLET_REQUEST_CODE ||
+                requestCode == AndroidPay.ANDROID_PAY_FULL_WALLET_REQUEST_CODE) && resultCode == RESULT_OK) {
+            AndroidPay.onActivityResult(mBraintreeFragment, mPaymentRequest.getAndroidPayCart(), resultCode, data);
+        } else if (requestCode == ADD_CARD_REQUEST_CODE && resultCode == RESULT_OK) {
+            onPaymentMethodNonceCreated((PaymentMethodNonce) data.getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        slideDown(new AnimationFinishedListener() {
+            @Override
+            public void onAnimationFinished() {
+                finish();
+            }
+        });
+    }
+
+    public void onBackgroundClicked(View v) {
+        onBackPressed();
+    }
+
+    private void slideUp() {
+        mBottomSheet.startAnimation(loadAnimation(this, R.anim.bt_slide_in_up));
+    }
+
+    private void slideDown(final AnimationFinishedListener listener) {
+        Animation slideOutAnimation = loadAnimation(this, R.anim.bt_slide_out_down);
+        slideOutAnimation.setFillAfter(true);
+        if (listener != null) {
+            slideOutAnimation.setAnimationListener(new AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {}
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    listener.onAnimationFinished();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+        }
+        mBottomSheet.startAnimation(slideOutAnimation);
     }
 }
