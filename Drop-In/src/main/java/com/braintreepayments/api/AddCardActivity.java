@@ -54,7 +54,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
     private static final String EXTRA_STATE = "com.braintreepayments.api.EXTRA_STATE";
     private static final String EXTRA_ENROLLMENT_ID = "com.braintreepayments.api.EXTRA_ENROLLMENT_ID";
-    private static final String EXTRA_CAPABILITIES = "com.braintreepayments.api.EXTRA_CAPABILITIES";
 
     private String mEnrollmentId;
 
@@ -63,15 +62,13 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             LOADING,
             CARD_ENTRY,
             DETAILS_ENTRY,
-            ENROLLMENT_ENTRY,
-            SUBMIT
+            ENROLLMENT_ENTRY
     })
     private @interface State {}
     public static final int LOADING = 1;
     public static final int CARD_ENTRY = 2;
     public static final int DETAILS_ENTRY = 3;
     public static final int ENROLLMENT_ENTRY = 4;
-    public static final int SUBMIT = 5;
 
     private ActionBar mActionBar;
     private ProgressBar mLoadingView;
@@ -206,9 +203,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
                         PhoneNumberUtils.formatNumber(mEditCardView.getCardForm().getCountryCode() +
                                 mEditCardView.getCardForm().getMobileNumber()));
                 mEnrollmentCardView.setVisibility(VISIBLE);
-                break;
-            case SUBMIT:
-                createCard();
                 break;
         }
     }
