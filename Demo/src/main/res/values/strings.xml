@@ -8,7 +8,7 @@
     <string name="feedback">Feedback</string>
     <string name="nonce">Nonce</string>
     <string name="drop_in">Drop-In</string>
-    <string name="drop_in_2">Drop-In 2</string>
+    <string name="new_drop_in">New Drop-In</string>
     <string name="payment_button">Payment Button</string>
     <string name="create_transaction">Create a Transaction</string>
     <string name="loading">Loading…</string>
