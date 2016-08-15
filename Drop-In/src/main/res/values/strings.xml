@@ -49,5 +49,5 @@
     <string name="bt_card_details">Card Details</string>
     <string name="bt_confirm_enrollment">Confirm Enrollment</string>]
     <string name="bt_postal_code_invalid">Postal code is invalid</string>
-    <string name="bt_card_not_supported">Card not supported</string>
+    <string name="bt_card_not_accepted">Card not accepted</string>
 </resources>

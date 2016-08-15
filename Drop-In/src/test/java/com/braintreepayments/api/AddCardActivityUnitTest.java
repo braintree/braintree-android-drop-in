@@ -428,7 +428,7 @@ public class AddCardActivityUnitTest {
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_DEBIT);
         mAddCardView.findViewById(R.id.bt_button).performClick();
 
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_not_supported),
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_not_accepted),
                 ((TextInputLayout) mAddCardView.findViewById(R.id.bt_card_form_card_number).getParent()).getError());
     }
 

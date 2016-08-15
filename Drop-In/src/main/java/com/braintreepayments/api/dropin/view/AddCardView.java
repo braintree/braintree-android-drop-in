@@ -94,7 +94,7 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
     }
 
     public void showCardNotSupportedError() {
-        mCardForm.getCardEditText().setError(getContext().getString(R.string.bt_card_not_supported));
+        mCardForm.getCardEditText().setError(getContext().getString(R.string.bt_card_not_accepted));
         mAnimatedButtonView.showButton();
     }
 

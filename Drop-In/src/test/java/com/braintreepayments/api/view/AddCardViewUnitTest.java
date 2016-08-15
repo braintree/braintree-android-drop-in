@@ -99,7 +99,7 @@ public class AddCardViewUnitTest {
 
         mView.showCardNotSupportedError();
 
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_not_supported),
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_not_accepted),
                 ((TextInputLayout) mView.getCardForm().getCardEditText().getParent()).getError());
         assertThat(mView.findViewById(R.id.bt_button)).isVisible();
         assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
