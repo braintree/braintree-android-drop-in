@@ -1,7 +1,6 @@
 package com.braintreepayments.api.dropin.utils;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +20,7 @@ public class PaymentMethodTypeUnitTest {
         assertEquals(PaymentMethodType.JCB, PaymentMethodType.forType("JCB"));
         assertEquals(PaymentMethodType.DINERS, PaymentMethodType.forType("Diners"));
         assertEquals(PaymentMethodType.MAESTRO, PaymentMethodType.forType("Maestro"));
+        assertEquals(PaymentMethodType.UNIONPAY, PaymentMethodType.forType("UnionPay"));
         assertEquals(PaymentMethodType.PAYPAL, PaymentMethodType.forType("PayPal"));
         assertEquals(PaymentMethodType.ANDROID_PAY, PaymentMethodType.forType("Android Pay"));
         assertEquals(PaymentMethodType.UNKNOWN, PaymentMethodType.forType("unknown"));
@@ -41,9 +41,10 @@ public class PaymentMethodTypeUnitTest {
         assertEquals(R.drawable.bt_ic_jcb, PaymentMethodType.JCB.getDrawable());
         assertEquals(R.drawable.bt_ic_diners_club, PaymentMethodType.DINERS.getDrawable());
         assertEquals(R.drawable.bt_ic_maestro, PaymentMethodType.MAESTRO.getDrawable());
+        assertEquals(R.drawable.bt_ic_unionpay, PaymentMethodType.UNIONPAY.getDrawable());
         assertEquals(R.drawable.bt_paypal, PaymentMethodType.PAYPAL.getDrawable());
         assertEquals(R.drawable.bt_android_pay, PaymentMethodType.ANDROID_PAY.getDrawable());
-        assertEquals(R.drawable.bt_ic_payment_method_card, PaymentMethodType.UNKNOWN.getDrawable());
+        assertEquals(R.drawable.bt_ic_unknown, PaymentMethodType.UNKNOWN.getDrawable());
         assertEquals(R.drawable.bt_venmo, PaymentMethodType.PAY_WITH_VENMO.getDrawable());
     }
 
@@ -56,6 +57,7 @@ public class PaymentMethodTypeUnitTest {
         assertEquals(R.string.bt_descriptor_jcb, PaymentMethodType.JCB.getLocalizedName());
         assertEquals(R.string.bt_descriptor_diners, PaymentMethodType.DINERS.getLocalizedName());
         assertEquals(R.string.bt_descriptor_maestro, PaymentMethodType.MAESTRO.getLocalizedName());
+        assertEquals(R.string.bt_descriptor_unionpay, PaymentMethodType.UNIONPAY.getLocalizedName());
         assertEquals(R.string.bt_descriptor_paypal, PaymentMethodType.PAYPAL.getLocalizedName());
         assertEquals(R.string.bt_descriptor_android_pay, PaymentMethodType.ANDROID_PAY.getLocalizedName());
         assertEquals(R.string.bt_descriptor_unknown, PaymentMethodType.UNKNOWN.getLocalizedName());
@@ -71,6 +73,7 @@ public class PaymentMethodTypeUnitTest {
         assertEquals("JCB", PaymentMethodType.JCB.getCanonicalName());
         assertEquals("Diners", PaymentMethodType.DINERS.getCanonicalName());
         assertEquals("Maestro", PaymentMethodType.MAESTRO.getCanonicalName());
+        assertEquals("UnionPay", PaymentMethodType.UNIONPAY.getCanonicalName());
         assertEquals("PayPal", PaymentMethodType.PAYPAL.getCanonicalName());
         assertEquals("Android Pay", PaymentMethodType.ANDROID_PAY.getCanonicalName());
         assertEquals("Unknown", PaymentMethodType.UNKNOWN.getCanonicalName());
@@ -79,6 +82,6 @@ public class PaymentMethodTypeUnitTest {
 
     @Test
     public void containsOnlyKnownPaymentMethodTypes() {
-        assertEquals(11, PaymentMethodType.values().length);
+        assertEquals(12, PaymentMethodType.values().length);
     }
 }
