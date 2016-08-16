@@ -1,4 +1,4 @@
-package com.braintreepayments.api.utils;
+package com.braintreepayments.api.dropin.utils;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
