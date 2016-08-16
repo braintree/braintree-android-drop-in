@@ -3,6 +3,8 @@ package com.braintreepayments.api;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.VisibleForTesting;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -29,6 +31,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
+import static com.braintreepayments.api.BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR;
+import static com.braintreepayments.api.BraintreePaymentActivity.EXTRA_ERROR_MESSAGE;
 
 public class NewDropInActivity extends Activity implements ConfigurationListener, PaymentMethodSelectedListener,
         PaymentMethodNoncesUpdatedListener, PaymentMethodNonceCreatedListener {
@@ -38,8 +42,10 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
     public static final String EXTRA_PAYMENT_METHOD_NONCE = "com.braintreepayments.api.dropin.EXTRA_PAYMENT_METHOD_NONCE";
     private static final String EXTRA_SHEET_ANIMATION_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_ANIMATION_PERFORMED";
 
+    @VisibleForTesting
+    protected PaymentRequest mPaymentRequest;
+
     private View mBottomSheet;
-    private PaymentRequest mPaymentRequest;
     private BraintreeFragment mBraintreeFragment;
     private ViewSwitcher mViewSwitcher;
     private ListView mAvailablePaymentMethodListView;
@@ -69,16 +75,23 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
         } else {
             mSheetAnimationPerformed = new AtomicBoolean(false);
         }
-        try {
-            final Authorization authorization = Authorization.fromString(mPaymentRequest.getAuthorization());
-            mBraintreeFragment = BraintreeFragment.newInstance(this, mPaymentRequest.getAuthorization());
 
-            if (authorization instanceof ClientToken && !mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
+        try {
+            mBraintreeFragment = getBraintreeFragment();
+
+            if (Authorization.fromString(mPaymentRequest.getAuthorization()) instanceof ClientToken
+                    && !mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
                 PaymentMethod.getPaymentMethodNonces(mBraintreeFragment);
             } else if (mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
                 onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
             }
-        } catch (InvalidArgumentException ignored) {}
+        } catch (InvalidArgumentException e) {
+            Intent intent = new Intent()
+                    .putExtra(EXTRA_ERROR_MESSAGE, e.getMessage());
+            setResult(BRAINTREE_RESULT_DEVELOPER_ERROR, intent);
+            finish();
+            return;
+        }
 
         if (mBraintreeFragment.getConfiguration() != null) {
             onConfigurationFetched(mBraintreeFragment.getConfiguration());
@@ -88,6 +101,16 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
             slideUp();
             mSheetAnimationPerformed.set(true);
         }
+    }
+
+    @VisibleForTesting
+    protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
+        if (TextUtils.isEmpty(mPaymentRequest.getAuthorization())) {
+            throw new InvalidArgumentException("A client token or client key must be specified " +
+                    "in the " + PaymentRequest.class.getSimpleName());
+        }
+
+        return BraintreeFragment.newInstance(this, mPaymentRequest.getAuthorization());
     }
 
     @Override
@@ -124,8 +147,8 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
                 Venmo.authorizeAccount(mBraintreeFragment);
                 break;
             case UNKNOWN:
-                Intent intent = new Intent(this, AddCardActivity.class);
-                intent.putExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST, mPaymentRequest);
+                Intent intent = new Intent(this, AddCardActivity.class)
+                        .putExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST, mPaymentRequest);
                 startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
                 break;
         }

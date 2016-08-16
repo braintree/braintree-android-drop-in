@@ -51,8 +51,7 @@
                 <com.braintreepayments.api.dropin.view.PaymentMethodHorizontalScrollView
                     android:id="@+id/bt_vaulted_horizontal_scroll"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    />
+                    android:layout_height="wrap_content"/>
 
             </ViewSwitcher>
 
