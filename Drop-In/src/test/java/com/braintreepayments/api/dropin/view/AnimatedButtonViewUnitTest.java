@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.view.View.OnClickListener;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.dropin.view.AnimatedButtonView;
 import com.braintreepayments.api.test.UnitTestActivity;
 
 import org.junit.Before;
@@ -13,8 +12,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
 
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -59,7 +56,7 @@ public class AnimatedButtonViewUnitTest {
 
         mView.onClick(null);
 
-        verify(listener).onClick(null);
+        verify(listener).onClick(mView);
     }
 
     @Test
