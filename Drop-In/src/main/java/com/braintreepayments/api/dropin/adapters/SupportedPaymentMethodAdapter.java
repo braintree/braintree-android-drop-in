@@ -28,7 +28,9 @@ public class SupportedPaymentMethodAdapter extends BaseAdapter {
         mPaymentMethodSelectedListener = paymentMethodSelectedListener;
 
         mAvailablePaymentMethods = new ArrayList<>();
+
         mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
+
         if (configuration.getAndroidPay().isEnabled(mContext)) {
             mAvailablePaymentMethods.add(PaymentMethodType.ANDROID_PAY);
         }
@@ -52,7 +54,7 @@ public class SupportedPaymentMethodAdapter extends BaseAdapter {
 
     @Override
     public long getItemId(int position) {
-        return mAvailablePaymentMethods.get(position).getDrawable();
+        return position;
     }
 
     @Override
@@ -62,10 +64,13 @@ public class SupportedPaymentMethodAdapter extends BaseAdapter {
         }
 
         final PaymentMethodType type = mAvailablePaymentMethods.get(position);
+
         ImageView icon = (ImageView) convertView.findViewById(R.id.bt_payment_method_icon);
         icon.setImageDrawable(new PaymentMethodDrawable(mContext, type));
 
-        ((TextView) convertView.findViewById(R.id.bt_payment_method_type)).setText(mContext.getString(type.getLocalizedName()));
+        ((TextView) convertView.findViewById(R.id.bt_payment_method_type))
+                .setText(mContext.getString(type.getLocalizedName()));
+
         convertView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
