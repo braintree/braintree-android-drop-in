@@ -17,9 +17,8 @@ class PaymentMethodCardView extends LinearLayout {
         super(context);
         mPaymentMethodNonce = nonce;
         inflate(context, R.layout.bt_grid_view_item, this);
-        PaymentMethodDrawable drawable =
-                new PaymentMethodDrawable(context, PaymentMethodType.forType(mPaymentMethodNonce.getTypeLabel()));
-        ((ImageView) findViewById(R.id.bt_payment_method_icon)).setImageDrawable(drawable);
+        ((ImageView) findViewById(R.id.bt_payment_method_icon))
+                .setImageResource(PaymentMethodType.forType(mPaymentMethodNonce.getTypeLabel()).getDrawable());
         ((TextView) findViewById(R.id.bt_payment_method_description)).setText(nonce.getDescription());
     }
 

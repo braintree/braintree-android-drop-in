@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
-import com.braintreepayments.api.dropin.view.PaymentMethodDrawable;
 import com.braintreepayments.api.models.Configuration;
 
 import java.util.ArrayList;
@@ -66,7 +65,7 @@ public class SupportedPaymentMethodAdapter extends BaseAdapter {
         final PaymentMethodType type = mAvailablePaymentMethods.get(position);
 
         ImageView icon = (ImageView) convertView.findViewById(R.id.bt_payment_method_icon);
-        icon.setImageDrawable(new PaymentMethodDrawable(mContext, type));
+        icon.setImageResource(type.getDrawable());
 
         ((TextView) convertView.findViewById(R.id.bt_payment_method_type))
                 .setText(mContext.getString(type.getLocalizedName()));

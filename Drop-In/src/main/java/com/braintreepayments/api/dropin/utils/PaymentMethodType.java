@@ -6,15 +6,15 @@ import com.braintreepayments.cardform.utils.CardType;
 public enum PaymentMethodType {
 
     AMEX(CardType.AMEX.getFrontResource(), R.string.bt_descriptor_amex, "American Express"),
-    ANDROID_PAY(R.drawable.bt_android_pay, R.string.bt_descriptor_android_pay, "Android Pay"),
+    ANDROID_PAY(R.drawable.bt_ic_android_pay, R.string.bt_descriptor_android_pay, "Android Pay"),
     DINERS(CardType.DINERS_CLUB.getFrontResource(), R.string.bt_descriptor_diners, "Diners"),
     DISCOVER(CardType.DISCOVER.getFrontResource(), R.string.bt_descriptor_discover, "Discover"),
     JCB(CardType.JCB.getFrontResource(), R.string.bt_descriptor_jcb, "JCB"),
     MAESTRO(CardType.MAESTRO.getFrontResource(), R.string.bt_descriptor_maestro, "Maestro"),
     MASTERCARD(CardType.MASTERCARD.getFrontResource(), R.string.bt_descriptor_mastercard, "MasterCard"),
-    PAYPAL(R.drawable.bt_paypal, R.string.bt_descriptor_paypal, "PayPal"),
+    PAYPAL(R.drawable.bt_ic_paypal, R.string.bt_descriptor_paypal, "PayPal"),
     VISA(CardType.VISA.getFrontResource(), R.string.bt_descriptor_visa, "Visa"),
-    PAY_WITH_VENMO(R.drawable.bt_venmo, R.string.bt_descriptor_pay_with_venmo, "Venmo"),
+    PAY_WITH_VENMO(R.drawable.bt_ic_venmo, R.string.bt_descriptor_pay_with_venmo, "Venmo"),
     UNIONPAY(R.drawable.bt_ic_unionpay, R.string.bt_descriptor_unionpay, "UnionPay"),
     UNKNOWN(R.drawable.bt_ic_unknown, R.string.bt_descriptor_unknown, "Unknown");
 
