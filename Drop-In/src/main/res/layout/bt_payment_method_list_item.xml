@@ -5,18 +5,18 @@
     android:layout_height="wrap_content"
     android:paddingTop="12dp"
     android:paddingBottom="12dp"
-    android:paddingStart="20dp"
-    android:paddingLeft="20dp"
+    android:paddingStart="16dp"
+    android:paddingLeft="16dp"
     xmlns:tools="http://schemas.android.com/tools">
 
     <ImageView
         android:id="@+id/bt_payment_method_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         tools:ignore="ContentDescription"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_width="58dp"
-        android:layout_height="37dp" />
+        android:layout_alignParentStart="true"/>
 
     <TextView
         style="@style/bt_base_textview_bold"
@@ -26,9 +26,9 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/bt_payment_method_icon"
         android:layout_toEndOf="@id/bt_payment_method_icon"
-        android:layout_marginLeft="@dimen/bt_payment_method_item_padding"
-        android:layout_marginStart="@dimen/bt_payment_method_item_padding"
-        android:textSize="18sp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginStart="14dp"
+        android:textSize="16sp"
         android:textColor="@color/bt_black" />
 
 </RelativeLayout>

@@ -70,7 +70,9 @@
         <ListView
             android:id="@+id/bt_available_payment_methods"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:divider="@drawable/bt_list_view_divider"
+            android:dividerHeight="1dp"/>
 
     </LinearLayout>
 
