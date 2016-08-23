@@ -2,6 +2,7 @@ package com.braintreepayments.api;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -78,6 +79,34 @@ public class NewDropInActivityUnitTest {
         mActivity = (NewDropInUnitTestActivity) mActivityController.get();
 
         assertEquals(1, ((ListView) mActivity.findViewById(R.id.bt_available_payment_methods)).getAdapter().getCount());
+    }
+
+    @Test
+    public void handlesConfigurationChanges() {
+        String configuration = new TestConfigurationBuilder()
+                .paypalEnabled(true)
+                .build();
+        PaymentRequest paymentRequest = new PaymentRequest()
+                .clientToken(stringFromFixture("client_token.json"));
+        mActivity.setPaymentRequest(paymentRequest);
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(configuration)
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
+        setup(httpClient);
+        assertEquals(2, ((ListView) mActivity.findViewById(R.id.bt_available_payment_methods)).getAdapter().getCount());
+        assertEquals(2, ((ViewGroup) mActivity.findViewById(R.id.bt_vaulted_scroll_container)).getChildCount());
+
+        Bundle bundle = new Bundle();
+        mActivityController.saveInstanceState(bundle)
+                .pause()
+                .stop()
+                .destroy();
+        mActivityController = Robolectric.buildActivity(NewDropInUnitTestActivity.class)
+                .setup(bundle);
+        mActivity = (NewDropInUnitTestActivity) mActivityController.get();
+
+        assertEquals(2, ((ListView) mActivity.findViewById(R.id.bt_available_payment_methods)).getAdapter().getCount());
+        assertEquals(2, ((ViewGroup) mActivity.findViewById(R.id.bt_vaulted_scroll_container)).getChildCount());
     }
 
     @Test
