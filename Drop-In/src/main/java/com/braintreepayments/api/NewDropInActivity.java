@@ -81,7 +81,7 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
 
             if (Authorization.fromString(mPaymentRequest.getAuthorization()) instanceof ClientToken
                     && !mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
-                PaymentMethod.getPaymentMethodNonces(mBraintreeFragment);
+                PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
             } else if (mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
                 onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
             }
