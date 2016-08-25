@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
@@ -13,11 +15,11 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodAdapter;
-import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodAdapter.PaymentMethodSelectedListener;
+import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter;
+import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
+import com.braintreepayments.api.dropin.adapters.VaultedPaymentMethodsAdapter;
 import com.braintreepayments.api.dropin.interfaces.AnimationFinishedListener;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
-import com.braintreepayments.api.dropin.view.PaymentMethodHorizontalScrollView;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
@@ -48,10 +50,10 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
     private View mBottomSheet;
     private BraintreeFragment mBraintreeFragment;
     private ViewSwitcher mViewSwitcher;
-    private ListView mAvailablePaymentMethodListView;
-    private View mVaultedPaymentMethodView;
     private TextView mAvailablePaymentMethodsHeader;
-    private PaymentMethodHorizontalScrollView mPaymentMethodHorizontalScrollView;
+    private ListView mAvailablePaymentMethodListView;
+    private View mVaultedPaymentMethodsContainer;
+    private RecyclerView mVaultedPaymentMethodsView;
     private AtomicBoolean mSheetAnimationPerformed;
 
     @Override
@@ -62,12 +64,11 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
         mPaymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
         mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
         mViewSwitcher = (ViewSwitcher) findViewById(R.id.bt_loading_view_switcher);
-        mAvailablePaymentMethodListView = (ListView) findViewById(R.id.bt_available_payment_methods);
-        mVaultedPaymentMethodView = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mAvailablePaymentMethodsHeader = (TextView) findViewById(R.id.bt_available_payment_methods_header);
-        mPaymentMethodHorizontalScrollView =
-                (PaymentMethodHorizontalScrollView) findViewById(R.id.bt_vaulted_horizontal_scroll);
-        mPaymentMethodHorizontalScrollView.setPaymentMethodSelectedListener(this);
+        mAvailablePaymentMethodListView = (ListView) findViewById(R.id.bt_available_payment_methods);
+        mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
+        mVaultedPaymentMethodsView = (RecyclerView) findViewById(R.id.bt_vaulted_payment_methods);
+        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         if (savedInstanceState != null) {
             mSheetAnimationPerformed =
@@ -127,7 +128,7 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
 
     @Override
     public void onConfigurationFetched(Configuration configuration) {
-        mAvailablePaymentMethodListView.setAdapter(new SupportedPaymentMethodAdapter(this, configuration, this));
+        mAvailablePaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(this, configuration, this));
     }
 
     @Override
@@ -157,13 +158,13 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
     @Override
     public void onPaymentMethodNoncesUpdated(final List<PaymentMethodNonce> paymentMethodNonces) {
         if (paymentMethodNonces.size() > 0) {
-            mVaultedPaymentMethodView.setVisibility(View.VISIBLE);
-            mPaymentMethodHorizontalScrollView.setPaymentMethods(paymentMethodNonces);
             mAvailablePaymentMethodsHeader.setText(R.string.bt_other);
+            mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
+            mVaultedPaymentMethodsView.setAdapter(new VaultedPaymentMethodsAdapter(this, paymentMethodNonces));
             mViewSwitcher.setDisplayedChild(1);
         } else {
-            mViewSwitcher.setVisibility(View.INVISIBLE);
             mAvailablePaymentMethodsHeader.setText(R.string.bt_select_payment_method);
+            mViewSwitcher.setVisibility(View.INVISIBLE);
         }
     }
 

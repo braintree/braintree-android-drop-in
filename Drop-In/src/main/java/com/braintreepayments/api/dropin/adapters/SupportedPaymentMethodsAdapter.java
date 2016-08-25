@@ -15,13 +15,13 @@ import com.braintreepayments.api.models.Configuration;
 
 import java.util.ArrayList;
 
-public class SupportedPaymentMethodAdapter extends BaseAdapter {
+public class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
     private Context mContext;
     private ArrayList<PaymentMethodType> mAvailablePaymentMethods;
     private PaymentMethodSelectedListener mPaymentMethodSelectedListener;
 
-    public SupportedPaymentMethodAdapter(Context context, Configuration configuration,
+    public SupportedPaymentMethodsAdapter(Context context, Configuration configuration,
             PaymentMethodSelectedListener paymentMethodSelectedListener) {
         mContext = context;
         mPaymentMethodSelectedListener = paymentMethodSelectedListener;

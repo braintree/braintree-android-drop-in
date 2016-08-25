@@ -2,12 +2,13 @@ package com.braintreepayments.api;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.ViewGroup;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.models.CardNonce;
+import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.testutils.TestConfigurationBuilder;
 
 import org.json.JSONException;
@@ -94,7 +95,7 @@ public class NewDropInActivityUnitTest {
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
         setup(httpClient);
         assertEquals(2, ((ListView) mActivity.findViewById(R.id.bt_available_payment_methods)).getAdapter().getCount());
-        assertEquals(2, ((ViewGroup) mActivity.findViewById(R.id.bt_vaulted_scroll_container)).getChildCount());
+        assertEquals(2, ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter().getItemCount());
 
         Bundle bundle = new Bundle();
         mActivityController.saveInstanceState(bundle)
@@ -106,7 +107,7 @@ public class NewDropInActivityUnitTest {
         mActivity = (NewDropInUnitTestActivity) mActivityController.get();
 
         assertEquals(2, ((ListView) mActivity.findViewById(R.id.bt_available_payment_methods)).getAdapter().getCount());
-        assertEquals(2, ((ViewGroup) mActivity.findViewById(R.id.bt_vaulted_scroll_container)).getChildCount());
+        assertEquals(2, ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter().getItemCount());
     }
 
     @Test
@@ -134,6 +135,29 @@ public class NewDropInActivityUnitTest {
     }
 
     @Test
+    public void selectingAVaultedPaymentMethod_returnsANonce() throws JSONException {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build())
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
+                        stringFromFixture("responses/get_payment_methods_response.json"));
+        mActivity.setPaymentRequest(new PaymentRequest().clientToken(stringFromFixture("client_token.json")));
+        setup(httpClient);
+
+        RecyclerView recyclerView = ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods));
+        recyclerView.measure(0, 0);
+        recyclerView.layout(0, 0, 100, 10000);
+        recyclerView.findViewHolderForAdapterPosition(0).itemView.callOnClick();
+
+        PaymentMethodNonce paymentMethodNonce = PaymentMethodNonce.parsePaymentMethodNonces(
+                stringFromFixture("responses/get_payment_methods_response.json")).get(0);
+        assertTrue(mActivity.isFinishing());
+        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertEquals(paymentMethodNonce.getNonce(),
+                ((PaymentMethodNonce) mShadowActivity.getResultIntent()
+                        .getParcelableExtra(NewDropInActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
+    }
+
+    @Test
     public void onPaymentMethodNoncesUpdated_showsVaultedPaymentMethods() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
@@ -142,8 +166,8 @@ public class NewDropInActivityUnitTest {
         mActivity.setPaymentRequest(new PaymentRequest().clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
-        assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods_wrapper)).isVisible();
-        assertThat(mActivity.findViewById(R.id.bt_vaulted_horizontal_scroll)).isVisible();
+        assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods)).isShown();
+        assertEquals(3, ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter().getItemCount());
         assertThat((TextView) mActivity.findViewById(R.id.bt_available_payment_methods_header)).hasText(R.string.bt_other);
     }
 
@@ -156,8 +180,7 @@ public class NewDropInActivityUnitTest {
         mActivity.setPaymentRequest(new PaymentRequest().clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
-        assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods_wrapper)).isGone();
-        assertThat(mActivity.findViewById(R.id.bt_vaulted_horizontal_scroll)).isGone();
+        assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods)).isNotShown();
         assertThat((TextView) mActivity.findViewById(R.id.bt_available_payment_methods_header)).hasText(R.string.bt_select_payment_method);
     }
 

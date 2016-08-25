@@ -49,6 +49,22 @@ public class PaymentMethodTypeUnitTest {
     }
 
     @Test
+    public void getVaultedDrawable_returnsCorrectDrawables() {
+        assertEquals(R.drawable.bt_ic_vaulted_visa, PaymentMethodType.VISA.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_mastercard, PaymentMethodType.MASTERCARD.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_discover, PaymentMethodType.DISCOVER.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_amex, PaymentMethodType.AMEX.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_jcb, PaymentMethodType.JCB.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_diners_club, PaymentMethodType.DINERS.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_maestro, PaymentMethodType.MAESTRO.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_unionpay, PaymentMethodType.UNIONPAY.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_paypal, PaymentMethodType.PAYPAL.getVaultedDrawable());
+        assertEquals(0, PaymentMethodType.ANDROID_PAY.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_unknown, PaymentMethodType.UNKNOWN.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_venmo, PaymentMethodType.PAY_WITH_VENMO.getVaultedDrawable());
+    }
+
+    @Test
     public void getLocalizedName_returnsCorrectString() {
         assertEquals(R.string.bt_descriptor_visa, PaymentMethodType.VISA.getLocalizedName());
         assertEquals(R.string.bt_descriptor_mastercard, PaymentMethodType.MASTERCARD.getLocalizedName());

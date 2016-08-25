@@ -2,7 +2,7 @@ package com.braintreepayments.api.dropin.adapters;
 
 import android.content.Context;
 
-import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodAdapter.PaymentMethodSelectedListener;
+import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.models.AndroidPayConfiguration;
 import com.braintreepayments.api.models.Configuration;
@@ -29,7 +29,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         when(configuration.getAndroidPay()).thenReturn(mock(AndroidPayConfiguration.class));
         when(configuration.getPayWithVenmo()).thenReturn(mock(VenmoConfiguration.class));
 
-        SupportedPaymentMethodAdapter adapter = new SupportedPaymentMethodAdapter(RuntimeEnvironment.application,
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application,
                 configuration, null);
 
         assertEquals(1, adapter.getCount());
@@ -47,7 +47,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         when(configuration.isPayPalEnabled()).thenReturn(true);
         when(configuration.getPayWithVenmo()).thenReturn(venmoConfiguration);
 
-        SupportedPaymentMethodAdapter adapter = new SupportedPaymentMethodAdapter(RuntimeEnvironment.application,
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application,
                 configuration, null);
 
         assertEquals(4, adapter.getCount());
@@ -69,7 +69,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         when(configuration.getPayWithVenmo()).thenReturn(venmoConfiguration);
         PaymentMethodSelectedListener listener = mock(PaymentMethodSelectedListener.class);
 
-        SupportedPaymentMethodAdapter adapter = new SupportedPaymentMethodAdapter(RuntimeEnvironment.application,
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application,
                 configuration, listener);
 
         adapter.getView(0, null, null).callOnClick();

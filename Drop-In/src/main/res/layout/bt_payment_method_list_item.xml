@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@drawable/bt_payment_method_list_item_bg"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:foreground="@drawable/bt_payment_method_list_item_bg"
     android:paddingTop="12dp"
     android:paddingBottom="12dp"
     android:paddingStart="16dp"
-    android:paddingLeft="16dp"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:paddingLeft="16dp">
 
     <ImageView
         android:id="@+id/bt_payment_method_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="ContentDescription"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_alignParentStart="true"
+        tools:ignore="ContentDescription"/>
 
     <TextView
         style="@style/bt_base_textview_bold"
@@ -29,6 +29,6 @@
         android:layout_marginLeft="14dp"
         android:layout_marginStart="14dp"
         android:textSize="16sp"
-        android:textColor="@color/bt_black" />
+        android:textColor="@color/bt_black"/>
 
 </RelativeLayout>
