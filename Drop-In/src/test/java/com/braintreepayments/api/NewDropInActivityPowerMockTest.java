@@ -1,5 +1,8 @@
 package com.braintreepayments.api;
 
+import android.app.Activity;
+import android.content.Intent;
+
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.wallet.Cart;
@@ -21,6 +24,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyInt;
+import static org.mockito.Mockito.times;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
@@ -94,5 +98,21 @@ public class NewDropInActivityPowerMockTest {
 
         IntentForResult intent = shadowActivity.peekNextStartedActivityForResult();
         assertEquals(AddCardActivity.class.getName(), intent.intent.getComponent().getClassName());
+    }
+
+    @Test
+    public void onActivityResult_handlesAndroidPayResponse() {
+        Cart cart = Cart.newBuilder().build();
+        mActivity.setPaymentRequest(new PaymentRequest().androidPayCart(cart));
+        mockStatic(AndroidPay.class);
+        doNothing().when(AndroidPay.class);
+        AndroidPay.onActivityResult(any(BraintreeFragment.class), any(Cart.class), anyInt(), any(Intent.class));
+        Intent data = new Intent();
+
+        mActivity.onActivityResult(AndroidPay.ANDROID_PAY_MASKED_WALLET_REQUEST_CODE, Activity.RESULT_OK, data);
+        mActivity.onActivityResult(AndroidPay.ANDROID_PAY_FULL_WALLET_REQUEST_CODE, Activity.RESULT_OK, data);
+
+        verifyStatic(times(2));
+        AndroidPay.onActivityResult(mActivity.braintreeFragment, cart, Activity.RESULT_OK, data);
     }
 }
