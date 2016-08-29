@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.models.CardNonce;
@@ -64,6 +65,13 @@ public class NewDropInActivityUnitTest {
         assertEquals(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
         assertEquals("A client token or client key must be specified in the PaymentRequest", mShadowActivity.getResultIntent()
                 .getStringExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE));
+    }
+
+    @Test
+    public void showsLoadingIndicatorWhenWaitingForConfiguration() {
+        setup(new BraintreeUnitTestHttpClient());
+
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
     @Test
