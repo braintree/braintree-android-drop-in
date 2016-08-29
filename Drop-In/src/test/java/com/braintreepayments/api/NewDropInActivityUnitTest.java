@@ -10,6 +10,13 @@ import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
+import com.braintreepayments.api.exceptions.AuthenticationException;
+import com.braintreepayments.api.exceptions.AuthorizationException;
+import com.braintreepayments.api.exceptions.ConfigurationException;
+import com.braintreepayments.api.exceptions.DownForMaintenanceException;
+import com.braintreepayments.api.exceptions.ServerException;
+import com.braintreepayments.api.exceptions.UnexpectedException;
+import com.braintreepayments.api.exceptions.UpgradeRequiredException;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.testutils.TestConfigurationBuilder;
@@ -28,6 +35,7 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -251,6 +259,62 @@ public class NewDropInActivityUnitTest {
         assertEquals("Error", mShadowActivity.getResultIntent().getStringExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE));
     }
 
+    @Test
+    public void configurationExceptionExitsActivityWithError() {
+        setup(mock(BraintreeFragment.class));
+
+        assertExceptionIsReturned("configuration-exception", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR,
+                new ConfigurationException("Configuration exception"));
+    }
+
+    @Test
+    public void authenticationExceptionExitsActivityWithError() {
+        setup(mock(BraintreeFragment.class));
+
+        assertExceptionIsReturned("developer-error", BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+                new AuthenticationException("Access denied"));
+    }
+
+    @Test
+    public void authorizationExceptionExitsActivityWithError() {
+        setup(mock(BraintreeFragment.class));
+
+        assertExceptionIsReturned("developer-error", BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+                new AuthorizationException("Access denied"));
+    }
+
+    @Test
+    public void upgradeRequiredExceptionExitsActivityWithError() {
+        setup(mock(BraintreeFragment.class));
+
+        assertExceptionIsReturned("developer-error", BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+                new UpgradeRequiredException("Exception"));
+    }
+
+    @Test
+    public void serverExceptionExitsActivityWithError() {
+        setup(mock(BraintreeFragment.class));
+
+        assertExceptionIsReturned("server-error", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR,
+                new ServerException("Exception"));
+    }
+
+    @Test
+    public void unexpectedExceptionExitsActivityWithError() {
+        setup(mock(BraintreeFragment.class));
+
+        assertExceptionIsReturned("server-error", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR,
+                new UnexpectedException("Exception"));
+    }
+
+    @Test
+    public void downForMaintenanceExceptionExitsActivityWithError() {
+        setup(mock(BraintreeFragment.class));
+
+        assertExceptionIsReturned("server-unavailable", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE,
+                new DownForMaintenanceException("Exception"));
+    }
+
     private void setup(BraintreeFragment fragment) {
         mActivity.braintreeFragment = fragment;
         mActivityController.setup();
@@ -259,5 +323,17 @@ public class NewDropInActivityUnitTest {
     private void setup(BraintreeUnitTestHttpClient httpClient) {
         mActivity.httpClient = httpClient;
         mActivityController.setup();
+    }
+
+    private void assertExceptionIsReturned(String analyticsEvent, int responseCode, Exception exception) {
+        mActivity.onError(exception);
+
+        verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit." + analyticsEvent);
+        assertTrue(mActivity.isFinishing());
+        assertEquals(responseCode, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE);
+        assertEquals(exception.getClass(), actualException.getClass());
+        assertEquals(exception.getMessage(), actualException.getMessage());
     }
 }

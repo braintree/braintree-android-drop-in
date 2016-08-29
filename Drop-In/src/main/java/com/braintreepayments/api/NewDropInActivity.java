@@ -21,8 +21,16 @@ import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter.
 import com.braintreepayments.api.dropin.adapters.VaultedPaymentMethodsAdapter;
 import com.braintreepayments.api.dropin.interfaces.AnimationFinishedListener;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
+import com.braintreepayments.api.exceptions.AuthenticationException;
+import com.braintreepayments.api.exceptions.AuthorizationException;
+import com.braintreepayments.api.exceptions.ConfigurationException;
+import com.braintreepayments.api.exceptions.DownForMaintenanceException;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.braintreepayments.api.exceptions.ServerException;
+import com.braintreepayments.api.exceptions.UnexpectedException;
+import com.braintreepayments.api.exceptions.UpgradeRequiredException;
 import com.braintreepayments.api.interfaces.BraintreeCancelListener;
+import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
@@ -36,10 +44,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
 import static com.braintreepayments.api.BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR;
+import static com.braintreepayments.api.BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR;
+import static com.braintreepayments.api.BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE;
 import static com.braintreepayments.api.BraintreePaymentActivity.EXTRA_ERROR_MESSAGE;
 
 public class NewDropInActivity extends Activity implements ConfigurationListener, BraintreeCancelListener,
-        PaymentMethodSelectedListener, PaymentMethodNoncesUpdatedListener, PaymentMethodNonceCreatedListener {
+        BraintreeErrorListener, PaymentMethodSelectedListener, PaymentMethodNoncesUpdatedListener,
+        PaymentMethodNonceCreatedListener {
 
     private static final int ADD_CARD_REQUEST_CODE = 1;
 
@@ -128,6 +139,31 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
     @Override
     public void onCancel(int requestCode) {
         mLoadingViewSwitcher.setDisplayedChild(1);
+    }
+
+    @Override
+    public void onError(final Exception error) {
+        slideDown(new AnimationFinishedListener() {
+            @Override
+            public void onAnimationFinished() {
+                if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
+                        error instanceof UpgradeRequiredException) {
+                    mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
+                    setResult(BRAINTREE_RESULT_DEVELOPER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                } else if (error instanceof ConfigurationException) {
+                    mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
+                    setResult(BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                } else if (error instanceof ServerException || error instanceof UnexpectedException) {
+                    mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
+                    setResult(BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                } else if (error instanceof DownForMaintenanceException) {
+                    mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
+                    setResult(BRAINTREE_RESULT_SERVER_UNAVAILABLE, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                }
+
+                finish();
+            }
+        });
     }
 
     @Override
