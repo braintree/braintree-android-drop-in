@@ -1,6 +1,7 @@
 package com.braintreepayments.api;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ListView;
@@ -182,6 +183,33 @@ public class NewDropInActivityUnitTest {
 
         assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods)).isNotShown();
         assertThat((TextView) mActivity.findViewById(R.id.bt_available_payment_methods_header)).hasText(R.string.bt_select_payment_method);
+    }
+
+    @Test
+    public void onActivityResult_returnsNonceFromAddCardActivity() throws JSONException {
+        CardNonce cardNonce = CardNonce.fromJson(stringFromFixture("responses/visa_credit_card_response.json"));
+        Intent data = new Intent()
+                .putExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE, cardNonce);
+        mActivityController.setup();
+        mActivity.onActivityResult(1, Activity.RESULT_OK, data);
+
+        assertTrue(mShadowActivity.isFinishing());
+        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertEquals(cardNonce.getNonce(),
+                ((PaymentMethodNonce) mShadowActivity.getResultIntent()
+                        .getParcelableExtra(NewDropInActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
+    }
+
+    @Test
+    public void onActivityResult_returnsErrorFromAddCardActivity() {
+        Intent data = new Intent()
+                .putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, "Error");
+        mActivityController.setup();
+        mActivity.onActivityResult(1, BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, data);
+
+        assertTrue(mShadowActivity.isFinishing());
+        assertEquals(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
+        assertEquals("Error", mShadowActivity.getResultIntent().getStringExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE));
     }
 
     private void setup(BraintreeFragment fragment) {

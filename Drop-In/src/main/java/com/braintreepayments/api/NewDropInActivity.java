@@ -177,12 +177,23 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, final int resultCode, final Intent data) {
         if ((requestCode == AndroidPay.ANDROID_PAY_MASKED_WALLET_REQUEST_CODE ||
                 requestCode == AndroidPay.ANDROID_PAY_FULL_WALLET_REQUEST_CODE) && resultCode == RESULT_OK) {
             AndroidPay.onActivityResult(mBraintreeFragment, mPaymentRequest.getAndroidPayCart(), resultCode, data);
-        } else if (requestCode == ADD_CARD_REQUEST_CODE && resultCode == RESULT_OK) {
-            onPaymentMethodNonceCreated((PaymentMethodNonce) data.getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE));
+        } else if (requestCode == ADD_CARD_REQUEST_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                onPaymentMethodNonceCreated((PaymentMethodNonce) data
+                        .getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE));
+            } else {
+                slideDown(new AnimationFinishedListener() {
+                    @Override
+                    public void onAnimationFinished() {
+                        setResult(resultCode, data);
+                        finish();
+                    }
+                });
+            }
         }
     }
 
