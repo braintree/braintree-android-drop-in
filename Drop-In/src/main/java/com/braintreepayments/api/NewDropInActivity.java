@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
@@ -69,6 +70,7 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
         mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = (RecyclerView) findViewById(R.id.bt_vaulted_payment_methods);
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
         if (savedInstanceState != null) {
             mSheetAnimationPerformed =
