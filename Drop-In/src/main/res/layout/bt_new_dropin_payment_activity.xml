@@ -22,9 +22,11 @@
             android:layout_height="wrap_content"
             android:animateLayoutChanges="true">
 
-            <FrameLayout
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="120dp">
+                android:layout_height="120dp"
+                android:orientation="vertical"
+                android:layout_gravity="center">
 
                 <ProgressBar
                     android:layout_width="@dimen/bt_vaulted_payment_progress_diameter"
@@ -32,7 +34,7 @@
                     android:layout_gravity="center"
                     android:indeterminate="true"/>
 
-            </FrameLayout>
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

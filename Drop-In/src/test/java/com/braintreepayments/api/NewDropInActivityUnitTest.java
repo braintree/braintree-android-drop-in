@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.testutils.TestConfigurationBuilder;
@@ -92,6 +93,16 @@ public class NewDropInActivityUnitTest {
     }
 
     @Test
+    public void onCancel_hidesLoadingView() {
+        setup(new BraintreeUnitTestHttpClient());
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+
+        mActivity.onCancel(0);
+
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
     public void handlesConfigurationChanges() {
         String configuration = new TestConfigurationBuilder()
                 .paypalEnabled(true)
@@ -127,6 +138,16 @@ public class NewDropInActivityUnitTest {
 
         assertTrue(mActivity.isFinishing());
         assertEquals(Activity.RESULT_CANCELED, mShadowActivity.getResultCode());
+    }
+
+    @Test
+    public void onPaymentMethodSelected_showsLoadingView() {
+        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+
+        mActivity.onPaymentMethodSelected(PaymentMethodType.UNKNOWN);
+
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
     @Test
@@ -191,6 +212,16 @@ public class NewDropInActivityUnitTest {
 
         assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods)).isNotShown();
         assertThat((TextView) mActivity.findViewById(R.id.bt_available_payment_methods_header)).hasText(R.string.bt_select_payment_method);
+    }
+
+    @Test
+    public void onActivityResult_cancelHidesLoadingView() {
+        setup(new BraintreeUnitTestHttpClient());
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+
+        mActivity.onActivityResult(1, Activity.RESULT_CANCELED, null);
+
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
     @Test

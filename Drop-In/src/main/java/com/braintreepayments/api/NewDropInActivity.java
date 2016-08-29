@@ -22,6 +22,7 @@ import com.braintreepayments.api.dropin.adapters.VaultedPaymentMethodsAdapter;
 import com.braintreepayments.api.dropin.interfaces.AnimationFinishedListener;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
+import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
@@ -37,8 +38,8 @@ import static android.view.animation.AnimationUtils.loadAnimation;
 import static com.braintreepayments.api.BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR;
 import static com.braintreepayments.api.BraintreePaymentActivity.EXTRA_ERROR_MESSAGE;
 
-public class NewDropInActivity extends Activity implements ConfigurationListener, PaymentMethodSelectedListener,
-        PaymentMethodNoncesUpdatedListener, PaymentMethodNonceCreatedListener {
+public class NewDropInActivity extends Activity implements ConfigurationListener, BraintreeCancelListener,
+        PaymentMethodSelectedListener, PaymentMethodNoncesUpdatedListener, PaymentMethodNonceCreatedListener {
 
     private static final int ADD_CARD_REQUEST_CODE = 1;
 
@@ -119,6 +120,17 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
     }
 
     @Override
+    public void onConfigurationFetched(Configuration configuration) {
+        mAvailablePaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(this, configuration, this));
+        mLoadingViewSwitcher.setDisplayedChild(1);
+    }
+
+    @Override
+    public void onCancel(int requestCode) {
+        mLoadingViewSwitcher.setDisplayedChild(1);
+    }
+
+    @Override
     public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethodNonce) {
         slideDown(new AnimationFinishedListener() {
             @Override
@@ -131,13 +143,9 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
     }
 
     @Override
-    public void onConfigurationFetched(final Configuration configuration) {
-        mAvailablePaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(this, configuration, this));
-        mLoadingViewSwitcher.setDisplayedChild(1);
-    }
-
-    @Override
     public void onPaymentMethodSelected(PaymentMethodType type) {
+        mLoadingViewSwitcher.setDisplayedChild(0);
+
         switch (type) {
             case PAYPAL:
                 PayPal.authorizeAccount(mBraintreeFragment);
@@ -181,7 +189,9 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
 
     @Override
     protected void onActivityResult(int requestCode, final int resultCode, final Intent data) {
-        if ((requestCode == AndroidPay.ANDROID_PAY_MASKED_WALLET_REQUEST_CODE ||
+        if (resultCode == Activity.RESULT_CANCELED) {
+            mLoadingViewSwitcher.setDisplayedChild(1);
+        } else if ((requestCode == AndroidPay.ANDROID_PAY_MASKED_WALLET_REQUEST_CODE ||
                 requestCode == AndroidPay.ANDROID_PAY_FULL_WALLET_REQUEST_CODE) && resultCode == RESULT_OK) {
             AndroidPay.onActivityResult(mBraintreeFragment, mPaymentRequest.getAndroidPayCart(), resultCode, data);
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
