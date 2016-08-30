@@ -2,13 +2,11 @@ package com.braintreepayments.api.dropin.view;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.Button;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
-import com.braintreepayments.api.dropin.view.AddCardView;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.api.test.TestConfigurationBuilder.TestUnionPayConfigurationBuilder;
@@ -109,7 +107,7 @@ public class AddCardViewUnitTest {
         mView.showCardNotSupportedError();
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_not_accepted),
-                ((TextInputLayout) mView.getCardForm().getCardEditText().getParent()).getError());
+                mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
         assertThat(mView.findViewById(R.id.bt_button)).isVisible();
         assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
     }
@@ -132,7 +130,7 @@ public class AddCardViewUnitTest {
 
         verifyZeroInteractions(listener);
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
-                ((TextInputLayout) mView.getCardForm().getCardEditText().getParent()).getError());
+                mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
         assertThat(mView.findViewById(R.id.bt_button)).isVisible();
         assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
     }
@@ -219,6 +217,6 @@ public class AddCardViewUnitTest {
         verifyZeroInteractions(listener);
         assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
-                ((TextInputLayout) mView.getCardForm().getCardEditText().getParent()).getError());
+                mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
     }
 }

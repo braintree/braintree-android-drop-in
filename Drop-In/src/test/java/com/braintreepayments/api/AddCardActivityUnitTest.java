@@ -1,7 +1,6 @@
 package com.braintreepayments.api;
 
 import android.app.Activity;
-import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.EditText;
 
@@ -245,13 +244,13 @@ public class AddCardActivityUnitTest {
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
-                ((TextInputLayout) mEditCardView.findViewById(R.id.bt_card_form_card_number).getParent()).getError());
+                mEditCardView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
-                ((TextInputLayout) mEditCardView.findViewById(R.id.bt_card_form_expiration).getParent()).getError());
+                mEditCardView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_cvv_invalid),
-                ((TextInputLayout) mEditCardView.findViewById(R.id.bt_card_form_cvv).getParent()).getError());
+                mEditCardView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_invalid),
-                ((TextInputLayout) mEditCardView.findViewById(R.id.bt_card_form_postal_code).getParent()).getError());
+                mEditCardView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
     }
 
     @Test
@@ -429,7 +428,7 @@ public class AddCardActivityUnitTest {
         mAddCardView.findViewById(R.id.bt_button).performClick();
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_not_accepted),
-                ((TextInputLayout) mAddCardView.findViewById(R.id.bt_card_form_card_number).getParent()).getError());
+                mAddCardView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
     }
 
     @Test

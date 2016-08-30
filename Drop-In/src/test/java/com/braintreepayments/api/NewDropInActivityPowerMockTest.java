@@ -2,6 +2,7 @@ package com.braintreepayments.api;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.google.android.gms.identity.intents.model.CountrySpecification;
@@ -16,9 +17,11 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowActivity.IntentForResult;
 
+import static com.braintreepayments.testutils.ReflectionHelper.setField;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
@@ -41,8 +44,10 @@ public class NewDropInActivityPowerMockTest {
     private NewDropInUnitTestActivity mActivity;
 
     @Before
-    public void setup() {
+    public void setup() throws NoSuchFieldException, IllegalAccessException {
         mActivity = Robolectric.buildActivity(NewDropInUnitTestActivity.class).get();
+        setField(NewDropInActivity.class, "mLoadingViewSwitcher", mActivity,
+                new ViewSwitcher(RuntimeEnvironment.application));
     }
 
     @Test

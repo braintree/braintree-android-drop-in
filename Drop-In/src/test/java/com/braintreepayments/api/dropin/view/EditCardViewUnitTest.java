@@ -1,13 +1,11 @@
 package com.braintreepayments.api.dropin.view;
 
 import android.app.Activity;
-import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.Button;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
-import com.braintreepayments.api.dropin.view.EditCardView;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
@@ -127,13 +125,13 @@ public class EditCardViewUnitTest {
         mView.setErrors(new ErrorWithResponse(422, stringFromFixture("responses/credit_card_error_response.json")));
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
-                ((TextInputLayout) mView.getCardForm().getCardEditText().getParent()).getError());
+                mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
-                ((TextInputLayout) mView.getCardForm().getExpirationDateEditText().getParent()).getError());
+                mView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_cvv_invalid),
-                ((TextInputLayout) mView.getCardForm().getCvvEditText().getParent()).getError());
+                mView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_invalid),
-                ((TextInputLayout) mView.getCardForm().getPostalCodeEditText().getParent()).getError());
+                mView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
     }
 
     @Test
@@ -180,13 +178,13 @@ public class EditCardViewUnitTest {
         mView.onCardFormSubmit();
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_required),
-                ((TextInputLayout) mView.getCardForm().getCardEditText().getParent()).getError());
+                mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_required),
-                ((TextInputLayout) mView.getCardForm().getExpirationDateEditText().getParent()).getError());
+                mView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_cvv_required),
-                ((TextInputLayout) mView.getCardForm().getCvvEditText().getParent()).getError());
+                mView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_required),
-                ((TextInputLayout) mView.getCardForm().getPostalCodeEditText().getParent()).getError());
+                mView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
     }
 
     @Test
