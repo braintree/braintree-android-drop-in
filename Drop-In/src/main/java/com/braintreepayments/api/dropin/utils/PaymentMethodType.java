@@ -1,6 +1,7 @@
 package com.braintreepayments.api.dropin.utils;
 
 import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.cardform.utils.CardType;
 
 public enum PaymentMethodType {
@@ -43,6 +44,15 @@ public enum PaymentMethodType {
             }
         }
         return UNKNOWN;
+    }
+
+    /**
+     * @param paymentMethodNonce A {@link PaymentMethodNonce} to get the {@link PaymentMethodType} of.
+     * @return a {@link PaymentMethodType} for the given {@link PaymentMethodNonce}, or {@link PaymentMethodType#UNKNOWN}
+     * if no match could be made.
+     */
+    public static PaymentMethodType forType(PaymentMethodNonce paymentMethodNonce) {
+        return forType(paymentMethodNonce.getTypeLabel());
     }
 
     /**

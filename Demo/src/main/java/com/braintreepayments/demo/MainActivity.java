@@ -204,7 +204,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     private void displayResult(Intent data) {
         mNonce = data.getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
 
-        mNonceIcon.setImageResource(PaymentMethodType.forType(mNonce.getTypeLabel()).getDrawable());
+        mNonceIcon.setImageResource(PaymentMethodType.forType(mNonce).getDrawable());
         mNonceIcon.setVisibility(VISIBLE);
 
         mNonceString.setText(getString(R.string.nonce) + ": " + mNonce.getNonce());

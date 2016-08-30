@@ -48,7 +48,7 @@ public class PaymentMethodNonceView extends RelativeLayout {
     }
 
     public void setPaymentMethodNonceDetails(PaymentMethodNonce paymentMethodNonce) {
-        mType = PaymentMethodType.forType(paymentMethodNonce.getTypeLabel());
+        mType = PaymentMethodType.forType(paymentMethodNonce);
         if (paymentMethodNonce instanceof CardNonce) {
             mDescription = String.format(getResources().getString(R.string.bt_card_descriptor),
                     ((CardNonce) paymentMethodNonce).getLastTwo());

@@ -1,18 +1,25 @@
 package com.braintreepayments.api.dropin.utils;
 
 import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.api.models.AndroidPayCardNonce;
+import com.braintreepayments.api.models.CardNonce;
+import com.braintreepayments.api.models.PayPalAccountNonce;
+import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.models.VenmoAccountNonce;
 
+import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 
+import static com.braintreepayments.testutils.FixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class PaymentMethodTypeUnitTest {
 
     @Test
-    public void forType_returnsCorrectPaymentMethodType() {
+    public void forType_returnsCorrectPaymentMethodType() throws JSONException {
         assertEquals(PaymentMethodType.VISA, PaymentMethodType.forType("Visa"));
         assertEquals(PaymentMethodType.MASTERCARD, PaymentMethodType.forType("MasterCard"));
         assertEquals(PaymentMethodType.DISCOVER, PaymentMethodType.forType("Discover"));
@@ -25,6 +32,18 @@ public class PaymentMethodTypeUnitTest {
         assertEquals(PaymentMethodType.ANDROID_PAY, PaymentMethodType.forType("Android Pay"));
         assertEquals(PaymentMethodType.UNKNOWN, PaymentMethodType.forType("unknown"));
         assertEquals(PaymentMethodType.PAY_WITH_VENMO, PaymentMethodType.forType("Venmo"));
+
+        assertEquals(PaymentMethodType.VISA, PaymentMethodType.forType(
+                CardNonce.fromJson(stringFromFixture("responses/visa_credit_card_response.json"))));
+        assertEquals(PaymentMethodType.PAYPAL, PaymentMethodType.forType(new PayPalAccountNonce()));
+        assertEquals(PaymentMethodType.ANDROID_PAY, PaymentMethodType.forType(new AndroidPayCardNonce()));
+        assertEquals(PaymentMethodType.UNKNOWN, PaymentMethodType.forType(new PaymentMethodNonce() {
+            @Override
+            public String getTypeLabel() {
+                return null;
+            }
+        }));
+        assertEquals(PaymentMethodType.PAY_WITH_VENMO, PaymentMethodType.forType(new VenmoAccountNonce()));
     }
 
     @Test
