@@ -13,9 +13,10 @@
 
     <ProgressBar
         android:id="@+id/bt_progress_bar"
+        android:layout_width="@dimen/bt_vaulted_payment_progress_diameter"
+        android:layout_height="@dimen/bt_vaulted_payment_progress_diameter"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:indeterminate="true"/>
 
     <ScrollView
         android:layout_width="match_parent"
