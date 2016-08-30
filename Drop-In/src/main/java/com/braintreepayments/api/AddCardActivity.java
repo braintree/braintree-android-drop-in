@@ -303,8 +303,12 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     @Override
     public void onSmsCodeSent(String enrollmentId, boolean smsRequired) {
         mEnrollmentId = enrollmentId;
-        mEditCardView.useUnionPay(this, smsRequired);
-        onPaymentUpdated(mEditCardView);
+
+        if (smsRequired) {
+            onPaymentUpdated(mEditCardView);
+        } else {
+            createCard();
+        }
     }
 
     @Override

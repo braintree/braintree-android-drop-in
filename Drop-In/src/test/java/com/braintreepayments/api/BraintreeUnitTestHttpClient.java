@@ -17,11 +17,11 @@ import static org.mockito.Mockito.when;
 public class BraintreeUnitTestHttpClient extends BraintreeHttpClient {
 
     public static final String GET_PAYMENT_METHODS = TokenizationClient.versionedPath(
-        TokenizationClient.PAYMENT_METHOD_ENDPOINT);
+        TokenizationClient.PAYMENT_METHOD_ENDPOINT + ".*");
     public static final String TOKENIZE_CREDIT_CARD = TokenizationClient.versionedPath(
         TokenizationClient.PAYMENT_METHOD_ENDPOINT + "/" + new CardBuilder().getApiPath());
     public static final String UNIONPAY_CAPABILITIES_PATH = TokenizationClient.versionedPath(
-            "payment_methods/credit_cards/capabilities");
+            "payment_methods/credit_cards/capabilities.*");
     public static final String UNIONPAY_ENROLLMENT_PATH = TokenizationClient.versionedPath("union_pay_enrollments");
 
     private Map<String, String> mResponseMap;
@@ -34,7 +34,7 @@ public class BraintreeUnitTestHttpClient extends BraintreeHttpClient {
     }
 
     public BraintreeUnitTestHttpClient configuration(String configuration) {
-        mResponseMap.put("configuration", configuration);
+        mResponseMap.put("configuration.*", configuration);
         return this;
     }
 
@@ -60,13 +60,13 @@ public class BraintreeUnitTestHttpClient extends BraintreeHttpClient {
 
     private void handleRequest(String path, HttpResponseCallback callback) {
         for (String requestPath : mResponseMap.keySet()) {
-            if (path.contains(requestPath)) {
+            if (path.matches(".*" + requestPath)) {
                 callback.success(mResponseMap.get(requestPath));
                 return;
             }
         }
         for (String requestPath : mErrorResponseMap.keySet()) {
-            if (path.contains(requestPath)) {
+            if (path.matches(".*" + requestPath)) {
                 try {
                     super.parseResponse(getHttpUrlConnection(mErrorResponseMap.get(requestPath)));
                 } catch (Exception e) {
