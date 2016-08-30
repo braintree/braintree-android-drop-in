@@ -96,8 +96,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
     public void launchNewDropIn(View v) {
         Intent intent = getPaymentRequest().getIntent(this)
-                .setClass(this, NewDropInActivity.class)
-                .addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                .setClass(this, NewDropInActivity.class);
         startActivityForResult(intent, DROP_IN_REQUEST);
     }
 

@@ -281,4 +281,10 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
         }
         mBottomSheet.startAnimation(slideOutAnimation);
     }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
 }
