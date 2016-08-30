@@ -1,7 +1,6 @@
 package com.braintreepayments.api;
 
 import android.app.Activity;
-import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.view.View;
 import android.widget.EditText;
@@ -95,24 +94,6 @@ public class AddCardActivityUnitTest {
         assertThat(mAddCardView).isGone();
         assertThat(mEditCardView).isGone();
         assertThat(mEnrollmentCardView).isGone();
-    }
-
-    @Test
-    public void getsConfigurationIfConfigurationHasAlreadyBeenFetched() {
-        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
-        assertThat(mAddCardView.getCardForm()).isVisible();
-
-        Bundle bundle = new Bundle();
-        mActivityController.saveInstanceState(bundle)
-                .pause()
-                .stop()
-                .destroy();
-        mActivityController = Robolectric.buildActivity(AddCardUnitTestActivity.class)
-                .setup(bundle);
-        mActivity = (AddCardUnitTestActivity) mActivityController.get();
-        mAddCardView = (AddCardView) mActivity.findViewById(R.id.bt_add_card_view);
-
-        assertThat(mAddCardView.getCardForm()).isVisible();
     }
 
     @Test

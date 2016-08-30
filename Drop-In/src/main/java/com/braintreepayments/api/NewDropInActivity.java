@@ -110,10 +110,6 @@ public class NewDropInActivity extends Activity implements ConfigurationListener
             return;
         }
 
-        if (mBraintreeFragment.getConfiguration() != null) {
-            onConfigurationFetched(mBraintreeFragment.getConfiguration());
-        }
-
         if (!mSheetAnimationPerformed.get()) {
             slideUp();
             mSheetAnimationPerformed.set(true);

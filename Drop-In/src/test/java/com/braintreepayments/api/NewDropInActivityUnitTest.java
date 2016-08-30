@@ -84,23 +84,6 @@ public class NewDropInActivityUnitTest {
     }
 
     @Test
-    public void getsConfigurationIfConfigurationHasAlreadyBeenFetched() {
-        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
-        assertEquals(1, ((ListView) mActivity.findViewById(R.id.bt_available_payment_methods)).getAdapter().getCount());
-
-        Bundle bundle = new Bundle();
-        mActivityController.saveInstanceState(bundle)
-                .pause()
-                .stop()
-                .destroy();
-        mActivityController = Robolectric.buildActivity(NewDropInUnitTestActivity.class)
-                .setup(bundle);
-        mActivity = (NewDropInUnitTestActivity) mActivityController.get();
-
-        assertEquals(1, ((ListView) mActivity.findViewById(R.id.bt_available_payment_methods)).getAdapter().getCount());
-    }
-
-    @Test
     public void onCancel_hidesLoadingView() {
         setup(new BraintreeUnitTestHttpClient());
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());

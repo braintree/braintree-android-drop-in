@@ -121,10 +121,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             finish();
             return;
         }
-
-        if (mBraintreeFragment.getConfiguration() != null) {
-            onConfigurationFetched(mBraintreeFragment.getConfiguration());
-        }
     }
 
     @VisibleForTesting
