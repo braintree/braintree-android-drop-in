@@ -231,16 +231,22 @@ public class AddCardActivityUnitTest {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
                         .challenges("cvv", "postal_code")
+                        .unionPay(new TestUnionPayConfigurationBuilder()
+                                .enabled(true))
                         .build())
-                .errorResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, 422,
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
+                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
+                .errorResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, 422,
                         stringFromFixture("responses/credit_card_error_response.json"));
         setup(httpClient);
 
-        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
         mAddCardView.findViewById(R.id.bt_button).performClick();
         setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
         setText(mEditCardView, R.id.bt_card_form_cvv, "123");
         setText(mEditCardView, R.id.bt_card_form_postal_code, "12345");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "123");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "12345678");
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
@@ -251,6 +257,10 @@ public class AddCardActivityUnitTest {
                 mEditCardView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_invalid),
                 mEditCardView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_country_code_invalid),
+                mEditCardView.getCardForm().getCountryCodeEditText().getTextInputLayoutParent().getError());
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_mobile_number_invalid),
+                mEditCardView.getCardForm().getMobileNumberEditText().getTextInputLayoutParent().getError());
     }
 
     @Test

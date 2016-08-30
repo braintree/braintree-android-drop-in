@@ -7,6 +7,14 @@
             "field": "creditCard",
             "fieldErrors": [
                 {
+                    "field": "mobileNumber",
+                    "message": "Mobile number is invalid"
+                },
+                {
+                    "field": "mobileCountryCode",
+                    "message": "Mobile country code is invalid"
+                },
+                {
                     "field": "billingAddress",
                     "message": "Postal code is invalid"
                 },

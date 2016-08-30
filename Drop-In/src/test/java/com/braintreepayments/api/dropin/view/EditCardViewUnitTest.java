@@ -121,6 +121,7 @@ public class EditCardViewUnitTest {
                 .challenges("cvv", "postal_code")
                 .buildConfiguration();
         mView.setup(mActivity, configuration);
+        mView.useUnionPay(mActivity, true);
 
         mView.setErrors(new ErrorWithResponse(422, stringFromFixture("responses/credit_card_error_response.json")));
 
@@ -132,6 +133,10 @@ public class EditCardViewUnitTest {
                 mView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_invalid),
                 mView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_country_code_invalid),
+                mView.getCardForm().getCountryCodeEditText().getTextInputLayoutParent().getError());
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_mobile_number_invalid),
+                mView.getCardForm().getMobileNumberEditText().getTextInputLayoutParent().getError());
     }
 
     @Test

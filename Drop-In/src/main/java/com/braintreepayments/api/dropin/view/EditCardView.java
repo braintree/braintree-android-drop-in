@@ -110,6 +110,14 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
             if (cardErrors.errorFor("billingAddress") != null) {
                 mCardForm.setPostalCodeError(getContext().getString(R.string.bt_postal_code_invalid));
             }
+
+            if (cardErrors.errorFor("mobileCountryCode") != null) {
+                mCardForm.setCountryCodeError(getContext().getString(R.string.bt_country_code_invalid));
+            }
+
+            if (cardErrors.errorFor("mobileNumber") != null) {
+                mCardForm.setMobileNumberError(getContext().getString(R.string.bt_mobile_number_invalid));
+            }
         }
     }
 
