@@ -9,10 +9,11 @@
     <LinearLayout
         android:id="@+id/bt_dropin_bottom_sheet"
         android:elevation="5dp"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/bt_full_width"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
         android:animateLayoutChanges="true"
         android:background="@color/bt_base_background">
 
