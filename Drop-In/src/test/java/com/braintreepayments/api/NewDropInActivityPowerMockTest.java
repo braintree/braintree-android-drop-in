@@ -21,7 +21,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowActivity.IntentForResult;
 
-import static com.braintreepayments.testutils.ReflectionHelper.setField;
+import static com.braintreepayments.api.test.ReflectionHelper.setField;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;

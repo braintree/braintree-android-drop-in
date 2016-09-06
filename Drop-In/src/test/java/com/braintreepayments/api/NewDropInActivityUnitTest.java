@@ -19,7 +19,7 @@ import com.braintreepayments.api.exceptions.UnexpectedException;
 import com.braintreepayments.api.exceptions.UpgradeRequiredException;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.testutils.TestConfigurationBuilder;
+import com.braintreepayments.api.test.TestConfigurationBuilder;
 
 import org.json.JSONException;
 import org.junit.Before;
@@ -30,7 +30,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.util.ActivityController;
 
-import static com.braintreepayments.testutils.FixturesHelper.stringFromFixture;
+import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;

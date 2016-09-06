@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 
-import static com.braintreepayments.testutils.FixturesHelper.stringFromFixture;
+import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(RobolectricGradleTestRunner.class)

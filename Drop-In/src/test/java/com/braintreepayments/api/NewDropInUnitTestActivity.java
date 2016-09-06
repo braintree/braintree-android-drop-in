@@ -6,7 +6,7 @@ import android.os.Bundle;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 
-import static com.braintreepayments.testutils.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 
 public class NewDropInUnitTestActivity extends NewDropInActivity {
 
