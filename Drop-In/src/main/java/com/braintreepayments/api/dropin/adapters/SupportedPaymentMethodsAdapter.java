@@ -28,8 +28,9 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
         mAvailablePaymentMethods = new ArrayList<>();
 
-        mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
-
+        if (configuration.getCardConfiguration().getSupportedCardTypes().size() > 0) {
+            mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
+        }
         if (configuration.getAndroidPay().isEnabled(mContext)) {
             mAvailablePaymentMethods.add(PaymentMethodType.ANDROID_PAY);
         }

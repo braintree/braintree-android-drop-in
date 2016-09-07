@@ -5,6 +5,7 @@ import android.content.Context;
 import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.models.AndroidPayConfiguration;
+import com.braintreepayments.api.models.CardConfiguration;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.VenmoConfiguration;
 
@@ -12,6 +13,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
+
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -25,27 +29,17 @@ public class SupportedPaymentMethodAdapterUnitTest {
 
     @Test
     public void noPaymentMethodsAvailableIfNotEnabled() {
-        Configuration configuration = mock(Configuration.class);
-        when(configuration.getAndroidPay()).thenReturn(mock(AndroidPayConfiguration.class));
-        when(configuration.getPayWithVenmo()).thenReturn(mock(VenmoConfiguration.class));
+        Configuration configuration = getConfiguration(false, false, false, false);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application,
                 configuration, null);
 
-        assertEquals(1, adapter.getCount());
-        assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(0));
+        assertEquals(0, adapter.getCount());
     }
 
     @Test
     public void allPaymentMethodsAvailableIfEnabled() {
-        AndroidPayConfiguration androidPayConfiguration = mock(AndroidPayConfiguration.class);
-        when(androidPayConfiguration.isEnabled(any(Context.class))).thenReturn(true);
-        VenmoConfiguration venmoConfiguration = mock(VenmoConfiguration.class);
-        when(venmoConfiguration.isEnabled(any(Context.class))).thenReturn(true);
-        Configuration configuration = mock(Configuration.class);
-        when(configuration.getAndroidPay()).thenReturn(androidPayConfiguration);
-        when(configuration.isPayPalEnabled()).thenReturn(true);
-        when(configuration.getPayWithVenmo()).thenReturn(venmoConfiguration);
+        Configuration configuration = getConfiguration(true, true, true, true);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application,
                 configuration, null);
@@ -59,14 +53,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
 
     @Test
     public void callsOnPaymentMethodSelectedListenerWhenPaymentMethodClicked() {
-        AndroidPayConfiguration androidPayConfiguration = mock(AndroidPayConfiguration.class);
-        when(androidPayConfiguration.isEnabled(any(Context.class))).thenReturn(true);
-        VenmoConfiguration venmoConfiguration = mock(VenmoConfiguration.class);
-        when(venmoConfiguration.isEnabled(any(Context.class))).thenReturn(true);
-        Configuration configuration = mock(Configuration.class);
-        when(configuration.getAndroidPay()).thenReturn(androidPayConfiguration);
-        when(configuration.isPayPalEnabled()).thenReturn(true);
-        when(configuration.getPayWithVenmo()).thenReturn(venmoConfiguration);
+        Configuration configuration = getConfiguration(true, true, true, true);
         PaymentMethodSelectedListener listener = mock(PaymentMethodSelectedListener.class);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application,
@@ -82,5 +69,34 @@ public class SupportedPaymentMethodAdapterUnitTest {
         verify(listener).onPaymentMethodSelected(PaymentMethodType.PAYPAL);
         verify(listener).onPaymentMethodSelected(PaymentMethodType.PAY_WITH_VENMO);
         verifyNoMoreInteractions(listener);
+    }
+
+    private Configuration getConfiguration(boolean paypalEnabled, boolean venmoEnabled,
+                                           boolean cardEnabled, boolean androidPayEnabled) {
+        Configuration configuration = mock(Configuration.class);
+
+        if (paypalEnabled) {
+            when(configuration.isPayPalEnabled()).thenReturn(true);
+        }
+
+        VenmoConfiguration venmoConfiguration = mock(VenmoConfiguration.class);
+        when(configuration.getPayWithVenmo()).thenReturn(venmoConfiguration);
+        if (venmoEnabled) {
+            when(venmoConfiguration.isEnabled(any(Context.class))).thenReturn(true);
+        }
+
+        CardConfiguration cardConfiguration = mock(CardConfiguration.class);
+        when(configuration.getCardConfiguration()).thenReturn(cardConfiguration);
+        if (cardEnabled) {
+            when(cardConfiguration.getSupportedCardTypes()).thenReturn(new HashSet<>(Arrays.asList("Visa")));
+        }
+
+        AndroidPayConfiguration androidPayConfiguration = mock(AndroidPayConfiguration.class);
+        when(configuration.getAndroidPay()).thenReturn(androidPayConfiguration);
+        if (androidPayEnabled) {
+            when(androidPayConfiguration.isEnabled(any(Context.class))).thenReturn(true);
+        }
+
+        return configuration;
     }
 }
