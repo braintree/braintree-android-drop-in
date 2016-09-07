@@ -3,7 +3,6 @@ package com.braintreepayments.api;
 import android.content.Intent;
 import android.os.Parcel;
 
-import com.braintreepayments.api.dropin.R;
 import com.google.android.gms.wallet.Cart;
 
 import org.junit.Test;
@@ -14,6 +13,7 @@ import org.robolectric.RuntimeEnvironment;
 import java.util.Collections;
 
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
@@ -40,15 +40,9 @@ public class PaymentRequestUnitTest {
                 .paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS))
                 .disablePayPal()
                 .disableVenmo()
-                .actionBarTitle("title")
-                .actionBarLogo(R.drawable.bt_ic_amex)
-                .primaryDescription("primary description")
-                .secondaryDescription("secondary description")
-                .submitButtonText("submit")
-                .defaultFirst(true)
                 .getIntent(RuntimeEnvironment.application);
 
-        PaymentRequest paymentRequest = intent.getParcelableExtra(BraintreePaymentActivity.EXTRA_CHECKOUT_REQUEST);
+        PaymentRequest paymentRequest = intent.getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
 
         assertEquals(BraintreePaymentActivity.class.getName(), intent.getComponent().getClassName());
         assertEquals(TOKENIZATION_KEY, paymentRequest.getAuthorization());
@@ -64,12 +58,6 @@ public class PaymentRequestUnitTest {
         assertEquals(Collections.singletonList(PayPal.SCOPE_ADDRESS), paymentRequest.getPayPalAdditionalScopes());
         assertFalse(paymentRequest.isPayPalEnabled());
         assertFalse(paymentRequest.isVenmoEnabled());
-        assertEquals("title", paymentRequest.getActionBarTitle());
-        assertEquals(R.drawable.bt_ic_amex, paymentRequest.getActionBarLogo());
-        assertEquals("primary description", paymentRequest.getPrimaryDescription());
-        assertEquals("secondary description", paymentRequest.getSecondaryDescription());
-        assertEquals("submit", paymentRequest.getSubmitButtonText());
-        assertTrue(paymentRequest.isDefaultFirst());
     }
 
     @Test
@@ -77,7 +65,7 @@ public class PaymentRequestUnitTest {
         Intent intent = new PaymentRequest()
                 .getIntent(RuntimeEnvironment.application);
 
-        PaymentRequest paymentRequest = intent.getParcelableExtra(BraintreePaymentActivity.EXTRA_CHECKOUT_REQUEST);
+        PaymentRequest paymentRequest = intent.getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
 
         assertEquals(BraintreePaymentActivity.class.getName(), intent.getComponent().getClassName());
         assertNull(paymentRequest.getAuthorization());
@@ -92,12 +80,6 @@ public class PaymentRequestUnitTest {
         assertNull(paymentRequest.getPayPalAdditionalScopes());
         assertTrue(paymentRequest.isPayPalEnabled());
         assertTrue(paymentRequest.isVenmoEnabled());
-        assertNull(paymentRequest.getActionBarTitle());
-        assertEquals(0, paymentRequest.getActionBarLogo());
-        assertNull(paymentRequest.getPrimaryDescription());
-        assertNull(paymentRequest.getSecondaryDescription());
-        assertNull(paymentRequest.getSubmitButtonText());
-        assertFalse(paymentRequest.isDefaultFirst());
     }
 
     @Test
@@ -117,13 +99,7 @@ public class PaymentRequestUnitTest {
                 .disableAndroidPay()
                 .paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS))
                 .disablePayPal()
-                .disableVenmo()
-                .actionBarTitle("title")
-                .actionBarLogo(R.drawable.bt_ic_amex)
-                .primaryDescription("primary description")
-                .secondaryDescription("secondary description")
-                .defaultFirst(true)
-                .submitButtonText("submit");
+                .disableVenmo();
 
         Parcel parcel = Parcel.obtain();
         paymentRequest.writeToParcel(parcel, 0);
@@ -143,12 +119,6 @@ public class PaymentRequestUnitTest {
         assertEquals(Collections.singletonList(PayPal.SCOPE_ADDRESS), parceledPaymentRequest.getPayPalAdditionalScopes());
         assertFalse(parceledPaymentRequest.isPayPalEnabled());
         assertFalse(parceledPaymentRequest.isVenmoEnabled());
-        assertEquals("title", parceledPaymentRequest.getActionBarTitle());
-        assertEquals(R.drawable.bt_ic_amex, parceledPaymentRequest.getActionBarLogo());
-        assertEquals("primary description", parceledPaymentRequest.getPrimaryDescription());
-        assertEquals("secondary description", parceledPaymentRequest.getSecondaryDescription());
-        assertTrue(parceledPaymentRequest.isDefaultFirst());
-        assertEquals("submit", parceledPaymentRequest.getSubmitButtonText());
     }
 
     @Test
@@ -156,5 +126,21 @@ public class PaymentRequestUnitTest {
         PaymentRequest paymentRequest = new PaymentRequest();
 
         assertTrue(paymentRequest.getAndroidPayAllowedCountriesForShipping().isEmpty());
+    }
+
+    @Test
+    public void getIntent_includesClientToken() {
+        PaymentRequest paymentRequest = new PaymentRequest()
+                .clientToken(stringFromFixture("client_token.json"));
+
+        assertEquals(stringFromFixture("client_token.json") , paymentRequest.getAuthorization());
+    }
+
+    @Test
+    public void getIntent_includesTokenizationKey() {
+        PaymentRequest paymentRequest = new PaymentRequest()
+                .tokenizationKey(TOKENIZATION_KEY);
+
+        assertEquals(TOKENIZATION_KEY, paymentRequest.getAuthorization());
     }
 }

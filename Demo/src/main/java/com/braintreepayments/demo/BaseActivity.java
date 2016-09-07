@@ -1,7 +1,6 @@
 package com.braintreepayments.demo;
 
 import android.app.AlertDialog;
-import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
@@ -18,7 +17,6 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
 import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.PaymentButton;
 import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
@@ -128,11 +126,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
     private void performReset() {
         mAuthorization = null;
         mCustomerId = Settings.getCustomerId(this);
-
-        Fragment paymentButton = getFragmentManager().findFragmentByTag(PaymentButton.TAG);
-        if (paymentButton != null) {
-            getFragmentManager().beginTransaction().remove(paymentButton).commit();
-        }
 
         if (mBraintreeFragment != null) {
             getFragmentManager().beginTransaction().remove(mBraintreeFragment).commit();

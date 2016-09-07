@@ -1,12 +1,12 @@
 package com.braintreepayments.demo;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.braintreepayments.api.dropin.view.SecureLoadingProgressBar;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.demo.models.Transaction;
@@ -15,17 +15,17 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class CreateTransactionActivity extends Activity {
+public class CreateTransactionActivity extends AppCompatActivity {
 
     public static final String EXTRA_PAYMENT_METHOD_NONCE = "nonce";
 
-    private SecureLoadingProgressBar mLoadingSpinner;
+    private ProgressBar mLoadingSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_transaction_activity);
-        mLoadingSpinner = (SecureLoadingProgressBar) findViewById(R.id.loading_spinner);
+        mLoadingSpinner = (ProgressBar) findViewById(R.id.loading_spinner);
         setTitle(R.string.processing_transaction);
 
         sendNonceToServer((PaymentMethodNonce) getIntent().getParcelableExtra(EXTRA_PAYMENT_METHOD_NONCE));

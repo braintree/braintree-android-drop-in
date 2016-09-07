@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Used to start {@link BraintreePaymentActivity} and {@link PaymentButton} with specified options.
+ * Used to start {@link BraintreePaymentActivity} with specified options.
  */
 public class PaymentRequest implements Parcelable {
 
@@ -22,7 +22,6 @@ public class PaymentRequest implements Parcelable {
 
     private String mAmount;
     private boolean mCollectDeviceData;
-    private boolean mDefaultFirst = false;
 
     private Cart mAndroidPayCart;
     private boolean mAndroidPayShippingAddressRequired;
@@ -35,12 +34,6 @@ public class PaymentRequest implements Parcelable {
     private boolean mPayPalEnabled = true;
 
     private boolean mVenmoEnabled = true;
-
-    private String mActionBarTitle;
-    private int mActionBarLogo;
-    private String mPrimaryDescription;
-    private String mSecondaryDescription;
-    private String mSubmitButtonText;
 
     public PaymentRequest() {}
 
@@ -158,7 +151,7 @@ public class PaymentRequest implements Parcelable {
     }
 
     /**
-     * Disables Android Pay in the {@link PaymentButton} or Drop-in.
+     * Disables Android Pay in Drop-in.
      */
     public PaymentRequest disableAndroidPay() {
         mAndroidPayEnabled = false;
@@ -180,7 +173,7 @@ public class PaymentRequest implements Parcelable {
     }
 
     /**
-     * Disables PayPal in the {@link PaymentButton} or Drop-in.
+     * Disables PayPal in Drop-in.
      */
     public PaymentRequest disablePayPal() {
         mPayPalEnabled = false;
@@ -188,72 +181,10 @@ public class PaymentRequest implements Parcelable {
     }
 
     /**
-     * Disables Venmo in the {@link PaymentButton} or Drop-in.
+     * Disables Venmo in Drop-in.
      */
     public PaymentRequest disableVenmo() {
         mVenmoEnabled = false;
-        return this;
-    }
-
-    /**
-     * This method is optional.
-     *
-     * @param title The title to display in the action bar when present.
-     */
-    public PaymentRequest actionBarTitle(String title) {
-        mActionBarTitle = title;
-        return this;
-    }
-
-    /**
-     * This method is optional.
-     *
-     * @param drawable The icon to display in the action bar when present.
-     */
-    public PaymentRequest actionBarLogo(int drawable) {
-        mActionBarLogo = drawable;
-        return this;
-    }
-
-    /**
-     * This method is optional.
-     *
-     * @param primaryDescription Main header for description bar. Displayed in bold.
-     */
-    public PaymentRequest primaryDescription(String primaryDescription) {
-        mPrimaryDescription = primaryDescription;
-        return this;
-    }
-
-    /**
-     * This method is optional.
-     *
-     * @param secondaryDescription Subheader for description bar. Displayed in normal weight text.
-     */
-    public PaymentRequest secondaryDescription(String secondaryDescription) {
-        mSecondaryDescription = secondaryDescription;
-        return this;
-    }
-
-    /**
-     * This method is optional.
-     *
-     * @param submitButtonText Text for submit button. Displayed in uppercase.
-     *        Will be combined with amount if set via {@link #amount(String)}.
-     */
-    public PaymentRequest submitButtonText(String submitButtonText) {
-        mSubmitButtonText = submitButtonText;
-        return this;
-    }
-
-    /**
-     * This method is optional
-     *
-     * @param defaultFirst When {@code true}, payment methods will be displayed with the current customer's default
-     *          payment method first, followed the remaining payment methods, sorted by most recent usage.
-     */
-    public PaymentRequest defaultFirst(boolean defaultFirst) {
-        mDefaultFirst = defaultFirst;
         return this;
     }
 
@@ -317,30 +248,6 @@ public class PaymentRequest implements Parcelable {
         return mVenmoEnabled;
     }
 
-    public String getActionBarTitle() {
-        return mActionBarTitle;
-    }
-
-    public int getActionBarLogo() {
-        return mActionBarLogo;
-    }
-
-    public String getPrimaryDescription() {
-        return mPrimaryDescription;
-    }
-
-    public String getSecondaryDescription() {
-        return mSecondaryDescription;
-    }
-
-    public String getSubmitButtonText() {
-        return mSubmitButtonText;
-    }
-
-    public boolean isDefaultFirst() {
-        return mDefaultFirst;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -365,12 +272,6 @@ public class PaymentRequest implements Parcelable {
         dest.writeStringList(mPayPalAdditionalScopes);
         dest.writeByte(mPayPalEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mVenmoEnabled ? (byte) 1 : (byte) 0);
-        dest.writeString(mActionBarTitle);
-        dest.writeInt(mActionBarLogo);
-        dest.writeString(mPrimaryDescription);
-        dest.writeString(mSecondaryDescription);
-        dest.writeString(mSubmitButtonText);
-        dest.writeByte(mDefaultFirst ? (byte) 1 : (byte) 0);
     }
 
     protected PaymentRequest(Parcel in) {
@@ -390,12 +291,6 @@ public class PaymentRequest implements Parcelable {
         mPayPalAdditionalScopes = in.createStringArrayList();
         mPayPalEnabled = in.readByte() != 0;
         mVenmoEnabled = in.readByte() != 0;
-        mActionBarTitle = in.readString();
-        mActionBarLogo = in.readInt();
-        mPrimaryDescription = in.readString();
-        mSecondaryDescription = in.readString();
-        mSubmitButtonText = in.readString();
-        mDefaultFirst = in.readByte() > 0;
     }
 
     public static final Creator<PaymentRequest> CREATOR = new Creator<PaymentRequest>() {

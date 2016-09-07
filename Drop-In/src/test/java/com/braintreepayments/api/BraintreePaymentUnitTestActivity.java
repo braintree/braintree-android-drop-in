@@ -8,7 +8,7 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
 
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 
-public class NewDropInUnitTestActivity extends NewDropInActivity {
+public class BraintreePaymentUnitTestActivity extends BraintreePaymentActivity {
 
     public BraintreeFragment braintreeFragment;
     public BraintreeUnitTestHttpClient httpClient;

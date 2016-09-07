@@ -39,16 +39,16 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
-public class NewDropInActivityUnitTest {
+public class BraintreePaymentActivityUnitTest {
 
     private ActivityController mActivityController;
-    private NewDropInUnitTestActivity mActivity;
+    private BraintreePaymentUnitTestActivity mActivity;
     private ShadowActivity mShadowActivity;
 
     @Before
     public void setup() {
-        mActivityController = Robolectric.buildActivity(NewDropInUnitTestActivity.class);
-        mActivity = (NewDropInUnitTestActivity) mActivityController.get();
+        mActivityController = Robolectric.buildActivity(BraintreePaymentUnitTestActivity.class);
+        mActivity = (BraintreePaymentUnitTestActivity) mActivityController.get();
         mShadowActivity = shadowOf(mActivity);
     }
 
@@ -74,6 +74,13 @@ public class NewDropInActivityUnitTest {
         assertEquals(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
         assertEquals("A client token or client key must be specified in the PaymentRequest", mShadowActivity.getResultIntent()
                 .getStringExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE));
+    }
+
+    @Test
+    public void setsIntegrationTypeToDropinForDropinActivity() {
+        setup(new BraintreeUnitTestHttpClient());
+
+        assertEquals("dropin", mActivity.braintreeFragment.mIntegrationType);
     }
 
     @Test
@@ -113,9 +120,9 @@ public class NewDropInActivityUnitTest {
                 .pause()
                 .stop()
                 .destroy();
-        mActivityController = Robolectric.buildActivity(NewDropInUnitTestActivity.class)
+        mActivityController = Robolectric.buildActivity(BraintreePaymentUnitTestActivity.class)
                 .setup(bundle);
-        mActivity = (NewDropInUnitTestActivity) mActivityController.get();
+        mActivity = (BraintreePaymentUnitTestActivity) mActivityController.get();
 
         assertEquals(2, ((ListView) mActivity.findViewById(R.id.bt_available_payment_methods)).getAdapter().getCount());
         assertEquals(2, ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter().getItemCount());
@@ -150,7 +157,7 @@ public class NewDropInActivityUnitTest {
 
         assertTrue(mActivity.isFinishing());
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
-        CardNonce returnedNonce = mShadowActivity.getResultIntent().getParcelableExtra(NewDropInActivity.EXTRA_PAYMENT_METHOD_NONCE);
+        CardNonce returnedNonce = mShadowActivity.getResultIntent().getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
         assertEquals(cardNonce.getNonce(), returnedNonce.getNonce());
         assertEquals(cardNonce.getLastTwo(), returnedNonce.getLastTwo());
     }
@@ -175,7 +182,7 @@ public class NewDropInActivityUnitTest {
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
         assertEquals(paymentMethodNonce.getNonce(),
                 ((PaymentMethodNonce) mShadowActivity.getResultIntent()
-                        .getParcelableExtra(NewDropInActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
+                        .getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
     }
 
     @Test
@@ -227,7 +234,7 @@ public class NewDropInActivityUnitTest {
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
         assertEquals(cardNonce.getNonce(),
                 ((PaymentMethodNonce) mShadowActivity.getResultIntent()
-                        .getParcelableExtra(NewDropInActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
+                        .getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
     }
 
     @Test

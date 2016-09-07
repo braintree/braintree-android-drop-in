@@ -36,17 +36,17 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(RobolectricGradleTestRunner.class)
 @PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*" })
 @PrepareForTest({ PayPal.class, Venmo.class, AndroidPay.class })
-public class NewDropInActivityPowerMockTest {
+public class BraintreePaymentActivityPowerMockTest {
 
     @Rule
     public PowerMockRule mPowerMockRule = new PowerMockRule();
 
-    private NewDropInUnitTestActivity mActivity;
+    private BraintreePaymentUnitTestActivity mActivity;
 
     @Before
     public void setup() throws NoSuchFieldException, IllegalAccessException {
-        mActivity = Robolectric.buildActivity(NewDropInUnitTestActivity.class).get();
-        setField(NewDropInActivity.class, "mLoadingViewSwitcher", mActivity,
+        mActivity = Robolectric.buildActivity(BraintreePaymentUnitTestActivity.class).get();
+        setField(BraintreePaymentActivity.class, "mLoadingViewSwitcher", mActivity,
                 new ViewSwitcher(RuntimeEnvironment.application));
     }
 

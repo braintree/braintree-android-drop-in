@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.BraintreePaymentActivity;
-import com.braintreepayments.api.NewDropInActivity;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.PaymentRequest;
 import com.braintreepayments.api.ThreeDSecure;
@@ -37,12 +36,7 @@ import static android.view.View.VISIBLE;
 public class MainActivity extends BaseActivity implements PaymentMethodNonceCreatedListener,
         BraintreeCancelListener, BraintreeErrorListener {
 
-    static final String EXTRA_PAYMENT_REQUEST = "payment_request";
-    static final String EXTRA_COLLECT_DEVICE_DATA = "collect_device_data";
-    static final String EXTRA_ANDROID_PAY_CART = "android_pay_cart";
-
     private static final int DROP_IN_REQUEST = 100;
-    private static final int PAYMENT_BUTTON_REQUEST = 200;
 
     private static final String KEY_NONCE = "nonce";
 
@@ -55,8 +49,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     private TextView mDeviceData;
 
     private Button mDropInButton;
-    private Button mDropIn2Button;
-    private Button mPaymentButtonButton;
     private Button mCreateTransactionButton;
     private ProgressDialog mLoading;
 
@@ -71,8 +63,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         mDeviceData = (TextView) findViewById(R.id.device_data);
 
         mDropInButton = (Button) findViewById(R.id.drop_in);
-        mDropIn2Button = (Button) findViewById(R.id.drop_in_2);
-        mPaymentButtonButton = (Button) findViewById(R.id.payment_button);
         mCreateTransactionButton = (Button) findViewById(R.id.create_transaction);
 
         if (savedInstanceState != null) {
@@ -94,20 +84,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         startActivityForResult(getPaymentRequest().getIntent(this), DROP_IN_REQUEST);
     }
 
-    public void launchNewDropIn(View v) {
-        Intent intent = getPaymentRequest().getIntent(this)
-                .setClass(this, NewDropInActivity.class);
-        startActivityForResult(intent, DROP_IN_REQUEST);
-    }
-
-    public void launchPaymentButton(View v) {
-        Intent intent = new Intent(this, PaymentButtonActivity.class)
-                .putExtra(EXTRA_COLLECT_DEVICE_DATA, Settings.shouldCollectDeviceData(this))
-                .putExtra(EXTRA_ANDROID_PAY_CART, getAndroidPayCart())
-                .putExtra(EXTRA_PAYMENT_REQUEST, getPaymentRequest());
-        startActivityForResult(intent, PAYMENT_BUTTON_REQUEST);
-    }
-
     private PaymentRequest getPaymentRequest() {
         PaymentRequest paymentRequest = new PaymentRequest()
                 .clientToken(mAuthorization)
@@ -116,11 +92,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .androidPayShippingAddressRequired(Settings.isAndroidPayShippingAddressRequired(this))
                 .androidPayPhoneNumberRequired(Settings.isAndroidPayPhoneNumberRequired(this))
                 .androidPayAllowedCountriesForShipping(Settings.getAndroidPayAllowedCountriesForShipping(this))
-                .primaryDescription(getString(R.string.cart))
-                .secondaryDescription("1 Item")
-                .amount("$1.00")
-                .submitButtonText(getString(R.string.buy))
-                .defaultFirst(true);
+                .amount("$1.00");
 
         if (Settings.isPayPalAddressScopeRequested(this)) {
             paymentRequest.paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS));
@@ -290,8 +262,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
     private void enableButtons(boolean enable) {
         mDropInButton.setEnabled(enable);
-        mDropIn2Button.setEnabled(enable);
-        mPaymentButtonButton.setEnabled(enable);
     }
 
     private void safelyCloseLoadingView() {

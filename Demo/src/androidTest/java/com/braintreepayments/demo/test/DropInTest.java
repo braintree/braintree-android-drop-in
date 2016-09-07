@@ -32,11 +32,14 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void tokenizesACard() {
-        onDevice(withText("Card Number")).perform(setText("4111111111111111"));
-        onDevice(withText("Expiration")).perform(setText("1220"));
-        onDevice(withText("CVV")).perform(setText("123"));
-        onDevice(withText("Postal Code")).perform(setText("12345"));
-        onDevice(withTextContaining("BUY")).perform(click());
+        onDevice(withText("Credit or Debit Card")).perform(click());
+        onDevice(withContentDescription("Card Number")).perform(setText("4111111111111111"));
+        onDevice(withText("12")).perform(click());
+        onDevice(withText("2019")).perform(click());
+        onDevice().pressBack();
+        onDevice(withContentDescription("CVV")).perform(setText("123"));
+        onDevice(withContentDescription("Postal Code")).perform(setText("12345"));
+        onDevice(withTextContaining("Add Card")).perform(click());
 
         getNonceDetails().check(text(containsString("Card Last Two: 11")));
 
@@ -47,9 +50,8 @@ public class DropInTest extends TestHelper {
     @RequiresDevice
     @Test(timeout = 60000)
     public void tokenizesAndroidPay() {
-        onDevice(withContentDescription("Pay with Android Pay")).perform(click());
+        onDevice(withText("Android Pay")).perform(click());
         onDevice(withText("CONTINUE")).perform(click());
-        onDevice(withTextContaining("BUY")).perform(click());
 
         getNonceDetails().check(text(containsString("Underlying Card Last Two")));
 
@@ -59,7 +61,7 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void exitsAfterCancelingAddingAPaymentMethod() {
-        onDevice(withContentDescription("Pay with PayPal")).perform(click());
+        onDevice(withText("PayPal")).perform(click());
         onDevice(withContentDescription("Proceed with Sandbox Purchase")).waitForExists();
         onDevice().pressBack();
         onDevice(withContentDescription("Pay with PayPal")).waitForExists();
