@@ -36,9 +36,6 @@ android {
         test {
             java.srcDir sharedTestDir
         }
-        androidTest {
-            java.srcDir sharedTestDir
-        }
     }
 }
 
