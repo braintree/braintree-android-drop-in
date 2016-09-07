@@ -34,7 +34,7 @@
     <string name="bt_descriptor_pay_with_venmo">Venmo</string>
     <string name="bt_descriptor_android_pay">Android Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
-    <string name="bt_descriptor_unknown">Card or Debit Card</string>
+    <string name="bt_descriptor_unknown">Credit or Debit Card</string>
 
     <string name="bt_add_card">Add card</string>
     <string name="bt_add_paypal_account">Add PayPal Account</string>
