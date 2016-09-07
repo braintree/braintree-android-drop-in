@@ -28,17 +28,17 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
         mAvailablePaymentMethods = new ArrayList<>();
 
-        if (configuration.getCardConfiguration().getSupportedCardTypes().size() > 0) {
-            mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
-        }
-        if (configuration.getAndroidPay().isEnabled(mContext)) {
-            mAvailablePaymentMethods.add(PaymentMethodType.ANDROID_PAY);
-        }
         if (configuration.isPayPalEnabled()) {
             mAvailablePaymentMethods.add(PaymentMethodType.PAYPAL);
         }
         if (configuration.getPayWithVenmo().isEnabled(mContext)) {
             mAvailablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
+        }
+        if (configuration.getCardConfiguration().getSupportedCardTypes().size() > 0) {
+            mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
+        }
+        if (configuration.getAndroidPay().isEnabled(mContext)) {
+            mAvailablePaymentMethods.add(PaymentMethodType.ANDROID_PAY);
         }
     }
 

@@ -45,10 +45,10 @@ public class SupportedPaymentMethodAdapterUnitTest {
                 configuration, null);
 
         assertEquals(4, adapter.getCount());
-        assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(0));
-        assertEquals(PaymentMethodType.ANDROID_PAY, adapter.getItem(1));
-        assertEquals(PaymentMethodType.PAYPAL, adapter.getItem(2));
-        assertEquals(PaymentMethodType.PAY_WITH_VENMO, adapter.getItem(3));
+        assertEquals(PaymentMethodType.PAYPAL, adapter.getItem(0));
+        assertEquals(PaymentMethodType.PAY_WITH_VENMO, adapter.getItem(1));
+        assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(2));
+        assertEquals(PaymentMethodType.ANDROID_PAY, adapter.getItem(3));
     }
 
     @Test
@@ -64,10 +64,10 @@ public class SupportedPaymentMethodAdapterUnitTest {
         adapter.getView(2, null, null).callOnClick();
         adapter.getView(3, null, null).callOnClick();
 
-        verify(listener).onPaymentMethodSelected(PaymentMethodType.UNKNOWN);
-        verify(listener).onPaymentMethodSelected(PaymentMethodType.ANDROID_PAY);
         verify(listener).onPaymentMethodSelected(PaymentMethodType.PAYPAL);
         verify(listener).onPaymentMethodSelected(PaymentMethodType.PAY_WITH_VENMO);
+        verify(listener).onPaymentMethodSelected(PaymentMethodType.UNKNOWN);
+        verify(listener).onPaymentMethodSelected(PaymentMethodType.ANDROID_PAY);
         verifyNoMoreInteractions(listener);
     }
 
