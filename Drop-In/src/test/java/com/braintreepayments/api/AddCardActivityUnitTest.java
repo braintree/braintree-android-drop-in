@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.dropin.view.AddCardView;
 import com.braintreepayments.api.dropin.view.EditCardView;
 import com.braintreepayments.api.dropin.view.EnrollmentCardView;
@@ -154,7 +155,9 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void enteringACardNumberGoesToCardDetailsView() {
-        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
+        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .build()));
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
 
@@ -167,7 +170,9 @@ public class AddCardActivityUnitTest {
     @Test
     public void configurationChangeReturnsToEditCardView() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build());
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .build());
         setup(httpClient);
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         assertThat(mEditCardView).isVisible();
@@ -185,7 +190,9 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void editingANonUnionPayCardNumberIsPossible() {
-        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
+        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .build()));
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         assertThat(mEditCardView).isVisible();
@@ -205,6 +212,7 @@ public class AddCardActivityUnitTest {
     public void editingAUnionPayCardNumberIsPossible() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
@@ -228,7 +236,9 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void addingACardRemainsOnEditCardView() {
-        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
+        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .build()));
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -246,7 +256,9 @@ public class AddCardActivityUnitTest {
     @Test
     public void addingACardReturnsANonce() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .build())
                 .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
                         stringFromFixture("payment_methods/visa_credit_card.json"));
         setup(httpClient);
@@ -268,6 +280,7 @@ public class AddCardActivityUnitTest {
     public void cardValidationErrorsAreShownToTheUser() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
                         .challenges("cvv", "postal_code")
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
@@ -361,6 +374,7 @@ public class AddCardActivityUnitTest {
     public void enrollmentViewSetsTitleToConfirmEnrollment() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
@@ -389,6 +403,7 @@ public class AddCardActivityUnitTest {
     public void usingAUnionPayCardShowsMobileNumberFields() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
@@ -408,6 +423,7 @@ public class AddCardActivityUnitTest {
     public void addingAUnionPayCardShowsEnrollment() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
@@ -434,6 +450,7 @@ public class AddCardActivityUnitTest {
     public void addingAUnionPayCardDoesNotShowEnrollment() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
@@ -483,6 +500,7 @@ public class AddCardActivityUnitTest {
     public void enrollingAUnionPayCardRemainsOnEnrollmentCardView() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
@@ -513,6 +531,7 @@ public class AddCardActivityUnitTest {
     public void configurationChangeReturnsToEnrollmentView() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
@@ -594,5 +613,12 @@ public class AddCardActivityUnitTest {
         mActivity.braintreeFragment.onResume();
 
         setupViews();
+    }
+
+    private TestConfigurationBuilder.TestCardConfigurationBuilder getSupportedCardConfiguration() {
+        return new TestConfigurationBuilder.TestCardConfigurationBuilder()
+                .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName(),
+                        PaymentMethodType.AMEX.getCanonicalName(),
+                        PaymentMethodType.UNIONPAY.getCanonicalName());
     }
 }

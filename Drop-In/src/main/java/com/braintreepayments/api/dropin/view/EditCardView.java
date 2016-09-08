@@ -60,11 +60,7 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
         LayoutInflater.from(getContext()).inflate(R.layout.bt_edit_card, this);
 
         mCardForm = (CardForm) findViewById(R.id.bt_card_form);
-        mCardForm.setOnFormFieldFocusedListener(this);
-        mCardForm.setOnCardFormSubmitListener(this);
-
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.bt_animated_button_view);
-        mAnimatedButtonView.setClickListener(this);
     }
 
     public void setup(Activity activity, Configuration configuration) {
@@ -75,6 +71,10 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
                 .cvvRequired(configuration.isCvvChallengePresent())
                 .postalCodeRequired(configuration.isPostalCodeChallengePresent())
                 .setup(activity);
+        mCardForm.setOnFormFieldFocusedListener(this);
+        mCardForm.setOnCardFormSubmitListener(this);
+
+        mAnimatedButtonView.setClickListener(this);
     }
 
     public void setAddPaymentUpdatedListener(AddPaymentUpdateListener listener) {

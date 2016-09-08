@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.OnCardFormValidListener;
@@ -22,12 +23,15 @@ import com.braintreepayments.cardform.view.CardEditText.OnCardTypeChangedListene
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
+import java.util.Arrays;
+
 public class AddCardView extends LinearLayout implements OnCardFormSubmitListener, OnCardFormValidListener,
         OnClickListener, OnCardTypeChangedListener {
 
     private static final String PARENT_STATE = "com.braintreepayments.api.dropin.view.PARENT_STATE";
     private static final String CARD_NUMBER = "com.braintreepayments.api.dropin.view.CARD_NUMBER";
 
+    private CardType[] mSupportedCardTypes;
     private CardForm mCardForm;
     private SupportedCardTypesView mSupportedCardTypesView;
     private AnimatedButtonView mAnimatedButtonView;
@@ -67,8 +71,6 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         mCardForm = (CardForm) findViewById(R.id.bt_card_form);
         mSupportedCardTypesView = (SupportedCardTypesView) findViewById(R.id.bt_supported_card_types);
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.bt_animated_button_view);
-
-        mAnimatedButtonView.setClickListener(this);
     }
 
     public void setup(Activity activity, Configuration configuration) {
@@ -79,9 +81,12 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         mCardForm.setOnCardFormValidListener(this);
         mCardForm.setOnCardFormSubmitListener(this);
 
-        mSupportedCardTypesView.setSupportedCardTypes(CardType.values());
+        mSupportedCardTypes = PaymentMethodType.getCardsTypes(configuration.getCardConfiguration()
+                .getSupportedCardTypes());
+        mSupportedCardTypesView.setSupportedCardTypes(mSupportedCardTypes);
 
         mAnimatedButtonView.setVisibility(configuration.getUnionPay().isEnabled() ? VISIBLE : GONE);
+        mAnimatedButtonView.setClickListener(this);
 
         if (mCardNumber != null) {
             mCardForm.getCardEditText().setText(mCardNumber);
@@ -115,7 +120,7 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
     @Override
     public void onCardTypeChanged(CardType cardType) {
         if (cardType == CardType.EMPTY) {
-            mSupportedCardTypesView.setSupportedCardTypes(CardType.values());
+            mSupportedCardTypesView.setSupportedCardTypes(mSupportedCardTypes);
         } else {
             mSupportedCardTypesView.setSelected(cardType);
         }
@@ -123,30 +128,48 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
 
     @Override
     public void onClick(View view) {
-        if (mCardForm.isValid()) {
+        if (isValid()) {
             callAddPaymentUpdateListener();
         } else {
             mAnimatedButtonView.showButton();
-            mCardForm.validate();
+
+            if (!mCardForm.isValid()) {
+                mCardForm.validate();
+            } else if (!isCardTypeValid()) {
+                showCardNotSupportedError();
+            }
         }
     }
 
     @Override
     public void onCardFormSubmit() {
-        if (mCardForm.isValid()) {
+        if (isValid()) {
             mAnimatedButtonView.showLoading();
             callAddPaymentUpdateListener();
         } else {
-            mCardForm.validate();
+            if (!mCardForm.isValid()) {
+                mCardForm.validate();
+            } else if (!isCardTypeValid()) {
+                showCardNotSupportedError();
+            }
         }
     }
 
     @Override
     public void onCardFormValid(boolean valid) {
-        if (valid) {
+        if (isValid()) {
             mAnimatedButtonView.showLoading();
             callAddPaymentUpdateListener();
         }
+    }
+
+    private boolean isValid() {
+        return mCardForm.isValid() && isCardTypeValid();
+    }
+
+    private boolean isCardTypeValid() {
+        return Arrays.asList(mSupportedCardTypes).contains(mCardForm.getCardEditText()
+                .getCardType());
     }
 
     private void callAddPaymentUpdateListener() {

@@ -46,7 +46,7 @@ public class BraintreePaymentActivityPowerMockTest {
     @Before
     public void setup() throws NoSuchFieldException, IllegalAccessException {
         mActivity = Robolectric.buildActivity(BraintreePaymentUnitTestActivity.class).get();
-        setField(BraintreePaymentActivity.class, "mLoadingViewSwitcher", mActivity,
+        setField(BraintreePaymentActivity.class, mActivity, "mLoadingViewSwitcher",
                 new ViewSwitcher(RuntimeEnvironment.application));
     }
 

@@ -5,14 +5,19 @@ import java.lang.reflect.Modifier;
 
 public class ReflectionHelper {
 
-    public static Object getField(Class clazz, String fieldName, Object src)
+    public static Object getField(Object src, String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
-        Field field = clazz.getDeclaredField(fieldName);
+        Field field = src.getClass().getDeclaredField(fieldName);
         field.setAccessible(true);
         return field.get(src);
     }
 
-    public static void setField(Class clazz, String fieldName, Object src, Object value)
+    public static void setField(Object src, String fieldName, Object value)
+            throws NoSuchFieldException, IllegalAccessException {
+        setField(src.getClass(), src, fieldName, value);
+    }
+
+    public static void setField(Class clazz, Object src, String fieldName, Object value)
             throws NoSuchFieldException, IllegalAccessException {
         Field field = clazz.getDeclaredField(fieldName);
         field.setAccessible(true);

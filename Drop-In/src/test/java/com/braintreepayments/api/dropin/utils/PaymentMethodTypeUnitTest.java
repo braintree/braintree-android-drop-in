@@ -6,11 +6,15 @@ import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.VenmoAccountNonce;
+import com.braintreepayments.cardform.utils.CardType;
 
 import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
+
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
@@ -49,6 +53,35 @@ public class PaymentMethodTypeUnitTest {
     @Test
     public void forType_returnsUnknownForRandomString() {
         assertEquals(PaymentMethodType.UNKNOWN, PaymentMethodType.forType("payment method"));
+    }
+
+    @Test
+    public void getCardTypes_returnsCorrectCardTypeArray() throws JSONException {
+        Set<String> supportedCardTypes = new LinkedHashSet<>();
+        supportedCardTypes.add(PaymentMethodType.VISA.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.MASTERCARD.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.DISCOVER.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.AMEX.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.JCB.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.DINERS.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.MAESTRO.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.UNIONPAY.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.PAYPAL.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.ANDROID_PAY.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.UNKNOWN.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.PAY_WITH_VENMO.getCanonicalName());
+
+        CardType[] cardTypes = PaymentMethodType.getCardsTypes(supportedCardTypes);
+
+        assertEquals(8, cardTypes.length);
+        assertEquals(CardType.VISA, cardTypes[0]);
+        assertEquals(CardType.MASTERCARD, cardTypes[1]);
+        assertEquals(CardType.DISCOVER, cardTypes[2]);
+        assertEquals(CardType.AMEX, cardTypes[3]);
+        assertEquals(CardType.JCB, cardTypes[4]);
+        assertEquals(CardType.DINERS_CLUB, cardTypes[5]);
+        assertEquals(CardType.MAESTRO, cardTypes[6]);
+        assertEquals(CardType.UNIONPAY, cardTypes[7]);
     }
 
     @Test
