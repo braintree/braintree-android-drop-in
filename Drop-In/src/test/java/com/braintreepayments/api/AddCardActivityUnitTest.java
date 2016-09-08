@@ -1,6 +1,7 @@
 package com.braintreepayments.api;
 
 import android.app.Activity;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
@@ -134,10 +135,47 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
+    public void configurationChangeReturnsToAddCardView() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build());
+        setup(httpClient);
+        assertThat(mAddCardView).isVisible();
+        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertThat(mEditCardView).isGone();
+        assertThat(mEnrollmentCardView).isGone();
+
+        triggerConfigurationChange(httpClient);
+
+        assertThat(mAddCardView).isVisible();
+        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertThat(mEditCardView).isGone();
+        assertThat(mEnrollmentCardView).isGone();
+    }
+
+    @Test
     public void enteringACardNumberGoesToCardDetailsView() {
         setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
+
+        assertThat(mEditCardView).isVisible();
+        assertThat(mAddCardView).isGone();
+        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertThat(mEnrollmentCardView).isGone();
+    }
+
+    @Test
+    public void configurationChangeReturnsToEditCardView() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build());
+        setup(httpClient);
+        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
+        assertThat(mEditCardView).isVisible();
+        assertThat(mAddCardView).isGone();
+        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertThat(mEnrollmentCardView).isGone();
+
+        triggerConfigurationChange(httpClient);
 
         assertThat(mEditCardView).isVisible();
         assertThat(mAddCardView).isGone();
@@ -471,6 +509,40 @@ public class AddCardActivityUnitTest {
         assertThat(mEditCardView).isGone();
     }
 
+    @Test
+    public void configurationChangeReturnsToEnrollmentView() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .unionPay(new TestUnionPayConfigurationBuilder()
+                                .enabled(true))
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
+                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
+                        stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "86");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+
+        assertThat(mEnrollmentCardView).isVisible();
+        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertThat(mAddCardView).isGone();
+        assertThat(mEditCardView).isGone();
+
+        triggerConfigurationChange(httpClient);
+
+        assertThat(mEnrollmentCardView).isVisible();
+        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertThat(mAddCardView).isGone();
+        assertThat(mEditCardView).isGone();
+    }
+
     private void setup(BraintreeFragment fragment) {
         mActivity.braintreeFragment = fragment;
         mActivityController.setup();
@@ -503,5 +575,24 @@ public class AddCardActivityUnitTest {
                 .getSerializableExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE);
         assertEquals(exception.getClass(), actualException.getClass());
         assertEquals(exception.getMessage(), actualException.getMessage());
+    }
+
+    private void triggerConfigurationChange(BraintreeUnitTestHttpClient httpClient) {
+        Bundle bundle = new Bundle();
+        mActivityController.saveInstanceState(bundle)
+                .pause()
+                .stop()
+                .destroy();
+
+        mActivityController = Robolectric.buildActivity(AddCardUnitTestActivity.class);
+        mActivity = (AddCardUnitTestActivity) mActivityController.get();
+        mShadowActivity = shadowOf(mActivity);
+
+        mActivity.httpClient = httpClient;
+        mActivityController.setup(bundle);
+        mActivity.braintreeFragment.onAttach(mActivity);
+        mActivity.braintreeFragment.onResume();
+
+        setupViews();
     }
 }

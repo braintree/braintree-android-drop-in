@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
-import com.braintreepayments.api.dropin.view.EnrollmentCardView;
 import com.braintreepayments.api.test.UnitTestActivity;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
@@ -59,7 +58,8 @@ public class EnrollmentCardViewUnitTest {
     public void phoneNumberIsDisplayedCorrectly() {
         mView.setPhoneNumber("1231231234");
 
-        assertThat((TextView) mView.findViewById(R.id.bt_sms_sent_text)).hasText("Enter the SMS code sent to 1231231234");
+        assertThat((TextView) mView.findViewById(R.id.bt_sms_sent_text))
+                .hasText("Enter the SMS code sent to 1231231234");
     }
 
     @Test
