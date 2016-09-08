@@ -169,6 +169,7 @@ public class AddCardViewUnitTest {
                 .setup(bundle);
         mActivity = (Activity) mActivityController.get();
         mView = (AddCardView) mActivity.findViewById(R.id.bt_add_card_view);
+        mView.setup(mActivity, (Configuration) basicConfig());
 
         assertEquals(VISA, mView.getCardForm().getCardNumber());
     }

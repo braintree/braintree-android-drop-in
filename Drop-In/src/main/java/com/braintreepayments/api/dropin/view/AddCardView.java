@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +25,14 @@ import com.braintreepayments.cardform.view.SupportedCardTypesView;
 public class AddCardView extends LinearLayout implements OnCardFormSubmitListener, OnCardFormValidListener,
         OnClickListener, OnCardTypeChangedListener {
 
+    private static final String PARENT_STATE = "com.braintreepayments.api.dropin.view.PARENT_STATE";
+    private static final String CARD_NUMBER = "com.braintreepayments.api.dropin.view.CARD_NUMBER";
+
     private CardForm mCardForm;
     private SupportedCardTypesView mSupportedCardTypesView;
     private AnimatedButtonView mAnimatedButtonView;
     private AddPaymentUpdateListener mListener;
+    private String mCardNumber;
 
     public AddCardView(Context context) {
         super(context);
@@ -59,9 +65,6 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         LayoutInflater.from(getContext()).inflate(R.layout.bt_add_card, this, true);
 
         mCardForm = (CardForm) findViewById(R.id.bt_card_form);
-        mCardForm.setOnCardFormSubmitListener(this);
-        mCardForm.setOnCardFormValidListener(this);
-
         mSupportedCardTypesView = (SupportedCardTypesView) findViewById(R.id.bt_supported_card_types);
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.bt_animated_button_view);
 
@@ -73,10 +76,17 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
                 .setup(activity);
         mCardForm.getCardEditText().setDisplayCardTypeIcon(false);
         mCardForm.setOnCardTypeChangedListener(this);
+        mCardForm.setOnCardFormValidListener(this);
+        mCardForm.setOnCardFormSubmitListener(this);
 
         mSupportedCardTypesView.setSupportedCardTypes(CardType.values());
 
         mAnimatedButtonView.setVisibility(configuration.getUnionPay().isEnabled() ? VISIBLE : GONE);
+
+        if (mCardNumber != null) {
+            mCardForm.getCardEditText().setText(mCardNumber);
+            mCardNumber = null;
+        }
     }
 
     public void setAddPaymentUpdatedListener(AddPaymentUpdateListener listener) {
@@ -143,5 +153,23 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         if (mListener != null) {
             mListener.onPaymentUpdated(this);
         }
+    }
+
+    @Override
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(PARENT_STATE, super.onSaveInstanceState());
+        bundle.putString(CARD_NUMBER, mCardForm.getCardNumber());
+        return bundle;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            mCardNumber = ((Bundle) state).getString(CARD_NUMBER);
+            state = ((Bundle) state).getParcelable(PARENT_STATE);
+        }
+
+        super.onRestoreInstanceState(state);
     }
 }
