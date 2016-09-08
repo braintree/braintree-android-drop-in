@@ -69,6 +69,13 @@ public class TestConfigurationBuilder extends JSONBuilder {
         return this;
     }
 
+    public TestConfigurationBuilder creditCards(TestCardConfigurationBuilder builder) {
+        try {
+            put("creditCards", new JSONObject(builder.build()));
+        } catch (JSONException ignored) {}
+        return this;
+    }
+
     public TestConfigurationBuilder paypal(TestPayPalConfigurationBuilder builder) {
         try {
             paypalEnabled(true);
@@ -157,6 +164,22 @@ public class TestConfigurationBuilder extends JSONBuilder {
             return new TestKountConfigurationBuilder(mJsonBody.getJSONObject("kount"));
         } catch (JSONException ignored) {}
         return new TestKountConfigurationBuilder();
+    }
+
+    public static class TestCardConfigurationBuilder extends JSONBuilder {
+
+        public TestCardConfigurationBuilder() {
+            super();
+        }
+
+        public TestCardConfigurationBuilder supportedCardTypes(String... cardTypes) {
+            JSONArray array = new JSONArray();
+            for (String cardType : cardTypes) {
+                array.put(cardType);
+            }
+            put(array);
+            return this;
+        }
     }
 
     public static class TestVenmoConfigurationBuilder extends JSONBuilder {

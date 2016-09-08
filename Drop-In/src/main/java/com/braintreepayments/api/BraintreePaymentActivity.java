@@ -120,13 +120,6 @@ public class BraintreePaymentActivity extends Activity implements ConfigurationL
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
-        if (savedInstanceState != null) {
-            mSheetAnimationPerformed =
-                    new AtomicBoolean(savedInstanceState.getBoolean(EXTRA_SHEET_ANIMATION_PERFORMED, false));
-        } else {
-            mSheetAnimationPerformed = new AtomicBoolean(false);
-        }
-
         try {
             mBraintreeFragment = getBraintreeFragment();
 
@@ -142,6 +135,12 @@ public class BraintreePaymentActivity extends Activity implements ConfigurationL
             setResult(BRAINTREE_RESULT_DEVELOPER_ERROR, intent);
             finish();
             return;
+        }
+
+        mSheetAnimationPerformed = new AtomicBoolean(false);
+        if (savedInstanceState != null) {
+            mSheetAnimationPerformed = new AtomicBoolean(savedInstanceState
+                    .getBoolean(EXTRA_SHEET_ANIMATION_PERFORMED, false));
         }
 
         if (!mSheetAnimationPerformed.get()) {

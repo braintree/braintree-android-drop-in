@@ -103,6 +103,8 @@ public class BraintreePaymentActivityUnitTest {
     @Test
     public void handlesConfigurationChanges() {
         String configuration = new TestConfigurationBuilder()
+                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
+                        .supportedCardTypes("Visa"))
                 .paypalEnabled(true)
                 .build();
         PaymentRequest paymentRequest = new PaymentRequest()
@@ -120,9 +122,14 @@ public class BraintreePaymentActivityUnitTest {
                 .pause()
                 .stop()
                 .destroy();
-        mActivityController = Robolectric.buildActivity(BraintreePaymentUnitTestActivity.class)
-                .setup(bundle);
+
+        mActivityController = Robolectric.buildActivity(BraintreePaymentUnitTestActivity.class);
         mActivity = (BraintreePaymentUnitTestActivity) mActivityController.get();
+        mActivity.setPaymentRequest(paymentRequest);
+        mActivity.httpClient = httpClient;
+        mActivityController.setup(bundle);
+        mActivity.braintreeFragment.onAttach(mActivity);
+        mActivity.braintreeFragment.onResume();
 
         assertEquals(2, ((ListView) mActivity.findViewById(R.id.bt_available_payment_methods)).getAdapter().getCount());
         assertEquals(2, ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter().getItemCount());
