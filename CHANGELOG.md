@@ -1,5 +1,11 @@
 # Braintree Android Drop-In Release Notes
 
+## 2.3.8
+
+* Upgrade android-card-form to 2.3.2
+* Upgrade Braintree 2.3.9
+* Display card type when displaying Android Pay cards
+
 ## 2.3.7
 
 * Update exception message when Android Manifest setup is invalid
