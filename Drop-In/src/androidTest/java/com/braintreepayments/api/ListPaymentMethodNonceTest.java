@@ -229,7 +229,7 @@ public class ListPaymentMethodNonceTest extends BraintreePaymentActivityTestRunn
         onView(withText(com.braintreepayments.api.dropin.R.string.bt_descriptor_paypal)).check(
                 matches(allOf(hasSibling(withText("paypalaccount@example.com")), isDisplayed())));
         onView(withText(com.braintreepayments.api.dropin.R.string.bt_descriptor_android_pay)).check(
-                matches(allOf(hasSibling(withText("ends in 11")), isDisplayed())));
+                matches(allOf(hasSibling(withText("Visa 1111")), isDisplayed())));
     }
 
     @Test(timeout = 30000)

@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
-import com.braintreepayments.api.models.AndroidPayCardNonce;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
@@ -53,9 +52,6 @@ public class PaymentMethodNonceView extends RelativeLayout {
         if (paymentMethodNonce instanceof CardNonce) {
             mDescription = String.format(getResources().getString(R.string.bt_card_descriptor),
                     ((CardNonce) paymentMethodNonce).getLastTwo());
-        } else if (paymentMethodNonce instanceof AndroidPayCardNonce) {
-            mDescription = String.format(getResources().getString(R.string.bt_card_descriptor),
-                    ((AndroidPayCardNonce) paymentMethodNonce).getLastTwo());
         } else {
             mDescription = paymentMethodNonce.getDescription();
         }
