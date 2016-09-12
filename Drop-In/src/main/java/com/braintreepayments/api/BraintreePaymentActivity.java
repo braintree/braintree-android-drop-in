@@ -254,6 +254,8 @@ public class BraintreePaymentActivity extends Activity implements ConfigurationL
 
     @Override
     protected void onActivityResult(int requestCode, final int resultCode, final Intent data) {
+        mLoadingViewSwitcher.setDisplayedChild(0);
+
         if (resultCode == Activity.RESULT_CANCELED) {
             mLoadingViewSwitcher.setDisplayedChild(1);
         } else if ((requestCode == AndroidPay.ANDROID_PAY_MASKED_WALLET_REQUEST_CODE ||
