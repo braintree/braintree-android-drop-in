@@ -9,9 +9,9 @@
     <string name="bt_add_new_payment_method">Add New Payment Method</string>
     <string name="bt_add_payment_method">Add Payment Method</string>
     <string name="bt_change_android_pay_card" tools:ignore="MissingTranslation">Change Android Pay Card</string>
-    <string name="bt_recent">Recent</string>
-    <string name="bt_other">Other</string>
-    <string name="bt_select_payment_method">Select Payment Method</string>
+    <string tools:ignore="MissingTranslation" name="bt_recent">Recent</string>
+    <string tools:ignore="MissingTranslation" name="bt_other">Other</string>
+    <string tools:ignore="MissingTranslation" name="bt_select_payment_method">Select Payment Method</string>
 
     <string name="bt_default_submit_button_text">PURCHASE</string>
     <string name="bt_default_action_bar_text">Purchase</string>
@@ -31,26 +31,26 @@
     <string name="bt_descriptor_diners">Diners</string>
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
-    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
-    <string name="bt_descriptor_android_pay">Android Pay</string>
-    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string tools:ignore="MissingTranslation" name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string tools:ignore="MissingTranslation" name="bt_descriptor_android_pay">Android Pay</string>
+    <string tools:ignore="MissingTranslation" name="bt_descriptor_unionpay">UnionPay</string>
     <string name="bt_descriptor_unknown">Credit or Debit Card</string>
 
-    <string name="bt_add_card">Add card</string>
-    <string name="bt_add_paypal_account">Add PayPal Account</string>
-    <string name="bt_add_android_pay">Add Android Pay</string>
-    <string name="bt_add_venmo">Add Venmo Account</string>
-    <string name="bt_next">Next</string>
-    <string name="bt_confirm">Confirm</string>
-    <string name="bt_scan_with_card_io">Scan with card.io</string>
-    <string name="bt_sms_code">SMS Code</string>
-    <string name="bt_sms_code_required">SMS code is required</string>
-    <string name="bt_missing_sms_code">Didn\'t get an SMS Code?</string>
-    <string name="bt_sms_code_sent_to">Enter the SMS code sent to %s</string>
-    <string name="bt_card_details">Card Details</string>
-    <string name="bt_confirm_enrollment">Confirm Enrollment</string>]
-    <string name="bt_postal_code_invalid">Postal code is invalid</string>
-    <string name="bt_country_code_invalid">Country code is invalid</string>
-    <string name="bt_mobile_number_invalid">Mobile number is invalid</string>
-    <string name="bt_card_not_accepted">Card not accepted</string>
+    <string tools:ignore="MissingTranslation" name="bt_add_card">Add card</string>
+    <string tools:ignore="MissingTranslation" name="bt_add_paypal_account">Add PayPal Account</string>
+    <string tools:ignore="MissingTranslation" name="bt_add_android_pay">Add Android Pay</string>
+    <string tools:ignore="MissingTranslation" name="bt_add_venmo">Add Venmo Account</string>
+    <string tools:ignore="MissingTranslation" name="bt_next">Next</string>
+    <string tools:ignore="MissingTranslation" name="bt_confirm">Confirm</string>
+    <string tools:ignore="MissingTranslation" name="bt_scan_with_card_io">Scan with card.io</string>
+    <string tools:ignore="MissingTranslation" name="bt_sms_code">SMS Code</string>
+    <string tools:ignore="MissingTranslation" name="bt_sms_code_required">SMS code is required</string>
+    <string tools:ignore="MissingTranslation" name="bt_missing_sms_code">Didn\'t get an SMS Code?</string>
+    <string tools:ignore="MissingTranslation" name="bt_sms_code_sent_to">Enter the SMS code sent to %s</string>
+    <string tools:ignore="MissingTranslation" name="bt_card_details">Card Details</string>
+    <string tools:ignore="MissingTranslation" name="bt_confirm_enrollment">Confirm Enrollment</string>]
+    <string tools:ignore="MissingTranslation" name="bt_postal_code_invalid">Postal code is invalid</string>
+    <string tools:ignore="MissingTranslation" name="bt_country_code_invalid">Country code is invalid</string>
+    <string tools:ignore="MissingTranslation" name="bt_mobile_number_invalid">Mobile number is invalid</string>
+    <string tools:ignore="MissingTranslation" name="bt_card_not_accepted">Card not accepted</string>
 </resources>
