@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
@@ -548,8 +549,12 @@ public class AddCardActivityUnitTest {
         setText(mEditCardView, R.id.bt_card_form_country_code, "86");
         setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
         mEditCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEnrollmentCardView, R.id.bt_sms_code, "12345");
 
         assertThat(mEnrollmentCardView).isVisible();
+        assertThat((EditText) mEnrollmentCardView.findViewById(R.id.bt_sms_code)).hasText("12345");
+        assertThat((TextView) mEnrollmentCardView.findViewById(R.id.bt_sms_sent_text))
+                .hasText("Enter the SMS code sent to 868-888-888888");
         assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
         assertThat(mAddCardView).isGone();
         assertThat(mEditCardView).isGone();
@@ -557,6 +562,9 @@ public class AddCardActivityUnitTest {
         triggerConfigurationChange(httpClient);
 
         assertThat(mEnrollmentCardView).isVisible();
+        assertThat(((EditText) mEnrollmentCardView.findViewById(R.id.bt_sms_code))).hasText("12345");
+        assertThat((TextView) mEnrollmentCardView.findViewById(R.id.bt_sms_sent_text))
+                .hasText("Enter the SMS code sent to 868-888-888888");
         assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
         assertThat(mAddCardView).isGone();
         assertThat(mEditCardView).isGone();
