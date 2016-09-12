@@ -4,8 +4,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
@@ -25,9 +23,6 @@ import com.braintreepayments.cardform.utils.ViewUtils;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
 public class EnrollmentCardView extends LinearLayout implements OnClickListener, OnEditorActionListener {
-
-    private static final String EXTRA_SUPER_STATE = "com.braintreepayments.api.dropin.view.EXTRA_SUPER_STATE";
-    private static final String EXTRA_VISIBLE = "com.braintreepayments.api.dropin.view.EXTRA_VISIBLE";
 
     private ErrorEditText mSmsCode;
     private TextView mSmsSentTextView;
@@ -115,26 +110,6 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener,
             mListener.onPaymentUpdated(this);
         } else if (view == mSmsHelpButton) {
             mListener.onBackRequested(this);
-        }
-    }
-
-    @Override
-    protected Parcelable onSaveInstanceState() {
-        Parcelable superState = super.onSaveInstanceState();
-        Bundle state = new Bundle();
-        state.putParcelable(EXTRA_SUPER_STATE, superState);
-        state.putBoolean(EXTRA_VISIBLE, getVisibility() == VISIBLE);
-        return state;
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Parcelable state) {
-        if (state instanceof Bundle) {
-            Bundle bundle = (Bundle)state;
-            setVisibility(bundle.getBoolean(EXTRA_VISIBLE)? VISIBLE : GONE);
-            super.onRestoreInstanceState(bundle.getParcelable(EXTRA_SUPER_STATE));
-        } else {
-            super.onRestoreInstanceState(state);
         }
     }
 
