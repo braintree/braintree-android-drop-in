@@ -30,6 +30,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.util.ActivityController;
 
+import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -102,6 +103,38 @@ public class BraintreePaymentActivityUnitTest {
 
     @Test
     public void handlesConfigurationChanges() {
+        String configuration = new TestConfigurationBuilder()
+                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
+                        .supportedCardTypes("Visa"))
+                .paypalEnabled(true)
+                .build();
+        PaymentRequest paymentRequest = new PaymentRequest()
+                .tokenizationKey(TOKENIZATION_KEY);
+        mActivity.setPaymentRequest(paymentRequest);
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(configuration);
+        setup(httpClient);
+        assertEquals(2, ((ListView) mActivity.findViewById(R.id.bt_available_payment_methods)).getAdapter().getCount());
+
+        Bundle bundle = new Bundle();
+        mActivityController.saveInstanceState(bundle)
+                .pause()
+                .stop()
+                .destroy();
+
+        mActivityController = Robolectric.buildActivity(BraintreePaymentUnitTestActivity.class);
+        mActivity = (BraintreePaymentUnitTestActivity) mActivityController.get();
+        mActivity.setPaymentRequest(paymentRequest);
+        mActivity.httpClient = httpClient;
+        mActivityController.setup(bundle);
+        mActivity.braintreeFragment.onAttach(mActivity);
+        mActivity.braintreeFragment.onResume();
+
+        assertEquals(2, ((ListView) mActivity.findViewById(R.id.bt_available_payment_methods)).getAdapter().getCount());
+    }
+
+    @Test
+    public void handlesConfigurationChangesWithVaultedPaymentMethods() {
         String configuration = new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
                         .supportedCardTypes("Visa"))
