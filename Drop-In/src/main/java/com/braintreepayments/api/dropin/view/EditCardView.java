@@ -119,6 +119,8 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
                 mCardForm.setMobileNumberError(getContext().getString(R.string.bt_mobile_number_invalid));
             }
         }
+
+        mAnimatedButtonView.showButton();
     }
 
     public void useUnionPay(Activity activity, boolean useUnionPay) {

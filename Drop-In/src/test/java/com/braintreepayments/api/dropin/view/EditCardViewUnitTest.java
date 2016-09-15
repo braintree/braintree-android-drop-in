@@ -158,6 +158,7 @@ public class EditCardViewUnitTest {
                 .buildConfiguration();
         mView.setup(mActivity, configuration);
         mView.useUnionPay(mActivity, true);
+        ((AnimatedButtonView) mView.findViewById(R.id.bt_animated_button_view)).showLoading();
 
         mView.setErrors(new ErrorWithResponse(422, stringFromFixture("responses/credit_card_error_response.json")));
 
@@ -173,6 +174,8 @@ public class EditCardViewUnitTest {
                 mView.getCardForm().getCountryCodeEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_mobile_number_invalid),
                 mView.getCardForm().getMobileNumberEditText().getTextInputLayoutParent().getError());
+        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
     }
 
     @Test
