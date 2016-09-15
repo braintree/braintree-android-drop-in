@@ -13,7 +13,7 @@ import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
@@ -71,7 +71,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     public static final int ENROLLMENT_ENTRY = 4;
 
     private ActionBar mActionBar;
-    private ProgressBar mLoadingView;
+    private ViewSwitcher mViewSwitcher;
     private AddCardView mAddCardView;
     private EditCardView mEditCardView;
     private EnrollmentCardView mEnrollmentCardView;
@@ -88,7 +88,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_add_card_activity);
 
-        mLoadingView = (ProgressBar) findViewById(R.id.bt_progress_bar);
+        mViewSwitcher = (ViewSwitcher) findViewById(R.id.bt_loading_view_switcher);
         mAddCardView = (AddCardView) findViewById(R.id.bt_add_card_view);
         mEditCardView = (EditCardView) findViewById(R.id.bt_edit_card_view);
         mEnrollmentCardView = (EnrollmentCardView) findViewById(R.id.bt_enrollment_card_view);
@@ -168,7 +168,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     private void leaveState(int state) {
         switch (state) {
             case LOADING:
-                mLoadingView.setVisibility(GONE);
+                mViewSwitcher.setDisplayedChild(1);
                 break;
             case CARD_ENTRY:
                 mAddCardView.setVisibility(GONE);
@@ -186,7 +186,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         switch(state) {
             case LOADING:
                 mActionBar.setTitle(R.string.bt_card_details);
-                mLoadingView.setVisibility(VISIBLE);
+                mViewSwitcher.setDisplayedChild(0);
                 break;
             case CARD_ENTRY:
                 mActionBar.setTitle(R.string.bt_card_details);

@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
@@ -92,7 +93,8 @@ public class AddCardActivityUnitTest {
     public void showsLoadingViewWhileWaitingForConfiguration() {
         setup(mock(BraintreeFragment.class));
 
-        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isVisible();
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
+                .getDisplayedChild());
         assertThat(mAddCardView).isGone();
         assertThat(mEditCardView).isGone();
         assertThat(mEnrollmentCardView).isGone();
@@ -131,7 +133,8 @@ public class AddCardActivityUnitTest {
         setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
 
         assertThat(mAddCardView).isVisible();
-        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
+                .getDisplayedChild());
         assertThat(mEditCardView).isGone();
         assertThat(mEnrollmentCardView).isGone();
     }
@@ -142,14 +145,16 @@ public class AddCardActivityUnitTest {
                 .configuration(new TestConfigurationBuilder().build());
         setup(httpClient);
         assertThat(mAddCardView).isVisible();
-        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
+                .getDisplayedChild());
         assertThat(mEditCardView).isGone();
         assertThat(mEnrollmentCardView).isGone();
 
         triggerConfigurationChange(httpClient);
 
         assertThat(mAddCardView).isVisible();
-        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
+                .getDisplayedChild());
         assertThat(mEditCardView).isGone();
         assertThat(mEnrollmentCardView).isGone();
     }
@@ -164,7 +169,8 @@ public class AddCardActivityUnitTest {
 
         assertThat(mEditCardView).isVisible();
         assertThat(mAddCardView).isGone();
-        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
+                .getDisplayedChild());
         assertThat(mEnrollmentCardView).isGone();
     }
 
@@ -178,14 +184,16 @@ public class AddCardActivityUnitTest {
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         assertThat(mEditCardView).isVisible();
         assertThat(mAddCardView).isGone();
-        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
+                .getDisplayedChild());
         assertThat(mEnrollmentCardView).isGone();
 
         triggerConfigurationChange(httpClient);
 
         assertThat(mEditCardView).isVisible();
         assertThat(mAddCardView).isGone();
-        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
+                .getDisplayedChild());
         assertThat(mEnrollmentCardView).isGone();
     }
 
@@ -249,7 +257,8 @@ public class AddCardActivityUnitTest {
         assertThat(mEditCardView).isVisible();
         assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
         assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();
-        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
+                .getDisplayedChild());
         assertThat(mAddCardView).isGone();
         assertThat(mEnrollmentCardView).isGone();
     }
@@ -555,7 +564,8 @@ public class AddCardActivityUnitTest {
         assertThat((EditText) mEnrollmentCardView.findViewById(R.id.bt_sms_code)).hasText("12345");
         assertThat((TextView) mEnrollmentCardView.findViewById(R.id.bt_sms_sent_text))
                 .hasText("Enter the SMS code sent to 868-888-888888");
-        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
+                .getDisplayedChild());
         assertThat(mAddCardView).isGone();
         assertThat(mEditCardView).isGone();
 
@@ -565,7 +575,8 @@ public class AddCardActivityUnitTest {
         assertThat(((EditText) mEnrollmentCardView.findViewById(R.id.bt_sms_code))).hasText("12345");
         assertThat((TextView) mEnrollmentCardView.findViewById(R.id.bt_sms_sent_text))
                 .hasText("Enter the SMS code sent to 868-888-888888");
-        assertThat(mActivity.findViewById(R.id.bt_progress_bar)).isGone();
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
+                .getDisplayedChild());
         assertThat(mAddCardView).isGone();
         assertThat(mEditCardView).isGone();
     }
