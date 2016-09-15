@@ -17,6 +17,7 @@ import com.braintreepayments.api.exceptions.DownForMaintenanceException;
 import com.braintreepayments.api.exceptions.ServerException;
 import com.braintreepayments.api.exceptions.UnexpectedException;
 import com.braintreepayments.api.exceptions.UpgradeRequiredException;
+import com.braintreepayments.api.internal.BraintreeSharedPreferences;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
@@ -33,6 +34,7 @@ import org.robolectric.util.ActivityController;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -200,6 +202,20 @@ public class BraintreePaymentActivityUnitTest {
         CardNonce returnedNonce = mShadowActivity.getResultIntent().getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
         assertEquals(cardNonce.getNonce(), returnedNonce.getNonce());
         assertEquals(cardNonce.getLastTwo(), returnedNonce.getLastTwo());
+    }
+
+    @Test
+    public void onPaymentMethodNonceCreated_storesPaymentMethodType() throws JSONException {
+        mActivityController.setup();
+        assertNull(BraintreeSharedPreferences.getSharedPreferences(mActivity)
+                .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
+
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json")));
+
+        assertEquals(PaymentMethodType.VISA.getCanonicalName(),
+                BraintreeSharedPreferences.getSharedPreferences(mActivity)
+                        .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
     }
 
     @Test

@@ -1,5 +1,7 @@
 package com.braintreepayments.api.dropin.utils;
 
+import android.support.annotation.Nullable;
+
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.cardform.utils.CardType;
@@ -43,7 +45,7 @@ public enum PaymentMethodType {
      * @return a {@link PaymentMethodType} for for the given {@link String}, or {@link
      * PaymentMethodType#UNKNOWN} if no match could be made.
      */
-    public static PaymentMethodType forType(String paymentMethodType) {
+    public static PaymentMethodType forType(@Nullable String paymentMethodType) {
         for (PaymentMethodType type : values()) {
             if (type.mCanonicalName.equals(paymentMethodType)) {
                 return type;
