@@ -95,6 +95,16 @@ public class TestHelper {
         }
     }
 
+    public void setMerchantAccountId(String merchantAccountId) {
+        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+                .edit()
+                .clear()
+                .putString("merchant_account", merchantAccountId)
+                .commit();
+
+        onDevice(withText("Reset")).perform(click());
+    }
+
     private void clearPreference(String preference) {
         getTargetContext().getSharedPreferences(preference, Context.MODE_PRIVATE)
                 .edit()

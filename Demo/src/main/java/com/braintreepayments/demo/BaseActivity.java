@@ -148,7 +148,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
             onAuthorizationFetched();
         } else {
             DemoApplication.getApiClient(this).getClientToken(Settings.getCustomerId(this),
-                    Settings.getThreeDSecureMerchantAccountId(this), new Callback<ClientToken>() {
+                    Settings.getMerchantAccountId(this), new Callback<ClientToken>() {
                         @Override
                         public void success(ClientToken clientToken, Response response) {
                             if (TextUtils.isEmpty(clientToken.getClientToken())) {

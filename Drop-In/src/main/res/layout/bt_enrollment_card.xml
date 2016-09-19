@@ -13,13 +13,15 @@
         <android.support.design.widget.TextInputLayout
             style="@style/bt_text_input_layout"
             android:paddingLeft="@dimen/bt_edit_text_icon_padding"
-            android:paddingStart="@dimen/bt_edit_text_icon_padding">
+            android:paddingStart="@dimen/bt_edit_text_icon_padding"
+            android:labelFor="@+id/bt_sms_code">
 
             <com.braintreepayments.cardform.view.ErrorEditText
                 style="@style/bt_card_form_field"
                 android:id="@+id/bt_sms_code"
                 android:inputType="number"
-                android:hint="@string/bt_sms_code"/>
+                android:hint="@string/bt_sms_code"
+                android:contentDescription="@string/bt_sms_code"/>
 
         </android.support.design.widget.TextInputLayout>
 
