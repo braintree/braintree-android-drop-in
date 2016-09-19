@@ -1,4 +1,4 @@
-package com.braintreepayments.api;
+package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,7 +8,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
@@ -22,6 +22,8 @@ import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 
+import junit.framework.Assert;
+
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +33,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.util.ActivityController;
 
+import static com.braintreepayments.api.BraintreeFragmentTestUtils.getIntegrationType;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
@@ -83,7 +86,7 @@ public class BraintreePaymentActivityUnitTest {
     public void setsIntegrationTypeToDropinForDropinActivity() {
         setup(new BraintreeUnitTestHttpClient());
 
-        assertEquals("dropin", mActivity.braintreeFragment.mIntegrationType);
+        Assert.assertEquals("dropin2", getIntegrationType(mActivity.braintreeFragment));
     }
 
     @Test

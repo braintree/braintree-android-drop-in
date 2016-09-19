@@ -1,4 +1,4 @@
-package com.braintreepayments.api;
+package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,7 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ViewSwitcher;
 
-import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.Card;
+import com.braintreepayments.api.UnionPay;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.dropin.view.AddCardView;
 import com.braintreepayments.api.dropin.view.EditCardView;
@@ -44,18 +46,12 @@ import java.lang.annotation.RetentionPolicy;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.braintreepayments.api.BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR;
-import static com.braintreepayments.api.BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR;
-import static com.braintreepayments.api.BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE;
-import static com.braintreepayments.api.BraintreePaymentActivity.EXTRA_ERROR_MESSAGE;
 
 public class AddCardActivity extends AppCompatActivity implements ConfigurationListener, AddPaymentUpdateListener,
         PaymentMethodNonceCreatedListener, BraintreeErrorListener, UnionPayListener {
 
     private static final String EXTRA_STATE = "com.braintreepayments.api.EXTRA_STATE";
     private static final String EXTRA_ENROLLMENT_ID = "com.braintreepayments.api.EXTRA_ENROLLMENT_ID";
-
-    private String mEnrollmentId;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({
@@ -79,6 +75,8 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     private boolean mUnionPayCard;
 
     private BraintreeFragment mBraintreeFragment;
+    private Configuration mConfiguration;
+    private String mEnrollmentId;
 
     @State
     private int mState = CARD_ENTRY;
@@ -116,8 +114,8 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             mBraintreeFragment = getBraintreeFragment();
         } catch (InvalidArgumentException e) {
             Intent intent = new Intent()
-                    .putExtra(EXTRA_ERROR_MESSAGE, e.getMessage());
-            setResult(BRAINTREE_RESULT_DEVELOPER_ERROR, intent);
+                    .putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, e.getMessage());
+            setResult(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, intent);
             finish();
             return;
         }
@@ -136,6 +134,8 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
     @Override
     public void onConfigurationFetched(Configuration configuration) {
+        mConfiguration = configuration;
+
         mAddCardView.setup(this, configuration);
         mEditCardView.setup(this, configuration);
 
@@ -221,7 +221,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     private int determineNextState(View v) {
         int nextState = mState;
         if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getCardForm().getCardNumber())) {
-            if (!mBraintreeFragment.getConfiguration().getUnionPay().isEnabled()) {
+            if (!mConfiguration.getUnionPay().isEnabled()) {
                 mEditCardView.useUnionPay(this, false);
                 nextState = DETAILS_ENTRY;
             } else {
@@ -325,16 +325,16 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                     error instanceof UpgradeRequiredException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
-                setResult(BRAINTREE_RESULT_DEVELOPER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                setResult(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, new Intent().putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, error));
             } else if (error instanceof ConfigurationException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
-                setResult(BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                setResult(BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, error));
             } else if (error instanceof ServerException || error instanceof UnexpectedException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-                setResult(BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                setResult(BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, error));
             } else if (error instanceof DownForMaintenanceException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
-                setResult(BRAINTREE_RESULT_SERVER_UNAVAILABLE, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                setResult(BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE, new Intent().putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, error));
             }
             finish();
         }

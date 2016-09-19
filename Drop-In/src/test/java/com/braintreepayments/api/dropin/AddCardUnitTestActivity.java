@@ -1,11 +1,12 @@
-package com.braintreepayments.api;
+package com.braintreepayments.api.dropin;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 
+import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 
 public class AddCardUnitTestActivity extends AddCardActivity {
@@ -33,7 +34,7 @@ public class AddCardUnitTestActivity extends AddCardActivity {
     protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
         if (braintreeFragment == null) {
             braintreeFragment = super.getBraintreeFragment();
-            braintreeFragment.mHttpClient = httpClient;
+            setHttpClient(braintreeFragment, httpClient);
         }
 
         return braintreeFragment;

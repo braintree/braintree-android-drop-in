@@ -1,8 +1,9 @@
-package com.braintreepayments.api;
+package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
 import android.app.FragmentManager;
 
+import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
@@ -24,6 +25,7 @@ import org.robolectric.RobolectricGradleTestRunner;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -332,7 +334,7 @@ public class DropInResultUnitTest {
 
         BraintreeFragment fragment = BraintreeFragment.newInstance(mActivity,
                 stringFromFixture("client_token.json"));
-        fragment.mHttpClient = httpClient;
+        setHttpClient(fragment, httpClient);
 
         Robolectric.getForegroundThreadScheduler().unPause();
         Robolectric.getForegroundThreadScheduler().advanceToLastPostedRunnable();

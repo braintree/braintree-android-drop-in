@@ -1,4 +1,4 @@
-package com.braintreepayments.api;
+package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,7 +15,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.api.AndroidPay;
+import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.PayPal;
+import com.braintreepayments.api.PaymentMethod;
+import com.braintreepayments.api.Venmo;
 import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter;
 import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
 import com.braintreepayments.api.dropin.adapters.VaultedPaymentMethodsAdapter;
@@ -223,11 +227,10 @@ public class BraintreePaymentActivity extends Activity implements ConfigurationL
                 PayPal.authorizeAccount(mBraintreeFragment);
                 break;
             case ANDROID_PAY:
-                AndroidPay.performMaskedWalletRequest(mBraintreeFragment, mPaymentRequest.getAndroidPayCart(),
+                AndroidPay.requestAndroidPay(mBraintreeFragment, mPaymentRequest.getAndroidPayCart(),
                         mPaymentRequest.isAndroidPayShippingAddressRequired(),
                         mPaymentRequest.isAndroidPayPhoneNumberRequired(),
-                        mPaymentRequest.getAndroidPayAllowedCountriesForShipping(),
-                        AndroidPay.ANDROID_PAY_MASKED_WALLET_REQUEST_CODE);
+                        mPaymentRequest.getAndroidPayAllowedCountriesForShipping());
                 break;
             case PAY_WITH_VENMO:
                 Venmo.authorizeAccount(mBraintreeFragment);
@@ -265,9 +268,6 @@ public class BraintreePaymentActivity extends Activity implements ConfigurationL
 
         if (resultCode == Activity.RESULT_CANCELED) {
             mLoadingViewSwitcher.setDisplayedChild(1);
-        } else if ((requestCode == AndroidPay.ANDROID_PAY_MASKED_WALLET_REQUEST_CODE ||
-                requestCode == AndroidPay.ANDROID_PAY_FULL_WALLET_REQUEST_CODE) && resultCode == RESULT_OK) {
-            AndroidPay.onActivityResult(mBraintreeFragment, mPaymentRequest.getAndroidPayCart(), resultCode, data);
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 onPaymentMethodNonceCreated((PaymentMethodNonce) data

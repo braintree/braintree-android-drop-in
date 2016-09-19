@@ -1,4 +1,4 @@
-package com.braintreepayments.api;
+package com.braintreepayments.api.dropin;
 
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeHttpClient;
@@ -16,13 +16,10 @@ import static org.mockito.Mockito.when;
 
 public class BraintreeUnitTestHttpClient extends BraintreeHttpClient {
 
-    public static final String GET_PAYMENT_METHODS = TokenizationClient.versionedPath(
-        TokenizationClient.PAYMENT_METHOD_ENDPOINT + ".*");
-    public static final String TOKENIZE_CREDIT_CARD = TokenizationClient.versionedPath(
-        TokenizationClient.PAYMENT_METHOD_ENDPOINT + "/" + new CardBuilder().getApiPath());
-    public static final String UNIONPAY_CAPABILITIES_PATH = TokenizationClient.versionedPath(
-            "payment_methods/credit_cards/capabilities.*");
-    public static final String UNIONPAY_ENROLLMENT_PATH = TokenizationClient.versionedPath("union_pay_enrollments");
+    public static final String GET_PAYMENT_METHODS = "/v1/payment_methods.*";
+    public static final String TOKENIZE_CREDIT_CARD = "/v1/payment_methods/" + new CardBuilder().getApiPath();
+    public static final String UNIONPAY_CAPABILITIES_PATH = "/v1/payment_methods/credit_cards/capabilities.*";
+    public static final String UNIONPAY_ENROLLMENT_PATH = "/v1/union_pay_enrollments";
 
     private Map<String, String> mResponseMap;
     private Map<String, SimpleEntry<Integer, String>> mErrorResponseMap;

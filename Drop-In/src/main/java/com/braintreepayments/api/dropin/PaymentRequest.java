@@ -1,10 +1,12 @@
-package com.braintreepayments.api;
+package com.braintreepayments.api.dropin;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.braintreepayments.api.DataCollector;
+import com.braintreepayments.api.PayPal;
 import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.wallet.Cart;
 
@@ -26,9 +28,8 @@ public class PaymentRequest implements Parcelable {
     private Cart mAndroidPayCart;
     private boolean mAndroidPayShippingAddressRequired;
     private boolean mAndroidPayPhoneNumberRequired;
-    private int mAndroidPayRequestCode;
     private boolean mAndroidPayEnabled = true;
-    private List<CountrySpecification> mAndroidAllowedCountriesForShipping = new ArrayList<>();
+    private ArrayList<CountrySpecification> mAndroidAllowedCountriesForShipping = new ArrayList<>();
 
     private List<String> mPayPalAdditionalScopes;
     private boolean mPayPalEnabled = true;
@@ -125,18 +126,6 @@ public class PaymentRequest implements Parcelable {
     /**
      * This method is optional.
      *
-     * @param requestCode The requestCode to use when making an Android Pay
-     *        {@link com.google.android.gms.wallet.MaskedWalletRequest} with
-     *        {@link android.app.Activity#startActivityForResult(Intent, int)}}.
-     */
-    public PaymentRequest androidPayRequestCode(int requestCode) {
-        mAndroidPayRequestCode = requestCode;
-        return this;
-    }
-
-    /**
-     * This method is optional.
-     *
      * @param countryCodes countries to which shipping is supported.
      * Follows the ISO 3166-2 format (ex: "US", "CA", "JP")
      *
@@ -200,51 +189,47 @@ public class PaymentRequest implements Parcelable {
                 .putExtra(EXTRA_CHECKOUT_REQUEST, this);
     }
 
-    public String getAuthorization() {
+    String getAuthorization() {
         return mAuthorization;
     }
 
-    public String getAmount() {
+    String getAmount() {
         return mAmount;
     }
 
-    public boolean shouldCollectDeviceData() {
+    boolean shouldCollectDeviceData() {
         return mCollectDeviceData;
     }
 
-    public Cart getAndroidPayCart() throws NoClassDefFoundError {
+    Cart getAndroidPayCart() throws NoClassDefFoundError {
         return mAndroidPayCart;
     }
 
-    public boolean isAndroidPayShippingAddressRequired() {
+    boolean isAndroidPayShippingAddressRequired() {
         return mAndroidPayShippingAddressRequired;
     }
 
-    public boolean isAndroidPayPhoneNumberRequired() {
+    boolean isAndroidPayPhoneNumberRequired() {
         return mAndroidPayPhoneNumberRequired;
     }
 
-    public int getAndroidPayRequestCode() {
-        return mAndroidPayRequestCode;
-    }
-
-    public boolean isAndroidPayEnabled() {
+    boolean isAndroidPayEnabled() {
         return mAndroidPayEnabled;
     }
 
-    public List<CountrySpecification> getAndroidPayAllowedCountriesForShipping() {
+    ArrayList<CountrySpecification> getAndroidPayAllowedCountriesForShipping() {
         return mAndroidAllowedCountriesForShipping;
     }
 
-    public List<String> getPayPalAdditionalScopes() {
+    List<String> getPayPalAdditionalScopes() {
         return mPayPalAdditionalScopes;
     }
 
-    public boolean isPayPalEnabled() {
+    boolean isPayPalEnabled() {
         return mPayPalEnabled;
     }
 
-    public boolean isVenmoEnabled() {
+    boolean isVenmoEnabled() {
         return mVenmoEnabled;
     }
 
@@ -264,7 +249,6 @@ public class PaymentRequest implements Parcelable {
             dest.writeParcelable(mAndroidPayCart, 0);
             dest.writeByte(mAndroidPayShippingAddressRequired ? (byte) 1 : (byte) 0);
             dest.writeByte(mAndroidPayPhoneNumberRequired ? (byte) 1 : (byte) 0);
-            dest.writeInt(mAndroidPayRequestCode);
             dest.writeTypedList(mAndroidAllowedCountriesForShipping);
         } catch (NoClassDefFoundError ignored) {}
 
@@ -283,7 +267,6 @@ public class PaymentRequest implements Parcelable {
             mAndroidPayCart = in.readParcelable(Cart.class.getClassLoader());
             mAndroidPayShippingAddressRequired = in.readByte() != 0;
             mAndroidPayPhoneNumberRequired = in.readByte() != 0;
-            mAndroidPayRequestCode = in.readInt();
             in.readTypedList(mAndroidAllowedCountriesForShipping, CountrySpecification.CREATOR);
         } catch (NoClassDefFoundError ignored) {}
 

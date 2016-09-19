@@ -10,9 +10,9 @@
         tools:ignore="UnusedAttribute">
         <activity android:name="com.braintreepayments.api.threedsecure.ThreeDSecureWebViewActivity" />
 
-        <activity android:name="com.braintreepayments.api.BraintreePaymentActivity"
+        <activity android:name="com.braintreepayments.api.dropin.BraintreePaymentActivity"
             android:theme="@style/bt_payment_activity_theme"/>
-        <activity android:name="com.braintreepayments.api.AddCardActivity"
+        <activity android:name="com.braintreepayments.api.dropin.AddCardActivity"
             android:theme="@style/bt_add_payment_activity_theme" />
     </application>
 

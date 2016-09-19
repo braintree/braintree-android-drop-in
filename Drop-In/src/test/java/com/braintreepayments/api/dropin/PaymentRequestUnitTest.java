@@ -1,8 +1,9 @@
-package com.braintreepayments.api;
+package com.braintreepayments.api.dropin;
 
 import android.content.Intent;
 import android.os.Parcel;
 
+import com.braintreepayments.api.PayPal;
 import com.google.android.gms.wallet.Cart;
 
 import org.junit.Test;
@@ -34,7 +35,6 @@ public class PaymentRequestUnitTest {
                 .androidPayCart(cart)
                 .androidPayShippingAddressRequired(true)
                 .androidPayPhoneNumberRequired(true)
-                .androidPayRequestCode(1)
                 .androidPayAllowedCountriesForShipping("GB")
                 .disableAndroidPay()
                 .paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS))
@@ -51,7 +51,6 @@ public class PaymentRequestUnitTest {
         assertEquals("5.00", paymentRequest.getAndroidPayCart().getTotalPrice());
         assertTrue(paymentRequest.isAndroidPayShippingAddressRequired());
         assertTrue(paymentRequest.isAndroidPayPhoneNumberRequired());
-        assertEquals(1, paymentRequest.getAndroidPayRequestCode());
         assertFalse(paymentRequest.isAndroidPayEnabled());
         assertEquals(1, paymentRequest.getAndroidPayAllowedCountriesForShipping().size());
         assertEquals("GB", paymentRequest.getAndroidPayAllowedCountriesForShipping().get(0).getCountryCode());
@@ -74,7 +73,6 @@ public class PaymentRequestUnitTest {
         assertNull(paymentRequest.getAndroidPayCart());
         assertFalse(paymentRequest.isAndroidPayShippingAddressRequired());
         assertFalse(paymentRequest.isAndroidPayPhoneNumberRequired());
-        assertEquals(0, paymentRequest.getAndroidPayRequestCode());
         assertTrue(paymentRequest.isAndroidPayEnabled());
         assertTrue(paymentRequest.getAndroidPayAllowedCountriesForShipping().isEmpty());
         assertNull(paymentRequest.getPayPalAdditionalScopes());
@@ -94,7 +92,6 @@ public class PaymentRequestUnitTest {
                 .androidPayCart(cart)
                 .androidPayShippingAddressRequired(true)
                 .androidPayPhoneNumberRequired(true)
-                .androidPayRequestCode(1)
                 .androidPayAllowedCountriesForShipping("GB")
                 .disableAndroidPay()
                 .paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS))
@@ -112,7 +109,6 @@ public class PaymentRequestUnitTest {
         assertEquals("5.00", parceledPaymentRequest.getAndroidPayCart().getTotalPrice());
         assertTrue(parceledPaymentRequest.isAndroidPayShippingAddressRequired());
         assertTrue(parceledPaymentRequest.isAndroidPayPhoneNumberRequired());
-        assertEquals(1, parceledPaymentRequest.getAndroidPayRequestCode());
         assertFalse(parceledPaymentRequest.isAndroidPayEnabled());
         assertEquals(1, parceledPaymentRequest.getAndroidPayAllowedCountriesForShipping().size());
         assertEquals("GB", parceledPaymentRequest.getAndroidPayAllowedCountriesForShipping().get(0).getCountryCode());
