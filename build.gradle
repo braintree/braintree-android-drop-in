@@ -26,3 +26,7 @@ allprojects {
 
     apply plugin: 'android-sdk-manager'
 }
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
