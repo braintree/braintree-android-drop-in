@@ -26,6 +26,8 @@ import static com.braintreepayments.api.test.ExpirationDate.VALID_EXPIRATION;
 import static com.braintreepayments.api.test.TestConfigurationBuilder.basicConfig;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -75,7 +77,7 @@ public class EditCardViewUnitTest {
                 .challenges("cvv", "postal_code")
                 .buildConfiguration();
         mView.setup(mActivity, configuration);
-        mView.useUnionPay(mActivity, true);
+        mView.useUnionPay(mActivity, true, false);
 
         mView.getCardForm().getCardEditText().setText(VISA);
         mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
@@ -94,7 +96,7 @@ public class EditCardViewUnitTest {
         mActivity = (Activity) mActivityController.get();
         mView = (EditCardView) mActivity.findViewById(R.id.bt_edit_card_view);
         mView.setup(mActivity, configuration);
-        mView.useUnionPay(mActivity, true);
+        mView.useUnionPay(mActivity, true, false);
 
         assertEquals(VISA, mView.getCardForm().getCardNumber());
         assertEquals(VALID_EXPIRATION, mView.getCardForm().getExpirationDateEditText().getText().toString());
@@ -157,7 +159,7 @@ public class EditCardViewUnitTest {
                 .challenges("cvv", "postal_code")
                 .buildConfiguration();
         mView.setup(mActivity, configuration);
-        mView.useUnionPay(mActivity, true);
+        mView.useUnionPay(mActivity, true, false);
         ((AnimatedButtonView) mView.findViewById(R.id.bt_animated_button_view)).showLoading();
 
         mView.setErrors(new ErrorWithResponse(422, stringFromFixture("responses/credit_card_error_response.json")));
@@ -182,7 +184,7 @@ public class EditCardViewUnitTest {
     public void useUnionPay_doesNothingIfUnionPayNotPresent() {
         mView.setup(mActivity, (Configuration) basicConfig());
 
-        mView.useUnionPay(mActivity, false);
+        mView.useUnionPay(mActivity, false, false);
 
         assertThat(mView.getCardForm().getCountryCodeEditText()).isGone();
         assertThat(mView.getCardForm().getMobileNumberEditText()).isGone();
@@ -202,7 +204,7 @@ public class EditCardViewUnitTest {
         assertThat(mView.getCardForm().getCountryCodeEditText()).isGone();
         assertThat(mView.getCardForm().getMobileNumberEditText()).isGone();
 
-        mView.useUnionPay(mActivity, true);
+        mView.useUnionPay(mActivity, true, false);
 
         assertThat(mView.getCardForm().getCardEditText()).isVisible();
         assertThat(mView.getCardForm().getExpirationDateEditText()).isVisible();
@@ -210,7 +212,55 @@ public class EditCardViewUnitTest {
         assertThat(mView.getCardForm().getPostalCodeEditText()).isVisible();
         assertThat(mView.getCardForm().getCountryCodeEditText()).isVisible();
         assertThat(mView.getCardForm().getMobileNumberEditText()).isVisible();
-   }
+    }
+
+    @Test
+    public void useUnionPay_requiresExpirationAndCvvForNonDebitCards() {
+        Configuration configuration = new TestConfigurationBuilder()
+                .challenges("postal_code")
+                .buildConfiguration();
+        mView.setup(mActivity, configuration);
+
+        mView.useUnionPay(mActivity, true, false);
+        mView.onCardFormSubmit();
+
+        assertThat(mView.getCardForm().getCardEditText()).isVisible();
+        assertTrue(mView.getCardForm().getCardEditText().isError());
+        assertThat(mView.getCardForm().getExpirationDateEditText()).isVisible();
+        assertTrue(mView.getCardForm().getExpirationDateEditText().isError());
+        assertThat(mView.getCardForm().getCvvEditText()).isVisible();
+        assertTrue(mView.getCardForm().getCvvEditText().isError());
+        assertThat(mView.getCardForm().getPostalCodeEditText()).isVisible();
+        assertTrue(mView.getCardForm().getPostalCodeEditText().isError());
+        assertThat(mView.getCardForm().getCountryCodeEditText()).isVisible();
+        assertTrue(mView.getCardForm().getCountryCodeEditText().isError());
+        assertThat(mView.getCardForm().getMobileNumberEditText()).isVisible();
+        assertTrue(mView.getCardForm().getMobileNumberEditText().isError());
+    }
+
+    @Test
+    public void useUnionPay_showsExpirationAndCvvForDebitCardsButDoesNotRequireThem() {
+        Configuration configuration = new TestConfigurationBuilder()
+                .challenges("postal_code")
+                .buildConfiguration();
+        mView.setup(mActivity, configuration);
+
+        mView.useUnionPay(mActivity, true, true);
+        mView.onCardFormSubmit();
+
+        assertThat(mView.getCardForm().getCardEditText()).isVisible();
+        assertTrue(mView.getCardForm().getCardEditText().isError());
+        assertThat(mView.getCardForm().getExpirationDateEditText()).isVisible();
+        assertFalse(mView.getCardForm().getExpirationDateEditText().isError());
+        assertThat(mView.getCardForm().getCvvEditText()).isVisible();
+        assertFalse(mView.getCardForm().getCvvEditText().isError());
+        assertThat(mView.getCardForm().getPostalCodeEditText()).isVisible();
+        assertTrue(mView.getCardForm().getPostalCodeEditText().isError());
+        assertThat(mView.getCardForm().getCountryCodeEditText()).isVisible();
+        assertTrue(mView.getCardForm().getCountryCodeEditText().isError());
+        assertThat(mView.getCardForm().getMobileNumberEditText()).isVisible();
+        assertTrue(mView.getCardForm().getMobileNumberEditText().isError());
+    }
 
     @Test
     public void onCardFormSubmit_showsErrorsIfFormIsInvalid() {

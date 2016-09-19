@@ -73,6 +73,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     private EnrollmentCardView mEnrollmentCardView;
 
     private boolean mUnionPayCard;
+    private boolean mUnionPayDebitCard;
 
     private BraintreeFragment mBraintreeFragment;
     private Configuration mConfiguration;
@@ -195,7 +196,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             case DETAILS_ENTRY:
                 mActionBar.setTitle(R.string.bt_card_details);
                 mEditCardView.setCardNumber(mAddCardView.getCardForm().getCardNumber());
-                mEditCardView.useUnionPay(this, mUnionPayCard);
+                mEditCardView.useUnionPay(this, mUnionPayCard, mUnionPayDebitCard);
                 mEditCardView.setVisibility(VISIBLE);
                 break;
             case ENROLLMENT_ENTRY:
@@ -222,7 +223,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         int nextState = mState;
         if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getCardForm().getCardNumber())) {
             if (!mConfiguration.getUnionPay().isEnabled()) {
-                mEditCardView.useUnionPay(this, false);
+                mEditCardView.useUnionPay(this, false, false);
                 nextState = DETAILS_ENTRY;
             } else {
                 UnionPay.fetchCapabilities(mBraintreeFragment, mAddCardView.getCardForm().getCardNumber());
@@ -292,6 +293,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     @Override
     public void onCapabilitiesFetched(UnionPayCapabilities capabilities) {
         mUnionPayCard = capabilities.isUnionPay();
+        mUnionPayDebitCard = capabilities.isDebit();
 
         if (mUnionPayCard && !capabilities.isSupported()) {
             mAddCardView.showCardNotSupportedError();

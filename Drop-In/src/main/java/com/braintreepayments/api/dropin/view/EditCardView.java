@@ -123,8 +123,16 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
         mAnimatedButtonView.showButton();
     }
 
-    public void useUnionPay(Activity activity, boolean useUnionPay) {
+    public void useUnionPay(Activity activity, boolean useUnionPay, boolean debitCard) {
+        mCardForm.getExpirationDateEditText().setOptional(false);
+        mCardForm.getCvvEditText().setOptional(false);
+
         if (useUnionPay) {
+            if (debitCard) {
+                mCardForm.getExpirationDateEditText().setOptional(true);
+                mCardForm.getCvvEditText().setOptional(true);
+            }
+
             mCardForm.cardRequired(true)
                     .expirationRequired(true)
                     .cvvRequired(true)
