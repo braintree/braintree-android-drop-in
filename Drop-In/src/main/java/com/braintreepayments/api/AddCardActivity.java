@@ -314,8 +314,13 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     @Override
     public void onError(Exception error) {
         if (error instanceof ErrorWithResponse) {
-            setState(mState, DETAILS_ENTRY);
-            mEditCardView.setErrors((ErrorWithResponse) error);
+            if (mEnrollmentCardView.isEnrollmentError((ErrorWithResponse) error)) {
+                setState(mState, ENROLLMENT_ENTRY);
+                mEnrollmentCardView.setErrors((ErrorWithResponse) error);
+            } else {
+                setState(mState, DETAILS_ENTRY);
+                mEditCardView.setErrors((ErrorWithResponse) error);
+            }
         } else {
             if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                     error instanceof UpgradeRequiredException) {

@@ -19,6 +19,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.cardform.utils.ViewUtils;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
@@ -97,6 +98,18 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener,
         mAnimatedButtonView.showLoading();
         onClick(mAnimatedButtonView);
         return true;
+    }
+
+    public boolean isEnrollmentError(ErrorWithResponse error) {
+        return error != null && error.errorFor("unionPayEnrollment") != null;
+    }
+
+    public void setErrors(ErrorWithResponse errors) {
+        if (errors.errorFor("unionPayEnrollment") != null) {
+            mSmsCode.setError(getContext().getString(R.string.bt_unionpay_sms_code_invalid));
+        }
+
+        mAnimatedButtonView.showButton();
     }
 
     @Override

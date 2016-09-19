@@ -1,0 +1,17 @@
+{
+  "error": {
+    "message": "UnionPay Enrollment failed"
+  },
+  "fieldErrors": [
+    {
+      "field": "unionPayEnrollment",
+      "fieldErrors": [
+        {
+          "code": "84424",
+          "field": "base",
+          "message": "SMS verification code is incorrect. Please try again"
+        }
+      ]
+    }
+  ]
+}

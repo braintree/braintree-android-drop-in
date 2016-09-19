@@ -24,6 +24,7 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.test.ExpirationDate;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.api.test.TestConfigurationBuilder.TestUnionPayConfigurationBuilder;
+import com.braintreepayments.cardform.view.ErrorEditText;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -322,6 +323,36 @@ public class AddCardActivityUnitTest {
                 mEditCardView.getCardForm().getCountryCodeEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_mobile_number_invalid),
                 mEditCardView.getCardForm().getMobileNumberEditText().getTextInputLayoutParent().getError());
+    }
+
+    @Test
+    public void smsCodeValidationErrorsAreShownToTheUser() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .unionPay(new TestUnionPayConfigurationBuilder()
+                                .enabled(true))
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
+                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
+                        stringFromFixture("responses/unionpay_enrollment_sms_required.json"))
+                .errorResponse("", 422,
+                        stringFromFixture("responses/unionpay_enrollment_error_response.json"));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "123");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "12345678");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEnrollmentCardView, R.id.bt_sms_code, "123456");
+        mEnrollmentCardView.findViewById(R.id.bt_button).performClick();
+
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_unionpay_sms_code_invalid),
+                ((ErrorEditText) mEnrollmentCardView.findViewById(R.id.bt_sms_code)).getTextInputLayoutParent().getError());
     }
 
     @Test

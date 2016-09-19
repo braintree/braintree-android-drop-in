@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.test.UnitTestActivity;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
@@ -21,6 +22,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.util.ActivityController;
 
 import static com.braintreepayments.api.test.ColorTestUtils.setupActivity;
+import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
@@ -75,6 +77,20 @@ public class EnrollmentCardViewUnitTest {
 
         assertEquals(EditorInfo.IME_ACTION_GO, smsCode.getImeOptions());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_confirm), smsCode.getImeActionLabel());
+    }
+
+    @Test
+    public void setErrors_displaysError() {
+        mView.setup(mActivity);
+        ((AnimatedButtonView) mView.findViewById(R.id.bt_animated_button_view)).showLoading();
+
+        mView.setErrors(new ErrorWithResponse(422,
+                stringFromFixture("responses/unionpay_enrollment_error_response.json")));
+
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_unionpay_sms_code_invalid),
+                ((ErrorEditText) mView.findViewById(R.id.bt_sms_code)).getTextInputLayoutParent().getError());
+        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
     }
 
     @Test
