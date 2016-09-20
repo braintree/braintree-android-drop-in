@@ -35,6 +35,7 @@ import com.braintreepayments.api.exceptions.UnexpectedException;
 import com.braintreepayments.api.exceptions.UpgradeRequiredException;
 import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
+import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
@@ -164,9 +165,16 @@ public class BraintreePaymentActivity extends Activity implements ConfigurationL
     }
 
     @Override
-    public void onConfigurationFetched(Configuration configuration) {
-        mAvailablePaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(this, configuration, this));
-        mLoadingViewSwitcher.setDisplayedChild(1);
+    public void onConfigurationFetched(final Configuration configuration) {
+        AndroidPay.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
+            @Override
+            public void onResponse(Boolean isReadyToPay) {
+                mAvailablePaymentMethodListView.setAdapter(
+                        new SupportedPaymentMethodsAdapter(BraintreePaymentActivity.this,
+                                configuration, isReadyToPay, BraintreePaymentActivity.this));
+                mLoadingViewSwitcher.setDisplayedChild(1);
+            }
+        });
     }
 
     @Override

@@ -31,8 +31,8 @@ public class SupportedPaymentMethodAdapterUnitTest {
     public void noPaymentMethodsAvailableIfNotEnabled() {
         Configuration configuration = getConfiguration(false, false, false, false);
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application,
-                configuration, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
+                RuntimeEnvironment.application, configuration, false, null);
 
         assertEquals(0, adapter.getCount());
     }
@@ -41,8 +41,8 @@ public class SupportedPaymentMethodAdapterUnitTest {
     public void allPaymentMethodsAvailableIfEnabled() {
         Configuration configuration = getConfiguration(true, true, true, true);
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application,
-                configuration, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
+                RuntimeEnvironment.application, configuration, true, null);
 
         assertEquals(4, adapter.getCount());
         assertEquals(PaymentMethodType.PAYPAL, adapter.getItem(0));
@@ -56,8 +56,8 @@ public class SupportedPaymentMethodAdapterUnitTest {
         Configuration configuration = getConfiguration(true, true, true, true);
         PaymentMethodSelectedListener listener = mock(PaymentMethodSelectedListener.class);
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application,
-                configuration, listener);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
+                RuntimeEnvironment.application, configuration, true, listener);
 
         adapter.getView(0, null, null).callOnClick();
         adapter.getView(1, null, null).callOnClick();

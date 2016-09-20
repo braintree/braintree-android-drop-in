@@ -22,7 +22,8 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
     private PaymentMethodSelectedListener mPaymentMethodSelectedListener;
 
     public SupportedPaymentMethodsAdapter(Context context, Configuration configuration,
-            PaymentMethodSelectedListener paymentMethodSelectedListener) {
+                                          boolean androidPayEnabled,
+                                          PaymentMethodSelectedListener paymentMethodSelectedListener) {
         mContext = context;
         mPaymentMethodSelectedListener = paymentMethodSelectedListener;
 
@@ -37,7 +38,7 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
         if (configuration.getCardConfiguration().getSupportedCardTypes().size() > 0) {
             mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
         }
-        if (configuration.getAndroidPay().isEnabled(mContext)) {
+        if (androidPayEnabled) {
             mAvailablePaymentMethods.add(PaymentMethodType.ANDROID_PAY);
         }
     }
