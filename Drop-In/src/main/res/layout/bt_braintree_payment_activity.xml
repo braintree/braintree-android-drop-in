@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="0dp"
@@ -15,7 +16,8 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:animateLayoutChanges="true"
-        android:background="@color/bt_base_background">
+        android:background="@color/bt_base_background"
+        tools:targetApi="lollipop">
 
         <ViewSwitcher
             android:id="@+id/bt_loading_view_switcher"

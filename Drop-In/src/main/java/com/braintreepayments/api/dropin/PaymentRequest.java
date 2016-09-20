@@ -73,13 +73,6 @@ public class PaymentRequest implements Parcelable {
     }
 
     /**
-     * This method is currently unused.
-     */
-    public PaymentRequest currencyCode(String currencyCode) {
-        return this;
-    }
-
-    /**
      * This method is optional.
      *
      * @param collectDeviceData {@code true} if Drop-in should collect and return device data for

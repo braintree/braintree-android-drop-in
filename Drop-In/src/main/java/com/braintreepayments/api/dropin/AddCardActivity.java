@@ -61,10 +61,10 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             ENROLLMENT_ENTRY
     })
     private @interface State {}
-    public static final int LOADING = 1;
-    public static final int CARD_ENTRY = 2;
-    public static final int DETAILS_ENTRY = 3;
-    public static final int ENROLLMENT_ENTRY = 4;
+    private static final int LOADING = 1;
+    private static final int CARD_ENTRY = 2;
+    private static final int DETAILS_ENTRY = 3;
+    private static final int ENROLLMENT_ENTRY = 4;
 
     private ActionBar mActionBar;
     private ViewSwitcher mViewSwitcher;
@@ -117,7 +117,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
                     .putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, e.getMessage());
             setResult(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, intent);
             finish();
-            return;
         }
     }
 
