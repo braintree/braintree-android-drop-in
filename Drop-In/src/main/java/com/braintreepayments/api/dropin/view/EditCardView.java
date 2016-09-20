@@ -87,7 +87,6 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
 
     public void setCardNumber(String cardNumber) {
         mCardForm.getCardEditText().setText(cardNumber);
-        mCardForm.getCardEditText().focusNextView();
     }
 
     public void setErrors(ErrorWithResponse errors) {
@@ -174,7 +173,21 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
         mAnimatedButtonView.showButton();
 
         if (visibility == VISIBLE) {
-            mCardForm.getExpirationDateEditText().requestFocus();
+            if (!mCardForm.getExpirationDateEditText().isValid()) {
+                mCardForm.getExpirationDateEditText().requestFocus();
+            } else if (mCardForm.getCvvEditText().getVisibility() == VISIBLE &&
+                    !mCardForm.getCvvEditText().isValid()) {
+                mCardForm.getCvvEditText().requestFocus();
+            } else if (mCardForm.getPostalCodeEditText().getVisibility() == VISIBLE &&
+                    !mCardForm.getPostalCodeEditText().isValid()) {
+                mCardForm.getPostalCodeEditText().requestFocus();
+            } else if (mCardForm.getCountryCodeEditText().getVisibility() == VISIBLE &&
+                    !mCardForm.getCountryCodeEditText().isValid()) {
+                mCardForm.getCountryCodeEditText().requestFocus();
+            } else if (mCardForm.getMobileNumberEditText().getVisibility() == VISIBLE &&
+                    !mCardForm.getMobileNumberEditText().isValid()) {
+                mCardForm.getMobileNumberEditText().requestFocus();
+            }
         }
     }
 }

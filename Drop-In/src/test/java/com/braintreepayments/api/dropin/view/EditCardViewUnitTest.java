@@ -32,6 +32,7 @@ import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 public class EditCardViewUnitTest {
@@ -121,16 +122,6 @@ public class EditCardViewUnitTest {
     }
 
     @Test
-    public void setCardNumber_focusesNextView() {
-        mView.setup(mActivity, (Configuration) basicConfig());
-        assertThat(mView.getCardForm().getExpirationDateEditText()).isNotFocused();
-
-        mView.setCardNumber(VISA);
-
-        assertThat(mView.getCardForm().getExpirationDateEditText()).isFocused();
-    }
-
-    @Test
     public void setVisibility_toVisibleClearsButtonLoadingView() {
         mView.setup(mActivity, mock(Configuration.class));
         mView.getCardForm().getCardEditText().setText(VISA);
@@ -144,13 +135,66 @@ public class EditCardViewUnitTest {
     }
 
     @Test
-    public void setVisibility_toVisibleFocusesExpirationEditText() {
+    public void setVisibility_toVisibleFocusesExpiration() {
         mView.setup(mActivity, mock(Configuration.class));
         assertThat(mView.getCardForm().getExpirationDateEditText()).isNotFocused();
 
         mView.setVisibility(View.VISIBLE);
 
         assertThat(mView.getCardForm().getExpirationDateEditText()).isFocused();
+    }
+
+    @Test
+    public void setVisibility_toVisibleFocusesCvv() {
+        Configuration configuration = mock(Configuration.class);
+        when(configuration.isCvvChallengePresent()).thenReturn(true);
+        mView.setup(mActivity, configuration);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+        assertThat(mView.getCardForm().getCvvEditText()).isNotFocused();
+
+        mView.setVisibility(View.VISIBLE);
+
+        assertThat(mView.getCardForm().getCvvEditText()).isFocused();
+    }
+
+    @Test
+    public void setVisibility_toVisibleFocusesPostalCode() {
+        Configuration configuration = mock(Configuration.class);
+        when(configuration.isPostalCodeChallengePresent()).thenReturn(true);
+        mView.setup(mActivity, configuration);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+        assertThat(mView.getCardForm().getPostalCodeEditText()).isNotFocused();
+
+        mView.setVisibility(View.VISIBLE);
+
+        assertThat(mView.getCardForm().getPostalCodeEditText()).isFocused();
+    }
+
+    @Test
+    public void setVisibility_toVisibleFocusesCountryCode() {
+        mView.setup(mActivity, mock(Configuration.class));
+        mView.useUnionPay(mActivity, true, false);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+        mView.getCardForm().getCvvEditText().setText("123");
+        assertThat(mView.getCardForm().getCountryCodeEditText()).isNotFocused();
+
+        mView.setVisibility(View.VISIBLE);
+
+        assertThat(mView.getCardForm().getCountryCodeEditText()).isFocused();
+    }
+
+    @Test
+    public void setVisibility_toVisibleFocusesMobileNumber() {
+        mView.setup(mActivity, mock(Configuration.class));
+        mView.useUnionPay(mActivity, true, false);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+        mView.getCardForm().getCvvEditText().setText("123");
+        mView.getCardForm().getCountryCodeEditText().setText("123");
+        assertThat(mView.getCardForm().getMobileNumberEditText()).isNotFocused();
+
+        mView.setVisibility(View.VISIBLE);
+
+        assertThat(mView.getCardForm().getMobileNumberEditText()).isFocused();
     }
 
     @Test
