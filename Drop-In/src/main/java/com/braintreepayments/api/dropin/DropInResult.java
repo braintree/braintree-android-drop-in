@@ -1,6 +1,7 @@
 package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -29,13 +30,13 @@ import java.util.List;
  */
 public class DropInResult {
 
-    protected static final String LAST_USED_PAYMENT_METHOD_TYPE =
-            "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
-
     public interface DropInResultListener {
         void onError(Exception exception);
         void onResult(DropInResult result);
     }
+
+    static final String LAST_USED_PAYMENT_METHOD_TYPE =
+            "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
 
     private PaymentMethodType mPaymentMethodType;
     private PaymentMethodNonce mPaymentMethodNonce;
@@ -138,6 +139,15 @@ public class DropInResult {
         fragment.addListener(paymentMethodsListener);
 
         PaymentMethod.getPaymentMethodNonces(fragment);
+    }
+
+    static void setLastUsedPaymentMethodType(Context context,
+                                             PaymentMethodNonce paymentMethodNonce) {
+        BraintreeSharedPreferences.getSharedPreferences(context)
+                .edit()
+                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+                        PaymentMethodType.forType(paymentMethodNonce).getCanonicalName())
+                .apply();
     }
 
     private static void resetListeners(BraintreeFragment fragment, ListenerHolder listenerHolder,

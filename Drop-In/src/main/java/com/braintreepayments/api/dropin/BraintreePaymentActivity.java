@@ -38,7 +38,6 @@ import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
-import com.braintreepayments.api.internal.BraintreeSharedPreferences;
 import com.braintreepayments.api.models.Authorization;
 import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.Configuration;
@@ -205,11 +204,8 @@ public class BraintreePaymentActivity extends Activity implements ConfigurationL
         slideDown(new AnimationFinishedListener() {
             @Override
             public void onAnimationFinished() {
-                BraintreeSharedPreferences.getSharedPreferences(BraintreePaymentActivity.this)
-                        .edit()
-                        .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                                PaymentMethodType.forType(paymentMethodNonce).getCanonicalName())
-                        .apply();
+                DropInResult.setLastUsedPaymentMethodType(BraintreePaymentActivity.this,
+                        paymentMethodNonce);
 
                 Intent resultIntent = new Intent().putExtra(EXTRA_PAYMENT_METHOD_NONCE, paymentMethodNonce);
                 setResult(RESULT_OK, resultIntent);
