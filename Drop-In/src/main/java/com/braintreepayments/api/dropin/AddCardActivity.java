@@ -101,7 +101,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         mEnrollmentCardView.setAddPaymentUpdatedListener(this);
 
         if (savedInstanceState != null) {
-            //TODO is there a better way to respect this State interface?
             @State int state = savedInstanceState.getInt(EXTRA_STATE);
             mState = state;
             mEnrollmentId = savedInstanceState.getString(EXTRA_ENROLLMENT_ID);
