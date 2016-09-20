@@ -51,7 +51,7 @@
         android:background="@android:color/transparent"
         android:textColor="@color/bt_text_blue"
         android:textSize="6pt"
-        android:textAllCaps="false"
-        android:text="@string/bt_missing_sms_code"/>
+        android:textAllCaps="true"
+        android:text="@string/bt_use_a_different_phone_number"/>
 
 </merge>

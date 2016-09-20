@@ -45,7 +45,7 @@
     <string tools:ignore="MissingTranslation" name="bt_scan_with_card_io">Scan with card.io</string>
     <string tools:ignore="MissingTranslation" name="bt_sms_code">SMS Code</string>
     <string tools:ignore="MissingTranslation" name="bt_sms_code_required">SMS code is required</string>
-    <string tools:ignore="MissingTranslation" name="bt_missing_sms_code">Didn\'t get an SMS Code?</string>
+    <string tools:ignore="MissingTranslation" name="bt_use_a_different_phone_number">Use a different phone number</string>
     <string tools:ignore="MissingTranslation" name="bt_sms_code_sent_to">Enter the SMS code sent to %s</string>
     <string tools:ignore="MissingTranslation" name="bt_card_details">Card Details</string>
     <string tools:ignore="MissingTranslation" name="bt_confirm_enrollment">Confirm Enrollment</string>]
