@@ -73,9 +73,9 @@ public class AddCardActivityUnitTest {
 
         mActivityController.setup();
 
-        assertEquals(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
+        assertEquals(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
         assertEquals("Tokenization Key or client token was invalid.", mShadowActivity.getResultIntent()
-                .getStringExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE));
+                .getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
     }
 
     @Test
@@ -85,9 +85,9 @@ public class AddCardActivityUnitTest {
 
         mActivityController.setup();
 
-        assertEquals(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
+        assertEquals(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
         assertEquals("A client token or client key must be specified in the PaymentRequest", mShadowActivity.getResultIntent()
-                .getStringExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE));
+                .getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
     }
 
     @Test
@@ -281,7 +281,7 @@ public class AddCardActivityUnitTest {
 
         assertTrue(mActivity.isFinishing());
         PaymentMethodNonce nonce = mShadowActivity.getResultIntent()
-                .getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
+                .getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE);
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
         assertIsANonce(nonce.getNonce());
         assertEquals("11", ((CardNonce) nonce).getLastTwo());
@@ -359,7 +359,7 @@ public class AddCardActivityUnitTest {
     public void configurationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("configuration-exception", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR,
+        assertExceptionIsReturned("configuration-exception", DropInActivity.BRAINTREE_RESULT_SERVER_ERROR,
                 new ConfigurationException("Configuration exception"));
     }
 
@@ -367,7 +367,7 @@ public class AddCardActivityUnitTest {
     public void authenticationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("developer-error", BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+        assertExceptionIsReturned("developer-error", DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
                 new AuthenticationException("Access denied"));
     }
 
@@ -375,7 +375,7 @@ public class AddCardActivityUnitTest {
     public void authorizationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("developer-error", BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+        assertExceptionIsReturned("developer-error", DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
                 new AuthorizationException("Access denied"));
     }
 
@@ -383,7 +383,7 @@ public class AddCardActivityUnitTest {
     public void upgradeRequiredExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("developer-error", BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+        assertExceptionIsReturned("developer-error", DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
                 new UpgradeRequiredException("Exception"));
     }
 
@@ -391,7 +391,7 @@ public class AddCardActivityUnitTest {
     public void serverExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("server-error", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR,
+        assertExceptionIsReturned("server-error", DropInActivity.BRAINTREE_RESULT_SERVER_ERROR,
                 new ServerException("Exception"));
     }
 
@@ -399,7 +399,7 @@ public class AddCardActivityUnitTest {
     public void unexpectedExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("server-error", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR,
+        assertExceptionIsReturned("server-error", DropInActivity.BRAINTREE_RESULT_SERVER_ERROR,
                 new UnexpectedException("Exception"));
     }
 
@@ -407,7 +407,7 @@ public class AddCardActivityUnitTest {
     public void downForMaintenanceExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("server-unavailable", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE,
+        assertExceptionIsReturned("server-unavailable", DropInActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE,
                 new DownForMaintenanceException("Exception"));
     }
 
@@ -513,7 +513,7 @@ public class AddCardActivityUnitTest {
 
         assertTrue(mActivity.isFinishing());
         PaymentMethodNonce nonce = mShadowActivity.getResultIntent()
-                .getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
+                .getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE);
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
         assertIsANonce(nonce.getNonce());
         assertEquals("85", ((CardNonce) nonce).getLastTwo());
@@ -641,7 +641,7 @@ public class AddCardActivityUnitTest {
         assertTrue(mActivity.isFinishing());
         assertEquals(responseCode, mShadowActivity.getResultCode());
         Exception actualException = (Exception) mShadowActivity.getResultIntent()
-                .getSerializableExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE);
+                .getSerializableExtra(DropInActivity.EXTRA_ERROR_MESSAGE);
         assertEquals(exception.getClass(), actualException.getClass());
         assertEquals(exception.getMessage(), actualException.getMessage());
     }

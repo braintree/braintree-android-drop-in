@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Used to start {@link BraintreePaymentActivity} with specified options.
+ * Used to start {@link DropInActivity} with specified options.
  */
 public class PaymentRequest implements Parcelable {
 
@@ -172,13 +172,13 @@ public class PaymentRequest implements Parcelable {
 
     /**
      * Get an {@link Intent} that can be used in {@link android.app.Activity#startActivityForResult(Intent, int)}
-     * to launch {@link BraintreePaymentActivity} and the Drop-in UI.
+     * to launch {@link DropInActivity} and the Drop-in UI.
      *
      * @param context
      * @return {@link Intent} containing all of the options set in {@link PaymentRequest}.
      */
     public Intent getIntent(Context context) {
-        return new Intent(context, BraintreePaymentActivity.class)
+        return new Intent(context, DropInActivity.class)
                 .putExtra(EXTRA_CHECKOUT_REQUEST, this);
     }
 

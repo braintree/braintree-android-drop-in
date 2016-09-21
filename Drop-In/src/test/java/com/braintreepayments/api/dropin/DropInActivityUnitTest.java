@@ -45,16 +45,16 @@ import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
-public class BraintreePaymentActivityUnitTest {
+public class DropInActivityUnitTest {
 
     private ActivityController mActivityController;
-    private BraintreePaymentUnitTestActivity mActivity;
+    private DropInUnitTestActivity mActivity;
     private ShadowActivity mShadowActivity;
 
     @Before
     public void setup() {
-        mActivityController = Robolectric.buildActivity(BraintreePaymentUnitTestActivity.class);
-        mActivity = (BraintreePaymentUnitTestActivity) mActivityController.get();
+        mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class);
+        mActivity = (DropInUnitTestActivity) mActivityController.get();
         mShadowActivity = shadowOf(mActivity);
     }
 
@@ -65,9 +65,9 @@ public class BraintreePaymentActivityUnitTest {
 
         mActivityController.setup();
 
-        assertEquals(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
+        assertEquals(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
         assertEquals("Tokenization Key or client token was invalid.", mShadowActivity.getResultIntent()
-                .getStringExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE));
+                .getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
     }
 
     @Test
@@ -77,9 +77,9 @@ public class BraintreePaymentActivityUnitTest {
 
         mActivityController.setup();
 
-        assertEquals(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
+        assertEquals(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
         assertEquals("A client token or client key must be specified in the PaymentRequest", mShadowActivity.getResultIntent()
-                .getStringExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE));
+                .getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
     }
 
     @Test
@@ -127,8 +127,8 @@ public class BraintreePaymentActivityUnitTest {
                 .stop()
                 .destroy();
 
-        mActivityController = Robolectric.buildActivity(BraintreePaymentUnitTestActivity.class);
-        mActivity = (BraintreePaymentUnitTestActivity) mActivityController.get();
+        mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class);
+        mActivity = (DropInUnitTestActivity) mActivityController.get();
         mActivity.setPaymentRequest(paymentRequest);
         mActivity.httpClient = httpClient;
         mActivityController.setup(bundle);
@@ -161,8 +161,8 @@ public class BraintreePaymentActivityUnitTest {
                 .stop()
                 .destroy();
 
-        mActivityController = Robolectric.buildActivity(BraintreePaymentUnitTestActivity.class);
-        mActivity = (BraintreePaymentUnitTestActivity) mActivityController.get();
+        mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class);
+        mActivity = (DropInUnitTestActivity) mActivityController.get();
         mActivity.setPaymentRequest(paymentRequest);
         mActivity.httpClient = httpClient;
         mActivityController.setup(bundle);
@@ -202,7 +202,7 @@ public class BraintreePaymentActivityUnitTest {
 
         assertTrue(mActivity.isFinishing());
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
-        CardNonce returnedNonce = mShadowActivity.getResultIntent().getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
+        CardNonce returnedNonce = mShadowActivity.getResultIntent().getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE);
         assertEquals(cardNonce.getNonce(), returnedNonce.getNonce());
         assertEquals(cardNonce.getLastTwo(), returnedNonce.getLastTwo());
     }
@@ -241,7 +241,7 @@ public class BraintreePaymentActivityUnitTest {
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
         assertEquals(paymentMethodNonce.getNonce(),
                 ((PaymentMethodNonce) mShadowActivity.getResultIntent()
-                        .getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
+                        .getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
     }
 
     @Test
@@ -285,7 +285,7 @@ public class BraintreePaymentActivityUnitTest {
     public void onActivityResult_returnsNonceFromAddCardActivity() throws JSONException {
         CardNonce cardNonce = CardNonce.fromJson(stringFromFixture("responses/visa_credit_card_response.json"));
         Intent data = new Intent()
-                .putExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE, cardNonce);
+                .putExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE, cardNonce);
         mActivityController.setup();
         mActivity.onActivityResult(1, Activity.RESULT_OK, data);
 
@@ -293,26 +293,26 @@ public class BraintreePaymentActivityUnitTest {
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
         assertEquals(cardNonce.getNonce(),
                 ((PaymentMethodNonce) mShadowActivity.getResultIntent()
-                        .getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
+                        .getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
     }
 
     @Test
     public void onActivityResult_returnsErrorFromAddCardActivity() {
         Intent data = new Intent()
-                .putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, "Error");
+                .putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, "Error");
         mActivityController.setup();
-        mActivity.onActivityResult(1, BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, data);
+        mActivity.onActivityResult(1, DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, data);
 
         assertTrue(mShadowActivity.isFinishing());
-        assertEquals(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
-        assertEquals("Error", mShadowActivity.getResultIntent().getStringExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE));
+        assertEquals(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
+        assertEquals("Error", mShadowActivity.getResultIntent().getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
     }
 
     @Test
     public void configurationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("configuration-exception", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR,
+        assertExceptionIsReturned("configuration-exception", DropInActivity.BRAINTREE_RESULT_SERVER_ERROR,
                 new ConfigurationException("Configuration exception"));
     }
 
@@ -320,7 +320,7 @@ public class BraintreePaymentActivityUnitTest {
     public void authenticationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("developer-error", BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+        assertExceptionIsReturned("developer-error", DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
                 new AuthenticationException("Access denied"));
     }
 
@@ -328,7 +328,7 @@ public class BraintreePaymentActivityUnitTest {
     public void authorizationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("developer-error", BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+        assertExceptionIsReturned("developer-error", DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
                 new AuthorizationException("Access denied"));
     }
 
@@ -336,7 +336,7 @@ public class BraintreePaymentActivityUnitTest {
     public void upgradeRequiredExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("developer-error", BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+        assertExceptionIsReturned("developer-error", DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
                 new UpgradeRequiredException("Exception"));
     }
 
@@ -344,7 +344,7 @@ public class BraintreePaymentActivityUnitTest {
     public void serverExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("server-error", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR,
+        assertExceptionIsReturned("server-error", DropInActivity.BRAINTREE_RESULT_SERVER_ERROR,
                 new ServerException("Exception"));
     }
 
@@ -352,7 +352,7 @@ public class BraintreePaymentActivityUnitTest {
     public void unexpectedExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("server-error", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR,
+        assertExceptionIsReturned("server-error", DropInActivity.BRAINTREE_RESULT_SERVER_ERROR,
                 new UnexpectedException("Exception"));
     }
 
@@ -360,7 +360,7 @@ public class BraintreePaymentActivityUnitTest {
     public void downForMaintenanceExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("server-unavailable", BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE,
+        assertExceptionIsReturned("server-unavailable", DropInActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE,
                 new DownForMaintenanceException("Exception"));
     }
 
@@ -381,7 +381,7 @@ public class BraintreePaymentActivityUnitTest {
         assertTrue(mActivity.isFinishing());
         assertEquals(responseCode, mShadowActivity.getResultCode());
         Exception actualException = (Exception) mShadowActivity.getResultIntent()
-                .getSerializableExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE);
+                .getSerializableExtra(DropInActivity.EXTRA_ERROR_MESSAGE);
         assertEquals(exception.getClass(), actualException.getClass());
         assertEquals(exception.getMessage(), actualException.getMessage());
     }

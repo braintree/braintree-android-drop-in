@@ -44,7 +44,7 @@ public class PaymentRequestUnitTest {
 
         PaymentRequest paymentRequest = intent.getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
 
-        assertEquals(BraintreePaymentActivity.class.getName(), intent.getComponent().getClassName());
+        assertEquals(DropInActivity.class.getName(), intent.getComponent().getClassName());
         assertEquals(TOKENIZATION_KEY, paymentRequest.getAuthorization());
         assertEquals("1.00", paymentRequest.getAmount());
         assertTrue(paymentRequest.shouldCollectDeviceData());
@@ -66,7 +66,7 @@ public class PaymentRequestUnitTest {
 
         PaymentRequest paymentRequest = intent.getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
 
-        assertEquals(BraintreePaymentActivity.class.getName(), intent.getComponent().getClassName());
+        assertEquals(DropInActivity.class.getName(), intent.getComponent().getClassName());
         assertNull(paymentRequest.getAuthorization());
         assertNull(paymentRequest.getAmount());
         assertFalse(paymentRequest.shouldCollectDeviceData());

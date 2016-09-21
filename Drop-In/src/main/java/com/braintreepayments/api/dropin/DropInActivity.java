@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
 
-public class BraintreePaymentActivity extends Activity implements ConfigurationListener, BraintreeCancelListener,
+public class DropInActivity extends Activity implements ConfigurationListener, BraintreeCancelListener,
         BraintreeErrorListener, PaymentMethodSelectedListener, PaymentMethodNoncesUpdatedListener,
         PaymentMethodNonceCreatedListener {
 
@@ -112,7 +112,7 @@ public class BraintreePaymentActivity extends Activity implements ConfigurationL
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bt_braintree_payment_activity);
+        setContentView(R.layout.bt_drop_in_activity);
 
         mPaymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
         mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
@@ -170,8 +170,8 @@ public class BraintreePaymentActivity extends Activity implements ConfigurationL
             @Override
             public void onResponse(Boolean isReadyToPay) {
                 mAvailablePaymentMethodListView.setAdapter(
-                        new SupportedPaymentMethodsAdapter(BraintreePaymentActivity.this,
-                                configuration, isReadyToPay, BraintreePaymentActivity.this));
+                        new SupportedPaymentMethodsAdapter(DropInActivity.this,
+                                configuration, isReadyToPay, DropInActivity.this));
                 mLoadingViewSwitcher.setDisplayedChild(1);
             }
         });
@@ -212,7 +212,7 @@ public class BraintreePaymentActivity extends Activity implements ConfigurationL
         slideDown(new AnimationFinishedListener() {
             @Override
             public void onAnimationFinished() {
-                DropInResult.setLastUsedPaymentMethodType(BraintreePaymentActivity.this,
+                DropInResult.setLastUsedPaymentMethodType(DropInActivity.this,
                         paymentMethodNonce);
 
                 Intent resultIntent = new Intent().putExtra(EXTRA_PAYMENT_METHOD_NONCE, paymentMethodNonce);
@@ -275,7 +275,7 @@ public class BraintreePaymentActivity extends Activity implements ConfigurationL
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
                 onPaymentMethodNonceCreated((PaymentMethodNonce) data
-                        .getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE));
+                        .getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE));
             } else {
                 slideDown(new AnimationFinishedListener() {
                     @Override

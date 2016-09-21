@@ -114,8 +114,8 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             mBraintreeFragment = getBraintreeFragment();
         } catch (InvalidArgumentException e) {
             Intent intent = new Intent()
-                    .putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, e.getMessage());
-            setResult(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, intent);
+                    .putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, e.getMessage());
+            setResult(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, intent);
             finish();
         }
     }
@@ -283,7 +283,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
         Intent result = new Intent();
-        result.putExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE, paymentMethod);
+        result.putExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE, paymentMethod);
         setResult(Activity.RESULT_OK, result);
         finish();
     }
@@ -325,16 +325,16 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                     error instanceof UpgradeRequiredException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
-                setResult(BraintreePaymentActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, new Intent().putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
             } else if (error instanceof ConfigurationException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
-                setResult(BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(DropInActivity.BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
             } else if (error instanceof ServerException || error instanceof UnexpectedException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-                setResult(BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(DropInActivity.BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
             } else if (error instanceof DownForMaintenanceException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
-                setResult(BraintreePaymentActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE, new Intent().putExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(DropInActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
             }
             finish();
         }

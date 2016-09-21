@@ -11,7 +11,7 @@ import android.widget.TextView;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.ThreeDSecure;
-import com.braintreepayments.api.dropin.BraintreePaymentActivity;
+import com.braintreepayments.api.dropin.DropInActivity;
 import com.braintreepayments.api.dropin.PaymentRequest;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
@@ -115,7 +115,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         super.onPaymentMethodNonceCreated(paymentMethodNonce);
 
         displayResult(new Intent()
-                .putExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE, paymentMethodNonce));
+                .putExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE, paymentMethodNonce));
         safelyCloseLoadingView();
     }
 
@@ -150,7 +150,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
             }
         } else if (resultCode != RESULT_CANCELED) {
             safelyCloseLoadingView();
-            showDialog(data.getStringExtra(BraintreePaymentActivity.EXTRA_ERROR_MESSAGE));
+            showDialog(data.getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
         }
     }
 
@@ -173,7 +173,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     }
 
     private void displayResult(Intent data) {
-        mNonce = data.getParcelableExtra(BraintreePaymentActivity.EXTRA_PAYMENT_METHOD_NONCE);
+        mNonce = data.getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE);
 
         mNonceIcon.setImageResource(PaymentMethodType.forType(mNonce).getDrawable());
         mNonceIcon.setVisibility(VISIBLE);
@@ -216,7 +216,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         mNonceDetails.setVisibility(VISIBLE);
 
         mDeviceData.setText("Device Data: " +
-                data.getStringExtra(BraintreePaymentActivity.EXTRA_DEVICE_DATA));
+                data.getStringExtra(DropInActivity.EXTRA_DEVICE_DATA));
         mDeviceData.setVisibility(VISIBLE);
 
         mCreateTransactionButton.setEnabled(true);
