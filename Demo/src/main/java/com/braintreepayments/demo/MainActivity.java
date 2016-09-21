@@ -12,6 +12,7 @@ import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.dropin.DropInActivity;
+import com.braintreepayments.api.dropin.DropInResult;
 import com.braintreepayments.api.dropin.PaymentRequest;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
@@ -114,8 +115,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
         super.onPaymentMethodNonceCreated(paymentMethodNonce);
 
-        displayResult(new Intent()
-                .putExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE, paymentMethodNonce));
+        displayResult(paymentMethodNonce, null);
         safelyCloseLoadingView();
     }
 
@@ -140,7 +140,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         safelyCloseLoadingView();
 
         if (resultCode == RESULT_OK) {
-            displayResult(data);
+            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+            displayResult(result.getPaymentMethodNonce(), result.getDeviceData());
             if (mNonce instanceof CardNonce && Settings.isThreeDSecureEnabled(this)) {
                 mLoading = ProgressDialog.show(this, getString(R.string.loading),
                         getString(R.string.loading), true, false);
@@ -172,8 +173,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         }
     }
 
-    private void displayResult(Intent data) {
-        mNonce = data.getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE);
+    private void displayResult(PaymentMethodNonce paymentMethodNonce, String deviceData) {
+        mNonce = paymentMethodNonce;
 
         mNonceIcon.setImageResource(PaymentMethodType.forType(mNonce).getDrawable());
         mNonceIcon.setVisibility(VISIBLE);
@@ -215,8 +216,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         mNonceDetails.setText(details);
         mNonceDetails.setVisibility(VISIBLE);
 
-        mDeviceData.setText("Device Data: " +
-                data.getStringExtra(DropInActivity.EXTRA_DEVICE_DATA));
+        mDeviceData.setText("Device Data: " + deviceData);
         mDeviceData.setVisibility(VISIBLE);
 
         mCreateTransactionButton.setEnabled(true);

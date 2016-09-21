@@ -2,6 +2,9 @@ package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -21,17 +24,37 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Used to check if the user already has an existing payment method.
- *
- * If your user already has an existing payment method, you may not need to show Drop-In.
- * You can check if they have an existing payment method using
+ * Contains the result from launching {@link DropInActivity} or calling
  * {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)}.
- * Note that a client token must be used and will only return a result if it contains a customer id.
  */
-public class DropInResult {
+public class DropInResult implements Parcelable {
 
+    /**
+     * The key used to return {@link DropInResult} in an {@link android.content.Intent} in
+     * {@link Activity#onActivityResult(int, int, Intent)}
+     */
+    public static final String EXTRA_DROP_IN_RESULT =
+            "com.braintreepayments.api.dropin.EXTRA_DROP_IN_RESULT";
+
+    /**
+     * Listener used with {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)}
+     */
     public interface DropInResultListener {
+        /**
+         * Any errors that occur during
+         * {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)} will be
+         * returned here.
+         *
+         * @param exception the {@link Exception} that occurred.
+         */
         void onError(Exception exception);
+
+        /**
+         * The {@link DropInResult} from
+         * {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)}
+         *
+         * @param result
+         */
         void onResult(DropInResult result);
     }
 
@@ -40,11 +63,23 @@ public class DropInResult {
 
     private PaymentMethodType mPaymentMethodType;
     private PaymentMethodNonce mPaymentMethodNonce;
+    private String mDeviceData;
 
-    private DropInResult(@Nullable PaymentMethodType paymentMethodType,
-                 @Nullable PaymentMethodNonce paymentMethodNonce) {
-        mPaymentMethodType = paymentMethodType;
+    public DropInResult() {}
+
+    DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
+        if (paymentMethodNonce != null) {
+            mPaymentMethodType = PaymentMethodType.forType(paymentMethodNonce.getTypeLabel());
+        }
+
         mPaymentMethodNonce = paymentMethodNonce;
+
+        return this;
+    }
+
+    DropInResult deviceData(@Nullable String deviceData) {
+        mDeviceData = deviceData;
+        return this;
     }
 
     /**
@@ -69,8 +104,20 @@ public class DropInResult {
     }
 
     /**
+     * @return {@link String} of device data. Returned when specified with
+     * {@link PaymentRequest#collectDeviceData(boolean)} that device data should be collected.
+     */
+    @Nullable
+    public String getDeviceData() {
+        return mDeviceData;
+    }
+
+    /**
      * Called to get a user's existing payment method, if any. If your user already has an existing
      * payment method, you may not need to show Drop-In.
+     *
+     * Note: a client token must be used and will only return a payment method if it contains a
+     * customer id.
      *
      * @param activity the current {@link Activity}
      * @param clientToken A client token from your server. Note that this method will only return a
@@ -95,7 +142,10 @@ public class DropInResult {
                 BraintreeSharedPreferences.getSharedPreferences(activity)
                         .getString(LAST_USED_PAYMENT_METHOD_TYPE, null));
         if (lastUsedPaymentMethodType == PaymentMethodType.ANDROID_PAY) {
-            listener.onResult(new DropInResult(lastUsedPaymentMethodType, null));
+            DropInResult result = new DropInResult();
+            result.mPaymentMethodType = lastUsedPaymentMethodType;
+
+            listener.onResult(result);
             return;
         }
 
@@ -126,10 +176,10 @@ public class DropInResult {
 
                 if (paymentMethodNonces.size() > 0) {
                     PaymentMethodNonce paymentMethod = paymentMethodNonces.get(0);
-                    listener.onResult(new DropInResult(PaymentMethodType.forType(paymentMethod),
-                            paymentMethod));
+                    listener.onResult(new DropInResult()
+                            .paymentMethodNonce(paymentMethod));
                 } else {
-                    listener.onResult(new DropInResult(null, null));
+                    listener.onResult(new DropInResult());
                 }
             }
         };
@@ -164,4 +214,35 @@ public class DropInResult {
     private static class ListenerHolder {
         public List<BraintreeListener> listeners = new ArrayList<>();
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mPaymentMethodType == null ? -1 : mPaymentMethodType.ordinal());
+        dest.writeParcelable(mPaymentMethodNonce, flags);
+        dest.writeString(mDeviceData);
+    }
+
+    protected DropInResult(Parcel in) {
+        int paymentMethodType = in.readInt();
+        mPaymentMethodType = paymentMethodType == -1 ? null : PaymentMethodType.values()[paymentMethodType];
+        mPaymentMethodNonce = in.readParcelable(PaymentMethodNonce.class.getClassLoader());
+        mDeviceData = in.readString();
+    }
+
+    public static final Creator<DropInResult> CREATOR = new Creator<DropInResult>() {
+        @Override
+        public DropInResult createFromParcel(Parcel source) {
+            return new DropInResult(source);
+        }
+
+        @Override
+        public DropInResult[] newArray(int size) {
+            return new DropInResult[size];
+        }
+    };
 }

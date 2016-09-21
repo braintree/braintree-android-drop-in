@@ -202,9 +202,10 @@ public class DropInActivityUnitTest {
 
         assertTrue(mActivity.isFinishing());
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
-        CardNonce returnedNonce = mShadowActivity.getResultIntent().getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE);
-        assertEquals(cardNonce.getNonce(), returnedNonce.getNonce());
-        assertEquals(cardNonce.getLastTwo(), returnedNonce.getLastTwo());
+        DropInResult result = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertEquals(cardNonce.getNonce(), result.getPaymentMethodNonce().getNonce());
+        assertEquals(cardNonce.getLastTwo(), ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
     }
 
     @Test
@@ -240,8 +241,10 @@ public class DropInActivityUnitTest {
         assertTrue(mActivity.isFinishing());
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
         assertEquals(paymentMethodNonce.getNonce(),
-                ((PaymentMethodNonce) mShadowActivity.getResultIntent()
-                        .getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
+                ((DropInResult) mShadowActivity.getResultIntent()
+                        .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT))
+                        .getPaymentMethodNonce()
+                        .getNonce());
     }
 
     @Test
@@ -283,17 +286,20 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_returnsNonceFromAddCardActivity() throws JSONException {
-        CardNonce cardNonce = CardNonce.fromJson(stringFromFixture("responses/visa_credit_card_response.json"));
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(CardNonce.fromJson(
+                        stringFromFixture("responses/visa_credit_card_response.json")));
         Intent data = new Intent()
-                .putExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE, cardNonce);
+                .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
         mActivityController.setup();
         mActivity.onActivityResult(1, Activity.RESULT_OK, data);
 
         assertTrue(mShadowActivity.isFinishing());
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
-        assertEquals(cardNonce.getNonce(),
-                ((PaymentMethodNonce) mShadowActivity.getResultIntent()
-                        .getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE)).getNonce());
+        DropInResult response = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertEquals(result.getPaymentMethodType(), response.getPaymentMethodType());
+        assertEquals(result.getPaymentMethodNonce(), response.getPaymentMethodNonce());
     }
 
     @Test
@@ -306,6 +312,24 @@ public class DropInActivityUnitTest {
         assertTrue(mShadowActivity.isFinishing());
         assertEquals(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
         assertEquals("Error", mShadowActivity.getResultIntent().getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
+    }
+
+    @Test
+    public void onActivityResult_storesPaymentMethodType() throws JSONException {
+        mActivityController.setup();
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(CardNonce.fromJson(
+                        stringFromFixture("responses/visa_credit_card_response.json")));
+        Intent data = new Intent()
+                .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+        assertNull(BraintreeSharedPreferences.getSharedPreferences(mActivity)
+                .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
+
+        mActivity.onActivityResult(1, Activity.RESULT_OK, data);
+
+        assertEquals(PaymentMethodType.VISA.getCanonicalName(),
+                BraintreeSharedPreferences.getSharedPreferences(mActivity)
+                        .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
     }
 
     @Test

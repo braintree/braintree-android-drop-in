@@ -2,6 +2,7 @@ package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
 import android.app.FragmentManager;
+import android.os.Parcel;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
@@ -16,6 +17,7 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.test.FragmentTestActivity;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +48,60 @@ public class DropInResultUnitTest {
     public void setup() {
         mActivity = Robolectric.buildActivity(FragmentTestActivity.class).setup().get();
         mCountDownLatch = new CountDownLatch(1);
+    }
+
+    @Test
+    public void paymentMethodNonce_setsPaymentMethodTypeAndNonce() throws JSONException {
+        CardNonce cardNonce = CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json"));
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(cardNonce);
+
+        assertEquals(PaymentMethodType.VISA, result.getPaymentMethodType());
+        assertEquals(cardNonce, result.getPaymentMethodNonce());
+    }
+
+    @Test
+    public void paymentMethodNonce_isNullable() {
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(null);
+
+        assertNull(result.getPaymentMethodType());
+        assertNull(result.getPaymentMethodNonce());
+    }
+
+    @Test
+    public void deviceData_setsDeviceData() {
+        DropInResult result = new DropInResult()
+                .deviceData("device_data");
+
+        assertEquals("device_data", result.getDeviceData());
+    }
+
+    @Test
+    public void deviceData_isNullable() {
+        DropInResult result = new DropInResult()
+                .deviceData(null);
+
+        assertNull(result.getDeviceData());
+    }
+
+    @Test
+    public void isParcelable() throws JSONException {
+        CardNonce cardNonce = CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json"));
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(cardNonce)
+                .deviceData("device_data");
+        Parcel parcel = Parcel.obtain();
+        result.writeToParcel(parcel, 0);
+        parcel.setDataPosition(0);
+
+        DropInResult parceled = DropInResult.CREATOR.createFromParcel(parcel);
+
+        assertEquals(PaymentMethodType.VISA, parceled.getPaymentMethodType());
+        assertEquals(cardNonce.getNonce(), parceled.getPaymentMethodNonce().getNonce());
+        assertEquals("device_data", parceled.getDeviceData());
     }
 
     @Test

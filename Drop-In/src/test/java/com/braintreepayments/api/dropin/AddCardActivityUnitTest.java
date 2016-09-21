@@ -20,7 +20,6 @@ import com.braintreepayments.api.exceptions.ServerException;
 import com.braintreepayments.api.exceptions.UnexpectedException;
 import com.braintreepayments.api.exceptions.UpgradeRequiredException;
 import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.test.ExpirationDate;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.api.test.TestConfigurationBuilder.TestUnionPayConfigurationBuilder;
@@ -280,11 +279,11 @@ public class AddCardActivityUnitTest {
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
         assertTrue(mActivity.isFinishing());
-        PaymentMethodNonce nonce = mShadowActivity.getResultIntent()
-                .getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE);
+        DropInResult result = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
-        assertIsANonce(nonce.getNonce());
-        assertEquals("11", ((CardNonce) nonce).getLastTwo());
+        assertIsANonce(result.getPaymentMethodNonce().getNonce());
+        assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
     }
 
     @Test
@@ -512,11 +511,11 @@ public class AddCardActivityUnitTest {
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
         assertTrue(mActivity.isFinishing());
-        PaymentMethodNonce nonce = mShadowActivity.getResultIntent()
-                .getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE);
+        DropInResult result = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
-        assertIsANonce(nonce.getNonce());
-        assertEquals("85", ((CardNonce) nonce).getLastTwo());
+        assertIsANonce(result.getPaymentMethodNonce().getNonce());
+        assertEquals("85", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
     }
 
     @Test

@@ -54,19 +54,6 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         PaymentMethodNonceCreatedListener {
 
     /**
-     * {@link PaymentMethodNonce} returned by successfully exiting the flow.
-     */
-    public static final String EXTRA_PAYMENT_METHOD_NONCE =
-            "com.braintreepayments.api.dropin.EXTRA_PAYMENT_METHOD_NONCE";
-
-    /**
-     * {@link String} returned when specified in {@link PaymentRequest} that device data should be
-     * collected.
-     */
-    public static final String EXTRA_DEVICE_DATA =
-            "com.braintreepayments.api.dropin.EXTRA_DEVICE_DATA";
-
-    /**
      * Error messages are returned as the value of this key in the data intent in {@link
      * android.app.Activity#onActivityResult(int, int, android.content.Intent)} if {@code
      * responseCode} is not {@link android.app.Activity#RESULT_OK} or {@link
@@ -94,7 +81,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     public static final int BRAINTREE_RESULT_SERVER_UNAVAILABLE = 4;
 
     private static final int ADD_CARD_REQUEST_CODE = 1;
-    private static final String EXTRA_SHEET_ANIMATION_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_ANIMATION_PERFORMED";
+    private static final String EXTRA_SHEET_ANIMATION_PERFORMED =
+            "com.braintreepayments.api.EXTRA_SHEET_ANIMATION_PERFORMED";
 
     @VisibleForTesting
     protected PaymentRequest mPaymentRequest;
@@ -212,11 +200,13 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         slideDown(new AnimationFinishedListener() {
             @Override
             public void onAnimationFinished() {
-                DropInResult.setLastUsedPaymentMethodType(DropInActivity.this,
-                        paymentMethodNonce);
+                DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, paymentMethodNonce);
 
-                Intent resultIntent = new Intent().putExtra(EXTRA_PAYMENT_METHOD_NONCE, paymentMethodNonce);
-                setResult(RESULT_OK, resultIntent);
+                DropInResult result = new DropInResult()
+                        .paymentMethodNonce(paymentMethodNonce);
+                Intent intent = new Intent().putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+
+                setResult(RESULT_OK, intent);
                 finish();
             }
         });
@@ -274,17 +264,17 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
             mLoadingViewSwitcher.setDisplayedChild(1);
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
             if (resultCode == Activity.RESULT_OK) {
-                onPaymentMethodNonceCreated((PaymentMethodNonce) data
-                        .getParcelableExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE));
-            } else {
-                slideDown(new AnimationFinishedListener() {
-                    @Override
-                    public void onAnimationFinished() {
-                        setResult(resultCode, data);
-                        finish();
-                    }
-                });
+                DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+                DropInResult.setLastUsedPaymentMethodType(this, result.getPaymentMethodNonce());
             }
+
+            slideDown(new AnimationFinishedListener() {
+                @Override
+                public void onAnimationFinished() {
+                    setResult(resultCode, data);
+                    finish();
+                }
+            });
         }
     }
 

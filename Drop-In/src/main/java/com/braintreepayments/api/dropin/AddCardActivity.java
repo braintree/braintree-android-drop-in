@@ -282,9 +282,11 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
-        Intent result = new Intent();
-        result.putExtra(DropInActivity.EXTRA_PAYMENT_METHOD_NONCE, paymentMethod);
-        setResult(Activity.RESULT_OK, result);
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(paymentMethod);
+        Intent intent = new Intent()
+                .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+        setResult(Activity.RESULT_OK, intent);
         finish();
     }
 
