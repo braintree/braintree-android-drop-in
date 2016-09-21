@@ -63,7 +63,7 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
-    <style name="bt_add_payment_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="bt_add_card_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/bt_color_primary</item>
         <item name="colorPrimaryDark">@color/bt_color_primary_dark</item>
@@ -72,7 +72,7 @@
         <item name="textColorError">@color/bt_error_red</item>
     </style>
 
-    <style name="bt_toolbar_theme" parent="bt_add_payment_activity_theme">
+    <style name="bt_toolbar_theme" parent="bt_add_card_activity_theme">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="colorControlNormal">@color/bt_white</item>
     </style>

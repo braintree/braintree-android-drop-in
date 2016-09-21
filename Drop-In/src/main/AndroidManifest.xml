@@ -13,7 +13,7 @@
         <activity android:name="com.braintreepayments.api.dropin.BraintreePaymentActivity"
             android:theme="@style/bt_payment_activity_theme"/>
         <activity android:name="com.braintreepayments.api.dropin.AddCardActivity"
-            android:theme="@style/bt_add_payment_activity_theme" />
+            android:theme="@style/bt_add_card_activity_theme" />
     </application>
 
 </manifest>

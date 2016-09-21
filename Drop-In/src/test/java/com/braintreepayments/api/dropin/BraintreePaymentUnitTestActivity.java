@@ -16,7 +16,7 @@ public class BraintreePaymentUnitTestActivity extends BraintreePaymentActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.bt_add_payment_activity_theme);
+        setTheme(R.style.bt_add_card_activity_theme);
 
         if (mPaymentRequest == null) {
             mPaymentRequest= new PaymentRequest().tokenizationKey(TOKENIZATION_KEY);

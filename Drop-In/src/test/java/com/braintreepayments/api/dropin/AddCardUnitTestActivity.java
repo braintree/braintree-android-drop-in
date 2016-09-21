@@ -17,7 +17,7 @@ public class AddCardUnitTestActivity extends AddCardActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.bt_add_payment_activity_theme);
+        setTheme(R.style.bt_add_card_activity_theme);
 
         if (paymentRequest == null) {
             paymentRequest = new PaymentRequest().tokenizationKey(TOKENIZATION_KEY);
