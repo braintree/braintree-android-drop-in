@@ -5,49 +5,6 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="bt_form_appswitch_button">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">@dimen/bt_form_appswitch_button_size</item>
-        <item name="android:layout_weight">1</item>
-    </style>
-
-    <style name="bt_submit_button" parent="bt_base_textview">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">@dimen/bt_default_item_height</item>
-        <item name="android:background">@drawable/bt_submit_button_background</item>
-        <item name="android:textColor">@android:color/white</item>
-    </style>
-
-    <style name="bt_horizontal_gray_line">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">1dp</item>
-        <item name="android:background">@color/bt_light_gray</item>
-    </style>
-
-    <style name="bt_main_view_controller_container">
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:layout_width">@dimen/bt_full_width</item>
-        <item name="android:layout_height">0dp</item>
-        <item name="android:layout_weight">1</item>
-    </style>
-
-    <style name="bt_payment_method_app_switch_button">
-        <item name="android:layout_height">fill_parent</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_centerVertical">true</item>
-        <item name="android:visibility">gone</item>
-        <item name="android:padding">@dimen/bt_payment_method_button_type_padding</item>
-        <item name="android:background">@drawable/bt_payment_button_background</item>
-    </style>
-
-    <style name="bt_app_switch_button_divider">
-        <item name="android:layout_height">@dimen/bt_payment_method_button_divider_height</item>
-        <item name="android:layout_width">@dimen/bt_payment_method_button_divider_width</item>
-        <item name="android:background">@color/bt_border_color</item>
-        <item name="android:layout_gravity">center_vertical</item>
-        <item name="android:visibility">gone</item>
-    </style>
-
     <style name="bt_fade_activity_animation">
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
@@ -75,47 +32,6 @@
     <style name="bt_toolbar_theme" parent="bt_add_card_activity_theme">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="colorControlNormal">@color/bt_white</item>
-    </style>
-
-    <style name="bt_bottom_sheet_dialog" parent="@android:style/Theme.Dialog">
-        <item name="android:windowNoTitle">true</item>
-        <item name="android:backgroundDimEnabled">true</item>
-        <item name="android:windowIsFloating">false</item>
-        <item name="android:windowAnimationStyle">@style/bt_bottom_sheet_dialog_animation</item>
-    </style>
-
-    <style name="bt_bottom_sheet_dialog_animation">
-        <item name="android:windowEnterAnimation">@anim/bt_bottom_sheet_dialog_open</item>
-        <item name="android:windowExitAnimation">@anim/bt_bottom_sheet_dialog_close</item>
-    </style>
-
-    <style name="bt_payment_method_card">
-        <item name="android:layout_width">@dimen/bt_payment_method_card_width</item>
-        <item name="android:layout_height">@dimen/bt_payment_method_card_height</item>
-        <item name="android:layout_marginLeft">@dimen/bt_payment_method_card_margin</item>
-        <item name="android:layout_marginStart" tools:ignore="NewApi">@dimen/bt_payment_method_card_margin</item>
-        <item name="android:layout_marginRight">@dimen/bt_payment_method_card_margin</item>
-        <item name="android:layout_marginEnd" tools:ignore="NewApi">@dimen/bt_payment_method_card_margin</item>
-        <item name="android:layout_gravity">center</item>
-    </style>
-
-    <style name="bt_payment_method_description">
-        <item name="android:layout_width">@dimen/bt_payment_method_card_width</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_gravity">center_horizontal</item>
-        <item name="android:textColor">@color/bt_black_54</item>
-        <item name="android:gravity">center</item>
-        <item name="android:lines">1</item>
-        <item name="android:layout_marginTop">@dimen/bt_payment_method_description_padding</item>
-        <item name="android:paddingRight">@dimen/bt_payment_method_description_padding</item>
-        <item name="android:paddingLeft">@dimen/bt_payment_method_description_padding</item>
-        <item name="android:ellipsize">end</item>
-    </style>
-
-    <style name="bt_payment_method_item">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:orientation">vertical</item>
     </style>
 
     <style name="bt_choose_payment_label">
