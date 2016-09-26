@@ -34,9 +34,12 @@ import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.util.ActivityController;
 
 import static com.braintreepayments.api.BraintreeFragmentTestUtils.getIntegrationType;
+import static com.braintreepayments.api.test.ReflectionHelper.getField;
+import static com.braintreepayments.api.test.ReflectionHelper.setField;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
@@ -174,6 +177,25 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void onSaveInstanceState_savesDeviceData() throws NoSuchFieldException,
+            IllegalAccessException {
+        mActivityController.setup();
+        setField(DropInActivity.class, mActivity, "mDeviceData", "device-data-string");
+
+        Bundle bundle = new Bundle();
+        mActivityController.saveInstanceState(bundle)
+                .pause()
+                .stop()
+                .destroy();
+
+        mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class);
+        mActivity = (DropInUnitTestActivity) mActivityController.get();
+        mActivityController.setup(bundle);
+
+        assertEquals("device-data-string", getField(DropInActivity.class, mActivity, "mDeviceData"));
+    }
+
+    @Test
     public void pressingBackExitsActivityWithResultCanceled() {
         setup(mock(BraintreeFragment.class));
 
@@ -196,7 +218,8 @@ public class DropInActivityUnitTest {
     @Test
     public void onPaymentMethodNonceCreated_returnsANonce() throws JSONException {
         mActivityController.setup();
-        CardNonce cardNonce = CardNonce.fromJson(stringFromFixture("responses/visa_credit_card_response.json"));
+        CardNonce cardNonce = CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json"));
 
         mActivity.onPaymentMethodNonceCreated(cardNonce);
 
@@ -220,6 +243,26 @@ public class DropInActivityUnitTest {
         assertEquals(PaymentMethodType.VISA.getCanonicalName(),
                 BraintreeSharedPreferences.getSharedPreferences(mActivity)
                         .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
+    }
+
+    @Test
+    public void onPaymentMethodNonceCreated_returnsDeviceData() throws JSONException {
+        mActivity.mPaymentRequest = new PaymentRequest()
+                .tokenizationKey(TOKENIZATION_KEY)
+                .collectDeviceData(true);
+        mActivity.httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build());
+        mActivityController.setup();
+        CardNonce cardNonce = CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json"));
+
+        mActivity.onPaymentMethodNonceCreated(cardNonce);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        DropInResult result = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertNotNull(result.getDeviceData());
     }
 
     @Test
@@ -292,6 +335,7 @@ public class DropInActivityUnitTest {
         Intent data = new Intent()
                 .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
         mActivityController.setup();
+
         mActivity.onActivityResult(1, Activity.RESULT_OK, data);
 
         assertTrue(mShadowActivity.isFinishing());
@@ -300,6 +344,29 @@ public class DropInActivityUnitTest {
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertEquals(result.getPaymentMethodType(), response.getPaymentMethodType());
         assertEquals(result.getPaymentMethodNonce(), response.getPaymentMethodNonce());
+    }
+
+    @Test
+    public void onActivityResult_returnsDeviceData() throws JSONException, NoSuchFieldException,
+            IllegalAccessException {
+        mActivity.mPaymentRequest = new PaymentRequest()
+                .tokenizationKey(TOKENIZATION_KEY)
+                .collectDeviceData(true);
+        mActivity.httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build());
+        mActivityController.setup();
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(CardNonce.fromJson(
+                        stringFromFixture("responses/visa_credit_card_response.json")));
+
+        Intent data = new Intent()
+                .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+
+        mActivity.onActivityResult(1, Activity.RESULT_OK, data);
+
+        DropInResult response = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertNotNull(response.getDeviceData());
     }
 
     @Test

@@ -7,7 +7,12 @@ public class ReflectionHelper {
 
     public static Object getField(Object src, String fieldName)
             throws NoSuchFieldException, IllegalAccessException {
-        Field field = src.getClass().getDeclaredField(fieldName);
+        return getField(src.getClass(), src, fieldName);
+    }
+
+    public static Object getField(Class clazz, Object src, String fieldName)
+            throws NoSuchFieldException, IllegalAccessException {
+        Field field = clazz.getDeclaredField(fieldName);
         field.setAccessible(true);
         return field.get(src);
     }

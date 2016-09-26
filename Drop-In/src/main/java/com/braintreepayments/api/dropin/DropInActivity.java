@@ -17,6 +17,7 @@ import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.Venmo;
@@ -81,15 +82,17 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     public static final int BRAINTREE_RESULT_SERVER_UNAVAILABLE = 4;
 
     private static final int ADD_CARD_REQUEST_CODE = 1;
-    private static final String EXTRA_SHEET_ANIMATION_PERFORMED =
-            "com.braintreepayments.api.EXTRA_SHEET_ANIMATION_PERFORMED";
+    private static final String EXTRA_SHEET_ANIMATION_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_ANIMATION_PERFORMED";
+    private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
 
     @VisibleForTesting
     protected PaymentRequest mPaymentRequest;
 
+    private BraintreeFragment mBraintreeFragment;
+    private String mDeviceData;
+
     private View mBottomSheet;
     private ViewSwitcher mLoadingViewSwitcher;
-    private BraintreeFragment mBraintreeFragment;
     private ViewSwitcher mVaultedPaymentMethodsViewSwitcher;
     private TextView mAvailablePaymentMethodsHeader;
     private ListView mAvailablePaymentMethodListView;
@@ -134,6 +137,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         if (savedInstanceState != null) {
             mSheetAnimationPerformed = new AtomicBoolean(savedInstanceState
                     .getBoolean(EXTRA_SHEET_ANIMATION_PERFORMED, false));
+            mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
         }
 
         if (!mSheetAnimationPerformed.get()) {
@@ -154,6 +158,15 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
 
     @Override
     public void onConfigurationFetched(final Configuration configuration) {
+        if (mPaymentRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
+            DataCollector.collectDeviceData(mBraintreeFragment, new BraintreeResponseListener<String>() {
+                @Override
+                public void onResponse(String deviceData) {
+                    mDeviceData = deviceData;
+                }
+            });
+        }
+
         AndroidPay.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
             @Override
             public void onResponse(Boolean isReadyToPay) {
@@ -203,7 +216,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                 DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, paymentMethodNonce);
 
                 DropInResult result = new DropInResult()
-                        .paymentMethodNonce(paymentMethodNonce);
+                        .paymentMethodNonce(paymentMethodNonce)
+                        .deviceData(mDeviceData);
                 Intent intent = new Intent().putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
 
                 setResult(RESULT_OK, intent);
@@ -254,24 +268,32 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(EXTRA_SHEET_ANIMATION_PERFORMED, mSheetAnimationPerformed.get());
+        outState.putString(EXTRA_DEVICE_DATA, mDeviceData);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, final int resultCode, final Intent data) {
+    protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
         mLoadingViewSwitcher.setDisplayedChild(0);
 
         if (resultCode == Activity.RESULT_CANCELED) {
             mLoadingViewSwitcher.setDisplayedChild(1);
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
+            final Intent response;
             if (resultCode == Activity.RESULT_OK) {
                 DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
                 DropInResult.setLastUsedPaymentMethodType(this, result.getPaymentMethodNonce());
+
+                result.deviceData(mDeviceData);
+                response = new Intent()
+                        .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+            } else {
+                response = data;
             }
 
             slideDown(new AnimationFinishedListener() {
                 @Override
                 public void onAnimationFinished() {
-                    setResult(resultCode, data);
+                    setResult(resultCode, response);
                     finish();
                 }
             });
