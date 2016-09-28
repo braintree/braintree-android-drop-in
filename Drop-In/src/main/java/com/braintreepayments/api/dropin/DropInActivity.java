@@ -46,7 +46,6 @@ import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
 
@@ -82,7 +81,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     public static final int BRAINTREE_RESULT_SERVER_UNAVAILABLE = 4;
 
     private static final int ADD_CARD_REQUEST_CODE = 1;
-    private static final String EXTRA_SHEET_ANIMATION_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_ANIMATION_PERFORMED";
+    private static final String EXTRA_SHEET_SLIDE_UP_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_SLIDE_UP_PERFORMED";
     private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
 
     @VisibleForTesting
@@ -98,7 +97,9 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     private ListView mAvailablePaymentMethodListView;
     private View mVaultedPaymentMethodsContainer;
     private RecyclerView mVaultedPaymentMethodsView;
-    private AtomicBoolean mSheetAnimationPerformed;
+
+    private boolean mSheetSlideUpPerformed;
+    private boolean mSheetSlideDownPerformed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,17 +134,13 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
             return;
         }
 
-        mSheetAnimationPerformed = new AtomicBoolean(false);
         if (savedInstanceState != null) {
-            mSheetAnimationPerformed = new AtomicBoolean(savedInstanceState
-                    .getBoolean(EXTRA_SHEET_ANIMATION_PERFORMED, false));
+            mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED,
+                    false);
             mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
         }
 
-        if (!mSheetAnimationPerformed.get()) {
-            slideUp();
-            mSheetAnimationPerformed.set(true);
-        }
+        slideUp();
     }
 
     @VisibleForTesting
@@ -267,7 +264,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(EXTRA_SHEET_ANIMATION_PERFORMED, mSheetAnimationPerformed.get());
+        outState.putBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED, mSheetSlideUpPerformed);
         outState.putString(EXTRA_DEVICE_DATA, mDeviceData);
     }
 
@@ -300,22 +297,28 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        slideDown(new AnimationFinishedListener() {
-            @Override
-            public void onAnimationFinished() {
-                finish();
-            }
-        });
-    }
-
     public void onBackgroundClicked(View v) {
         onBackPressed();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!mSheetSlideDownPerformed) {
+            mSheetSlideDownPerformed = true;
+            slideDown(new AnimationFinishedListener() {
+                @Override
+                public void onAnimationFinished() {
+                    finish();
+                }
+            });
+        }
+    }
+
     private void slideUp() {
-        mBottomSheet.startAnimation(loadAnimation(this, R.anim.bt_slide_in_up));
+        if (!mSheetSlideUpPerformed) {
+            mSheetSlideUpPerformed = true;
+            mBottomSheet.startAnimation(loadAnimation(this, R.anim.bt_slide_in_up));
+        }
     }
 
     private void slideDown(final AnimationFinishedListener listener) {
