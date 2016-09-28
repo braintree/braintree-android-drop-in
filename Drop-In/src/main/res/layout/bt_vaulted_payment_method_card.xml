@@ -27,15 +27,8 @@
             tools:ignore="ContentDescription" />
 
         <TextView
-            android:id="@+id/bt_payment_method_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_gravity="center_horizontal"
-            android:textSize="12sp"
-            android:textColor="@color/bt_black_87"/>
+            style="@style/bt_vaulted_payment_method_title"
+            android:id="@+id/bt_payment_method_title"/>
 
         <TextView
             android:id="@+id/bt_payment_method_description"
