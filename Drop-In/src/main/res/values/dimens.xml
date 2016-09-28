@@ -14,10 +14,9 @@
     <dimen name="bt_payment_method_button_type_padding">16dp</dimen>
     <dimen name="bt_add_payment_method_view_radius">5dp</dimen>
 
+    <dimen name="bt_payment_label_padding_bottom">12dp</dimen>
     <dimen name="bt_choose_existing_payment_label_padding_top">24dp</dimen>
-    <dimen name="bt_choose_existing_payment_label_padding_bottom">12dp</dimen>
     <dimen name="bt_choose_new_payment_label_padding_top">24dp</dimen>
-    <dimen name="bt_choose_new_payment_label_padding_bottom">12dp</dimen>
     <dimen name="bt_vaulted_payment_progress_diameter">64dp</dimen>
 
     <!-- http://stackoverflow.com/a/19043952/1486568 -->

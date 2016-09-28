@@ -54,12 +54,9 @@
                     android:visibility="gone">
 
                     <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/bt_recent"
-                        android:paddingBottom="@dimen/bt_choose_existing_payment_label_padding_bottom"
+                        style="@style/bt_choose_payment_label"
                         android:paddingTop="@dimen/bt_choose_existing_payment_label_padding_top"
-                        style="@style/bt_choose_payment_label" />
+                        android:text="@string/bt_recent"/>
 
                     <ViewSwitcher
                         android:id="@+id/bt_vaulted_payment_methods_view_switcher"
@@ -92,13 +89,10 @@
                 </LinearLayout>
 
                 <TextView
-                    android:id="@+id/bt_available_payment_methods_header"
                     style="@style/bt_choose_payment_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="@dimen/bt_choose_new_payment_label_padding_bottom"
-                    android:paddingTop="@dimen/bt_choose_new_payment_label_padding_top"
-                    android:text="@string/bt_select_payment_method"/>
+                    android:id="@+id/bt_available_payment_methods_header"
+                    android:text="@string/bt_select_payment_method"
+                    android:paddingTop="@dimen/bt_choose_new_payment_label_padding_top"/>
 
                 <ListView
                     android:id="@+id/bt_available_payment_methods"
