@@ -92,8 +92,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
 
     private View mBottomSheet;
     private ViewSwitcher mLoadingViewSwitcher;
-    private TextView mAvailablePaymentMethodsHeader;
-    private ListView mAvailablePaymentMethodListView;
+    private TextView mSupportedPaymentMethodsHeader;
+    private ListView mSupportedPaymentMethodListView;
     private View mVaultedPaymentMethodsContainer;
     private RecyclerView mVaultedPaymentMethodsView;
 
@@ -108,8 +108,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         mPaymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
         mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
         mLoadingViewSwitcher = (ViewSwitcher) findViewById(R.id.bt_loading_view_switcher);
-        mAvailablePaymentMethodsHeader = (TextView) findViewById(R.id.bt_available_payment_methods_header);
-        mAvailablePaymentMethodListView = (ListView) findViewById(R.id.bt_available_payment_methods);
+        mSupportedPaymentMethodsHeader = (TextView) findViewById(R.id.bt_supported_payment_methods_header);
+        mSupportedPaymentMethodListView = (ListView) findViewById(R.id.bt_supported_payment_methods);
         mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = (RecyclerView) findViewById(R.id.bt_vaulted_payment_methods);
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
@@ -165,9 +165,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         AndroidPay.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
             @Override
             public void onResponse(Boolean isReadyToPay) {
-                mAvailablePaymentMethodListView.setAdapter(
-                        new SupportedPaymentMethodsAdapter(DropInActivity.this,
-                                configuration, isReadyToPay, DropInActivity.this));
+                mSupportedPaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(
+                        DropInActivity.this, configuration, isReadyToPay, DropInActivity.this));
                 mLoadingViewSwitcher.setDisplayedChild(1);
             }
         });
@@ -249,11 +248,11 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     @Override
     public void onPaymentMethodNoncesUpdated(final List<PaymentMethodNonce> paymentMethodNonces) {
         if (paymentMethodNonces.size() > 0) {
-            mAvailablePaymentMethodsHeader.setText(R.string.bt_other);
+            mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
             mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
             mVaultedPaymentMethodsView.setAdapter(new VaultedPaymentMethodsAdapter(this, paymentMethodNonces));
         } else {
-            mAvailablePaymentMethodsHeader.setText(R.string.bt_select_payment_method);
+            mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
         }
     }
 

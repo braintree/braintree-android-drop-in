@@ -71,12 +71,12 @@
 
                 <TextView
                     style="@style/bt_choose_payment_label"
-                    android:id="@+id/bt_available_payment_methods_header"
+                    android:id="@+id/bt_supported_payment_methods_header"
                     android:text="@string/bt_select_payment_method"
                     android:paddingTop="@dimen/bt_choose_new_payment_label_padding_top"/>
 
                 <ListView
-                    android:id="@+id/bt_available_payment_methods"
+                    android:id="@+id/bt_supported_payment_methods"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:divider="@drawable/bt_list_view_divider"
