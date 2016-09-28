@@ -74,9 +74,9 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
     }
 
     public void setup(Activity activity, Configuration configuration) {
-        mCardForm.cardRequired(true)
-                .setup(activity);
-        mCardForm.getCardEditText().setDisplayCardTypeIcon(false);
+        mCardForm.getCardEditText().displayCardTypeIcon(false);
+
+        mCardForm.cardRequired(true).setup(activity);
         mCardForm.setOnCardTypeChangedListener(this);
         mCardForm.setOnCardFormValidListener(this);
         mCardForm.setOnCardFormSubmitListener(this);
