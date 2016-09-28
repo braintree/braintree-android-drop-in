@@ -92,7 +92,6 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
 
     private View mBottomSheet;
     private ViewSwitcher mLoadingViewSwitcher;
-    private ViewSwitcher mVaultedPaymentMethodsViewSwitcher;
     private TextView mAvailablePaymentMethodsHeader;
     private ListView mAvailablePaymentMethodListView;
     private View mVaultedPaymentMethodsContainer;
@@ -109,7 +108,6 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         mPaymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
         mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
         mLoadingViewSwitcher = (ViewSwitcher) findViewById(R.id.bt_loading_view_switcher);
-        mVaultedPaymentMethodsViewSwitcher = (ViewSwitcher) findViewById(R.id.bt_vaulted_payment_methods_view_switcher);
         mAvailablePaymentMethodsHeader = (TextView) findViewById(R.id.bt_available_payment_methods_header);
         mAvailablePaymentMethodListView = (ListView) findViewById(R.id.bt_available_payment_methods);
         mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
@@ -254,10 +252,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
             mAvailablePaymentMethodsHeader.setText(R.string.bt_other);
             mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
             mVaultedPaymentMethodsView.setAdapter(new VaultedPaymentMethodsAdapter(this, paymentMethodNonces));
-            mVaultedPaymentMethodsViewSwitcher.setDisplayedChild(1);
         } else {
             mAvailablePaymentMethodsHeader.setText(R.string.bt_select_payment_method);
-            mVaultedPaymentMethodsViewSwitcher.setVisibility(View.INVISIBLE);
         }
     }
 

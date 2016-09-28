@@ -58,31 +58,12 @@
                         android:paddingTop="@dimen/bt_choose_existing_payment_label_padding_top"
                         android:text="@string/bt_recent"/>
 
-                    <ViewSwitcher
-                        android:id="@+id/bt_vaulted_payment_methods_view_switcher"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                        <FrameLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <ProgressBar
-                                android:layout_width="@dimen/bt_progress_bar_diameter"
-                                android:layout_height="@dimen/bt_progress_bar_diameter"
-                                android:layout_gravity="center"
-                                android:indeterminate="true"/>
-
-                        </FrameLayout>
-
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/bt_vaulted_payment_methods"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:paddingLeft="4dp"
                             android:paddingRight="4dp"/>
-
-                    </ViewSwitcher>
 
                     <include layout="@layout/bt_section_divider" />
 
