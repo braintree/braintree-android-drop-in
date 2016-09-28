@@ -17,7 +17,7 @@
     <dimen name="bt_payment_label_padding_bottom">12dp</dimen>
     <dimen name="bt_choose_existing_payment_label_padding_top">24dp</dimen>
     <dimen name="bt_choose_new_payment_label_padding_top">24dp</dimen>
-    <dimen name="bt_vaulted_payment_progress_diameter">64dp</dimen>
+    <dimen name="bt_progress_bar_diameter">28dp</dimen>
 
     <!-- http://stackoverflow.com/a/19043952/1486568 -->
     <integer name="bt_match_parent">-1</integer>

@@ -15,9 +15,9 @@
 
         <ProgressBar
             android:id="@+id/bt_animated_button_loading_indicator"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_width="@dimen/bt_progress_bar_diameter"
+            android:layout_height="@dimen/bt_progress_bar_diameter"
+            android:layout_gravity="center"/>
 
     </ViewAnimator>
 

@@ -18,6 +18,9 @@
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
         <item name="android:windowAnimationStyle">@style/bt_fade_activity_animation</item>
+        <item name="colorPrimary">@color/bt_color_primary</item>
+        <item name="colorPrimaryDark">@color/bt_color_primary_dark</item>
+        <item name="colorAccent">@color/bt_blue</item>
     </style>
 
     <style name="bt_add_card_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">

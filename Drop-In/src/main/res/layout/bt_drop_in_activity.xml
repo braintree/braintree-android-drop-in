@@ -29,11 +29,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:orientation="vertical"
-                android:layout_gravity="center">
+                android:gravity="center">
 
                 <ProgressBar
-                    android:layout_width="@dimen/bt_vaulted_payment_progress_diameter"
-                    android:layout_height="@dimen/bt_vaulted_payment_progress_diameter"
+                    android:layout_width="@dimen/bt_progress_bar_diameter"
+                    android:layout_height="@dimen/bt_progress_bar_diameter"
                     android:layout_gravity="center"
                     android:indeterminate="true"/>
 
@@ -68,8 +68,8 @@
                             android:layout_height="wrap_content">
 
                             <ProgressBar
-                                android:layout_width="@dimen/bt_vaulted_payment_progress_diameter"
-                                android:layout_height="@dimen/bt_vaulted_payment_progress_diameter"
+                                android:layout_width="@dimen/bt_progress_bar_diameter"
+                                android:layout_height="@dimen/bt_progress_bar_diameter"
                                 android:layout_gravity="center"
                                 android:indeterminate="true"/>
 
