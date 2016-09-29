@@ -105,6 +105,16 @@ public class TestHelper {
         onDevice(withText("Reset")).perform(click());
     }
 
+    public void useTokenizationKey() {
+        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+                .edit()
+                .clear()
+                .putBoolean("tokenization_key", true)
+                .commit();
+
+        onDevice(withText("Reset")).perform(click());
+    }
+
     private void clearPreference(String preference) {
         getTargetContext().getSharedPreferences(preference, Context.MODE_PRIVATE)
                 .edit()

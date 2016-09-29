@@ -34,29 +34,25 @@ public class DropInTest extends TestHelper {
     @Before
     public void setup() {
         super.setup();
-        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
     }
 
     @Test(timeout = 60000)
     public void tokenizesACard() {
-        onDevice(withText("Credit or Debit Card")).perform(click());
-        onDevice(withContentDescription("Card Number")).perform(setText(VISA));
-        onDevice(withText("12")).perform(click());
-        onDevice(withText("2019")).perform(click());
-        onDevice().pressBack();
-        onDevice(withContentDescription("CVV")).perform(setText("123"));
-        onDevice(withContentDescription("Postal Code")).perform(setText("12345"));
-        onDevice(withTextContaining("Add Card")).perform(click());
+        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
 
-        getNonceDetails().check(text(containsString("Card Last Two: 11")));
+        tokenizeCard();
+    }
 
-        onDevice(withText("Create a Transaction")).perform(click());
-        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
+    @Test(timeout = 60000)
+    public void tokenizesACardWithATokenizationKey() {
+        useTokenizationKey();
+        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
+
+        tokenizeCard();
     }
 
     @Test
     public void tokenizesUnionPay() {
-        onDevice().pressBack();
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
         onDevice(withText("Drop-In")).waitForEnabled().perform(click());
 
@@ -81,7 +77,6 @@ public class DropInTest extends TestHelper {
 
     @Test
     public void tokenizesUnionPayWhenEnrollmentIsNotRequired() {
-        onDevice().pressBack();
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
         onDevice(withText("Drop-In")).waitForEnabled().perform(click());
 
@@ -106,6 +101,7 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void tokenizesPayPal() {
         uninstallPayPalWallet();
+        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
         onDevice(withContentDescription("Proceed with Sandbox Purchase")).perform(click());
@@ -119,6 +115,8 @@ public class DropInTest extends TestHelper {
     @RequiresDevice
     @Test(timeout = 60000)
     public void tokenizesAndroidPay() {
+        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
+
         onDevice(withText("Android Pay")).perform(click());
         onDevice(withText("CONTINUE")).perform(click());
 
@@ -130,6 +128,8 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void exitsAfterCancelingAddingAPaymentMethod() {
+        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
+
         onDevice(withText("PayPal")).perform(click());
         onDevice(withContentDescription("Proceed with Sandbox Purchase")).waitForExists();
         onDevice().pressBack();
@@ -138,5 +138,21 @@ public class DropInTest extends TestHelper {
         onDevice().pressBack();
 
         onDevice(withText("Drop-In")).check(text(equalToIgnoringCase("Drop-In")));
+    }
+
+    private void tokenizeCard() {
+        onDevice(withText("Credit or Debit Card")).perform(click());
+        onDevice(withContentDescription("Card Number")).perform(setText(VISA));
+        onDevice(withText("12")).perform(click());
+        onDevice(withText("2019")).perform(click());
+        onDevice().pressBack();
+        onDevice(withContentDescription("CVV")).perform(setText("123"));
+        onDevice(withContentDescription("Postal Code")).perform(setText("12345"));
+        onDevice(withTextContaining("Add Card")).perform(click());
+
+        getNonceDetails().check(text(containsString("Card Last Two: 11")));
+
+        onDevice(withText("Create a Transaction")).perform(click());
+        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 }

@@ -151,7 +151,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
             }
         } else if (resultCode != RESULT_CANCELED) {
             safelyCloseLoadingView();
-            showDialog(data.getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
+            showDialog(((Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR_MESSAGE))
+                    .getMessage());
         }
     }
 

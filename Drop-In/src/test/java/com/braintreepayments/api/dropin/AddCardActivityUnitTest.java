@@ -299,6 +299,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .errorResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, 422,
                         stringFromFixture("responses/credit_card_error_response.json"));
+        mActivity.paymentRequest = new PaymentRequest()
+                .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -422,6 +424,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
+        mActivity.paymentRequest = new PaymentRequest()
+                .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -449,6 +453,8 @@ public class AddCardActivityUnitTest {
                         .build())
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"));
+        mActivity.paymentRequest = new PaymentRequest()
+                .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -471,6 +477,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
+        mActivity.paymentRequest = new PaymentRequest()
+                .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -548,6 +556,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
+        mActivity.paymentRequest = new PaymentRequest()
+                .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -579,6 +589,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
+        mActivity.paymentRequest = new PaymentRequest()
+                .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);

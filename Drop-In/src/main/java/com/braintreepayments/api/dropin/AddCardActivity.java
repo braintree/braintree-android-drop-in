@@ -35,7 +35,9 @@ import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.UnionPayListener;
+import com.braintreepayments.api.models.Authorization;
 import com.braintreepayments.api.models.CardBuilder;
+import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.UnionPayCapabilities;
@@ -77,6 +79,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
     private BraintreeFragment mBraintreeFragment;
     private Configuration mConfiguration;
+    private boolean mClientTokenPresent;
     private String mEnrollmentId;
 
     @State
@@ -128,7 +131,15 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
                     "in the " + PaymentRequest.class.getSimpleName());
         }
 
-        return BraintreeFragment.newInstance(this, paymentRequest.getAuthorization());
+        BraintreeFragment fragment = BraintreeFragment.newInstance(this,
+                paymentRequest.getAuthorization());
+
+        try {
+            mClientTokenPresent =
+                    Authorization.fromString(paymentRequest.getAuthorization()) instanceof ClientToken;
+        } catch (InvalidArgumentException ignored) {}
+
+        return fragment;
     }
 
     @Override
@@ -220,7 +231,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     private int determineNextState(View v) {
         int nextState = mState;
         if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getCardForm().getCardNumber())) {
-            if (!mConfiguration.getUnionPay().isEnabled()) {
+            if (!mConfiguration.getUnionPay().isEnabled() || !mClientTokenPresent) {
                 mEditCardView.useUnionPay(this, false, false);
                 nextState = DETAILS_ENTRY;
             } else {
@@ -274,7 +285,8 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
                     .expirationMonth(mEditCardView.getCardForm().getExpirationMonth())
                     .expirationYear(mEditCardView.getCardForm().getExpirationYear())
                     .cvv(mEditCardView.getCardForm().getCvv())
-                    .postalCode(mEditCardView.getCardForm().getPostalCode());
+                    .postalCode(mEditCardView.getCardForm().getPostalCode())
+                    .validate(mClientTokenPresent);
 
             Card.tokenize(mBraintreeFragment, cardBuilder);
         }
