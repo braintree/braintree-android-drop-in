@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
@@ -247,6 +248,8 @@ public class EditCardViewUnitTest {
         assertThat(mView.getCardForm().getPostalCodeEditText()).isVisible();
         assertThat(mView.getCardForm().getCountryCodeEditText()).isGone();
         assertThat(mView.getCardForm().getMobileNumberEditText()).isGone();
+        assertThat(mView.getCardForm().findViewById(R.id.bt_card_form_mobile_number_explanation))
+                .isGone();
 
         mView.useUnionPay(mActivity, true, false);
 
@@ -256,6 +259,9 @@ public class EditCardViewUnitTest {
         assertThat(mView.getCardForm().getPostalCodeEditText()).isVisible();
         assertThat(mView.getCardForm().getCountryCodeEditText()).isVisible();
         assertThat(mView.getCardForm().getMobileNumberEditText()).isVisible();
+        assertThat((TextView) mView.getCardForm().findViewById(R.id.bt_card_form_mobile_number_explanation))
+                .isVisible()
+                .hasText(RuntimeEnvironment.application.getString(R.string.bt_unionpay_mobile_number_explanation));
     }
 
     @Test

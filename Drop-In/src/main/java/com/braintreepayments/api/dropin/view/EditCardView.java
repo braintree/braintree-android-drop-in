@@ -138,6 +138,7 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
                     .cvvRequired(true)
                     .postalCodeRequired(mConfiguration.isPostalCodeChallengePresent())
                     .mobileNumberRequired(true)
+                    .mobileNumberExplanation(getContext().getString(R.string.bt_unionpay_mobile_number_explanation))
                     .setup(activity);
         }
     }
