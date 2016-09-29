@@ -3,6 +3,7 @@ package com.braintreepayments.api.dropin;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
@@ -117,13 +118,6 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
 
         try {
             mBraintreeFragment = getBraintreeFragment();
-
-            if (Authorization.fromString(mPaymentRequest.getAuthorization()) instanceof ClientToken
-                    && !mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
-                PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
-            } else if (mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
-                onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
-            }
         } catch (InvalidArgumentException e) {
             Intent intent = new Intent()
                     .putExtra(EXTRA_ERROR_MESSAGE, e.getMessage());
@@ -170,6 +164,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                 mLoadingViewSwitcher.setDisplayedChild(1);
             }
         });
+
+        fetchPaymentMethodNonces();
     }
 
     @Override
@@ -243,6 +239,25 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                 startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
                 break;
         }
+    }
+
+    private void fetchPaymentMethodNonces() {
+        try {
+            if (Authorization.fromString(mPaymentRequest.getAuthorization()) instanceof ClientToken) {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!DropInActivity.this.isFinishing()) {
+                            if (mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
+                                onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
+                            } else {
+                                PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
+                            }
+                        }
+                    }
+                }, getResources().getInteger(android.R.integer.config_longAnimTime));
+            }
+        } catch (InvalidArgumentException ignored) {}
     }
 
     @Override

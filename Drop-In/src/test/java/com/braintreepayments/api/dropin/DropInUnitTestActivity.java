@@ -1,6 +1,7 @@
 package com.braintreepayments.api.dropin;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 
 import com.braintreepayments.api.BraintreeFragment;
@@ -8,6 +9,8 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
 
 import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 
 public class DropInUnitTestActivity extends DropInActivity {
 
@@ -41,5 +44,14 @@ public class DropInUnitTestActivity extends DropInActivity {
         }
 
         return braintreeFragment;
+    }
+
+    @Override
+    public Resources getResources() {
+        Resources resources = spy(super.getResources());
+        when(resources.getInteger(android.R.integer.config_longAnimTime)).thenReturn(0);
+        when(resources.getInteger(android.R.integer.config_mediumAnimTime)).thenReturn(0);
+        when(resources.getInteger(android.R.integer.config_shortAnimTime)).thenReturn(0);
+        return resources;
     }
 }
