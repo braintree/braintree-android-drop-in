@@ -199,6 +199,29 @@ public class EditCardViewUnitTest {
     }
 
     @Test
+    public void setVisibility_toVisibleFocusesExpirationWhenOptional() {
+        mView.setup(mActivity, mock(Configuration.class));
+        mView.useUnionPay(mActivity, true, true);
+        assertThat(mView.getCardForm().getExpirationDateEditText()).isNotFocused();
+
+        mView.setVisibility(View.VISIBLE);
+
+        assertThat(mView.getCardForm().getExpirationDateEditText()).isFocused();
+    }
+
+    @Test
+    public void setVisibility_toVisibleFocusesCvvWhenOptional() {
+        mView.setup(mActivity, mock(Configuration.class));
+        mView.useUnionPay(mActivity, true, true);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+        assertThat(mView.getCardForm().getCvvEditText()).isNotFocused();
+
+        mView.setVisibility(View.VISIBLE);
+
+        assertThat(mView.getCardForm().getCvvEditText()).isFocused();
+    }
+
+    @Test
     public void setErrors_displaysAllErrors() {
         Configuration configuration = new TestConfigurationBuilder()
                 .challenges("cvv", "postal_code")

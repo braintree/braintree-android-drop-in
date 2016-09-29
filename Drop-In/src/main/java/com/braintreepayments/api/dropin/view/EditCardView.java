@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -175,10 +176,12 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
         mAnimatedButtonView.showButton();
 
         if (visibility == VISIBLE) {
-            if (!mCardForm.getExpirationDateEditText().isValid()) {
+            if (!mCardForm.getExpirationDateEditText().isValid() ||
+                    TextUtils.isEmpty(mCardForm.getExpirationDateEditText().getText())) {
                 mCardForm.getExpirationDateEditText().requestFocus();
             } else if (mCardForm.getCvvEditText().getVisibility() == VISIBLE &&
-                    !mCardForm.getCvvEditText().isValid()) {
+                    (!mCardForm.getCvvEditText().isValid() ||
+                    TextUtils.isEmpty(mCardForm.getCvvEditText().getText()))) {
                 mCardForm.getCvvEditText().requestFocus();
             } else if (mCardForm.getPostalCodeEditText().getVisibility() == VISIBLE &&
                     !mCardForm.getPostalCodeEditText().isValid()) {
