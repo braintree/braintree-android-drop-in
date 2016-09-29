@@ -30,7 +30,6 @@ public class PaymentRequestUnitTest {
                 .build();
         Intent intent = new PaymentRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
-                .amount("1.00")
                 .collectDeviceData(true)
                 .androidPayCart(cart)
                 .androidPayShippingAddressRequired(true)
@@ -46,7 +45,6 @@ public class PaymentRequestUnitTest {
 
         assertEquals(DropInActivity.class.getName(), intent.getComponent().getClassName());
         assertEquals(TOKENIZATION_KEY, paymentRequest.getAuthorization());
-        assertEquals("1.00", paymentRequest.getAmount());
         assertTrue(paymentRequest.shouldCollectDeviceData());
         assertEquals("5.00", paymentRequest.getAndroidPayCart().getTotalPrice());
         assertTrue(paymentRequest.isAndroidPayShippingAddressRequired());
@@ -68,7 +66,6 @@ public class PaymentRequestUnitTest {
 
         assertEquals(DropInActivity.class.getName(), intent.getComponent().getClassName());
         assertNull(paymentRequest.getAuthorization());
-        assertNull(paymentRequest.getAmount());
         assertFalse(paymentRequest.shouldCollectDeviceData());
         assertNull(paymentRequest.getAndroidPayCart());
         assertFalse(paymentRequest.isAndroidPayShippingAddressRequired());
@@ -87,7 +84,6 @@ public class PaymentRequestUnitTest {
                 .build();
         PaymentRequest paymentRequest = new PaymentRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
-                .amount("1.00")
                 .collectDeviceData(true)
                 .androidPayCart(cart)
                 .androidPayShippingAddressRequired(true)
@@ -104,7 +100,6 @@ public class PaymentRequestUnitTest {
         PaymentRequest parceledPaymentRequest = PaymentRequest.CREATOR.createFromParcel(parcel);
 
         assertEquals(TOKENIZATION_KEY, parceledPaymentRequest.getAuthorization());
-        assertEquals("1.00", parceledPaymentRequest.getAmount());
         assertTrue(parceledPaymentRequest.shouldCollectDeviceData());
         assertEquals("5.00", parceledPaymentRequest.getAndroidPayCart().getTotalPrice());
         assertTrue(parceledPaymentRequest.isAndroidPayShippingAddressRequired());

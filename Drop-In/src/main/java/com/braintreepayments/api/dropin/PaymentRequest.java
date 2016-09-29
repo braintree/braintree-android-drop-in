@@ -65,16 +65,6 @@ public class PaymentRequest implements Parcelable {
     /**
      * This method is optional.
      *
-     * @param amount Amount of the transaction.
-     */
-    public PaymentRequest amount(String amount) {
-        mAmount = amount;
-        return this;
-    }
-
-    /**
-     * This method is optional.
-     *
      * @param collectDeviceData {@code true} if Drop-in should collect and return device data for
      *        fraud prevention.
      * @see DataCollector
@@ -184,10 +174,6 @@ public class PaymentRequest implements Parcelable {
 
     String getAuthorization() {
         return mAuthorization;
-    }
-
-    String getAmount() {
-        return mAmount;
     }
 
     boolean shouldCollectDeviceData() {
