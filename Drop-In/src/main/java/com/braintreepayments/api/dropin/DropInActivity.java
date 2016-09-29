@@ -63,24 +63,6 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     public static final String EXTRA_ERROR_MESSAGE =
             "com.braintreepayments.api.dropin.EXTRA_ERROR_MESSAGE";
 
-    /**
-     * The payment method flow halted due to a resolvable error (authentication, authorization, SDK
-     * upgrade required).
-     */
-    public static final int BRAINTREE_RESULT_DEVELOPER_ERROR = 2;
-
-    /**
-     * The payment method flow halted due to an error from the Braintree gateway. The best recovery
-     * path is to try again with a new authorization.
-     */
-    public static final int BRAINTREE_RESULT_SERVER_ERROR = 3;
-
-    /**
-     * The payment method flow halted due to the Braintree gateway going down for maintenance. Try
-     * again later.
-     */
-    public static final int BRAINTREE_RESULT_SERVER_UNAVAILABLE = 4;
-
     private static final int ADD_CARD_REQUEST_CODE = 1;
     private static final String EXTRA_SHEET_SLIDE_UP_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_SLIDE_UP_PERFORMED";
     private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
@@ -122,7 +104,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         } catch (InvalidArgumentException e) {
             Intent intent = new Intent()
                     .putExtra(EXTRA_ERROR_MESSAGE, e.getMessage());
-            setResult(BRAINTREE_RESULT_DEVELOPER_ERROR, intent);
+            setResult(RESULT_FIRST_USER, intent);
             finish();
             return;
         }
@@ -190,16 +172,16 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                 if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                         error instanceof UpgradeRequiredException) {
                     mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
-                    setResult(BRAINTREE_RESULT_DEVELOPER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                    setResult(RESULT_FIRST_USER, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
                 } else if (error instanceof ConfigurationException) {
                     mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
-                    setResult(BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                    setResult(RESULT_FIRST_USER, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
                 } else if (error instanceof ServerException || error instanceof UnexpectedException) {
                     mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-                    setResult(BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                    setResult(RESULT_FIRST_USER, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
                 } else if (error instanceof DownForMaintenanceException) {
                     mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
-                    setResult(BRAINTREE_RESULT_SERVER_UNAVAILABLE, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
+                    setResult(RESULT_FIRST_USER, new Intent().putExtra(EXTRA_ERROR_MESSAGE, error));
                 }
 
                 finish();

@@ -118,7 +118,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         } catch (InvalidArgumentException e) {
             Intent intent = new Intent()
                     .putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, e.getMessage());
-            setResult(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, intent);
+            setResult(RESULT_FIRST_USER, intent);
             finish();
         }
     }
@@ -338,16 +338,16 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                     error instanceof UpgradeRequiredException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
-                setResult(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
             } else if (error instanceof ConfigurationException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
-                setResult(DropInActivity.BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
             } else if (error instanceof ServerException || error instanceof UnexpectedException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-                setResult(DropInActivity.BRAINTREE_RESULT_SERVER_ERROR, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
             } else if (error instanceof DownForMaintenanceException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
-                setResult(DropInActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
             }
             finish();
         }

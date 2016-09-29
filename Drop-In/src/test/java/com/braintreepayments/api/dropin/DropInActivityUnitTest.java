@@ -68,7 +68,7 @@ public class DropInActivityUnitTest {
 
         mActivityController.setup();
 
-        assertEquals(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
+        assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
         assertEquals("Tokenization Key or client token was invalid.", mShadowActivity.getResultIntent()
                 .getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
     }
@@ -80,7 +80,7 @@ public class DropInActivityUnitTest {
 
         mActivityController.setup();
 
-        assertEquals(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
+        assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
         assertEquals("A client token or client key must be specified in the PaymentRequest", mShadowActivity.getResultIntent()
                 .getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
     }
@@ -374,10 +374,10 @@ public class DropInActivityUnitTest {
         Intent data = new Intent()
                 .putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, "Error");
         mActivityController.setup();
-        mActivity.onActivityResult(1, DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, data);
+        mActivity.onActivityResult(1, Activity.RESULT_FIRST_USER, data);
 
         assertTrue(mShadowActivity.isFinishing());
-        assertEquals(DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR, mShadowActivity.getResultCode());
+        assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
         assertEquals("Error", mShadowActivity.getResultIntent().getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
     }
 
@@ -403,7 +403,7 @@ public class DropInActivityUnitTest {
     public void configurationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("configuration-exception", DropInActivity.BRAINTREE_RESULT_SERVER_ERROR,
+        assertExceptionIsReturned("configuration-exception",
                 new ConfigurationException("Configuration exception"));
     }
 
@@ -411,7 +411,7 @@ public class DropInActivityUnitTest {
     public void authenticationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("developer-error", DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+        assertExceptionIsReturned("developer-error",
                 new AuthenticationException("Access denied"));
     }
 
@@ -419,7 +419,7 @@ public class DropInActivityUnitTest {
     public void authorizationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("developer-error", DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+        assertExceptionIsReturned("developer-error",
                 new AuthorizationException("Access denied"));
     }
 
@@ -427,7 +427,7 @@ public class DropInActivityUnitTest {
     public void upgradeRequiredExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("developer-error", DropInActivity.BRAINTREE_RESULT_DEVELOPER_ERROR,
+        assertExceptionIsReturned("developer-error",
                 new UpgradeRequiredException("Exception"));
     }
 
@@ -435,7 +435,7 @@ public class DropInActivityUnitTest {
     public void serverExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("server-error", DropInActivity.BRAINTREE_RESULT_SERVER_ERROR,
+        assertExceptionIsReturned("server-error",
                 new ServerException("Exception"));
     }
 
@@ -443,7 +443,7 @@ public class DropInActivityUnitTest {
     public void unexpectedExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("server-error", DropInActivity.BRAINTREE_RESULT_SERVER_ERROR,
+        assertExceptionIsReturned("server-error",
                 new UnexpectedException("Exception"));
     }
 
@@ -451,7 +451,7 @@ public class DropInActivityUnitTest {
     public void downForMaintenanceExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
-        assertExceptionIsReturned("server-unavailable", DropInActivity.BRAINTREE_RESULT_SERVER_UNAVAILABLE,
+        assertExceptionIsReturned("server-unavailable",
                 new DownForMaintenanceException("Exception"));
     }
 
@@ -465,12 +465,12 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
     }
 
-    private void assertExceptionIsReturned(String analyticsEvent, int responseCode, Exception exception) {
+    private void assertExceptionIsReturned(String analyticsEvent, Exception exception) {
         mActivity.onError(exception);
 
         verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit." + analyticsEvent);
         assertTrue(mActivity.isFinishing());
-        assertEquals(responseCode, mShadowActivity.getResultCode());
+        assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception actualException = (Exception) mShadowActivity.getResultIntent()
                 .getSerializableExtra(DropInActivity.EXTRA_ERROR_MESSAGE);
         assertEquals(exception.getClass(), actualException.getClass());
