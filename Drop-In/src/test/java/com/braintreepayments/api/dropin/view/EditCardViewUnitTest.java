@@ -122,16 +122,6 @@ public class EditCardViewUnitTest {
     }
 
     @Test
-    public void setCardNumber_focusesExpirationView() {
-        mView.setup(mActivity, (Configuration) basicConfig());
-        assertThat(mView.getCardForm().getExpirationDateEditText()).isNotFocused();
-
-        mView.setCardNumber(VISA);
-
-        assertThat(mView.getCardForm().getExpirationDateEditText()).isFocused();
-    }
-
-    @Test
     public void setVisibility_toVisibleClearsButtonLoadingView() {
         mView.setup(mActivity, mock(Configuration.class));
         mView.getCardForm().getCardEditText().setText(VISA);
