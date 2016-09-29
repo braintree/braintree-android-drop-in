@@ -14,6 +14,8 @@ import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.models.Configuration;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
@@ -22,7 +24,7 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
     private PaymentMethodSelectedListener mPaymentMethodSelectedListener;
 
     public SupportedPaymentMethodsAdapter(Context context, Configuration configuration,
-                                          boolean androidPayEnabled,
+                                          boolean androidPayEnabled, boolean unionpaySupported,
                                           PaymentMethodSelectedListener paymentMethodSelectedListener) {
         mContext = context;
         mPaymentMethodSelectedListener = paymentMethodSelectedListener;
@@ -32,12 +34,20 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
         if (configuration.isPayPalEnabled()) {
             mAvailablePaymentMethods.add(PaymentMethodType.PAYPAL);
         }
+
         if (configuration.getPayWithVenmo().isEnabled(mContext)) {
             mAvailablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
         }
-        if (configuration.getCardConfiguration().getSupportedCardTypes().size() > 0) {
+
+        Set<String> supportedCardTypes =
+                new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
+        if (!unionpaySupported) {
+            supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
+        }
+        if (supportedCardTypes.size() > 0) {
             mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
         }
+
         if (androidPayEnabled) {
             mAvailablePaymentMethods.add(PaymentMethodType.ANDROID_PAY);
         }

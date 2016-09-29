@@ -227,6 +227,8 @@ public class AddCardActivityUnitTest {
                         .build())
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"));
+        mActivity.paymentRequest = new PaymentRequest()
+                .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -508,6 +510,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_enrollment_sms_not_required.json"))
                 .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
                         stringFromFixture("payment_methods/unionpay_credit_card.json"));
+        mActivity.paymentRequest = new PaymentRequest()
+                .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);

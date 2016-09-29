@@ -58,7 +58,7 @@ public class AddCardViewUnitTest {
         mView.setup(mActivity, (Configuration) new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
                         .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName()))
-                .buildConfiguration());
+                .buildConfiguration(), false);
     }
 
     @Test
@@ -68,7 +68,7 @@ public class AddCardViewUnitTest {
 
     @Test
     public void setup_hidesNextButtonIfUnionPayIsNotEnabled() {
-        mView.setup(mActivity, (Configuration) basicConfig());
+        mView.setup(mActivity, (Configuration) basicConfig(), true);
 
         assertThat(mView.findViewById(R.id.bt_animated_button_view)).isGone();
     }
@@ -80,7 +80,7 @@ public class AddCardViewUnitTest {
                         .enabled(true))
                 .buildConfiguration();
 
-        mView.setup(mActivity, configuration);
+        mView.setup(mActivity, configuration, true);
 
         assertThat(mView.findViewById(R.id.bt_animated_button_view)).isVisible();
     }
@@ -97,7 +97,7 @@ public class AddCardViewUnitTest {
                                 PaymentMethodType.JCB.getCanonicalName()))
                 .buildConfiguration();
 
-        mView.setup(mActivity, configuration);
+        mView.setup(mActivity, configuration, true);
 
         List<CardType> cardTypes = (List<CardType>) getField(
                 mView.findViewById(R.id.bt_supported_card_types), "mSupportedCardTypes");
@@ -107,6 +107,57 @@ public class AddCardViewUnitTest {
         assertTrue(cardTypes.contains(CardType.MASTERCARD));
         assertTrue(cardTypes.contains(CardType.DISCOVER));
         assertTrue(cardTypes.contains(CardType.JCB));
+    }
+
+    @Test
+    public void setup_showsUnionPaySupportedWhenInTheConfigurationAndSupported()
+            throws NoSuchFieldException, IllegalAccessException {
+        Configuration configuration = new TestConfigurationBuilder()
+                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
+                        .supportedCardTypes(PaymentMethodType.UNIONPAY.getCanonicalName(),
+                                PaymentMethodType.VISA.getCanonicalName()))
+                .buildConfiguration();
+
+        mView.setup(mActivity, configuration, true);
+
+        List<CardType> cardTypes = (List<CardType>) getField(
+                mView.findViewById(R.id.bt_supported_card_types), "mSupportedCardTypes");
+        assertEquals(2, cardTypes.size());
+        assertTrue(cardTypes.contains(CardType.UNIONPAY));
+        assertTrue(cardTypes.contains(CardType.VISA));
+    }
+
+    @Test
+    public void setup_doesNotShowUnionPaySupportedWhenInTheConfigurationAndNotSupported()
+            throws NoSuchFieldException, IllegalAccessException {
+        Configuration configuration = new TestConfigurationBuilder()
+                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
+                        .supportedCardTypes(PaymentMethodType.UNIONPAY.getCanonicalName(),
+                                PaymentMethodType.VISA.getCanonicalName()))
+                .buildConfiguration();
+
+        mView.setup(mActivity, configuration, false);
+
+        List<CardType> cardTypes = (List<CardType>) getField(
+                mView.findViewById(R.id.bt_supported_card_types), "mSupportedCardTypes");
+        assertEquals(1, cardTypes.size());
+        assertTrue(cardTypes.contains(CardType.VISA));
+    }
+
+    @Test
+    public void setup_doesNotShowUnionPaySupportedWhenNotInTheConfigurationAndNotSupported()
+            throws NoSuchFieldException, IllegalAccessException {
+        Configuration configuration = new TestConfigurationBuilder()
+                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
+                        .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName()))
+                .buildConfiguration();
+
+        mView.setup(mActivity, configuration, false);
+
+        List<CardType> cardTypes = (List<CardType>) getField(
+                mView.findViewById(R.id.bt_supported_card_types), "mSupportedCardTypes");
+        assertEquals(1, cardTypes.size());
+        assertTrue(cardTypes.contains(CardType.VISA));
     }
 
     @Test
@@ -171,7 +222,7 @@ public class AddCardViewUnitTest {
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
                         .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName(),
                                 PaymentMethodType.AMEX.getCanonicalName()))
-                .buildConfiguration());
+                .buildConfiguration(), true);
 
         mView.getCardForm().getCardEditText().setText(VISA);
 
@@ -261,7 +312,7 @@ public class AddCardViewUnitTest {
                 .setup(bundle);
         mActivity = (Activity) mActivityController.get();
         mView = (AddCardView) mActivity.findViewById(R.id.bt_add_card_view);
-        mView.setup(mActivity, (Configuration) basicConfig());
+        mView.setup(mActivity, (Configuration) basicConfig(), true);
 
         assertEquals(VISA, mView.getCardForm().getCardNumber());
     }

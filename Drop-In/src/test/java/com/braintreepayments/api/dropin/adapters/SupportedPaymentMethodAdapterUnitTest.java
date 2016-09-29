@@ -32,7 +32,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         Configuration configuration = getConfiguration(false, false, false, false);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, configuration, false, null);
+                RuntimeEnvironment.application, configuration, false, false, null);
 
         assertEquals(0, adapter.getCount());
     }
@@ -42,7 +42,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         Configuration configuration = getConfiguration(true, true, true, true);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, configuration, true, null);
+                RuntimeEnvironment.application, configuration, true, true, null);
 
         assertEquals(4, adapter.getCount());
         assertEquals(PaymentMethodType.PAYPAL, adapter.getItem(0));
@@ -52,12 +52,48 @@ public class SupportedPaymentMethodAdapterUnitTest {
     }
 
     @Test
+    public void cardsAvailableIfUnionPayNotSupportedAndOtherCardsPresent() {
+        Configuration configuration = getConfiguration(false, false, true, false);
+
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
+                RuntimeEnvironment.application, configuration, false, false, null);
+
+        assertEquals(1, adapter.getCount());
+        assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(0));
+    }
+
+    @Test
+    public void cardsNotAvailableIfOnlyUnionPayPresentAndNotSupported() {
+        Configuration configuration = getConfiguration(false, false, false, false);
+        when(configuration.getCardConfiguration().getSupportedCardTypes())
+                .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
+
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
+                RuntimeEnvironment.application, configuration, false, false, null);
+
+        assertEquals(0, adapter.getCount());
+    }
+
+    @Test
+    public void cardsAvailableIfOnlyUnionPayPresentAndSupported() {
+        Configuration configuration = getConfiguration(false, false, false, false);
+        when(configuration.getCardConfiguration().getSupportedCardTypes())
+                .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
+
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
+                RuntimeEnvironment.application, configuration, false, true, null);
+
+        assertEquals(1, adapter.getCount());
+        assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(0));
+    }
+
+    @Test
     public void callsOnPaymentMethodSelectedListenerWhenPaymentMethodClicked() {
         Configuration configuration = getConfiguration(true, true, true, true);
         PaymentMethodSelectedListener listener = mock(PaymentMethodSelectedListener.class);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, configuration, true, listener);
+                RuntimeEnvironment.application, configuration, true, true, listener);
 
         adapter.getView(0, null, null).callOnClick();
         adapter.getView(1, null, null).callOnClick();
@@ -88,7 +124,8 @@ public class SupportedPaymentMethodAdapterUnitTest {
         CardConfiguration cardConfiguration = mock(CardConfiguration.class);
         when(configuration.getCardConfiguration()).thenReturn(cardConfiguration);
         if (cardEnabled) {
-            when(cardConfiguration.getSupportedCardTypes()).thenReturn(new HashSet<>(Arrays.asList("Visa")));
+            when(cardConfiguration.getSupportedCardTypes()).thenReturn(
+                    new HashSet<>(Arrays.asList(PaymentMethodType.VISA.getCanonicalName())));
         }
 
         AndroidPayConfiguration androidPayConfiguration = mock(AndroidPayConfiguration.class);

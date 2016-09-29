@@ -89,6 +89,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     protected PaymentRequest mPaymentRequest;
 
     private BraintreeFragment mBraintreeFragment;
+    private boolean mClientTokenPresent;
     private String mDeviceData;
 
     private View mBottomSheet;
@@ -142,6 +143,13 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                     "in the " + PaymentRequest.class.getSimpleName());
         }
 
+        try {
+            mClientTokenPresent =
+                    Authorization.fromString(mPaymentRequest.getAuthorization()) instanceof ClientToken;
+        } catch (InvalidArgumentException e) {
+            mClientTokenPresent = false;
+        }
+
         return BraintreeFragment.newInstance(this, mPaymentRequest.getAuthorization());
     }
 
@@ -160,7 +168,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
             @Override
             public void onResponse(Boolean isReadyToPay) {
                 mSupportedPaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(
-                        DropInActivity.this, configuration, isReadyToPay, DropInActivity.this));
+                        DropInActivity.this, configuration, isReadyToPay, mClientTokenPresent,
+                        DropInActivity.this));
                 mLoadingViewSwitcher.setDisplayedChild(1);
             }
         });

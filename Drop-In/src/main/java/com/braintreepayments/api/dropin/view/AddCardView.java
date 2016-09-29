@@ -24,6 +24,8 @@ import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 public class AddCardView extends LinearLayout implements OnCardFormSubmitListener, OnCardFormValidListener,
         OnClickListener, OnCardTypeChangedListener {
@@ -73,7 +75,7 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.bt_animated_button_view);
     }
 
-    public void setup(Activity activity, Configuration configuration) {
+    public void setup(Activity activity, Configuration configuration, boolean unionpaySupported) {
         mCardForm.getCardEditText().displayCardTypeIcon(false);
 
         mCardForm.cardRequired(true).setup(activity);
@@ -81,8 +83,11 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         mCardForm.setOnCardFormValidListener(this);
         mCardForm.setOnCardFormSubmitListener(this);
 
-        mSupportedCardTypes = PaymentMethodType.getCardsTypes(configuration.getCardConfiguration()
-                .getSupportedCardTypes());
+        Set<String> cardTypes = new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
+        if (!unionpaySupported) {
+            cardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
+        }
+        mSupportedCardTypes = PaymentMethodType.getCardsTypes(cardTypes);
         mSupportedCardTypesView.setSupportedCardTypes(mSupportedCardTypes);
 
         mAnimatedButtonView.setVisibility(configuration.getUnionPay().isEnabled() ? VISIBLE : GONE);

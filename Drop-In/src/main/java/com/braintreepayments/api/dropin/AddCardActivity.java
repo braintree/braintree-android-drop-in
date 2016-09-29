@@ -131,22 +131,21 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
                     "in the " + PaymentRequest.class.getSimpleName());
         }
 
-        BraintreeFragment fragment = BraintreeFragment.newInstance(this,
-                paymentRequest.getAuthorization());
-
         try {
             mClientTokenPresent =
                     Authorization.fromString(paymentRequest.getAuthorization()) instanceof ClientToken;
-        } catch (InvalidArgumentException ignored) {}
+        } catch (InvalidArgumentException e) {
+            mClientTokenPresent = false;
+        }
 
-        return fragment;
+        return BraintreeFragment.newInstance(this, paymentRequest.getAuthorization());
     }
 
     @Override
     public void onConfigurationFetched(Configuration configuration) {
         mConfiguration = configuration;
 
-        mAddCardView.setup(this, configuration);
+        mAddCardView.setup(this, configuration, mClientTokenPresent);
         mEditCardView.setup(this, configuration);
 
         setState(LOADING, mState);
