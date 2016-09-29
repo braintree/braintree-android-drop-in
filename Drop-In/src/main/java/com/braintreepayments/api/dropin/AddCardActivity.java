@@ -117,7 +117,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             mBraintreeFragment = getBraintreeFragment();
         } catch (InvalidArgumentException e) {
             Intent intent = new Intent()
-                    .putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, e.getMessage());
+                    .putExtra(DropInActivity.EXTRA_ERROR, e.getMessage());
             setResult(RESULT_FIRST_USER, intent);
             finish();
         }
@@ -338,16 +338,16 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                     error instanceof UpgradeRequiredException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
-                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR, error));
             } else if (error instanceof ConfigurationException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
-                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR, error));
             } else if (error instanceof ServerException || error instanceof UnexpectedException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR, error));
             } else if (error instanceof DownForMaintenanceException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
-                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, error));
+                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR, error));
             }
             finish();
         }

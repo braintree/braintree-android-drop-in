@@ -70,7 +70,7 @@ public class DropInActivityUnitTest {
 
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
         assertEquals("Tokenization Key or client token was invalid.", mShadowActivity.getResultIntent()
-                .getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
+                .getStringExtra(DropInActivity.EXTRA_ERROR));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class DropInActivityUnitTest {
 
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
         assertEquals("A client token or client key must be specified in the PaymentRequest", mShadowActivity.getResultIntent()
-                .getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
+                .getStringExtra(DropInActivity.EXTRA_ERROR));
     }
 
     @Test
@@ -372,13 +372,13 @@ public class DropInActivityUnitTest {
     @Test
     public void onActivityResult_returnsErrorFromAddCardActivity() {
         Intent data = new Intent()
-                .putExtra(DropInActivity.EXTRA_ERROR_MESSAGE, "Error");
+                .putExtra(DropInActivity.EXTRA_ERROR, "Error");
         mActivityController.setup();
         mActivity.onActivityResult(1, Activity.RESULT_FIRST_USER, data);
 
         assertTrue(mShadowActivity.isFinishing());
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        assertEquals("Error", mShadowActivity.getResultIntent().getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
+        assertEquals("Error", mShadowActivity.getResultIntent().getStringExtra(DropInActivity.EXTRA_ERROR));
     }
 
     @Test
@@ -472,7 +472,7 @@ public class DropInActivityUnitTest {
         assertTrue(mActivity.isFinishing());
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception actualException = (Exception) mShadowActivity.getResultIntent()
-                .getSerializableExtra(DropInActivity.EXTRA_ERROR_MESSAGE);
+                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertEquals(exception.getClass(), actualException.getClass());
         assertEquals(exception.getMessage(), actualException.getMessage());
     }

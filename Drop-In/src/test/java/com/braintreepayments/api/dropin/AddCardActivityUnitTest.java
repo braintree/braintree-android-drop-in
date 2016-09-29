@@ -74,7 +74,7 @@ public class AddCardActivityUnitTest {
 
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
         assertEquals("Tokenization Key or client token was invalid.", mShadowActivity.getResultIntent()
-                .getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
+                .getStringExtra(DropInActivity.EXTRA_ERROR));
     }
 
     @Test
@@ -86,7 +86,7 @@ public class AddCardActivityUnitTest {
 
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
         assertEquals("A client token or client key must be specified in the PaymentRequest", mShadowActivity.getResultIntent()
-                .getStringExtra(DropInActivity.EXTRA_ERROR_MESSAGE));
+                .getStringExtra(DropInActivity.EXTRA_ERROR));
     }
 
     @Test
@@ -651,7 +651,7 @@ public class AddCardActivityUnitTest {
         assertTrue(mActivity.isFinishing());
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception actualException = (Exception) mShadowActivity.getResultIntent()
-                .getSerializableExtra(DropInActivity.EXTRA_ERROR_MESSAGE);
+                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertEquals(exception.getClass(), actualException.getClass());
         assertEquals(exception.getMessage(), actualException.getMessage());
     }
