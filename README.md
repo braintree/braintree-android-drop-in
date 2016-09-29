@@ -4,14 +4,107 @@
 
 Braintree Android Drop-In is a readymade UI that allows you to accept card and alternative payments in your Android app.
 
-![Screenshot of Drop-In](screenshot.png)
+![Screenshot of Drop-In](screenshots/vaulted-payment-methods.png)
 
-## Documentation
+## What's new in 3.0
 
-Read the [**guide**](https://developers.braintreepayments.com/guides/drop-in/android/v2) for instructions on basic setup, usage and integration options.
+* All new UI and integration for Drop-In
+* Fetch a customer's payment method without showing UI
+* Added UnionPay support to Drop-In
+
+Please create an [issue](https://github.com/braintree/braintree-android-drop-in/issues) with any comments or concerns.
+
+## Adding it to your project
+
+In your `build.gradle`:
+
+```groovy
+dependencies {
+  compile 'com.braintreepayments.api:drop-in:3.0.0-SNAPSHOT'
+}
+```
+
+## Usage
+
+Create a `PaymentRequest` and use the `Intent` to start Drop-In:
+
+```java
+PaymentRequest paymentRequest = new PaymentRequest()
+    .clientToken(mClientToken);
+startActivityForResult(paymentRequest.getIntent(context), DROP_IN_REQUEST);
+```
+
+Handle the response:
+
+```java
+@Override
+public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    super.onActivityResult(requestCode, resultCode, data);
+
+    if (requestCode == DROP_IN_REQUEST) {
+        if (resultCode == Activity.RESULT_OK) {
+            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+            String paymentMethodNonce = result.getPaymentMethodNonce().getNonce();
+            // send paymentMethodNonce to your server
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            // canceled
+        } else {
+            // an error occurred, checked the returned exception
+            Exception exception = (Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR);
+        }
+    }
+}
+```
+
+### Fetch last used payment method
+
+If your user already has an existing payment method, you may not need to show Drop-In. You can check if they have an existing payment method using `DropInResult#fetchDropInResult`. Note that a payment method will only be returned when using a client token created with a `customer_id`.
+
+```java
+DropInResult.fetchDropInResult(activity, clientToken, new DropInResult.DropInResultListener() {
+    @Override
+    public void onError(Exception exception) {
+        // an error occurred
+    }
+
+    @Override
+    public void onResult(DropInResult result) {
+        if (result.getPaymentMethodType() != null) {
+            // use the icon and name to show in your UI
+            int icon = result.getPaymentMethodType().getDrawable();
+            int name = result.getPaymentMethodType().getLocalizedName();
+
+            if (result.getPaymentMethodType() == PaymentMethodType.ANDROID_PAY) {
+                // the last payment method the user used was Android Pay
+                // the Android Pay flow will need to be performed by the
+                // user again at the time of checkout
+            } else {
+                // use the payment method show in your UI and charge the user
+                // at the time of checkout
+                PaymentMethodNonce paymentMethod = result.getPaymentMethodNonce();
+            }
+        } else {
+            // there was no existing payment method
+        }
+    }
+});
+```
+
+### card.io
+
+To offer card scanning via [card.io](https://card.io), add the dependency in your `build.gradle`:
+
+```groovy
+dependencies {
+    compile 'io.card:android-sdk:[5.3.0,6.0.0)'
+}
+```
+
+Drop-In will include a menu icon to scan cards when card.io is included.
 
 ## Help
 
+* [Read the javadocs](http://javadoc.io/doc/com.braintreepayments.api/drop-in/)
 * [Read the docs](https://developers.braintreepayments.com/guides/drop-in/android/v2)
 * Find a bug? [Open an issue](https://github.com/braintree/braintree-android-drop-in/issues)
 * Want to contribute? [Check out contributing guidelines](CONTRIBUTING.md) and [submit a pull request](https://help.github.com/articles/creating-a-pull-request).
