@@ -112,6 +112,22 @@ public class DropInTest extends TestHelper {
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
+    @SdkSuppress(minSdkVersion = 21)
+    @Test(timeout = 60000)
+    public void tokenizesPayPalWithATokenizationKey() {
+        uninstallPayPalWallet();
+        useTokenizationKey();
+        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+
+        onDevice(withText("PayPal")).perform(click());
+        onDevice(withContentDescription("Proceed with Sandbox Purchase")).perform(click());
+
+        getNonceDetails().check(text(containsString("Email: bt_buyer_us@paypal.com")));
+
+        onDevice(withText("Purchase")).perform(click());
+        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
+    }
+
     @RequiresDevice
     @Test(timeout = 60000)
     public void tokenizesAndroidPay() {

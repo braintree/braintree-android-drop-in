@@ -19,8 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/add_payment_method"
-            android:onClick="launchDropIn"
-            android:enabled="false" />
+            android:onClick="launchDropIn"/>
 
         <Button
             android:id="@+id/purchase"
@@ -28,7 +27,7 @@
             android:layout_height="wrap_content"
             android:text="@string/purchase"
             android:onClick="purchase"
-            android:enabled="false" />
+            android:enabled="false"/>
 
     </LinearLayout>
 

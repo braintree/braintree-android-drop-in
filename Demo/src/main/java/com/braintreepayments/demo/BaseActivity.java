@@ -92,8 +92,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
                 (Settings.useTokenizationKey(this) && !mAuthorization.equals(Settings.getEnvironmentTokenizationKey(this))) ||
                 !TextUtils.equals(mCustomerId, Settings.getCustomerId(this))) {
             performReset();
-        } else {
-            onAuthorizationFetched();
         }
     }
 

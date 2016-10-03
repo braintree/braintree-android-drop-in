@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.ThreeDSecure;
@@ -22,27 +23,31 @@ import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.AndroidPayCardNonce;
 import com.braintreepayments.api.models.CardNonce;
+import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.PostalAddress;
 import com.braintreepayments.api.models.VenmoAccountNonce;
+import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.wallet.Cart;
 import com.google.android.gms.wallet.LineItem;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 public class MainActivity extends BaseActivity implements PaymentMethodNonceCreatedListener,
-        BraintreeCancelListener, BraintreeErrorListener {
+        BraintreeCancelListener, BraintreeErrorListener, DropInResult.DropInResultListener {
 
     private static final int DROP_IN_REQUEST = 100;
 
     private static final String KEY_NONCE = "nonce";
 
     private BraintreeFragment mBraintreeFragment;
+    private PaymentMethodType mPaymentMethodType;
     private PaymentMethodNonce mNonce;
 
     private CardView mPaymentMethod;
@@ -56,6 +61,9 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     private Button mAddPaymentMethodButton;
     private Button mPurchaseButton;
     private ProgressDialog mLoading;
+
+    private boolean mShouldMakePurchase = false;
+    private boolean mPurchased = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +84,26 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_NONCE)) {
                 mNonce = savedInstanceState.getParcelable(KEY_NONCE);
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (mPurchased) {
+            mPurchased = false;
+            clearNonce();
+
+            try {
+                if (ClientToken.fromString(mAuthorization) instanceof ClientToken) {
+                    DropInResult.fetchDropInResult(this, mAuthorization, this);
+                } else {
+                    mAddPaymentMethodButton.setVisibility(VISIBLE);
+                }
+            } catch (InvalidArgumentException e) {
+                mAddPaymentMethodButton.setVisibility(VISIBLE);
             }
         }
     }
@@ -109,12 +137,46 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     }
 
     public void purchase(View v) {
-        Intent intent = new Intent(this, CreateTransactionActivity.class)
-                .putExtra(CreateTransactionActivity.EXTRA_PAYMENT_METHOD_NONCE, mNonce);
-        startActivity(intent);
+        if (mPaymentMethodType == PaymentMethodType.ANDROID_PAY && mNonce == null) {
+            ArrayList<CountrySpecification> countries = new ArrayList<>();
+            for(String countryCode : Settings.getAndroidPayAllowedCountriesForShipping(this)) {
+                countries.add(new CountrySpecification(countryCode));
+            }
 
-        mPurchaseButton.setEnabled(false);
-        clearNonce();
+            mShouldMakePurchase = true;
+
+            AndroidPay.requestAndroidPay(mBraintreeFragment, getAndroidPayCart(),
+                    Settings.isAndroidPayShippingAddressRequired(this),
+                    Settings.isAndroidPayPhoneNumberRequired(this), countries);
+        } else {
+            Intent intent = new Intent(this, CreateTransactionActivity.class)
+                    .putExtra(CreateTransactionActivity.EXTRA_PAYMENT_METHOD_NONCE, mNonce);
+            startActivity(intent);
+
+            mPurchased = true;
+        }
+    }
+
+    @Override
+    public void onResult(DropInResult result) {
+        if (result.getPaymentMethodType() == null) {
+            mAddPaymentMethodButton.setVisibility(VISIBLE);
+        } else {
+            mAddPaymentMethodButton.setVisibility(GONE);
+
+            mPaymentMethodType = result.getPaymentMethodType();
+
+            mPaymentMethodIcon.setImageResource(result.getPaymentMethodType().getDrawable());
+            if (result.getPaymentMethodNonce() != null) {
+                displayResult(result.getPaymentMethodNonce(), result.getDeviceData());
+            } else if (result.getPaymentMethodType() == PaymentMethodType.ANDROID_PAY) {
+                mPaymentMethodTitle.setText(PaymentMethodType.ANDROID_PAY.getLocalizedName());
+                mPaymentMethodDescription.setText("");
+                mPaymentMethod.setVisibility(VISIBLE);
+            }
+
+            mPurchaseButton.setEnabled(true);
+        }
     }
 
     @Override
@@ -123,6 +185,10 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
         displayResult(paymentMethodNonce, null);
         safelyCloseLoadingView();
+
+        if (mShouldMakePurchase) {
+            purchase(null);
+        }
     }
 
     @Override
@@ -130,6 +196,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         super.onCancel(requestCode);
 
         safelyCloseLoadingView();
+
+        mShouldMakePurchase = false;
     }
 
     @Override
@@ -137,6 +205,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         super.onError(error);
 
         safelyCloseLoadingView();
+
+        mShouldMakePurchase = false;
     }
 
     @Override
@@ -164,10 +234,9 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
     @Override
     protected void reset() {
-        mAddPaymentMethodButton.setEnabled(false);
         mPurchaseButton.setEnabled(false);
 
-        mAddPaymentMethodButton.setVisibility(VISIBLE);
+        mAddPaymentMethodButton.setVisibility(GONE);
 
         clearNonce();
     }
@@ -176,7 +245,12 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     protected void onAuthorizationFetched() {
         try {
             mBraintreeFragment = BraintreeFragment.newInstance(this, mAuthorization);
-            mAddPaymentMethodButton.setEnabled(true);
+
+            if (ClientToken.fromString(mAuthorization) instanceof ClientToken) {
+                DropInResult.fetchDropInResult(this, mAuthorization, this);
+            } else {
+                mAddPaymentMethodButton.setVisibility(VISIBLE);
+            }
         } catch (InvalidArgumentException e) {
             showDialog(e.getMessage());
         }
@@ -184,6 +258,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
     private void displayResult(PaymentMethodNonce paymentMethodNonce, String deviceData) {
         mNonce = paymentMethodNonce;
+        mPaymentMethodType = PaymentMethodType.forType(mNonce);
 
         mPaymentMethodIcon.setImageResource(PaymentMethodType.forType(mNonce).getDrawable());
         mPaymentMethodTitle.setText(paymentMethodNonce.getTypeLabel());

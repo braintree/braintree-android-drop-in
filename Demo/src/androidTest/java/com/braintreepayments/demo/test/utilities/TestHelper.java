@@ -3,6 +3,7 @@ package com.braintreepayments.demo.test.utilities;
 import android.Manifest.permission;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
@@ -103,6 +104,7 @@ public class TestHelper {
                 .commit();
 
         onDevice(withText("Reset")).perform(click());
+        SystemClock.sleep(2000);
     }
 
     public void useTokenizationKey() {
@@ -113,6 +115,7 @@ public class TestHelper {
                 .commit();
 
         onDevice(withText("Reset")).perform(click());
+        SystemClock.sleep(2000);
     }
 
     private void clearPreference(String preference) {
