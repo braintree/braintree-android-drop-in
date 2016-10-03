@@ -3,6 +3,7 @@ package com.braintreepayments.demo;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -44,13 +45,16 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     private BraintreeFragment mBraintreeFragment;
     private PaymentMethodNonce mNonce;
 
-    private ImageView mNonceIcon;
+    private CardView mPaymentMethod;
+    private ImageView mPaymentMethodIcon;
+    private TextView mPaymentMethodTitle;
+    private TextView mPaymentMethodDescription;
     private TextView mNonceString;
     private TextView mNonceDetails;
     private TextView mDeviceData;
 
-    private Button mDropInButton;
-    private Button mCreateTransactionButton;
+    private Button mAddPaymentMethodButton;
+    private Button mPurchaseButton;
     private ProgressDialog mLoading;
 
     @Override
@@ -58,13 +62,16 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        mNonceIcon = (ImageView) findViewById(R.id.nonce_icon);
+        mPaymentMethod = (CardView) findViewById(R.id.payment_method);
+        mPaymentMethodIcon = (ImageView) findViewById(R.id.payment_method_icon);
+        mPaymentMethodTitle = (TextView) findViewById(R.id.payment_method_title);
+        mPaymentMethodDescription = (TextView) findViewById(R.id.payment_method_description);
         mNonceString = (TextView) findViewById(R.id.nonce);
         mNonceDetails = (TextView) findViewById(R.id.nonce_details);
         mDeviceData = (TextView) findViewById(R.id.device_data);
 
-        mDropInButton = (Button) findViewById(R.id.drop_in);
-        mCreateTransactionButton = (Button) findViewById(R.id.create_transaction);
+        mAddPaymentMethodButton = (Button) findViewById(R.id.add_payment_method);
+        mPurchaseButton = (Button) findViewById(R.id.purchase);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_NONCE)) {
@@ -101,12 +108,12 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         return paymentRequest;
     }
 
-    public void createTransaction(View v) {
+    public void purchase(View v) {
         Intent intent = new Intent(this, CreateTransactionActivity.class)
                 .putExtra(CreateTransactionActivity.EXTRA_PAYMENT_METHOD_NONCE, mNonce);
         startActivity(intent);
 
-        mCreateTransactionButton.setEnabled(false);
+        mPurchaseButton.setEnabled(false);
         clearNonce();
     }
 
@@ -146,7 +153,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                         getString(R.string.loading), true, false);
                 ThreeDSecure.performVerification(mBraintreeFragment, mNonce.getNonce(), "1");
             } else {
-                mCreateTransactionButton.setEnabled(true);
+                mPurchaseButton.setEnabled(true);
             }
         } else if (resultCode != RESULT_CANCELED) {
             safelyCloseLoadingView();
@@ -157,8 +164,10 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
     @Override
     protected void reset() {
-        enableButtons(false);
-        mCreateTransactionButton.setEnabled(false);
+        mAddPaymentMethodButton.setEnabled(false);
+        mPurchaseButton.setEnabled(false);
+
+        mAddPaymentMethodButton.setVisibility(VISIBLE);
 
         clearNonce();
     }
@@ -167,7 +176,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     protected void onAuthorizationFetched() {
         try {
             mBraintreeFragment = BraintreeFragment.newInstance(this, mAuthorization);
-            enableButtons(true);
+            mAddPaymentMethodButton.setEnabled(true);
         } catch (InvalidArgumentException e) {
             showDialog(e.getMessage());
         }
@@ -176,8 +185,10 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     private void displayResult(PaymentMethodNonce paymentMethodNonce, String deviceData) {
         mNonce = paymentMethodNonce;
 
-        mNonceIcon.setImageResource(PaymentMethodType.forType(mNonce).getDrawable());
-        mNonceIcon.setVisibility(VISIBLE);
+        mPaymentMethodIcon.setImageResource(PaymentMethodType.forType(mNonce).getDrawable());
+        mPaymentMethodTitle.setText(paymentMethodNonce.getTypeLabel());
+        mPaymentMethodDescription.setText(paymentMethodNonce.getDescription());
+        mPaymentMethod.setVisibility(VISIBLE);
 
         mNonceString.setText(getString(R.string.nonce) + ": " + mNonce.getNonce());
         mNonceString.setVisibility(VISIBLE);
@@ -219,15 +230,16 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         mDeviceData.setText("Device Data: " + deviceData);
         mDeviceData.setVisibility(VISIBLE);
 
-        mCreateTransactionButton.setEnabled(true);
+        mAddPaymentMethodButton.setVisibility(GONE);
+        mPurchaseButton.setEnabled(true);
     }
 
     private void clearNonce() {
-        mNonceIcon.setVisibility(GONE);
+        mPaymentMethod.setVisibility(GONE);
         mNonceString.setVisibility(GONE);
         mNonceDetails.setVisibility(GONE);
         mDeviceData.setVisibility(GONE);
-        mCreateTransactionButton.setEnabled(false);
+        mPurchaseButton.setEnabled(false);
     }
 
     private String formatAddress(PostalAddress address) {
@@ -258,10 +270,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                         .setTotalPrice("1.00")
                         .build())
                 .build();
-    }
-
-    private void enableButtons(boolean enable) {
-        mDropInButton.setEnabled(enable);
     }
 
     private void safelyCloseLoadingView() {

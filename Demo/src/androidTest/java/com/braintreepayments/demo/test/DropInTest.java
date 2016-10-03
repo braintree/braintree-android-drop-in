@@ -38,7 +38,7 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void tokenizesACard() {
-        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
 
         tokenizeCard();
     }
@@ -46,7 +46,7 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void tokenizesACardWithATokenizationKey() {
         useTokenizationKey();
-        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
 
         tokenizeCard();
     }
@@ -54,7 +54,7 @@ public class DropInTest extends TestHelper {
     @Test
     public void tokenizesUnionPay() {
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
-        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
 
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withContentDescription("Card Number")).perform(setText(UNIONPAY_CREDIT));
@@ -71,14 +71,14 @@ public class DropInTest extends TestHelper {
 
         getNonceDetails().check(text(containsString("Card Last Two: 32")));
 
-        onDevice(withText("Create a Transaction")).perform(click());
+        onDevice(withText("Purchase")).perform(click());
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
     @Test
     public void tokenizesUnionPayWhenEnrollmentIsNotRequired() {
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
-        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
 
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withContentDescription("Card Number")).perform(setText(UNIONPAY_SMS_NOT_REQUIRED));
@@ -93,7 +93,7 @@ public class DropInTest extends TestHelper {
 
         getNonceDetails().check(text(containsString("Card Last Two: 85")));
 
-        onDevice(withText("Create a Transaction")).perform(click());
+        onDevice(withText("Purchase")).perform(click());
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
@@ -101,34 +101,34 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void tokenizesPayPal() {
         uninstallPayPalWallet();
-        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
         onDevice(withContentDescription("Proceed with Sandbox Purchase")).perform(click());
 
         getNonceDetails().check(text(containsString("Email: bt_buyer_us@paypal.com")));
 
-        onDevice(withText("Create a Transaction")).perform(click());
+        onDevice(withText("Purchase")).perform(click());
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
     @RequiresDevice
     @Test(timeout = 60000)
     public void tokenizesAndroidPay() {
-        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
 
         onDevice(withText("Android Pay")).perform(click());
         onDevice(withText("CONTINUE")).perform(click());
 
         getNonceDetails().check(text(containsString("Underlying Card Last Two")));
 
-        onDevice(withText("Create a Transaction")).perform(click());
+        onDevice(withText("Purchase")).perform(click());
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
     @Test(timeout = 60000)
     public void exitsAfterCancelingAddingAPaymentMethod() {
-        onDevice(withText("Drop-In")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
         onDevice(withContentDescription("Proceed with Sandbox Purchase")).waitForExists();
@@ -137,7 +137,7 @@ public class DropInTest extends TestHelper {
 
         onDevice().pressBack();
 
-        onDevice(withText("Drop-In")).check(text(equalToIgnoringCase("Drop-In")));
+        onDevice(withText("Add Payment Method")).check(text(equalToIgnoringCase("Add Payment Method")));
     }
 
     private void tokenizeCard() {
@@ -152,7 +152,7 @@ public class DropInTest extends TestHelper {
 
         getNonceDetails().check(text(containsString("Card Last Two: 11")));
 
-        onDevice(withText("Create a Transaction")).perform(click());
+        onDevice(withText("Purchase")).perform(click());
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 }

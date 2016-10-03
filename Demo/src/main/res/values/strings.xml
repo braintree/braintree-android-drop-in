@@ -7,8 +7,8 @@
     <string name="settings">Settings</string>
     <string name="feedback">Feedback</string>
     <string name="nonce">Nonce</string>
-    <string name="drop_in">Drop-In</string>
-    <string name="create_transaction">Create a Transaction</string>
+    <string name="add_payment_method">Add Payment Method</string>
+    <string name="purchase">Purchase</string>
     <string name="loading">Loading…</string>
 
     <!-- CreateTransactionActivity -->
