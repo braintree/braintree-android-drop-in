@@ -8,12 +8,14 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.BraintreeListener;
+import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
 import com.braintreepayments.api.internal.BraintreeSharedPreferences;
 import com.braintreepayments.api.models.Authorization;
@@ -138,17 +140,6 @@ public class DropInResult implements Parcelable {
             return;
         }
 
-        PaymentMethodType lastUsedPaymentMethodType = PaymentMethodType.forType(
-                BraintreeSharedPreferences.getSharedPreferences(activity)
-                        .getString(LAST_USED_PAYMENT_METHOD_TYPE, null));
-        if (lastUsedPaymentMethodType == PaymentMethodType.ANDROID_PAY) {
-            DropInResult result = new DropInResult();
-            result.mPaymentMethodType = lastUsedPaymentMethodType;
-
-            listener.onResult(result);
-            return;
-        }
-
         final BraintreeFragment fragment;
         try {
             fragment = BraintreeFragment.newInstance(activity, clientToken);
@@ -188,7 +179,26 @@ public class DropInResult implements Parcelable {
         fragment.addListener(errorListener);
         fragment.addListener(paymentMethodsListener);
 
-        PaymentMethod.getPaymentMethodNonces(fragment);
+        if (PaymentMethodType.forType(BraintreeSharedPreferences.getSharedPreferences(activity)
+                .getString(LAST_USED_PAYMENT_METHOD_TYPE, null)) == PaymentMethodType.ANDROID_PAY) {
+            AndroidPay.isReadyToPay(fragment, new BraintreeResponseListener<Boolean>() {
+                @Override
+                public void onResponse(Boolean isReadyToPay) {
+                    if (isReadyToPay) {
+                        resetListeners(fragment, listenerHolder, previousListeners);
+
+                        DropInResult result = new DropInResult();
+                        result.mPaymentMethodType = PaymentMethodType.ANDROID_PAY;
+
+                        listener.onResult(result);
+                    } else {
+                        PaymentMethod.getPaymentMethodNonces(fragment);
+                    }
+                }
+            });
+        } else {
+            PaymentMethod.getPaymentMethodNonces(fragment);
+        }
     }
 
     static void setLastUsedPaymentMethodType(Context context,
