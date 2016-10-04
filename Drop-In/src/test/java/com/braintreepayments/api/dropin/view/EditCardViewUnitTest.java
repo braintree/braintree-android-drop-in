@@ -199,6 +199,21 @@ public class EditCardViewUnitTest {
     }
 
     @Test
+    public void setVisibility_toVisibleFocusesSubmitButtonWhenFormIsComplete() {
+        mView.setup(mActivity, mock(Configuration.class));
+        mView.useUnionPay(mActivity, true, false);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+        mView.getCardForm().getCvvEditText().setText("123");
+        mView.getCardForm().getCountryCodeEditText().setText("123");
+        mView.getCardForm().getMobileNumberEditText().setText("1231231234");
+        assertThat(mView.findViewById(R.id.bt_animated_button_view)).isNotFocused();
+
+        mView.setVisibility(View.VISIBLE);
+
+        assertThat(mView.findViewById(R.id.bt_animated_button_view)).isFocused();
+    }
+
+    @Test
     public void setVisibility_toVisibleFocusesExpirationWhenOptional() {
         mView.setup(mActivity, mock(Configuration.class));
         mView.useUnionPay(mActivity, true, true);

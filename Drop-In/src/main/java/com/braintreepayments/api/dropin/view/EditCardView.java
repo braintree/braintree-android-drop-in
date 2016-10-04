@@ -72,7 +72,6 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
                 .cvvRequired(configuration.isCvvChallengePresent())
                 .postalCodeRequired(configuration.isPostalCodeChallengePresent())
                 .setup(activity);
-        mCardForm.setOnFormFieldFocusedListener(this);
         mCardForm.setOnCardFormSubmitListener(this);
 
         mAnimatedButtonView.setClickListener(this);
@@ -88,7 +87,6 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
 
     public void setCardNumber(String cardNumber) {
         mCardForm.getCardEditText().setText(cardNumber);
-        mCardForm.getCardEditText().focusNextView();
     }
 
     public void setErrors(ErrorWithResponse errors) {
@@ -192,7 +190,14 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
             } else if (mCardForm.getMobileNumberEditText().getVisibility() == VISIBLE &&
                     !mCardForm.getMobileNumberEditText().isValid()) {
                 mCardForm.getMobileNumberEditText().requestFocus();
+            } else {
+                mAnimatedButtonView.requestButtonFocus();
+                mCardForm.closeSoftKeyboard();
             }
+
+            mCardForm.setOnFormFieldFocusedListener(this);
+        } else {
+            mCardForm.setOnFormFieldFocusedListener(null);
         }
     }
 }
