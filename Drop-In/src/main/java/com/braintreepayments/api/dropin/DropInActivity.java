@@ -95,7 +95,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         mSupportedPaymentMethodListView = (ListView) findViewById(R.id.bt_supported_payment_methods);
         mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = (RecyclerView) findViewById(R.id.bt_vaulted_payment_methods);
-        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
         try {
@@ -152,10 +153,10 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                         DropInActivity.this, configuration, isReadyToPay, mClientTokenPresent,
                         DropInActivity.this));
                 mLoadingViewSwitcher.setDisplayedChild(1);
+
+                fetchPaymentMethodNonces();
             }
         });
-
-        fetchPaymentMethodNonces();
     }
 
     @Override
@@ -245,7 +246,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                             }
                         }
                     }
-                }, getResources().getInteger(android.R.integer.config_longAnimTime));
+                }, getResources().getInteger(android.R.integer.config_shortAnimTime));
             }
         } catch (InvalidArgumentException ignored) {}
     }
