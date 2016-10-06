@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityCompat.OnRequestPermissionsResultCallback;
@@ -125,8 +126,19 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
         mAuthorization = null;
         mCustomerId = Settings.getCustomerId(this);
 
+        if (mBraintreeFragment == null) {
+            mBraintreeFragment = (BraintreeFragment) getFragmentManager()
+                    .findFragmentByTag(BraintreeFragment.TAG);
+        }
+
         if (mBraintreeFragment != null) {
-            getFragmentManager().beginTransaction().remove(mBraintreeFragment).commit();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                getFragmentManager().beginTransaction().remove(mBraintreeFragment).commitNow();
+            } else {
+                getFragmentManager().beginTransaction().remove(mBraintreeFragment).commit();
+                getFragmentManager().executePendingTransactions();
+            }
+
             mBraintreeFragment = null;
         }
 

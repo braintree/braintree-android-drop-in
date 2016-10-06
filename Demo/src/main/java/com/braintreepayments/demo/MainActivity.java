@@ -46,7 +46,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
     private static final String KEY_NONCE = "nonce";
 
-    private BraintreeFragment mBraintreeFragment;
     private PaymentMethodType mPaymentMethodType;
     private PaymentMethodNonce mNonce;
 
