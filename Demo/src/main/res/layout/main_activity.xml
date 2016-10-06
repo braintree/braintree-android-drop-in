@@ -52,6 +52,7 @@
                 android:foreground="@drawable/bt_payment_method_list_item_bg"
                 android:clickable="true"
                 android:onClick="launchDropIn"
+                android:visibility="gone"
                 card_view:cardBackgroundColor="@android:color/white"
                 card_view:cardCornerRadius="4dp"
                 card_view:cardElevation="4dp"
