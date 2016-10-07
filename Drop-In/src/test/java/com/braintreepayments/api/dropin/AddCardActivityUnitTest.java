@@ -67,7 +67,7 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void returnsExceptionWhenBraintreeFragmentSetupFails() {
-        mActivity.paymentRequest = new PaymentRequest()
+        mActivity.dropInRequest = new DropInRequest()
                 .tokenizationKey("not a tokenization key");
 
         mActivityController.setup();
@@ -79,13 +79,13 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void returnsExceptionWhenAuthorizationIsEmpty() {
-        mActivity.paymentRequest = new PaymentRequest()
+        mActivity.dropInRequest = new DropInRequest()
                 .tokenizationKey(null);
 
         mActivityController.setup();
 
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        assertEquals("A client token or client key must be specified in the PaymentRequest", mShadowActivity.getResultIntent()
+        assertEquals("A client token or client key must be specified in the DropInRequest", mShadowActivity.getResultIntent()
                 .getStringExtra(DropInActivity.EXTRA_ERROR));
     }
 
@@ -227,7 +227,7 @@ public class AddCardActivityUnitTest {
                         .build())
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"));
-        mActivity.paymentRequest = new PaymentRequest()
+        mActivity.dropInRequest = new DropInRequest()
                 .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
@@ -301,7 +301,7 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .errorResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, 422,
                         stringFromFixture("responses/credit_card_error_response.json"));
-        mActivity.paymentRequest = new PaymentRequest()
+        mActivity.dropInRequest = new DropInRequest()
                 .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
@@ -421,7 +421,7 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
-        mActivity.paymentRequest = new PaymentRequest()
+        mActivity.dropInRequest = new DropInRequest()
                 .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
@@ -450,7 +450,7 @@ public class AddCardActivityUnitTest {
                         .build())
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"));
-        mActivity.paymentRequest = new PaymentRequest()
+        mActivity.dropInRequest = new DropInRequest()
                 .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
@@ -474,7 +474,7 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
-        mActivity.paymentRequest = new PaymentRequest()
+        mActivity.dropInRequest = new DropInRequest()
                 .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
@@ -505,7 +505,7 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_enrollment_sms_not_required.json"))
                 .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
                         stringFromFixture("payment_methods/unionpay_credit_card.json"));
-        mActivity.paymentRequest = new PaymentRequest()
+        mActivity.dropInRequest = new DropInRequest()
                 .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
@@ -555,7 +555,7 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
-        mActivity.paymentRequest = new PaymentRequest()
+        mActivity.dropInRequest = new DropInRequest()
                 .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
@@ -588,7 +588,7 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
-        mActivity.paymentRequest = new PaymentRequest()
+        mActivity.dropInRequest = new DropInRequest()
                 .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 

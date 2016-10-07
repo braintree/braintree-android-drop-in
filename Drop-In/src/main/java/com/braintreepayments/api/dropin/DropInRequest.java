@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * Used to start {@link DropInActivity} with specified options.
  */
-public class PaymentRequest implements Parcelable {
+public class DropInRequest implements Parcelable {
 
     public static final String EXTRA_CHECKOUT_REQUEST = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST";
 
@@ -36,7 +36,7 @@ public class PaymentRequest implements Parcelable {
 
     private boolean mVenmoEnabled = true;
 
-    public PaymentRequest() {}
+    public DropInRequest() {}
 
     /**
      * Provide authorization allowing this client to communicate with Braintree. Either
@@ -45,7 +45,7 @@ public class PaymentRequest implements Parcelable {
      *
      * @param clientToken The client token to use for the request.
      */
-    public PaymentRequest clientToken(String clientToken) {
+    public DropInRequest clientToken(String clientToken) {
         mAuthorization = clientToken;
         return this;
     }
@@ -57,7 +57,7 @@ public class PaymentRequest implements Parcelable {
      *
      * @param tokenizationKey The tokenization key to use for the request.
      */
-    public PaymentRequest tokenizationKey(String tokenizationKey) {
+    public DropInRequest tokenizationKey(String tokenizationKey) {
         mAuthorization = tokenizationKey;
         return this;
     }
@@ -69,7 +69,7 @@ public class PaymentRequest implements Parcelable {
      *        fraud prevention.
      * @see DataCollector
      */
-    public PaymentRequest collectDeviceData(boolean collectDeviceData) {
+    public DropInRequest collectDeviceData(boolean collectDeviceData) {
         mCollectDeviceData = collectDeviceData;
         return this;
     }
@@ -79,7 +79,7 @@ public class PaymentRequest implements Parcelable {
      *
      * @param cart The Android Pay {@link Cart} for the transaction.
      */
-    public PaymentRequest androidPayCart(Cart cart) {
+    public DropInRequest androidPayCart(Cart cart) {
         mAndroidPayCart = cart;
         return this;
     }
@@ -90,7 +90,7 @@ public class PaymentRequest implements Parcelable {
      * @param shippingAddressRequired {@code true} if Android Pay requests should request a
      *        shipping address from the user.
      */
-    public PaymentRequest androidPayShippingAddressRequired(boolean shippingAddressRequired) {
+    public DropInRequest androidPayShippingAddressRequired(boolean shippingAddressRequired) {
         mAndroidPayShippingAddressRequired = shippingAddressRequired;
         return this;
     }
@@ -101,7 +101,7 @@ public class PaymentRequest implements Parcelable {
      * @param phoneNumberRequired {@code true} if Android Pay requests should request a phone
      *        number from the user.
      */
-    public PaymentRequest androidPayPhoneNumberRequired(boolean phoneNumberRequired) {
+    public DropInRequest androidPayPhoneNumberRequired(boolean phoneNumberRequired) {
         mAndroidPayPhoneNumberRequired = phoneNumberRequired;
         return this;
     }
@@ -114,7 +114,7 @@ public class PaymentRequest implements Parcelable {
      *
      * @see <a href="https://en.wikipedia.org/wiki/ISO_3166-2#Current_codes">ISO 3166 country codes</a>
      */
-    public PaymentRequest androidPayAllowedCountriesForShipping(String... countryCodes) {
+    public DropInRequest androidPayAllowedCountriesForShipping(String... countryCodes) {
         mAndroidAllowedCountriesForShipping.clear();
         for(String countryCode : countryCodes) {
             mAndroidAllowedCountriesForShipping.add(new CountrySpecification(countryCode));
@@ -125,7 +125,7 @@ public class PaymentRequest implements Parcelable {
     /**
      * Disables Android Pay in Drop-in.
      */
-    public PaymentRequest disableAndroidPay() {
+    public DropInRequest disableAndroidPay() {
         mAndroidPayEnabled = false;
         return this;
     }
@@ -139,7 +139,7 @@ public class PaymentRequest implements Parcelable {
      *        Ex: PayPal.SCOPE_ADDRESS.
      *        Acceptable scopes are defined in {@link PayPal}.
      */
-    public PaymentRequest paypalAdditionalScopes(List<String> additionalScopes) {
+    public DropInRequest paypalAdditionalScopes(List<String> additionalScopes) {
         mPayPalAdditionalScopes = additionalScopes;
         return this;
     }
@@ -147,7 +147,7 @@ public class PaymentRequest implements Parcelable {
     /**
      * Disables PayPal in Drop-in.
      */
-    public PaymentRequest disablePayPal() {
+    public DropInRequest disablePayPal() {
         mPayPalEnabled = false;
         return this;
     }
@@ -155,7 +155,7 @@ public class PaymentRequest implements Parcelable {
     /**
      * Disables Venmo in Drop-in.
      */
-    public PaymentRequest disableVenmo() {
+    public DropInRequest disableVenmo() {
         mVenmoEnabled = false;
         return this;
     }
@@ -165,7 +165,7 @@ public class PaymentRequest implements Parcelable {
      * to launch {@link DropInActivity} and the Drop-in UI.
      *
      * @param context
-     * @return {@link Intent} containing all of the options set in {@link PaymentRequest}.
+     * @return {@link Intent} containing all of the options set in {@link DropInRequest}.
      */
     public Intent getIntent(Context context) {
         return new Intent(context, DropInActivity.class)
@@ -237,7 +237,7 @@ public class PaymentRequest implements Parcelable {
         dest.writeByte(mVenmoEnabled ? (byte) 1 : (byte) 0);
     }
 
-    protected PaymentRequest(Parcel in) {
+    protected DropInRequest(Parcel in) {
         mAuthorization = in.readString();
         mAmount = in.readString();
         mCollectDeviceData = in.readByte() != 0;
@@ -255,13 +255,13 @@ public class PaymentRequest implements Parcelable {
         mVenmoEnabled = in.readByte() != 0;
     }
 
-    public static final Creator<PaymentRequest> CREATOR = new Creator<PaymentRequest>() {
-        public PaymentRequest createFromParcel(Parcel source) {
-            return new PaymentRequest(source);
+    public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {
+        public DropInRequest createFromParcel(Parcel source) {
+            return new DropInRequest(source);
         }
 
-        public PaymentRequest[] newArray(int size) {
-            return new PaymentRequest[size];
+        public DropInRequest[] newArray(int size) {
+            return new DropInRequest[size];
         }
     };
 }

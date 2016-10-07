@@ -125,20 +125,20 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
     @VisibleForTesting
     protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
-        PaymentRequest paymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
-        if (TextUtils.isEmpty(paymentRequest.getAuthorization())) {
+        DropInRequest dropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
+        if (TextUtils.isEmpty(dropInRequest.getAuthorization())) {
             throw new InvalidArgumentException("A client token or client key must be specified " +
-                    "in the " + PaymentRequest.class.getSimpleName());
+                    "in the " + DropInRequest.class.getSimpleName());
         }
 
         try {
             mClientTokenPresent =
-                    Authorization.fromString(paymentRequest.getAuthorization()) instanceof ClientToken;
+                    Authorization.fromString(dropInRequest.getAuthorization()) instanceof ClientToken;
         } catch (InvalidArgumentException e) {
             mClientTokenPresent = false;
         }
 
-        return BraintreeFragment.newInstance(this, paymentRequest.getAuthorization());
+        return BraintreeFragment.newInstance(this, dropInRequest.getAuthorization());
     }
 
     @Override

@@ -67,7 +67,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
 
     @VisibleForTesting
-    protected PaymentRequest mPaymentRequest;
+    protected DropInRequest mDropInRequest;
 
     private BraintreeFragment mBraintreeFragment;
     private boolean mClientTokenPresent;
@@ -88,7 +88,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
 
-        mPaymentRequest = getIntent().getParcelableExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST);
+        mDropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
         mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
         mLoadingViewSwitcher = (ViewSwitcher) findViewById(R.id.bt_loading_view_switcher);
         mSupportedPaymentMethodsHeader = (TextView) findViewById(R.id.bt_supported_payment_methods_header);
@@ -120,24 +120,24 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
 
     @VisibleForTesting
     protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
-        if (TextUtils.isEmpty(mPaymentRequest.getAuthorization())) {
+        if (TextUtils.isEmpty(mDropInRequest.getAuthorization())) {
             throw new InvalidArgumentException("A client token or client key must be specified " +
-                    "in the " + PaymentRequest.class.getSimpleName());
+                    "in the " + DropInRequest.class.getSimpleName());
         }
 
         try {
             mClientTokenPresent =
-                    Authorization.fromString(mPaymentRequest.getAuthorization()) instanceof ClientToken;
+                    Authorization.fromString(mDropInRequest.getAuthorization()) instanceof ClientToken;
         } catch (InvalidArgumentException e) {
             mClientTokenPresent = false;
         }
 
-        return BraintreeFragment.newInstance(this, mPaymentRequest.getAuthorization());
+        return BraintreeFragment.newInstance(this, mDropInRequest.getAuthorization());
     }
 
     @Override
     public void onConfigurationFetched(final Configuration configuration) {
-        if (mPaymentRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
+        if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
             DataCollector.collectDeviceData(mBraintreeFragment, new BraintreeResponseListener<String>() {
                 @Override
                 public void onResponse(String deviceData) {
@@ -216,17 +216,17 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                 PayPal.authorizeAccount(mBraintreeFragment);
                 break;
             case ANDROID_PAY:
-                AndroidPay.requestAndroidPay(mBraintreeFragment, mPaymentRequest.getAndroidPayCart(),
-                        mPaymentRequest.isAndroidPayShippingAddressRequired(),
-                        mPaymentRequest.isAndroidPayPhoneNumberRequired(),
-                        mPaymentRequest.getAndroidPayAllowedCountriesForShipping());
+                AndroidPay.requestAndroidPay(mBraintreeFragment, mDropInRequest.getAndroidPayCart(),
+                        mDropInRequest.isAndroidPayShippingAddressRequired(),
+                        mDropInRequest.isAndroidPayPhoneNumberRequired(),
+                        mDropInRequest.getAndroidPayAllowedCountriesForShipping());
                 break;
             case PAY_WITH_VENMO:
                 Venmo.authorizeAccount(mBraintreeFragment);
                 break;
             case UNKNOWN:
                 Intent intent = new Intent(this, AddCardActivity.class)
-                        .putExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST, mPaymentRequest);
+                        .putExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST, mDropInRequest);
                 startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
                 break;
         }
@@ -234,7 +234,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
 
     private void fetchPaymentMethodNonces() {
         try {
-            if (Authorization.fromString(mPaymentRequest.getAuthorization()) instanceof ClientToken) {
+            if (Authorization.fromString(mDropInRequest.getAuthorization()) instanceof ClientToken) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {

@@ -21,19 +21,19 @@ public class DropInUnitTestActivity extends DropInActivity {
     public void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.bt_add_card_activity_theme);
 
-        if (mPaymentRequest == null) {
-            mPaymentRequest= new PaymentRequest().tokenizationKey(TOKENIZATION_KEY);
+        if (mDropInRequest == null) {
+            mDropInRequest = new DropInRequest().tokenizationKey(TOKENIZATION_KEY);
         }
 
         Intent intent = new Intent()
-                .putExtra(PaymentRequest.EXTRA_CHECKOUT_REQUEST, mPaymentRequest);
+                .putExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST, mDropInRequest);
         setIntent(intent);
 
         super.onCreate(savedInstanceState);
     }
 
-    public void setPaymentRequest(PaymentRequest paymentRequest) {
-        mPaymentRequest = paymentRequest;
+    public void setDropInRequest(DropInRequest dropInRequest) {
+        mDropInRequest = dropInRequest;
     }
 
     @Override

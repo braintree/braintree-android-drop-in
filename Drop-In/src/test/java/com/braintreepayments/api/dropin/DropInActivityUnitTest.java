@@ -63,7 +63,7 @@ public class DropInActivityUnitTest {
 
     @Test
     public void returnsExceptionWhenBraintreeFragmentSetupFails() {
-        mActivity.setPaymentRequest(new PaymentRequest()
+        mActivity.setDropInRequest(new DropInRequest()
                 .tokenizationKey("not a tokenization key"));
 
         mActivityController.setup();
@@ -75,13 +75,13 @@ public class DropInActivityUnitTest {
 
     @Test
     public void returnsExceptionWhenAuthorizationIsEmpty() {
-        mActivity.setPaymentRequest(new PaymentRequest()
+        mActivity.setDropInRequest(new DropInRequest()
                 .tokenizationKey(null));
 
         mActivityController.setup();
 
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        assertEquals("A client token or client key must be specified in the PaymentRequest", mShadowActivity.getResultIntent()
+        assertEquals("A client token or client key must be specified in the DropInRequest", mShadowActivity.getResultIntent()
                 .getStringExtra(DropInActivity.EXTRA_ERROR));
     }
 
@@ -116,9 +116,9 @@ public class DropInActivityUnitTest {
                         .supportedCardTypes("Visa"))
                 .paypalEnabled(true)
                 .build();
-        PaymentRequest paymentRequest = new PaymentRequest()
+        DropInRequest dropInRequest = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY);
-        mActivity.setPaymentRequest(paymentRequest);
+        mActivity.setDropInRequest(dropInRequest);
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(configuration);
         setup(httpClient);
@@ -132,7 +132,7 @@ public class DropInActivityUnitTest {
 
         mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class);
         mActivity = (DropInUnitTestActivity) mActivityController.get();
-        mActivity.setPaymentRequest(paymentRequest);
+        mActivity.setDropInRequest(dropInRequest);
         mActivity.httpClient = httpClient;
         mActivityController.setup(bundle);
         mActivity.braintreeFragment.onAttach(mActivity);
@@ -148,9 +148,9 @@ public class DropInActivityUnitTest {
                         .supportedCardTypes("Visa"))
                 .paypalEnabled(true)
                 .build();
-        PaymentRequest paymentRequest = new PaymentRequest()
+        DropInRequest dropInRequest = new DropInRequest()
                 .clientToken(stringFromFixture("client_token.json"));
-        mActivity.setPaymentRequest(paymentRequest);
+        mActivity.setDropInRequest(dropInRequest);
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(configuration)
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
@@ -166,7 +166,7 @@ public class DropInActivityUnitTest {
 
         mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class);
         mActivity = (DropInUnitTestActivity) mActivityController.get();
-        mActivity.setPaymentRequest(paymentRequest);
+        mActivity.setDropInRequest(dropInRequest);
         mActivity.httpClient = httpClient;
         mActivityController.setup(bundle);
         mActivity.braintreeFragment.onAttach(mActivity);
@@ -247,7 +247,7 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onPaymentMethodNonceCreated_returnsDeviceData() throws JSONException {
-        mActivity.mPaymentRequest = new PaymentRequest()
+        mActivity.mDropInRequest = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true);
         mActivity.httpClient = new BraintreeUnitTestHttpClient()
@@ -271,7 +271,7 @@ public class DropInActivityUnitTest {
                 .configuration(new TestConfigurationBuilder().build())
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
                         stringFromFixture("responses/get_payment_methods_response.json"));
-        mActivity.setPaymentRequest(new PaymentRequest().clientToken(stringFromFixture("client_token.json")));
+        mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         RecyclerView recyclerView = ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods));
@@ -296,7 +296,7 @@ public class DropInActivityUnitTest {
                 .configuration(new TestConfigurationBuilder().build())
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
                        stringFromFixture("responses/get_payment_methods_response.json"));
-        mActivity.setPaymentRequest(new PaymentRequest().clientToken(stringFromFixture("client_token.json")));
+        mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods)).isShown();
@@ -310,7 +310,7 @@ public class DropInActivityUnitTest {
                 .configuration(new TestConfigurationBuilder().build())
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
                         stringFromFixture("responses/get_payment_methods_empty_response.json"));
-        mActivity.setPaymentRequest(new PaymentRequest().clientToken(stringFromFixture("client_token.json")));
+        mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods)).isNotShown();
@@ -349,7 +349,7 @@ public class DropInActivityUnitTest {
     @Test
     public void onActivityResult_returnsDeviceData() throws JSONException, NoSuchFieldException,
             IllegalAccessException {
-        mActivity.mPaymentRequest = new PaymentRequest()
+        mActivity.mDropInRequest = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true);
         mActivity.httpClient = new BraintreeUnitTestHttpClient()

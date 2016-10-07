@@ -65,12 +65,12 @@ public class DropInActivityPowerMockTest {
     @Test
     public void onPaymentMethodSelected_startsAndroidPay() {
         Cart cart = Cart.newBuilder().build();
-        PaymentRequest paymentRequest = new PaymentRequest()
+        DropInRequest dropInRequest = new DropInRequest()
                 .androidPayCart(cart)
                 .androidPayShippingAddressRequired(true)
                 .androidPayPhoneNumberRequired(true)
                 .androidPayAllowedCountriesForShipping("US");
-        mActivity.setPaymentRequest(paymentRequest);
+        mActivity.setDropInRequest(dropInRequest);
         mockStatic(AndroidPay.class);
         doNothing().when(AndroidPay.class);
         AndroidPay.requestAndroidPay(any(BraintreeFragment.class), any(Cart.class), anyBoolean(),
@@ -80,7 +80,7 @@ public class DropInActivityPowerMockTest {
 
         verifyStatic();
         AndroidPay.requestAndroidPay(mActivity.braintreeFragment, cart, true, true,
-                paymentRequest.getAndroidPayAllowedCountriesForShipping());
+                dropInRequest.getAndroidPayAllowedCountriesForShipping());
     }
 
     @Test

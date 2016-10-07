@@ -14,8 +14,8 @@ import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.dropin.DropInActivity;
+import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.DropInResult;
-import com.braintreepayments.api.dropin.PaymentRequest;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeCancelListener;
@@ -116,11 +116,11 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     }
 
     public void launchDropIn(View v) {
-        startActivityForResult(getPaymentRequest().getIntent(this), DROP_IN_REQUEST);
+        startActivityForResult(getDropInRequest().getIntent(this), DROP_IN_REQUEST);
     }
 
-    private PaymentRequest getPaymentRequest() {
-        PaymentRequest paymentRequest = new PaymentRequest()
+    private DropInRequest getDropInRequest() {
+        DropInRequest dropInRequest = new DropInRequest()
                 .clientToken(mAuthorization)
                 .collectDeviceData(Settings.shouldCollectDeviceData(this))
                 .androidPayCart(getAndroidPayCart())
@@ -129,10 +129,10 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .androidPayAllowedCountriesForShipping(Settings.getAndroidPayAllowedCountriesForShipping(this));
 
         if (Settings.isPayPalAddressScopeRequested(this)) {
-            paymentRequest.paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS));
+            dropInRequest.paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS));
         }
 
-        return paymentRequest;
+        return dropInRequest;
     }
 
     public void purchase(View v) {

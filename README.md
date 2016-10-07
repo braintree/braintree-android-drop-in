@@ -26,12 +26,12 @@ dependencies {
 
 ## Usage
 
-Create a `PaymentRequest` and use the `Intent` to start Drop-In:
+Create a `DropInRequest` and use the `Intent` to start Drop-In:
 
 ```java
-PaymentRequest paymentRequest = new PaymentRequest()
+DropInRequest dropInRequest = new DropInRequest()
     .clientToken(mClientToken);
-startActivityForResult(paymentRequest.getIntent(context), DROP_IN_REQUEST);
+startActivityForResult(dropInRequest.getIntent(context), DROP_IN_REQUEST);
 ```
 
 Handle the response:
