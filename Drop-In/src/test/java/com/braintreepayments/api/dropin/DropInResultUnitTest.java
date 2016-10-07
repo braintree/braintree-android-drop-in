@@ -120,7 +120,7 @@ public class DropInResultUnitTest {
         assertEquals("device_data", parceled.getDeviceData());
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_callsListenerWithErrorIfInvalidClientTokenWasUsed()
             throws InterruptedException {
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
@@ -141,7 +141,7 @@ public class DropInResultUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_callsListenerWithResultIfLastUsedPaymentMethodTypeWasAndroidPay()
             throws InterruptedException {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -169,7 +169,7 @@ public class DropInResultUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_doesNotCallListenerWithAndroidPayIfAndroidPayIsNotAvailable()
             throws InterruptedException, InvalidArgumentException {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -201,7 +201,7 @@ public class DropInResultUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_resetsBraintreeListenersWhenAndroidPayResultIsReturned()
             throws InvalidArgumentException, InterruptedException {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -244,7 +244,7 @@ public class DropInResultUnitTest {
         assertTrue(listeners.contains(paymentMethodListener));
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_clearsListenersWhenAndroidPayResultIsReturned()
             throws InvalidArgumentException, InterruptedException {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -275,7 +275,7 @@ public class DropInResultUnitTest {
         assertEquals(0, listeners.size());
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_callsListenerWithErrorIfBraintreeFragmentSetupFails()
             throws InterruptedException {
         mActivity = spy(mActivity);
@@ -300,7 +300,7 @@ public class DropInResultUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_callsListenerWithErrorWhenErrorIsPosted()
             throws InterruptedException, InvalidArgumentException {
         setupFragment(new BraintreeUnitTestHttpClient()
@@ -325,7 +325,7 @@ public class DropInResultUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_resetsBraintreeListenersWhenErrorIsPosted()
             throws InvalidArgumentException, InterruptedException {
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
@@ -364,7 +364,7 @@ public class DropInResultUnitTest {
         assertTrue(listeners.contains(paymentMethodListener));
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_clearsListenersWhenErrorIsPosted()
             throws InvalidArgumentException, InterruptedException {
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
@@ -390,7 +390,7 @@ public class DropInResultUnitTest {
         assertEquals(0, fragment.getListeners().size());
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_callsListenerWithResultWhenThereIsAPaymentMethod()
             throws InvalidArgumentException, InterruptedException {
         setupFragment(new BraintreeUnitTestHttpClient()
@@ -416,7 +416,7 @@ public class DropInResultUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_callsListenerWithNullResultWhenThereAreNoPaymentMethods()
             throws InvalidArgumentException, InterruptedException {
         setupFragment(new BraintreeUnitTestHttpClient()
@@ -442,7 +442,8 @@ public class DropInResultUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test
+
+    @Test(timeout = 1000)
     public void fetchDropInResult_resetsBraintreeListenersWhenResultIsReturned()
             throws InvalidArgumentException, InterruptedException {
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
@@ -481,7 +482,7 @@ public class DropInResultUnitTest {
         assertTrue(listeners.contains(paymentMethodListener));
     }
 
-    @Test
+    @Test(timeout = 1000)
     public void fetchDropInResult_clearsListenersWhenResultIsReturned()
             throws InvalidArgumentException, InterruptedException {
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
