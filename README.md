@@ -9,7 +9,7 @@ Braintree Android Drop-In is a readymade UI that allows you to accept card and a
 ## What's new in 3.0
 
 * All new UI and integration for Drop-In
-* Fetch a customer's payment method without showing UI
+* Fetch a customer's saved payment method without showing UI
 * Added UnionPay support to Drop-In
 
 Please create an [issue](https://github.com/braintree/braintree-android-drop-in/issues) with any comments or concerns.
