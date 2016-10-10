@@ -20,7 +20,7 @@ In your `build.gradle`:
 
 ```groovy
 dependencies {
-  compile 'com.braintreepayments.api:drop-in:3.0.0-SNAPSHOT'
+  compile 'com.braintreepayments.api:drop-in:3.0.0'
 }
 ```
 

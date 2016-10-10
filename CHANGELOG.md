@@ -1,5 +1,15 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.0.0
+
+* All new UI and integration for Drop-In
+  * New assets
+  * New bottom sheet UI
+* Greater separation between payment methods and cards UI
+* Fetch a customer's payment method without showing UI
+* Added UnionPay support to Drop-In
+* Drop-In no longer uses any internal methods in braintree_android
+
 ## 2.3.8
 
 * Upgrade android-card-form to 2.3.2
