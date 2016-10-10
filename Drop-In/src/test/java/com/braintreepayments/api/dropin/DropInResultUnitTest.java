@@ -6,6 +6,7 @@ import android.os.Parcel;
 
 import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.ConfigurationManagerTestUtils;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
@@ -509,14 +510,10 @@ public class DropInResultUnitTest {
     }
 
     private BraintreeFragment setupFragment(BraintreeHttpClient httpClient) throws InvalidArgumentException {
-        Robolectric.getForegroundThreadScheduler().pause();
-
         BraintreeFragment fragment = BraintreeFragment.newInstance(mActivity,
                 stringFromFixture("client_token.json"));
         setHttpClient(fragment, httpClient);
-
-        Robolectric.getForegroundThreadScheduler().unPause();
-        Robolectric.getForegroundThreadScheduler().advanceToLastPostedRunnable();
+        ConfigurationManagerTestUtils.setFetchingConfiguration(false);
 
         return fragment;
     }

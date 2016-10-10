@@ -4,9 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.ConfigurationManagerTestUtils;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 
 import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
+import static com.braintreepayments.api.BraintreeFragmentTestUtils.waitForConfiguration;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 
 public class AddCardUnitTestActivity extends AddCardActivity {
@@ -28,6 +30,11 @@ public class AddCardUnitTestActivity extends AddCardActivity {
         setIntent(intent);
 
         super.onCreate(savedInstanceState);
+
+        if (braintreeFragment != null) {
+            ConfigurationManagerTestUtils.setFetchingConfiguration(false);
+            waitForConfiguration(braintreeFragment, this);
+        }
     }
 
     @Override

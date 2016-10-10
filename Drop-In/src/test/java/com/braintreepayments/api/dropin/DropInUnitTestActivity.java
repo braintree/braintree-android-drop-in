@@ -5,9 +5,11 @@ import android.content.res.Resources;
 import android.os.Bundle;
 
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.ConfigurationManagerTestUtils;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 
 import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
+import static com.braintreepayments.api.BraintreeFragmentTestUtils.waitForConfiguration;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -30,6 +32,11 @@ public class DropInUnitTestActivity extends DropInActivity {
         setIntent(intent);
 
         super.onCreate(savedInstanceState);
+
+        if (braintreeFragment != null) {
+            ConfigurationManagerTestUtils.setFetchingConfiguration(false);
+            waitForConfiguration(braintreeFragment, this);
+        }
     }
 
     public void setDropInRequest(DropInRequest dropInRequest) {

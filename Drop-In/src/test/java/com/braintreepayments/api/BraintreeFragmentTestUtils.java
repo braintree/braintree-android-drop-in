@@ -1,5 +1,6 @@
 package com.braintreepayments.api;
 
+import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.internal.BraintreeHttpClient;
 
 public class BraintreeFragmentTestUtils {
@@ -10,5 +11,10 @@ public class BraintreeFragmentTestUtils {
 
     public static String getIntegrationType(BraintreeFragment fragment) {
         return fragment.mIntegrationType;
+    }
+
+    public static void waitForConfiguration(BraintreeFragment fragment,
+                                            ConfigurationListener listener) {
+        fragment.waitForConfiguration(listener);
     }
 }
