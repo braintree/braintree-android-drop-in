@@ -31,6 +31,7 @@ public class DropInRequestUnitTest {
         Intent intent = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
+                .amount("1.00")
                 .androidPayCart(cart)
                 .androidPayShippingAddressRequired(true)
                 .androidPayPhoneNumberRequired(true)
@@ -46,6 +47,7 @@ public class DropInRequestUnitTest {
         assertEquals(DropInActivity.class.getName(), intent.getComponent().getClassName());
         assertEquals(TOKENIZATION_KEY, dropInRequest.getAuthorization());
         assertTrue(dropInRequest.shouldCollectDeviceData());
+        assertEquals("1.00", dropInRequest.getAmount());
         assertEquals("5.00", dropInRequest.getAndroidPayCart().getTotalPrice());
         assertTrue(dropInRequest.isAndroidPayShippingAddressRequired());
         assertTrue(dropInRequest.isAndroidPayPhoneNumberRequired());
@@ -85,6 +87,7 @@ public class DropInRequestUnitTest {
         DropInRequest dropInRequest = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
+                .amount("1.00")
                 .androidPayCart(cart)
                 .androidPayShippingAddressRequired(true)
                 .androidPayPhoneNumberRequired(true)
@@ -101,6 +104,7 @@ public class DropInRequestUnitTest {
 
         assertEquals(TOKENIZATION_KEY, parceledDropInRequest.getAuthorization());
         assertTrue(parceledDropInRequest.shouldCollectDeviceData());
+        assertEquals("1.00", parceledDropInRequest.getAmount());
         assertEquals("5.00", parceledDropInRequest.getAndroidPayCart().getTotalPrice());
         assertTrue(parceledDropInRequest.isAndroidPayShippingAddressRequired());
         assertTrue(parceledDropInRequest.isAndroidPayPhoneNumberRequired());
