@@ -40,6 +40,7 @@ public class DropInRequestUnitTest {
                 .paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS))
                 .disablePayPal()
                 .disableVenmo()
+                .requestThreeDSecureVerification(true)
                 .getIntent(RuntimeEnvironment.application);
 
         DropInRequest dropInRequest = intent.getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
@@ -57,6 +58,7 @@ public class DropInRequestUnitTest {
         assertEquals(Collections.singletonList(PayPal.SCOPE_ADDRESS), dropInRequest.getPayPalAdditionalScopes());
         assertFalse(dropInRequest.isPayPalEnabled());
         assertFalse(dropInRequest.isVenmoEnabled());
+        assertTrue(dropInRequest.shouldRequestThreeDSecureVerification());
     }
 
     @Test
@@ -69,6 +71,7 @@ public class DropInRequestUnitTest {
         assertEquals(DropInActivity.class.getName(), intent.getComponent().getClassName());
         assertNull(dropInRequest.getAuthorization());
         assertFalse(dropInRequest.shouldCollectDeviceData());
+        assertNull(dropInRequest.getAmount());
         assertNull(dropInRequest.getAndroidPayCart());
         assertFalse(dropInRequest.isAndroidPayShippingAddressRequired());
         assertFalse(dropInRequest.isAndroidPayPhoneNumberRequired());
@@ -77,6 +80,7 @@ public class DropInRequestUnitTest {
         assertNull(dropInRequest.getPayPalAdditionalScopes());
         assertTrue(dropInRequest.isPayPalEnabled());
         assertTrue(dropInRequest.isVenmoEnabled());
+        assertFalse(dropInRequest.shouldRequestThreeDSecureVerification());
     }
 
     @Test
@@ -95,7 +99,8 @@ public class DropInRequestUnitTest {
                 .disableAndroidPay()
                 .paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS))
                 .disablePayPal()
-                .disableVenmo();
+                .disableVenmo()
+                .requestThreeDSecureVerification(true);
 
         Parcel parcel = Parcel.obtain();
         dropInRequest.writeToParcel(parcel, 0);
@@ -114,6 +119,7 @@ public class DropInRequestUnitTest {
         assertEquals(Collections.singletonList(PayPal.SCOPE_ADDRESS), parceledDropInRequest.getPayPalAdditionalScopes());
         assertFalse(parceledDropInRequest.isPayPalEnabled());
         assertFalse(parceledDropInRequest.isVenmoEnabled());
+        assertTrue(parceledDropInRequest.shouldRequestThreeDSecureVerification());
     }
 
     @Test

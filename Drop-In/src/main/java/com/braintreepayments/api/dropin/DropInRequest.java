@@ -24,6 +24,7 @@ public class DropInRequest implements Parcelable {
 
     private String mAmount;
     private boolean mCollectDeviceData;
+    private boolean mRequestThreeDSecureVerification;
 
     private Cart mAndroidPayCart;
     private boolean mAndroidPayShippingAddressRequired;
@@ -63,7 +64,7 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
-     * This method is optional.
+     * This method is optional. Amount is only used for 3D Secure verifications.
      *
      * @param amount Amount of the transaction.
      */
@@ -171,6 +172,19 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * If 3D Secure has been enabled in the control panel and an amount is specified in
+     * {@link DropInRequest#amount(String)}, Drop-In will request a 3D Secure verification for
+     * any new cards added by the user.
+     *
+     * @param requestThreeDSecure {@code true} to request a 3D Secure verification as part of Drop-In,
+     * {@code false} to not request a 3D Secure verification. Defaults to {@code false}.
+     */
+    public DropInRequest requestThreeDSecureVerification(boolean requestThreeDSecure) {
+        mRequestThreeDSecureVerification = requestThreeDSecure;
+        return this;
+    }
+
+    /**
      * Get an {@link Intent} that can be used in {@link android.app.Activity#startActivityForResult(Intent, int)}
      * to launch {@link DropInActivity} and the Drop-in UI.
      *
@@ -226,6 +240,10 @@ public class DropInRequest implements Parcelable {
         return mVenmoEnabled;
     }
 
+    boolean shouldRequestThreeDSecureVerification() {
+        return mRequestThreeDSecureVerification;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -249,6 +267,7 @@ public class DropInRequest implements Parcelable {
         dest.writeStringList(mPayPalAdditionalScopes);
         dest.writeByte(mPayPalEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mVenmoEnabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(mRequestThreeDSecureVerification ? (byte) 1 : (byte) 0);
     }
 
     protected DropInRequest(Parcel in) {
@@ -267,6 +286,7 @@ public class DropInRequest implements Parcelable {
         mPayPalAdditionalScopes = in.createStringArrayList();
         mPayPalEnabled = in.readByte() != 0;
         mVenmoEnabled = in.readByte() != 0;
+        mRequestThreeDSecureVerification = in.readByte() != 0;
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {

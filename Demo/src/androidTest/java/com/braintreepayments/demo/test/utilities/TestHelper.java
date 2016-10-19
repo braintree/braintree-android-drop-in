@@ -100,7 +100,6 @@ public class TestHelper {
     public void setMerchantAccountId(String merchantAccountId) {
         PreferenceManager.getDefaultSharedPreferences(getTargetContext())
                 .edit()
-                .clear()
                 .putString("merchant_account", merchantAccountId)
                 .commit();
 
@@ -111,12 +110,18 @@ public class TestHelper {
     public void useTokenizationKey() {
         PreferenceManager.getDefaultSharedPreferences(getTargetContext())
                 .edit()
-                .clear()
                 .putBoolean("tokenization_key", true)
                 .commit();
 
         onDevice(withText("Reset")).perform(click());
         SystemClock.sleep(2000);
+    }
+
+    public void enableThreeDSecure() {
+        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+                .edit()
+                .putBoolean("enable_three_d_secure", true)
+                .commit();
     }
 
     private void clearPreference(String preference) {

@@ -13,6 +13,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
 import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
 import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
@@ -41,7 +42,12 @@ public class DropInTest extends TestHelper {
     public void tokenizesACard() {
         onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
 
-        tokenizeCard();
+        tokenizeCard(VISA);
+
+        getNonceDetails().check(text(containsString("Card Last Two: 11")));
+
+        onDevice(withText("Purchase")).perform(click());
+        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
     @Test(timeout = 60000)
@@ -49,7 +55,32 @@ public class DropInTest extends TestHelper {
         useTokenizationKey();
         onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
 
-        tokenizeCard();
+        tokenizeCard(VISA);
+
+        getNonceDetails().check(text(containsString("Card Last Two: 11")));
+
+        onDevice(withText("Purchase")).perform(click());
+        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
+    }
+
+    @Test(timeout = 60000)
+    public void performsThreeDSecureVerification() {
+        enableThreeDSecure();
+        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+
+        tokenizeCard(THREE_D_SECURE_VERIFICATON);
+
+        onDevice(withText("Authentication")).waitForExists();
+        onDevice().pressTab();
+        onDevice().typeText("1234");
+        onDevice().pressTab().pressTab().pressEnter();
+
+        getNonceDetails().check(text(containsString("Card Last Two: 02")));
+        getNonceDetails().check(text(containsString("3DS isLiabilityShifted: true")));
+        getNonceDetails().check(text(containsString("3DS isLiabilityShiftPossible: true")));
+
+        onDevice(withText("Purchase")).perform(click());
+        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
     @Test
@@ -185,19 +216,14 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).check(text(equalToIgnoringCase("Add Payment Method")));
     }
 
-    private void tokenizeCard() {
+    private void tokenizeCard(String cardNumber) {
         onDevice(withText("Credit or Debit Card")).perform(click());
-        onDevice(withContentDescription("Card Number")).perform(setText(VISA));
+        onDevice(withContentDescription("Card Number")).perform(setText(cardNumber));
         onDevice(withText("12")).perform(click());
         onDevice(withText("2019")).perform(click());
         onDevice().pressBack();
         onDevice(withContentDescription("CVV")).perform(setText("123"));
         onDevice(withContentDescription("Postal Code")).perform(setText("12345"));
         onDevice(withTextContaining("Add Card")).perform(click());
-
-        getNonceDetails().check(text(containsString("Card Last Two: 11")));
-
-        onDevice(withText("Purchase")).perform(click());
-        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 }

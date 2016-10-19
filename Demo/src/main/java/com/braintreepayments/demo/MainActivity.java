@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
-import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.dropin.DropInActivity;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.DropInResult;
@@ -116,12 +115,10 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     }
 
     public void launchDropIn(View v) {
-        startActivityForResult(getDropInRequest().getIntent(this), DROP_IN_REQUEST);
-    }
-
-    private DropInRequest getDropInRequest() {
         DropInRequest dropInRequest = new DropInRequest()
                 .clientToken(mAuthorization)
+                .amount("1.00")
+                .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))
                 .collectDeviceData(Settings.shouldCollectDeviceData(this))
                 .androidPayCart(getAndroidPayCart())
                 .androidPayShippingAddressRequired(Settings.isAndroidPayShippingAddressRequired(this))
@@ -132,7 +129,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
             dropInRequest.paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS));
         }
 
-        return dropInRequest;
+        startActivityForResult(dropInRequest.getIntent(this), DROP_IN_REQUEST);
     }
 
     public void purchase(View v) {
@@ -217,13 +214,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         if (resultCode == RESULT_OK) {
             DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
             displayResult(result.getPaymentMethodNonce(), result.getDeviceData());
-            if (mNonce instanceof CardNonce && Settings.isThreeDSecureEnabled(this)) {
-                mLoading = ProgressDialog.show(this, getString(R.string.loading),
-                        getString(R.string.loading), true, false);
-                ThreeDSecure.performVerification(mBraintreeFragment, mNonce.getNonce(), "1");
-            } else {
-                mPurchaseButton.setEnabled(true);
-            }
+            mPurchaseButton.setEnabled(true);
         } else if (resultCode != RESULT_CANCELED) {
             safelyCloseLoadingView();
             showDialog(((Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR))

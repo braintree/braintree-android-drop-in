@@ -32,9 +32,22 @@
         <item name="textColorError">@color/bt_error_red</item>
     </style>
 
+    <style name="bt_three_d_secure_theme" parent="@android:style/Theme.Holo.Light">
+        <item name="android:actionBarStyle">@style/bt_action_bar_theme</item>
+    </style>
+
     <style name="bt_toolbar_theme" parent="bt_add_card_activity_theme">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="colorControlNormal">@color/bt_white</item>
+    </style>
+
+    <style name="bt_action_bar_theme" parent="@android:style/Widget.Holo.Light.ActionBar">
+        <item name="android:background">@color/bt_color_primary</item>
+        <item name="android:titleTextStyle">@style/bt_action_bar_title_theme</item>
+    </style>
+
+    <style name="bt_action_bar_title_theme" parent="android:TextAppearance.Holo.Widget.ActionBar.Title">
+        <item name="android:textColor">@color/bt_white</item>
     </style>
 
     <style name="bt_choose_payment_label">

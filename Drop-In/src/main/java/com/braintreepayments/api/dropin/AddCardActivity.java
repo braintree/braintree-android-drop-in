@@ -17,6 +17,7 @@ import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.Card;
+import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.UnionPay;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.dropin.view.AddCardView;
@@ -77,6 +78,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     private boolean mUnionPayCard;
     private boolean mUnionPayDebitCard;
 
+    private DropInRequest mDropInRequest;
     private BraintreeFragment mBraintreeFragment;
     private Configuration mConfiguration;
     private boolean mClientTokenPresent;
@@ -113,6 +115,8 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
         enterState(LOADING);
 
+        mDropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
+
         try {
             mBraintreeFragment = getBraintreeFragment();
         } catch (InvalidArgumentException e) {
@@ -128,20 +132,19 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
     @VisibleForTesting
     protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
-        DropInRequest dropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
-        if (TextUtils.isEmpty(dropInRequest.getAuthorization())) {
+        if (TextUtils.isEmpty(mDropInRequest.getAuthorization())) {
             throw new InvalidArgumentException("A client token or client key must be specified " +
                     "in the " + DropInRequest.class.getSimpleName());
         }
 
         try {
             mClientTokenPresent =
-                    Authorization.fromString(dropInRequest.getAuthorization()) instanceof ClientToken;
+                    Authorization.fromString(mDropInRequest.getAuthorization()) instanceof ClientToken;
         } catch (InvalidArgumentException e) {
             mClientTokenPresent = false;
         }
 
-        return BraintreeFragment.newInstance(this, dropInRequest.getAuthorization());
+        return BraintreeFragment.newInstance(this, mDropInRequest.getAuthorization());
     }
 
     @Override
@@ -275,7 +278,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         UnionPay.enroll(mBraintreeFragment, unionPayCardBuilder);
     }
 
-    private void createCard() {
+    protected void createCard() {
         if (mUnionPayCard) {
             UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
                     .cardNumber(mEditCardView.getCardForm().getCardNumber())
@@ -298,7 +301,14 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
                     .postalCode(mEditCardView.getCardForm().getPostalCode())
                     .validate(mClientTokenPresent);
 
-            Card.tokenize(mBraintreeFragment, cardBuilder);
+            if (mDropInRequest.shouldRequestThreeDSecureVerification() &&
+                    !TextUtils.isEmpty(mDropInRequest.getAmount()) &&
+                    mConfiguration.isThreeDSecureEnabled()) {
+                ThreeDSecure.performVerification(mBraintreeFragment, cardBuilder,
+                        mDropInRequest.getAmount());
+            } else {
+                Card.tokenize(mBraintreeFragment, cardBuilder);
+            }
         }
     }
 
