@@ -1,27 +1,8 @@
 <?xml version="1.0"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="bt_form_pay_with_card_header">Pay With a Card</string>
-
-    <string name="bt_invalid_card">Card information is invalid</string>
-
-    <string name="bt_choose_payment_method">Choose Payment Method</string>
-    <string name="bt_change_payment_method">Change Payment Method</string>
-    <string name="bt_add_new_payment_method">Add New Payment Method</string>
-    <string name="bt_add_payment_method">Add Payment Method</string>
-    <string name="bt_change_android_pay_card" tools:ignore="MissingTranslation">Change Android Pay Card</string>
     <string tools:ignore="MissingTranslation" name="bt_recent">Recent</string>
     <string tools:ignore="MissingTranslation" name="bt_other">Other</string>
     <string tools:ignore="MissingTranslation" name="bt_select_payment_method">Select Payment Method</string>
-
-    <string name="bt_default_submit_button_text">PURCHASE</string>
-    <string name="bt_default_action_bar_text">Purchase</string>
-
-    <!-- Note: %s is a place holder and should be left in translated strings -->
-    <string name="bt_card_descriptor">ends in %s</string>
-
-    <string name="bt_pay_with_paypal">Pay with PayPal</string>
-    <string name="bt_pay_with_venmo">Pay with Venmo</string>
-    <string name="bt_pay_with_android_pay" tools:ignore="MissingTranslation">Pay with Android Pay</string>
 
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
@@ -37,9 +18,6 @@
     <string name="bt_descriptor_unknown">Credit or Debit Card</string>
 
     <string tools:ignore="MissingTranslation" name="bt_add_card">Add card</string>
-    <string tools:ignore="MissingTranslation" name="bt_add_paypal_account">Add PayPal Account</string>
-    <string tools:ignore="MissingTranslation" name="bt_add_android_pay">Add Android Pay</string>
-    <string tools:ignore="MissingTranslation" name="bt_add_venmo">Add Venmo Account</string>
     <string tools:ignore="MissingTranslation" name="bt_next">Next</string>
     <string tools:ignore="MissingTranslation" name="bt_confirm">Confirm</string>
     <string tools:ignore="MissingTranslation" name="bt_scan_with_card_io">Scan with card.io</string>
