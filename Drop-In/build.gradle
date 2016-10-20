@@ -8,12 +8,12 @@ def GATEWAY_IP = System.properties['GATEWAY_IP'] ?: '"10.0.2.2"';
 def GATEWAY_PORT = System.properties['GATEWAY_PORT'] ?: '"3000"';
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion '24.0.2'
+    compileSdkVersion 25
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 25
         versionCode 54
         versionName '3.0.0-SNAPSHOT'
 
@@ -50,7 +50,7 @@ android.buildTypes.debug { type ->
 
 dependencies {
     compile 'com.braintreepayments.api:braintree:2.3.10'
-    compile 'com.android.support:cardview-v7:[24.0.0,25.0.0)'
+    compile 'com.android.support:cardview-v7:[25.0.0,26.0.0)'
     compile 'com.braintreepayments:card-form:3.0.0'
     compile 'com.google.android.gms:play-services-wallet:[9.0.0,10.0.0)'
 
