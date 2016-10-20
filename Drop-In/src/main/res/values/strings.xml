@@ -1,9 +1,5 @@
 <?xml version="1.0"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string tools:ignore="MissingTranslation" name="bt_recent">Recent</string>
-    <string tools:ignore="MissingTranslation" name="bt_other">Other</string>
-    <string tools:ignore="MissingTranslation" name="bt_select_payment_method">Select Payment Method</string>
-
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
     <string name="bt_descriptor_amex">Amex</string>
@@ -17,6 +13,9 @@
     <string tools:ignore="MissingTranslation" name="bt_descriptor_unionpay">UnionPay</string>
     <string name="bt_descriptor_unknown">Credit or Debit Card</string>
 
+    <string tools:ignore="MissingTranslation" name="bt_recent">Recent</string>
+    <string tools:ignore="MissingTranslation" name="bt_other">Other</string>
+    <string tools:ignore="MissingTranslation" name="bt_select_payment_method">Select Payment Method</string>
     <string tools:ignore="MissingTranslation" name="bt_add_card">Add card</string>
     <string tools:ignore="MissingTranslation" name="bt_next">Next</string>
     <string tools:ignore="MissingTranslation" name="bt_confirm">Confirm</string>
