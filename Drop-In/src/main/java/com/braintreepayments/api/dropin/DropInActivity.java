@@ -172,18 +172,17 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                 if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                         error instanceof UpgradeRequiredException) {
                     mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
-                    setResult(RESULT_FIRST_USER, new Intent().putExtra(EXTRA_ERROR, error));
                 } else if (error instanceof ConfigurationException) {
                     mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
-                    setResult(RESULT_FIRST_USER, new Intent().putExtra(EXTRA_ERROR, error));
                 } else if (error instanceof ServerException || error instanceof UnexpectedException) {
                     mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-                    setResult(RESULT_FIRST_USER, new Intent().putExtra(EXTRA_ERROR, error));
                 } else if (error instanceof DownForMaintenanceException) {
                     mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
-                    setResult(RESULT_FIRST_USER, new Intent().putExtra(EXTRA_ERROR, error));
+                } else {
+                    mBraintreeFragment.sendAnalyticsEvent("sdk.exit.sdk-error");
                 }
 
+                setResult(RESULT_FIRST_USER, new Intent().putExtra(EXTRA_ERROR, error));
                 finish();
             }
         });

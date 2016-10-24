@@ -455,6 +455,13 @@ public class DropInActivityUnitTest {
                 new DownForMaintenanceException("Exception"));
     }
 
+    @Test
+    public void anyExceptionExitsActivityWithError() {
+        setup(mock(BraintreeFragment.class));
+
+        assertExceptionIsReturned("sdk-error", new Exception("Error!"));
+    }
+
     private void setup(BraintreeFragment fragment) {
         mActivity.braintreeFragment = fragment;
         mActivityController.setup();
