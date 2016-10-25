@@ -4,7 +4,7 @@
 
 Braintree Android Drop-In is a readymade UI that allows you to accept card and alternative payments in your Android app.
 
-![Screenshot of Drop-In](screenshots/vaulted-payment-methods.png)
+<img alt="Screenshot of Drop-In" src="screenshots/vaulted-payment-methods.png" width="300"/>
 
 ## What's new in 3.0
 
