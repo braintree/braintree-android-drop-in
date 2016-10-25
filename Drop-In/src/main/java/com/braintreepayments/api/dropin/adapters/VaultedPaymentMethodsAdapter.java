@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
+import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.List;
@@ -39,7 +40,12 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
 
         holder.icon.setImageResource(paymentMethodType.getVaultedDrawable());
         holder.title.setText(paymentMethodType.getLocalizedName());
-        holder.description.setText(paymentMethodNonce.getDescription());
+
+        if (paymentMethodNonce instanceof CardNonce) {
+            holder.description.setText("••• ••" + ((CardNonce) paymentMethodNonce).getLastTwo());
+        } else {
+            holder.description.setText(paymentMethodNonce.getDescription());
+        }
 
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
