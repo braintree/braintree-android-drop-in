@@ -35,9 +35,10 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final PaymentMethodNonce paymentMethodNonce = mPaymentMethodNonces.get(position);
+        PaymentMethodType paymentMethodType = PaymentMethodType.forType(paymentMethodNonce);
 
-        holder.icon.setImageResource(PaymentMethodType.forType(paymentMethodNonce).getVaultedDrawable());
-        holder.title.setText(paymentMethodNonce.getTypeLabel());
+        holder.icon.setImageResource(paymentMethodType.getVaultedDrawable());
+        holder.title.setText(paymentMethodType.getLocalizedName());
         holder.description.setText(paymentMethodNonce.getDescription());
 
         holder.itemView.setOnClickListener(new OnClickListener() {
