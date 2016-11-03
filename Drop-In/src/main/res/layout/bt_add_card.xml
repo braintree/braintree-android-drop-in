@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:bt="http://schemas.android.com/apk/res-auto">
+    xmlns:bt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <com.braintreepayments.cardform.view.CardForm
         android:id="@+id/bt_card_form"
@@ -8,6 +9,7 @@
         android:layout_height="wrap_content"/>
 
     <com.braintreepayments.cardform.view.SupportedCardTypesView
+        tools:ignore="RtlCompat"
         android:id="@+id/bt_supported_card_types"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
