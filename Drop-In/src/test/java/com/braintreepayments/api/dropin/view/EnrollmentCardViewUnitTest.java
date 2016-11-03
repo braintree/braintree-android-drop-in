@@ -21,9 +21,12 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.util.ActivityController;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
 import static com.braintreepayments.api.test.ColorTestUtils.setupActivity;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -94,6 +97,17 @@ public class EnrollmentCardViewUnitTest {
     }
 
     @Test
+    public void setErrors_marksEnrollmentAsFailed() {
+        mView.setup(mActivity);
+        assertFalse(mView.hasFailedEnrollment());
+
+        mView.setErrors(new ErrorWithResponse(422,
+                stringFromFixture("responses/unionpay_enrollment_error_response.json")));
+
+        assertTrue(mView.hasFailedEnrollment());
+    }
+
+    @Test
     public void onEditorAction_submitsForm() {
         ((EditText) mView.findViewById(R.id.bt_sms_code)).setText("123456");
         mView.onEditorAction(null, 0, null);
@@ -137,6 +151,34 @@ public class EnrollmentCardViewUnitTest {
         assertThat(mView.findViewById(R.id.bt_button)).isVisible();
         assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
         assertTrue(((ErrorEditText) mView.findViewById(R.id.bt_sms_code)).isError());
+    }
+
+    @Test
+    public void setVisibility_toVisibleFocusesSmsCode() {
+        mView.setup(mActivity);
+        assertThat(mView.findViewById(R.id.bt_sms_code)).isNotFocused();
+
+        mView.setVisibility(VISIBLE);
+
+        assertThat(mView.findViewById(R.id.bt_sms_code)).isFocused();
+    }
+
+    @Test
+    public void setVisibility_marksEnrollmentAsNotFailed() {
+        mView.setup(mActivity);
+        mView.setErrors(new ErrorWithResponse(422,
+                stringFromFixture("responses/unionpay_enrollment_error_response.json")));
+        assertTrue(mView.hasFailedEnrollment());
+
+        mView.setVisibility(GONE);
+        assertFalse(mView.hasFailedEnrollment());
+
+        mView.setErrors(new ErrorWithResponse(422,
+                stringFromFixture("responses/unionpay_enrollment_error_response.json")));
+        assertTrue(mView.hasFailedEnrollment());
+
+        mView.setVisibility(VISIBLE);
+        assertFalse(mView.hasFailedEnrollment());
     }
 
     private void assertDrawableIsFromResource(int view, int resourceId) {

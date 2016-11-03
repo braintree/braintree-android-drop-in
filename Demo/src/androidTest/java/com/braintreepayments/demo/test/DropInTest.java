@@ -25,6 +25,7 @@ import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextStartingWith;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
 
@@ -92,6 +93,33 @@ public class DropInTest extends TestHelper {
         onDevice(withTextContaining("Add Card")).perform(click());
 
         getNonceDetails().check(text(containsString("Card Last Two: 85")));
+
+        onDevice(withText("Purchase")).perform(click());
+        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
+    }
+
+    @Test
+    public void tokenizesUnionPayWhenFirstSMSCodeIsInvalid() {
+        setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
+        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+
+        onDevice(withText("Credit or Debit Card")).perform(click());
+        onDevice(withContentDescription("Card Number")).perform(setText(UNIONPAY_CREDIT));
+        onDevice(withText("12")).perform(click());
+        onDevice(withText("2019")).perform(click());
+        onDevice().pressBack();
+        onDevice(withContentDescription("CVN")).perform(setText("123"));
+        onDevice(withContentDescription("Postal Code")).perform(setText("12345"));
+        onDevice(withContentDescription("Country Code")).perform(setText("01"));
+        onDevice(withContentDescription("Mobile Number")).perform(setText("5555555555"));
+        onDevice(withTextContaining("Add Card")).perform(click());
+        onDevice(withContentDescription("SMS Code")).perform(setText("999999"));
+        onDevice(withTextContaining("Confirm", Button.class)).perform(click());
+        onDevice(withText("SMS code is invalid")).check(text(is("SMS code is invalid")));
+        onDevice(withContentDescription("SMS Code")).perform(setText("12345"));
+        onDevice(withTextContaining("Confirm", Button.class)).perform(click());
+
+        getNonceDetails().check(text(containsString("Card Last Two: 32")));
 
         onDevice(withText("Purchase")).perform(click());
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));

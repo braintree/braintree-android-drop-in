@@ -239,16 +239,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         } else if (v.getId() == mEditCardView.getId()) {
             if (mUnionPayCard) {
                 if (TextUtils.isEmpty(mEnrollmentId)) {
-                    UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
-                            .cardNumber(mEditCardView.getCardForm().getCardNumber())
-                            .expirationMonth(mEditCardView.getCardForm().getExpirationMonth())
-                            .expirationYear(mEditCardView.getCardForm().getExpirationYear())
-                            .cvv(mEditCardView.getCardForm().getCvv())
-                            .postalCode(mEditCardView.getCardForm().getPostalCode())
-                            .mobileCountryCode(mEditCardView.getCardForm().getCountryCode())
-                            .mobilePhoneNumber(mEditCardView.getCardForm().getMobileNumber());
-
-                    UnionPay.enroll(mBraintreeFragment, unionPayCardBuilder);
+                    enrollUnionPayCard();
                 } else {
                     nextState = ENROLLMENT_ENTRY;
                 }
@@ -258,10 +249,27 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             }
         } else if (v.getId() == mEnrollmentCardView.getId()) {
             nextState = mState;
-            createCard();
+            if (mEnrollmentCardView.hasFailedEnrollment()) {
+                enrollUnionPayCard();
+            } else {
+                createCard();
+            }
         }
 
         return nextState;
+    }
+
+    private void enrollUnionPayCard() {
+        UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
+                .cardNumber(mEditCardView.getCardForm().getCardNumber())
+                .expirationMonth(mEditCardView.getCardForm().getExpirationMonth())
+                .expirationYear(mEditCardView.getCardForm().getExpirationYear())
+                .cvv(mEditCardView.getCardForm().getCvv())
+                .postalCode(mEditCardView.getCardForm().getPostalCode())
+                .mobileCountryCode(mEditCardView.getCardForm().getCountryCode())
+                .mobilePhoneNumber(mEditCardView.getCardForm().getMobileNumber());
+
+        UnionPay.enroll(mBraintreeFragment, unionPayCardBuilder);
     }
 
     private void createCard() {
@@ -317,7 +325,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     public void onSmsCodeSent(String enrollmentId, boolean smsRequired) {
         mEnrollmentId = enrollmentId;
 
-        if (smsRequired) {
+        if (smsRequired && mState != ENROLLMENT_ENTRY) {
             onPaymentUpdated(mEditCardView);
         } else {
             createCard();

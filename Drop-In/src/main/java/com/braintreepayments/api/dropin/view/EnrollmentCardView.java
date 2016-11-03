@@ -30,6 +30,7 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener,
     private AnimatedButtonView mAnimatedButtonView;
     private Button mSmsHelpButton;
 
+    private boolean mEnrollmentFailed;
     private AddPaymentUpdateListener mListener;
 
     public EnrollmentCardView(Context context) {
@@ -100,6 +101,10 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener,
         return true;
     }
 
+    public boolean hasFailedEnrollment() {
+        return mEnrollmentFailed;
+    }
+
     public boolean isEnrollmentError(ErrorWithResponse error) {
         return error != null && error.errorFor("unionPayEnrollment") != null;
     }
@@ -107,6 +112,7 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener,
     public void setErrors(ErrorWithResponse errors) {
         if (errors.errorFor("unionPayEnrollment") != null) {
             mSmsCode.setError(getContext().getString(R.string.bt_unionpay_sms_code_invalid));
+            mEnrollmentFailed = true;
         }
 
         mAnimatedButtonView.showButton();
@@ -130,6 +136,7 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener,
     public void setVisibility(int visibility) {
         super.setVisibility(visibility);
         mAnimatedButtonView.showButton();
+        mEnrollmentFailed = false;
 
         if (visibility == VISIBLE) {
             mSmsCode.requestFocus();
