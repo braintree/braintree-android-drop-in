@@ -237,12 +237,11 @@ public class EditCardViewUnitTest {
     }
 
     @Test
-    public void setErrors_displaysAllErrors() {
+    public void setErrors_displaysCardErrors() {
         Configuration configuration = new TestConfigurationBuilder()
                 .challenges("cvv", "postal_code")
                 .buildConfiguration();
         mView.setup(mActivity, configuration);
-        mView.useUnionPay(mActivity, true, false);
         ((AnimatedButtonView) mView.findViewById(R.id.bt_animated_button_view)).showLoading();
 
         mView.setErrors(new ErrorWithResponse(422, stringFromFixture("responses/credit_card_error_response.json")));
@@ -255,6 +254,20 @@ public class EditCardViewUnitTest {
                 mView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_invalid),
                 mView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
+        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+    }
+
+    @Test
+    public void setErrors_displaysUnionPayErrors() {
+        mView.setup(mActivity, (Configuration) new TestConfigurationBuilder().buildConfiguration());
+        mView.useUnionPay(mActivity, true, false);
+        ((AnimatedButtonView) mView.findViewById(R.id.bt_animated_button_view)).showLoading();
+
+        mView.setErrors(new ErrorWithResponse(422, stringFromFixture("responses/unionpay_enrollment_error_response.json")));
+
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
+                mView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_country_code_invalid),
                 mView.getCardForm().getCountryCodeEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_mobile_number_invalid),

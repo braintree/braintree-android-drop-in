@@ -1,0 +1,22 @@
+{
+  "error": {
+    "message": "UnionPay Enrollment is invalid"
+  },
+  "fieldErrors": [
+    {
+      "field": "unionPayEnrollment",
+      "fieldErrors": [
+        {
+          "code": "84408",
+          "field": "mobileCountryCode",
+          "message": "Mobile country code is invalid"
+        },
+        {
+          "code": "84407",
+          "field": "mobileNumber",
+          "message": "Mobile number is invalid"
+        }
+      ]
+    }
+  ]
+}

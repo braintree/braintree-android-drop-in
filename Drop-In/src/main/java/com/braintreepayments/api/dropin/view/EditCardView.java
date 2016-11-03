@@ -90,31 +90,35 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
     }
 
     public void setErrors(ErrorWithResponse errors) {
-        BraintreeError cardErrors = errors.errorFor("creditCard");
-        if (cardErrors != null) {
-            if (cardErrors.errorFor("number") != null) {
+        BraintreeError formErrors = errors.errorFor("unionPayEnrollment");
+        if (formErrors == null) {
+            formErrors = errors.errorFor("creditCard");
+        }
+
+        if (formErrors != null) {
+            if (formErrors.errorFor("number") != null) {
                 mCardForm.setCardNumberError(getContext().getString(R.string.bt_card_number_invalid));
             }
 
-            if (cardErrors.errorFor("expirationYear") != null ||
-                    cardErrors.errorFor("expirationMonth") != null ||
-                    cardErrors.errorFor("expirationDate") != null) {
+            if (formErrors.errorFor("expirationYear") != null ||
+                    formErrors.errorFor("expirationMonth") != null ||
+                    formErrors.errorFor("expirationDate") != null) {
                 mCardForm.setExpirationError(getContext().getString(R.string.bt_expiration_invalid));
             }
 
-            if (cardErrors.errorFor("cvv") != null) {
+            if (formErrors.errorFor("cvv") != null) {
                 mCardForm.setCvvError(getContext().getString(R.string.bt_cvv_invalid));
             }
 
-            if (cardErrors.errorFor("billingAddress") != null) {
+            if (formErrors.errorFor("billingAddress") != null) {
                 mCardForm.setPostalCodeError(getContext().getString(R.string.bt_postal_code_invalid));
             }
 
-            if (cardErrors.errorFor("mobileCountryCode") != null) {
+            if (formErrors.errorFor("mobileCountryCode") != null) {
                 mCardForm.setCountryCodeError(getContext().getString(R.string.bt_country_code_invalid));
             }
 
-            if (cardErrors.errorFor("mobileNumber") != null) {
+            if (formErrors.errorFor("mobileNumber") != null) {
                 mCardForm.setMobileNumberError(getContext().getString(R.string.bt_mobile_number_invalid));
             }
         }

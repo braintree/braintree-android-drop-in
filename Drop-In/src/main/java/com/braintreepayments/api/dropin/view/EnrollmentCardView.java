@@ -19,6 +19,7 @@ import android.widget.TextView.OnEditorActionListener;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.api.exceptions.BraintreeError;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.cardform.utils.ViewUtils;
 import com.braintreepayments.cardform.view.ErrorEditText;
@@ -106,7 +107,14 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener,
     }
 
     public boolean isEnrollmentError(ErrorWithResponse error) {
-        return error != null && error.errorFor("unionPayEnrollment") != null;
+        if (error != null) {
+            BraintreeError enrollmentError = error.errorFor("unionPayEnrollment");
+            if (enrollmentError != null && enrollmentError.errorFor("base") != null) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void setErrors(ErrorWithResponse errors) {

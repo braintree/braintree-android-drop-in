@@ -83,12 +83,30 @@ public class EnrollmentCardViewUnitTest {
     }
 
     @Test
+    public void isEnrollmentError_returnsTrueForEnrollmentError() {
+        mView.setup(mActivity);
+        ErrorWithResponse error = new ErrorWithResponse(422,
+                stringFromFixture("responses/unionpay_sms_code_error_response.json"));
+
+        assertTrue(mView.isEnrollmentError(error));
+    }
+
+    @Test
+    public void isEnrollmentError_returnsFalseForNonEnrollmentError() {
+        mView.setup(mActivity);
+        ErrorWithResponse error = new ErrorWithResponse(422,
+                stringFromFixture("responses/unionpay_enrollment_mobile_number_error_response.json"));
+
+        assertFalse(mView.isEnrollmentError(error));
+    }
+
+    @Test
     public void setErrors_displaysError() {
         mView.setup(mActivity);
         ((AnimatedButtonView) mView.findViewById(R.id.bt_animated_button_view)).showLoading();
 
         mView.setErrors(new ErrorWithResponse(422,
-                stringFromFixture("responses/unionpay_enrollment_error_response.json")));
+                stringFromFixture("responses/unionpay_sms_code_error_response.json")));
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_unionpay_sms_code_invalid),
                 ((ErrorEditText) mView.findViewById(R.id.bt_sms_code)).getTextInputLayoutParent().getError());
@@ -102,7 +120,7 @@ public class EnrollmentCardViewUnitTest {
         assertFalse(mView.hasFailedEnrollment());
 
         mView.setErrors(new ErrorWithResponse(422,
-                stringFromFixture("responses/unionpay_enrollment_error_response.json")));
+                stringFromFixture("responses/unionpay_sms_code_error_response.json")));
 
         assertTrue(mView.hasFailedEnrollment());
     }
@@ -167,14 +185,14 @@ public class EnrollmentCardViewUnitTest {
     public void setVisibility_marksEnrollmentAsNotFailed() {
         mView.setup(mActivity);
         mView.setErrors(new ErrorWithResponse(422,
-                stringFromFixture("responses/unionpay_enrollment_error_response.json")));
+                stringFromFixture("responses/unionpay_sms_code_error_response.json")));
         assertTrue(mView.hasFailedEnrollment());
 
         mView.setVisibility(GONE);
         assertFalse(mView.hasFailedEnrollment());
 
         mView.setErrors(new ErrorWithResponse(422,
-                stringFromFixture("responses/unionpay_enrollment_error_response.json")));
+                stringFromFixture("responses/unionpay_sms_code_error_response.json")));
         assertTrue(mView.hasFailedEnrollment());
 
         mView.setVisibility(VISIBLE);

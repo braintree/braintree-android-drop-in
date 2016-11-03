@@ -294,18 +294,14 @@ public class AddCardActivityUnitTest {
                 .configuration(new TestConfigurationBuilder()
                         .creditCards(getSupportedCardConfiguration())
                         .challenges("cvv", "postal_code")
-                        .unionPay(new TestUnionPayConfigurationBuilder()
-                                .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
-                .errorResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, 422,
+                .errorResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, 422,
                         stringFromFixture("responses/credit_card_error_response.json"));
         mActivity.dropInRequest = new DropInRequest()
                 .clientToken(stringFromFixture("client_token.json"));
         setup(httpClient);
 
-        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
+        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         mAddCardView.findViewById(R.id.bt_button).performClick();
         setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
         setText(mEditCardView, R.id.bt_card_form_cvv, "123");
@@ -322,6 +318,34 @@ public class AddCardActivityUnitTest {
                 mEditCardView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_invalid),
                 mEditCardView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
+    }
+
+    @Test
+    public void unionPayValidationErrorsAreShownToTheUser() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .unionPay(new TestUnionPayConfigurationBuilder()
+                                .enabled(true))
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
+                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
+                .errorResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, 422,
+                        stringFromFixture("responses/unionpay_enrollment_error_response.json"));
+        mActivity.dropInRequest = new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json"));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "123");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "12345678");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
+                mEditCardView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_country_code_invalid),
                 mEditCardView.getCardForm().getCountryCodeEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_mobile_number_invalid),
@@ -341,7 +365,7 @@ public class AddCardActivityUnitTest {
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"))
                 .errorResponse("", 422,
-                        stringFromFixture("responses/unionpay_enrollment_error_response.json"));
+                        stringFromFixture("responses/unionpay_sms_code_error_response.json"));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
