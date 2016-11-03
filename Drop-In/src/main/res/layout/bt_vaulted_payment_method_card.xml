@@ -31,7 +31,9 @@
             android:id="@+id/bt_payment_method_title"/>
 
         <TextView
+            tools:targetApi="jelly_bean_mr1"
             android:id="@+id/bt_payment_method_description"
+            android:layoutDirection="ltr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="5dp"

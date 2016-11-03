@@ -14,6 +14,7 @@
             style="@style/bt_text_input_layout"
             android:paddingLeft="@dimen/bt_edit_text_icon_padding"
             android:paddingStart="@dimen/bt_edit_text_icon_padding"
+            android:paddingEnd="0dp"
             android:labelFor="@+id/bt_sms_code">
 
             <com.braintreepayments.cardform.view.ErrorEditText
