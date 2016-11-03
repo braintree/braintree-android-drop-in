@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<resources>
+    <string name="bt_descriptor_visa">ויזה</string>
+    <string name="bt_descriptor_mastercard">מאסטרקארד</string>
+    <string name="bt_descriptor_amex">Amex</string>
+    <string name="bt_descriptor_jcb">JCB</string>
+    <string name="bt_descriptor_discover">Discover</string>
+    <string name="bt_descriptor_diners">Diners</string>
+    <string name="bt_descriptor_maestro">Maestro</string>
+    <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">כרטיס אשראי</string>
+
+    <string name="bt_recent">מיקומים אחרונים</string>
+    <string name="bt_other">אחר</string>
+    <string name="bt_select_payment_method">בחר שיטת תשלום</string>
+    <string name="bt_add_card">הוסף כרטיס</string>
+    <string name="bt_next">הבא</string>
+    <string name="bt_confirm">אישור</string>
+    <string name="bt_scan_with_card_io">סרוק עם card.io</string>
+    <string name="bt_sms_code">קוד SMS</string>
+    <string name="bt_sms_code_required">קוד SMS נדרש</string>
+    <string name="bt_use_a_different_phone_number">השתמש במספר טלפון אחר</string>
+    <string name="bt_sms_code_sent_to">הקלד את קוד ה-SMS שנשלח אל %s</string>
+    <string name="bt_card_details">פרטי כרטיס אשראי</string>
+    <string name="bt_confirm_enrollment">אשר את הרישום</string>
+    <string name="bt_postal_code_invalid">המיקוד לא חוקי</string>
+    <string name="bt_country_code_invalid">קוד המדינה לא חוקי</string>
+    <string name="bt_mobile_number_invalid">מספר הטלפון הנייד לא חוקי</string>
+    <string name="bt_card_not_accepted">כרטיס האשראי לא התקבל</string>
+    <string name="bt_unionpay_sms_code_invalid">קוד SMS לא חוקי</string>
+    <string name="bt_unionpay_mobile_number_explanation">ייתכן שיידרש רישום עבור כרטיס זה. קוד SMS יישלח למספר זה, אם נדרש.</string>
+</resources>

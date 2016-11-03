@@ -1,30 +1,35 @@
 <?xml version="1.0"?>
 <resources>
-    <string name="bt_form_pay_with_card_header">Mit Kreditkarte bezahlen</string>
-
-    <string name="bt_invalid_card">Kreditkartendaten sind ung&#xFC;ltig.</string>
-
-    <string name="bt_choose_payment_method">Zahlungsquelle w&#xE4;hlen</string>
-    <string name="bt_change_payment_method">Zahlungsmethode &#xE4;ndern</string>
-    <string name="bt_add_new_payment_method">Neue Zahlungsmethode hinzuf&#xFC;gen</string>
-    <string name="bt_add_payment_method">Zahlungsquelle hinzuf&#xFC;gen</string>
-
-    <string name="bt_default_submit_button_text">EINKAUFEN</string>
-    <string name="bt_default_action_bar_text">Einkaufen</string>
-
-    <!-- Note: %s is a place holder and should be left in translated strings -->
-    <string name="bt_card_descriptor">endet mit %s</string>
-
-    <string name="bt_pay_with_paypal">Mit PayPal zahlen</string>
-    <string name="bt_pay_with_venmo">Zahlen Sie mit Venmo</string>
-
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
-    <string name="bt_descriptor_amex">AMEX</string>
+    <string name="bt_descriptor_amex">Amex</string>
     <string name="bt_descriptor_jcb">JCB</string>
     <string name="bt_descriptor_discover">Discover</string>
     <string name="bt_descriptor_diners">Diners</string>
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
     <string name="bt_descriptor_unknown">Kreditkarte</string>
+
+    <string name="bt_recent">Zuletzt verwendet</string>
+    <string name="bt_other">Sonstige</string>
+    <string name="bt_select_payment_method">Zahlungsquelle auswählen</string>
+    <string name="bt_add_card">Kreditkarte hinzufügen</string>
+    <string name="bt_next">Weiter</string>
+    <string name="bt_confirm">Bestätigen</string>
+    <string name="bt_scan_with_card_io">Mit card.io einlesen</string>
+    <string name="bt_sms_code">SMS Code</string>
+    <string name="bt_sms_code_required">SMS Code ist erforderlich</string>
+    <string name="bt_use_a_different_phone_number">Andere Nummer verwenden</string>
+    <string name="bt_sms_code_sent_to">Geben Sie den SMS Code ein, der an %s gesendet wurde</string>
+    <string name="bt_card_details">Kreditkartendaten</string>
+    <string name="bt_confirm_enrollment">Registrierung bestätigen</string>
+    <string name="bt_postal_code_invalid">PLZ ist ungültig</string>
+    <string name="bt_country_code_invalid">Ländervorwahl ist ungültig</string>
+    <string name="bt_mobile_number_invalid">Handynummer ist ungültig</string>
+    <string name="bt_card_not_accepted">Karte nicht akzeptiert</string>
+    <string name="bt_unionpay_sms_code_invalid">SMS Code ist ungültig</string>
+    <string name="bt_unionpay_mobile_number_explanation">Bei dieser Karte ist ggf. eine Registrierung erforderlich. Bei Bedarf wird ein SMS Code an diese Nummer gesendet.</string>
 </resources>

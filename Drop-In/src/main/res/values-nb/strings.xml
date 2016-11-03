@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<resources>
+    <string name="bt_descriptor_visa">Visa</string>
+    <string name="bt_descriptor_mastercard">MasterCard</string>
+    <string name="bt_descriptor_amex">Amex</string>
+    <string name="bt_descriptor_jcb">JCB</string>
+    <string name="bt_descriptor_discover">Discover</string>
+    <string name="bt_descriptor_diners">Diners</string>
+    <string name="bt_descriptor_maestro">Maestro</string>
+    <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">Betalingskort</string>
+
+    <string name="bt_recent">Nylig</string>
+    <string name="bt_other">Annet</string>
+    <string name="bt_select_payment_method">Velg betalingsmetode</string>
+    <string name="bt_add_card">Legg til et kort</string>
+    <string name="bt_next">Neste</string>
+    <string name="bt_confirm">Bekreft</string>
+    <string name="bt_scan_with_card_io">Skann med card.io</string>
+    <string name="bt_sms_code">SMS-kode</string>
+    <string name="bt_sms_code_required">SMS-koden er obligatorisk</string>
+    <string name="bt_use_a_different_phone_number">Bruk et annet telefonnummer</string>
+    <string name="bt_sms_code_sent_to">Skriv inn SMS-koden vi sendte til %s</string>
+    <string name="bt_card_details">Kortdetaljer</string>
+    <string name="bt_confirm_enrollment">Bekreft registreringen</string>
+    <string name="bt_postal_code_invalid">Postnummeret er ugyldig</string>
+    <string name="bt_country_code_invalid">Landskoden er ugyldig</string>
+    <string name="bt_mobile_number_invalid">Mobilnummeret er ugyldig</string>
+    <string name="bt_card_not_accepted">Kortet ble avvist</string>
+    <string name="bt_unionpay_sms_code_invalid">SMS-koden er ugyldig</string>
+    <string name="bt_unionpay_mobile_number_explanation">Dette kortet må muligens registreres. En SMS-kode sendes til dette nummeret hvis nødvendig.</string>
+</resources>

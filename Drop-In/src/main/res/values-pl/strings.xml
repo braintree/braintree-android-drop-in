@@ -1,23 +1,5 @@
 <?xml version="1.0"?>
 <resources>
-    <string name="bt_form_pay_with_card_header">ZAP&#x141;A&#x106; KART&#x104;</string>
-
-    <string name="bt_invalid_card">Dane karty s&#x105; nieprawid&#x142;owe</string>
-
-    <string name="bt_choose_payment_method">Wybierz form&#x119; p&#x142;atno&#x15B;ci</string>
-    <string name="bt_change_payment_method">Zmie&#x144; form&#x119; p&#x142;atno&#x15B;ci</string>
-    <string name="bt_add_new_payment_method">Dodaj now&#x105; form&#x119; p&#x142;atno&#x15B;ci</string>
-    <string name="bt_add_payment_method">Dodaj form&#x119; p&#x142;atno&#x15B;ci</string>
-
-    <string name="bt_default_submit_button_text">KUPUJ</string>
-    <string name="bt_default_action_bar_text">Kupuj</string>
-
-    <!-- Note: %s is a place holder and should be left in translated strings -->
-    <string name="bt_card_descriptor">ko&#x144;czy si&#x119; cyframi %s</string>
-
-    <string name="bt_pay_with_paypal">Zap&#x142;a&#x107; w systemie PayPal</string>
-    <string name="bt_pay_with_venmo">Zap&#x142;a&#x107; w systemie Venmo</string>
-
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
     <string name="bt_descriptor_amex">Amex</string>
@@ -26,5 +8,28 @@
     <string name="bt_descriptor_diners">Diners</string>
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
-    <string name="bt_descriptor_unknown">Karta</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">Karta kredytowa lub debetowa</string>
+
+    <string name="bt_recent">Ostatnie</string>
+    <string name="bt_other">Inne</string>
+    <string name="bt_select_payment_method">Wybierz formę płatności</string>
+    <string name="bt_add_card">Dodaj kartę</string>
+    <string name="bt_next">Dalej</string>
+    <string name="bt_confirm">Potwierdź</string>
+    <string name="bt_scan_with_card_io">Zeskanuj przy użyciu card.io</string>
+    <string name="bt_sms_code">Kod z wiadomości SMS</string>
+    <string name="bt_sms_code_required">Wymagane jest podanie kodu z wiadomości SMS</string>
+    <string name="bt_use_a_different_phone_number">Podaj inny numer telefonu</string>
+    <string name="bt_sms_code_sent_to">Wpisz kod z wiadomości SMS wysłanej pod numer %s</string>
+    <string name="bt_card_details">Dane karty</string>
+    <string name="bt_confirm_enrollment">Potwierdź rejestrację</string>
+    <string name="bt_postal_code_invalid">Kod pocztowy jest nieprawidłowy</string>
+    <string name="bt_country_code_invalid">Kod kraju jest nieprawidłowy</string>
+    <string name="bt_mobile_number_invalid">Numer telefonu komórkowego jest nieprawidłowy</string>
+    <string name="bt_card_not_accepted">Karta nie została zaakceptowana</string>
+    <string name="bt_unionpay_sms_code_invalid">Kod z wiadomości SMS jest nieprawidłowy</string>
+    <string name="bt_unionpay_mobile_number_explanation">W przypadku tej karty może być wymagane dokonanie rejestracji. W razie potrzeby wiadomość SMS z kodem zostanie wysłana na ten numer.</string>
 </resources>

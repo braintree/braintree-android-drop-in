@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<resources>
+    <string name="bt_descriptor_visa">Visa</string>
+    <string name="bt_descriptor_mastercard">MasterCard</string>
+    <string name="bt_descriptor_amex">Amex</string>
+    <string name="bt_descriptor_jcb">JCB</string>
+    <string name="bt_descriptor_discover">Discover</string>
+    <string name="bt_descriptor_diners">Diners</string>
+    <string name="bt_descriptor_maestro">Maestro</string>
+    <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">بطاقة ائتمان أو سحب</string>
+
+    <string name="bt_recent">الأحدث</string>
+    <string name="bt_other">غير ذلك</string>
+    <string name="bt_select_payment_method">اختر طريقة الدفع</string>
+    <string name="bt_add_card">إضافة بطاقة</string>
+    <string name="bt_next">التالي</string>
+    <string name="bt_confirm">تأكيد</string>
+    <string name="bt_scan_with_card_io">مسح باستخدام card.io‏</string>
+    <string name="bt_sms_code">كود الرسالة النصية القصيرة</string>
+    <string name="bt_sms_code_required">يجب إدخال كود الرسالة النصية القصيرة</string>
+    <string name="bt_use_a_different_phone_number">استخدم رقم هاتف مختلفاً</string>
+    <string name="bt_sms_code_sent_to">أدخل كود الرسالة النصية القصيرة المرسل إلى ‎%s‎‏</string>
+    <string name="bt_card_details">بيانات البطاقة</string>
+    <string name="bt_confirm_enrollment">تأكيد التسجيل</string>
+    <string name="bt_postal_code_invalid">الرمز البريدي غير صالح</string>
+    <string name="bt_country_code_invalid">كود الدولة غير صالح</string>
+    <string name="bt_mobile_number_invalid">رقم الجوال غير صالح</string>
+    <string name="bt_card_not_accepted">البطاقة غير مقبولة</string>
+    <string name="bt_unionpay_sms_code_invalid">كود الرسالة النصية القصيرة غير صالح</string>
+    <string name="bt_unionpay_mobile_number_explanation">قد يُشترط التسجيل لهذه البطاقة. سيتم إرسال كود في رسالة نصية قصيرة إلى هذا الرقم إذا لزم الأمر.</string>
+</resources>

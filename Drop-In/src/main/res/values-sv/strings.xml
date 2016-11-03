@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<resources>
+    <string name="bt_descriptor_visa">Visa</string>
+    <string name="bt_descriptor_mastercard">MasterCard</string>
+    <string name="bt_descriptor_amex">Amex</string>
+    <string name="bt_descriptor_jcb">JCB</string>
+    <string name="bt_descriptor_discover">Discover</string>
+    <string name="bt_descriptor_diners">Diners</string>
+    <string name="bt_descriptor_maestro">Maestro</string>
+    <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">Betalkort</string>
+
+    <string name="bt_recent">Senaste</string>
+    <string name="bt_other">Annat</string>
+    <string name="bt_select_payment_method">Välj betalningsmetod</string>
+    <string name="bt_add_card">Lägg till kort</string>
+    <string name="bt_next">Nästa</string>
+    <string name="bt_confirm">Bekräfta</string>
+    <string name="bt_scan_with_card_io">Skanna med card.io</string>
+    <string name="bt_sms_code">Sms-kod</string>
+    <string name="bt_sms_code_required">Sms-kod måste anges</string>
+    <string name="bt_use_a_different_phone_number">Använd ett annat mobilnummer</string>
+    <string name="bt_sms_code_sent_to">Ange sms-koden som skickats till %s</string>
+    <string name="bt_card_details">Kortuppgifter</string>
+    <string name="bt_confirm_enrollment">Bekräfta registreringen</string>
+    <string name="bt_postal_code_invalid">Postnumret är ogiltigt</string>
+    <string name="bt_country_code_invalid">Landskoden är ogiltig</string>
+    <string name="bt_mobile_number_invalid">Mobilnumret är ogiltigt</string>
+    <string name="bt_card_not_accepted">Kortet accepteras emot</string>
+    <string name="bt_unionpay_sms_code_invalid">Sms-koden är ogiltig</string>
+    <string name="bt_unionpay_mobile_number_explanation">Du kanske måste registrera det här kortet. En sms-kod skickas till det här numret om det behövs.</string>
+</resources>

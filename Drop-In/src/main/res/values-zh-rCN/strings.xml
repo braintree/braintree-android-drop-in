@@ -1,23 +1,5 @@
 <?xml version="1.0"?>
 <resources>
-    <string name="bt_form_pay_with_card_header">&#x4F7F;&#x7528;&#x5361;&#x4ED8;&#x6B3E;</string>
-
-    <string name="bt_invalid_card">&#x5361;&#x4FE1;&#x606F;&#x65E0;&#x6548;</string>
-
-    <string name="bt_choose_payment_method">&#x9009;&#x62E9;&#x4ED8;&#x6B3E;&#x65B9;&#x5F0F;</string>
-    <string name="bt_change_payment_method">&#x66F4;&#x6539;&#x4ED8;&#x6B3E;&#x65B9;&#x5F0F;</string>
-    <string name="bt_add_new_payment_method">&#x6DFB;&#x52A0;&#x65B0;&#x4ED8;&#x6B3E;&#x65B9;&#x5F0F;</string>
-    <string name="bt_add_payment_method">&#x6DFB;&#x52A0;&#x4ED8;&#x6B3E;&#x65B9;&#x5F0F;</string>
-
-    <string name="bt_default_submit_button_text">&#x8D2D;&#x7269;</string>
-    <string name="bt_default_action_bar_text">&#x8D2D;&#x7269;</string>
-
-    <!-- Note: %s is a place holder and should be left in translated strings -->
-    <string name="bt_card_descriptor">&#x5C3E;&#x53F7;&#x4E3A;%s</string>
-
-    <string name="bt_pay_with_paypal">&#x7528;PayPal&#x4ED8;&#x6B3E;</string>
-    <string name="bt_pay_with_venmo">&#x7528;Venmo&#x4ED8;&#x6B3E;</string>
-
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
     <string name="bt_descriptor_amex">Amex</string>
@@ -25,6 +7,29 @@
     <string name="bt_descriptor_discover">Discover</string>
     <string name="bt_descriptor_diners">Diners</string>
     <string name="bt_descriptor_maestro">Maestro</string>
-    <string name="bt_descriptor_paypal">PayPal</string>
-    <string name="bt_descriptor_unknown">&#x5361;</string>
+    <string name="bt_descriptor_paypal">贝宝</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">银联</string>
+    <string name="bt_descriptor_unknown">信用卡或借记卡</string>
+
+    <string name="bt_recent">最近</string>
+    <string name="bt_other">其他</string>
+    <string name="bt_select_payment_method">选择付款方式</string>
+    <string name="bt_add_card">添加卡</string>
+    <string name="bt_next">下一步</string>
+    <string name="bt_confirm">确认</string>
+    <string name="bt_scan_with_card_io">用card.io扫描</string>
+    <string name="bt_sms_code">短信验证码</string>
+    <string name="bt_sms_code_required">短信验证码为必填项</string>
+    <string name="bt_use_a_different_phone_number">使用其他电话号码</string>
+    <string name="bt_sms_code_sent_to">输入发送到 %s 的短信验证码</string>
+    <string name="bt_card_details">卡详细信息</string>
+    <string name="bt_confirm_enrollment">确认登记</string>
+    <string name="bt_postal_code_invalid">邮政编码无效</string>
+    <string name="bt_country_code_invalid">国家或地区代码无效</string>
+    <string name="bt_mobile_number_invalid">手机号码无效</string>
+    <string name="bt_card_not_accepted">卡未被接受</string>
+    <string name="bt_unionpay_sms_code_invalid">短信验证码无效</string>
+    <string name="bt_unionpay_mobile_number_explanation">此卡可能需要登记。如果需要，短信验证码将发送到此号码。</string>
 </resources>

@@ -1,23 +1,5 @@
 <?xml version="1.0"?>
 <resources>
-    <string name="bt_form_pay_with_card_header">Betalen met een creditcard</string>
-
-    <string name="bt_invalid_card">Creditcardgegevens ongeldig.</string>
-
-    <string name="bt_choose_payment_method">Betaalmethode kiezen</string>
-    <string name="bt_change_payment_method">Betaalmethode wijzigen</string>
-    <string name="bt_add_new_payment_method">Nieuwe betaalmethode toevoegen</string>
-    <string name="bt_add_payment_method">Betaalmethode toevoegen</string>
-
-    <string name="bt_default_submit_button_text">AANKOOP</string>
-    <string name="bt_default_action_bar_text">Aankoop</string>
-
-    <!-- Note: %s is a place holder and should be left in translated strings -->
-    <string name="bt_card_descriptor">eindigend op %s</string>
-
-    <string name="bt_pay_with_paypal">Betalen met PayPal</string>
-    <string name="bt_pay_with_venmo">Betalen met Venno</string>
-
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
     <string name="bt_descriptor_amex">Amex</string>
@@ -26,5 +8,28 @@
     <string name="bt_descriptor_diners">Diners</string>
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
     <string name="bt_descriptor_unknown">Creditcard</string>
+
+    <string name="bt_recent">Recent</string>
+    <string name="bt_other">Overige</string>
+    <string name="bt_select_payment_method">Betaalmethode selecteren</string>
+    <string name="bt_add_card">Creditcard toevoegen</string>
+    <string name="bt_next">Volgende</string>
+    <string name="bt_confirm">Bevestigen</string>
+    <string name="bt_scan_with_card_io">Met card.io scannen</string>
+    <string name="bt_sms_code">SMS-code</string>
+    <string name="bt_sms_code_required">Sms-code is verplicht</string>
+    <string name="bt_use_a_different_phone_number">Ander telefoonnummer gebruiken</string>
+    <string name="bt_sms_code_sent_to">Voer de sms-code in die naar %s is gestuurd</string>
+    <string name="bt_card_details">Kaartgegevens</string>
+    <string name="bt_confirm_enrollment">Aanmelding bevestigen</string>
+    <string name="bt_postal_code_invalid">Postcode is ongeldig</string>
+    <string name="bt_country_code_invalid">Landcode is ongeldig</string>
+    <string name="bt_mobile_number_invalid">Mobiel nummer is ongeldig</string>
+    <string name="bt_card_not_accepted">Kaart niet geaccepteerd</string>
+    <string name="bt_unionpay_sms_code_invalid">Sms-code is ongeldig</string>
+    <string name="bt_unionpay_mobile_number_explanation">Aanmelding kan vereist zijn voor deze kaart. Indien nodig wordt er een sms-code verzonden naar dit nummer.</string>
 </resources>

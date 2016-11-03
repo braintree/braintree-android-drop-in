@@ -1,23 +1,5 @@
 <?xml version="1.0"?>
 <resources>
-    <string name="bt_form_pay_with_card_header">B&#x130;R KARTLA &#xD6;DEME YAPIN</string>
-
-    <string name="bt_invalid_card">Kart bilgileri ge&#xE7;ersiz</string>
-
-    <string name="bt_choose_payment_method">&#xD6;deme Y&#xF6;ntemi Se&#xE7;in</string>
-    <string name="bt_change_payment_method">&#xD6;deme Y&#xF6;ntemini De&#x11F;i&#x15F;tir</string>
-    <string name="bt_add_new_payment_method">Yeni &#xD6;deme Y&#xF6;ntemi Ekleyin</string>
-    <string name="bt_add_payment_method">&#xD6;deme Y&#xF6;ntemi Ekleyin</string>
-
-    <string name="bt_default_submit_button_text">Sat&#x131;n Al&#x131;n</string>
-    <string name="bt_default_action_bar_text">Sat&#x131;n Al&#x131;n</string>
-
-    <!-- Note: %s is a place holder and should be left in translated strings -->
-    <string name="bt_card_descriptor">sonu &#x15F;u numarayla biten %s</string>
-
-    <string name="bt_pay_with_paypal">PayPal ile &#xF6;deyin</string>
-    <string name="bt_pay_with_venmo">Venmo ile &#xF6;deyin </string>
-
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
     <string name="bt_descriptor_amex">Amex</string>
@@ -26,5 +8,28 @@
     <string name="bt_descriptor_diners">Diners</string>
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
-    <string name="bt_descriptor_unknown">Kart</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">Kredi veya Banka Kartı</string>
+
+    <string name="bt_recent">Son</string>
+    <string name="bt_other">Diğer</string>
+    <string name="bt_select_payment_method">Ödeme Yöntemi Seçin</string>
+    <string name="bt_add_card">Kart Ekleyin</string>
+    <string name="bt_next">Sonraki</string>
+    <string name="bt_confirm">Onaylayın</string>
+    <string name="bt_scan_with_card_io">card.io ile tarayın</string>
+    <string name="bt_sms_code">SMS kodu</string>
+    <string name="bt_sms_code_required">SMS kodu gereklidir</string>
+    <string name="bt_use_a_different_phone_number">Farklı bir telefon numarası kullanın</string>
+    <string name="bt_sms_code_sent_to">%s numarasına gönderdiğimiz SMS kodunu girin</string>
+    <string name="bt_card_details">Kart Bilgileri</string>
+    <string name="bt_confirm_enrollment">Kaydı Onaylayın</string>
+    <string name="bt_postal_code_invalid">Posta kodu geçersiz</string>
+    <string name="bt_country_code_invalid">Ülke kodu geçersiz</string>
+    <string name="bt_mobile_number_invalid">Cep telefonu numarası geçersiz</string>
+    <string name="bt_card_not_accepted">Kart kabul edilmedi</string>
+    <string name="bt_unionpay_sms_code_invalid">SMS kodu geçersiz</string>
+    <string name="bt_unionpay_mobile_number_explanation">Bu kart için kayıt gerekebilir. Gerekli olması halinde bu numaraya bir SMS kodu gönderilecektir.</string>
 </resources>

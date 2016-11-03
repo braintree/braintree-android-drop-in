@@ -1,30 +1,35 @@
 <?xml version="1.0"?>
 <resources>
-    <string name="bt_form_pay_with_card_header">Paga con una carta</string>
-
-    <string name="bt_invalid_card">I dati della carta non sono validi</string>
-
-    <string name="bt_choose_payment_method">Seleziona metodo di pagamento</string>
-    <string name="bt_change_payment_method">Modifica metodo di pagamento</string>
-    <string name="bt_add_new_payment_method">Aggiungi nuovo metodo di pagamento</string>
-    <string name="bt_add_payment_method">Aggiungi metodo di pagamento</string>
-
-    <string name="bt_default_submit_button_text">ACQUISTO</string>
-    <string name="bt_default_action_bar_text">Acquisto</string>
-
-    <!-- Note: %s is a place holder and should be left in translated strings -->
-    <string name="bt_card_descriptor">termina in %s</string>
-
-    <string name="bt_pay_with_paypal">Paga con PayPal</string>
-    <string name="bt_pay_with_venmo">Paga con Venmo</string>
-
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
-    <string name="bt_descriptor_amex">Amex (American Express)</string>
+    <string name="bt_descriptor_amex">Amex</string>
     <string name="bt_descriptor_jcb">JCB</string>
     <string name="bt_descriptor_discover">Discover</string>
     <string name="bt_descriptor_diners">Diners</string>
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
-    <string name="bt_descriptor_unknown">Carta</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">Carta di credito o di debito (bancomat)</string>
+
+    <string name="bt_recent">Recenti</string>
+    <string name="bt_other">Altro</string>
+    <string name="bt_select_payment_method">Seleziona il metodo di pagamento</string>
+    <string name="bt_add_card">Aggiungi carta</string>
+    <string name="bt_next">Successiva</string>
+    <string name="bt_confirm">Conferma</string>
+    <string name="bt_scan_with_card_io">Fai scansione con card.io</string>
+    <string name="bt_sms_code">Codice tramite SMS</string>
+    <string name="bt_sms_code_required">Il codice ricevuto tramite SMS è obbligatorio</string>
+    <string name="bt_use_a_different_phone_number">Usa un altro numero di telefono</string>
+    <string name="bt_sms_code_sent_to">Immetti il codice ricevuto tramite SMS al numero %s</string>
+    <string name="bt_card_details">Dati carta</string>
+    <string name="bt_confirm_enrollment">Conferma la registrazione</string>
+    <string name="bt_postal_code_invalid">Il CAP non è valido</string>
+    <string name="bt_country_code_invalid">Il codice Paese non è valido</string>
+    <string name="bt_mobile_number_invalid">Il numero di cellulare non è valido</string>
+    <string name="bt_card_not_accepted">Carta non accettata</string>
+    <string name="bt_unionpay_sms_code_invalid">Il codice ricevuto tramite SMS non è valido</string>
+    <string name="bt_unionpay_mobile_number_explanation">Questa carta potrebbe richiedere la registrazione. Se necessario, verrà inviato un codice tramite SMS a questo numero.</string>
 </resources>

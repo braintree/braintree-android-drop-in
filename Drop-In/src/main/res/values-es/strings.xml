@@ -1,23 +1,5 @@
 <?xml version="1.0"?>
 <resources>
-    <string name="bt_form_pay_with_card_header">Pagar Con Tarjeta</string>
-
-    <string name="bt_invalid_card">La informaci&#xF3;n de la tarjeta no es v&#xE1;lida.</string>
-
-    <string name="bt_choose_payment_method">Seleccionar forma de pago</string>
-    <string name="bt_change_payment_method">Cambiar forma de pago</string>
-    <string name="bt_add_new_payment_method">A&#xF1;adir nueva forma de pago</string>
-    <string name="bt_add_payment_method">A&#xF1;adir forma de pago</string>
-
-    <string name="bt_default_submit_button_text">COMPRAR</string>
-    <string name="bt_default_action_bar_text">Comprar</string>
-
-    <!-- Note: %s is a place holder and should be left in translated strings -->
-    <string name="bt_card_descriptor">termina en %s</string>
-
-    <string name="bt_pay_with_paypal">Pagar con PayPal</string>
-    <string name="bt_pay_with_venmo">Pagar con Venmo</string>
-
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
     <string name="bt_descriptor_amex">Amex</string>
@@ -26,5 +8,28 @@
     <string name="bt_descriptor_diners">Diners</string>
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
-    <string name="bt_descriptor_unknown">Tarjeta</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">Credit or Debit Card</string>
+
+    <string name="bt_recent">Reciente(s)</string>
+    <string name="bt_other">Otra</string>
+    <string name="bt_select_payment_method">Seleccionar forma de pago</string>
+    <string name="bt_add_card">Añadir tarjeta</string>
+    <string name="bt_next">Siguiente</string>
+    <string name="bt_confirm">Confirmar</string>
+    <string name="bt_scan_with_card_io">Escanear con card.io</string>
+    <string name="bt_sms_code">Código SMS</string>
+    <string name="bt_sms_code_required">El código SMS es obligatorio</string>
+    <string name="bt_use_a_different_phone_number">Usar otro número de teléfono</string>
+    <string name="bt_sms_code_sent_to">Introduce el código SMS enviado al %s</string>
+    <string name="bt_card_details">Datos de la tarjeta</string>
+    <string name="bt_confirm_enrollment">Confirmar inscripción</string>
+    <string name="bt_postal_code_invalid">Código postal no válido</string>
+    <string name="bt_country_code_invalid">Código de país no válido</string>
+    <string name="bt_mobile_number_invalid">Número de móvil no válido</string>
+    <string name="bt_card_not_accepted">Tarjeta no aceptada</string>
+    <string name="bt_unionpay_sms_code_invalid">Código SMS no válido</string>
+    <string name="bt_unionpay_mobile_number_explanation">Puede que para esta tarjeta sea necesario inscribirse. Se enviará un código SMS a este número si es necesario.</string>
 </resources>

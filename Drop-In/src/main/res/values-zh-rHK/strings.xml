@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<resources>
+    <string name="bt_descriptor_visa">Visa</string>
+    <string name="bt_descriptor_mastercard">MasterCard</string>
+    <string name="bt_descriptor_amex">Amex</string>
+    <string name="bt_descriptor_jcb">JCB</string>
+    <string name="bt_descriptor_discover">Discover</string>
+    <string name="bt_descriptor_diners">Diners</string>
+    <string name="bt_descriptor_maestro">Maestro</string>
+    <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">信用卡或扣帳卡</string>
+
+    <string name="bt_recent">最近使用</string>
+    <string name="bt_other">其他</string>
+    <string name="bt_select_payment_method">選擇付款方式</string>
+    <string name="bt_add_card">新增卡</string>
+    <string name="bt_next">下一步</string>
+    <string name="bt_confirm">確認</string>
+    <string name="bt_scan_with_card_io">使用 card.io 功能掃瞄</string>
+    <string name="bt_sms_code">短訊確認碼</string>
+    <string name="bt_sms_code_required">必須填寫短訊確認碼</string>
+    <string name="bt_use_a_different_phone_number">使用其他手機號碼</string>
+    <string name="bt_sms_code_sent_to">請輸入我們傳送到 %s 的短訊確認碼</string>
+    <string name="bt_card_details">卡資料</string>
+    <string name="bt_confirm_enrollment">確認登記</string>
+    <string name="bt_postal_code_invalid">郵遞區號無效</string>
+    <string name="bt_country_code_invalid">國家或地區代碼無效</string>
+    <string name="bt_mobile_number_invalid">手機號碼無效</string>
+    <string name="bt_card_not_accepted">卡不獲接受</string>
+    <string name="bt_unionpay_sms_code_invalid">短訊確認碼無效</string>
+    <string name="bt_unionpay_mobile_number_explanation">此卡或需要進行登記。如需要的話，系統將會發送短訊確認碼到這個手機號碼。</string>
+</resources>

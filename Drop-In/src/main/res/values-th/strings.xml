@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<resources>
+    <string name="bt_descriptor_visa">Visa</string>
+    <string name="bt_descriptor_mastercard">MasterCard</string>
+    <string name="bt_descriptor_amex">Amex</string>
+    <string name="bt_descriptor_jcb">JCB</string>
+    <string name="bt_descriptor_discover">Discover</string>
+    <string name="bt_descriptor_diners">Diners</string>
+    <string name="bt_descriptor_maestro">Maestro</string>
+    <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">บัตรเครดิตหรือบัตรเดบิต</string>
+
+    <string name="bt_recent">ล่าสุด</string>
+    <string name="bt_other">อื่นๆ</string>
+    <string name="bt_select_payment_method">เลือกวิธีการชำระเงิน</string>
+    <string name="bt_add_card">เพิ่มบัตร</string>
+    <string name="bt_next">ถัดไป</string>
+    <string name="bt_confirm">ยืนยัน</string>
+    <string name="bt_scan_with_card_io">สแกนด้วย card.io</string>
+    <string name="bt_sms_code">รหัส SMS</string>
+    <string name="bt_sms_code_required">ต้องระบุรหัส SMS</string>
+    <string name="bt_use_a_different_phone_number">โปรดใช้หมายเลขโทรศัพท์อื่น</string>
+    <string name="bt_sms_code_sent_to">ป้อนรหัส SMS ที่ส่งไปยัง %s</string>
+    <string name="bt_card_details">รายละเอียดบัตร</string>
+    <string name="bt_confirm_enrollment">ยืนยันการลงทะเบียน</string>
+    <string name="bt_postal_code_invalid">รหัสไปรษณีย์ไม่ถูกต้อง</string>
+    <string name="bt_country_code_invalid">รหัสประเทศไม่ถูกต้อง</string>
+    <string name="bt_mobile_number_invalid">หมายเลขโทรศัพท์มือถือไม่ถูกต้อง</string>
+    <string name="bt_card_not_accepted">ระบบไม่ยอมรับบัตร</string>
+    <string name="bt_unionpay_sms_code_invalid">รหัส SMS ไม่ถูกต้อง</string>
+    <string name="bt_unionpay_mobile_number_explanation">อาจต้องลงทะเบียนสำหรับบัตรนี้ ระบบจะส่งรหัส SMS ไปที่หมายเลขนี้ถ้าจำเป็น</string>
+</resources>

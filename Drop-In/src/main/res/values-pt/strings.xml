@@ -1,23 +1,5 @@
 <?xml version="1.0"?>
 <resources>
-    <string name="bt_form_pay_with_card_header">PAGAR COM UM CART&#xC3;O</string>
-
-    <string name="bt_invalid_card">As informa&#xE7;&#xF5;es do cart&#xE3;o s&#xE3;o inv&#xE1;lidas</string>
-
-    <string name="bt_choose_payment_method">Escolher meio de pagamento</string>
-    <string name="bt_change_payment_method">Alterar meio de pagamento</string>
-    <string name="bt_add_new_payment_method">Adicionar novo meio de pagamento</string>
-    <string name="bt_add_payment_method">Adicionar meio de pagamento</string>
-
-    <string name="bt_default_submit_button_text">COMPRAR</string>
-    <string name="bt_default_action_bar_text">Comprar</string>
-
-    <!-- Note: %s is a place holder and should be left in translated strings -->
-    <string name="bt_card_descriptor">terminado em %s</string>
-
-    <string name="bt_pay_with_paypal">Pagar com PayPal</string>
-    <string name="bt_pay_with_venmo">Pagar com Venmo</string>
-
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
     <string name="bt_descriptor_amex">Amex</string>
@@ -26,5 +8,28 @@
     <string name="bt_descriptor_diners">Diners</string>
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
-    <string name="bt_descriptor_unknown">Cart&#xE3;o</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">Cartão de crédito ou débito</string>
+
+    <string name="bt_recent">Recente</string>
+    <string name="bt_other">Outro</string>
+    <string name="bt_select_payment_method">Selecionar meio de pagamento</string>
+    <string name="bt_add_card">Adicionar cartão</string>
+    <string name="bt_next">Seguinte</string>
+    <string name="bt_confirm">Confirmar</string>
+    <string name="bt_scan_with_card_io">Digitalizar com card.io</string>
+    <string name="bt_sms_code">Código SMS</string>
+    <string name="bt_sms_code_required">O código SMS é obrigatório</string>
+    <string name="bt_use_a_different_phone_number">Usar outro número de telefone</string>
+    <string name="bt_sms_code_sent_to">Introduza o código SMS enviado para %s</string>
+    <string name="bt_card_details">Dados do cartão</string>
+    <string name="bt_confirm_enrollment">Confirmar registo</string>
+    <string name="bt_postal_code_invalid">O código postal é inválido</string>
+    <string name="bt_country_code_invalid">O código do país é inválido</string>
+    <string name="bt_mobile_number_invalid">O número de telemóvel é inválido</string>
+    <string name="bt_card_not_accepted">Cartão não aceite</string>
+    <string name="bt_unionpay_sms_code_invalid">O código SMS é inválido</string>
+    <string name="bt_unionpay_mobile_number_explanation">O registo poderá ser obrigatório para este cartão. Será enviado um código SMS para este número, se necessário.</string>
 </resources>
