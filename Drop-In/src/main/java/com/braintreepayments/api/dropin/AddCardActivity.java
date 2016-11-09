@@ -120,7 +120,10 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
                     .putExtra(DropInActivity.EXTRA_ERROR, e.getMessage());
             setResult(RESULT_FIRST_USER, intent);
             finish();
+            return;
         }
+
+        mBraintreeFragment.sendAnalyticsEvent("card.selected");
     }
 
     @VisibleForTesting
@@ -301,6 +304,8 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
+        mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
+
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(paymentMethod);
         Intent intent = new Intent()

@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:layout_margin="0dp"
     android:onClick="onBackgroundClicked"
-    android:background="@android:color/transparent">
+    android:background="@android:color/transparent"
+    tools:context=".DropInActivity">
 
     <LinearLayout
         android:id="@+id/bt_dropin_bottom_sheet"

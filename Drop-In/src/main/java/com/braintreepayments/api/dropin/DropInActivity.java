@@ -193,6 +193,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         slideDown(new AnimationFinishedListener() {
             @Override
             public void onAnimationFinished() {
+                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
+
                 DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, paymentMethodNonce);
 
                 DropInResult result = new DropInResult()
@@ -305,6 +307,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     public void onBackPressed() {
         if (!mSheetSlideDownPerformed) {
             mSheetSlideDownPerformed = true;
+            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.canceled");
+
             slideDown(new AnimationFinishedListener() {
                 @Override
                 public void onAnimationFinished() {
@@ -316,6 +320,8 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
 
     private void slideUp() {
         if (!mSheetSlideUpPerformed) {
+            mBraintreeFragment.sendAnalyticsEvent("appeared");
+
             mSheetSlideUpPerformed = true;
             mBottomSheet.startAnimation(loadAnimation(this, R.anim.bt_slide_in_up));
         }

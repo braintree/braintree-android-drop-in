@@ -25,6 +25,7 @@ import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.api.test.TestConfigurationBuilder.TestUnionPayConfigurationBuilder;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,6 +88,13 @@ public class AddCardActivityUnitTest {
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
         assertEquals("A client token or client key must be specified in the DropInRequest", mShadowActivity.getResultIntent()
                 .getStringExtra(DropInActivity.EXTRA_ERROR));
+    }
+
+    @Test
+    public void sendsAnalyticsEventWhenStarted() {
+        setup(mock(BraintreeFragment.class));
+
+        verify(mActivity.braintreeFragment).sendAnalyticsEvent("card.selected");
     }
 
     @Test
@@ -380,6 +388,16 @@ public class AddCardActivityUnitTest {
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_unionpay_sms_code_invalid),
                 ((ErrorEditText) mEnrollmentCardView.findViewById(R.id.bt_sms_code)).getTextInputLayoutParent().getError());
+    }
+
+    @Test
+    public void onPaymentMethodNonceCreated_sendsAnalyticsEvent() throws JSONException {
+        setup(mock(BraintreeFragment.class));
+
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json")));
+
+        verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit.success");
     }
 
     @Test

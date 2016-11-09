@@ -44,6 +44,7 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -90,6 +91,34 @@ public class DropInActivityUnitTest {
         setup(new BraintreeUnitTestHttpClient());
 
         Assert.assertEquals("dropin2", getIntegrationType(mActivity.braintreeFragment));
+    }
+
+    @Test
+    public void sendsAnalyticsEventWhenShown() {
+        setup(mock(BraintreeFragment.class));
+
+        verify(mActivity.braintreeFragment).sendAnalyticsEvent("appeared");
+    }
+
+    @Test
+    public void doesNotSendAnalyticsEventTwiceWhenRecreated() {
+        BraintreeFragment fragment = mock(BraintreeFragment.class);
+        setup(fragment);
+
+        Bundle bundle = new Bundle();
+        mActivityController.saveInstanceState(bundle)
+                .pause()
+                .stop()
+                .destroy();
+
+        mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class);
+        mActivity = (DropInUnitTestActivity) mActivityController.get();
+        mActivity.braintreeFragment = fragment;
+        mActivityController.setup(bundle);
+        mActivity.braintreeFragment.onAttach(mActivity);
+        mActivity.braintreeFragment.onResume();
+
+        verify(mActivity.braintreeFragment, times(1)).sendAnalyticsEvent("appeared");
     }
 
     @Test
@@ -206,6 +235,34 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void pressingBackSendsAnalyticsEvent() {
+        setup(mock(BraintreeFragment.class));
+
+        mActivity.onBackPressed();
+
+        verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit.canceled");
+    }
+
+    @Test
+    public void touchingOutsideSheetTriggersBackPress() {
+        setup(mock(BraintreeFragment.class));
+
+        mActivity.onBackgroundClicked(null);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(Activity.RESULT_CANCELED, mShadowActivity.getResultCode());
+    }
+
+    @Test
+    public void touchingOutsideSheetSendsAnalyticsEvent() {
+        setup(mock(BraintreeFragment.class));
+
+        mActivity.onBackgroundClicked(null);
+
+        verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit.canceled");
+    }
+
+    @Test
     public void onPaymentMethodSelected_showsLoadingView() {
         setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
@@ -229,6 +286,16 @@ public class DropInActivityUnitTest {
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertEquals(cardNonce.getNonce(), result.getPaymentMethodNonce().getNonce());
         assertEquals(cardNonce.getLastTwo(), ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+    }
+
+    @Test
+    public void onPaymentMethodNonceCreated_sendsAnAnalyticsEvent() throws JSONException {
+        setup(mock(BraintreeFragment.class));
+
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json")));
+
+        verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit.success");
     }
 
     @Test
