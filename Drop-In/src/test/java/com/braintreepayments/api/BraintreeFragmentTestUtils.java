@@ -9,10 +9,6 @@ public class BraintreeFragmentTestUtils {
         fragment.mHttpClient = httpClient;
     }
 
-    public static String getIntegrationType(BraintreeFragment fragment) {
-        return fragment.mIntegrationType;
-    }
-
     public static void waitForConfiguration(BraintreeFragment fragment,
                                             ConfigurationListener listener) {
         fragment.waitForConfiguration(listener);

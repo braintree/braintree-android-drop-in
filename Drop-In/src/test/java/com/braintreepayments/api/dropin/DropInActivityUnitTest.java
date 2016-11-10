@@ -22,8 +22,6 @@ import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 
-import junit.framework.Assert;
-
 import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
@@ -33,7 +31,6 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.util.ActivityController;
 
-import static com.braintreepayments.api.BraintreeFragmentTestUtils.getIntegrationType;
 import static com.braintreepayments.api.test.ReflectionHelper.getField;
 import static com.braintreepayments.api.test.ReflectionHelper.setField;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
@@ -87,10 +84,11 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void setsIntegrationTypeToDropinForDropinActivity() {
+    public void setsIntegrationTypeToDropinForDropinActivity() throws NoSuchFieldException,
+            IllegalAccessException {
         setup(new BraintreeUnitTestHttpClient());
 
-        Assert.assertEquals("dropin2", getIntegrationType(mActivity.braintreeFragment));
+        assertEquals("dropin2", getField(mActivity.braintreeFragment, "mIntegrationType"));
     }
 
     @Test
