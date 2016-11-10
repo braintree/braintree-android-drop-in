@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.support.annotation.CallSuper;
 import android.util.Log;
 import android.widget.Spinner;
 
@@ -28,6 +29,7 @@ public class TestHelper {
 
     public static final String PAYPAL_WALLET_PACKAGE_NAME = "com.paypal.android.p2pmobile";
 
+    @CallSuper
     public void setup() {
         clearPreference("BraintreeApi");
         clearPreference("PayPalOTC");
