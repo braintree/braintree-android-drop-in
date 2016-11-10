@@ -1,5 +1,17 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.0.1
+
+* Update compile and target SDK versions to 25
+* Improve UnionPay enrollment and error handling
+* Update translations
+  * Drop-in is now available in 23 languages: ar, da, de, en, es, fr-rCA, fr, in, it, iw,
+      ja, ko, nb, nl, pl, pt, ru, sv, th, tr, zh-rCN, zh-rHK, zh-rTW.
+* Upgrade android-card-form to 3.0.2
+* Improve layout for right to left languages
+* Add option to perform a 3D Secure verification when adding a card
+* Upgrade Braintree to 2.3.11
+
 ## 3.0.0
 
 * All new UI and integration for Drop-In
