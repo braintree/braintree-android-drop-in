@@ -1,11 +1,10 @@
 package com.braintreepayments.demo.test.utilities;
 
-import android.Manifest.permission;
+import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Spinner;
 
@@ -40,7 +39,7 @@ public class TestHelper {
                 .commit();
 
         onDevice().onHomeScreen().launchApp("com.braintreepayments.demo");
-        enableStoragePermission();
+        onDevice().acceptRuntimePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         ensureEnvironmentIs("Sandbox");
     }
 
@@ -132,15 +131,6 @@ public class TestHelper {
             onDevice(withClass(Spinner.class)).perform(click());
             onDevice(withText(environment)).perform(click());
             onDevice(withText(environment)).check(text(equalTo(environment)));
-        }
-    }
-
-    private static void enableStoragePermission() {
-        if (ContextCompat.checkSelfPermission(getTargetContext(), permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-            try {
-                onDevice(withText("Allow")).perform(click());
-            } catch (RuntimeException ignored) {}
         }
     }
 
