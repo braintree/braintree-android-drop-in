@@ -54,13 +54,6 @@ dependencies {
     compile 'com.braintreepayments:card-form:3.0.2'
     compile 'com.google.android.gms:play-services-wallet:[9.0.0,10.0.0)'
 
-    androidTestCompile 'com.google.dexmaker:dexmaker-mockito:1.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2.2'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support.test:rules:0.5'
-
     testCompile 'org.powermock:powermock-module-junit4:1.6.4'
     testCompile 'org.powermock:powermock-module-junit4-rule:1.6.4'
     testCompile 'org.powermock:powermock-api-mockito:1.6.4'
