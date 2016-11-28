@@ -15,7 +15,7 @@ android {
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 56
-        versionName '3.0.2'
+        versionName '3.0.2-SNAPSHOT'
 
         consumerProguardFiles 'proguard.pro'
 
