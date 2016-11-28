@@ -250,7 +250,9 @@ public class EditCardViewUnitTest {
                 mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
                 mView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_cvv_invalid),
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_cvv_invalid,
+                RuntimeEnvironment.application.getString(mView.getCardForm().getCardEditText()
+                        .getCardType().getSecurityCodeName())),
                 mView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_invalid),
                 mView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
