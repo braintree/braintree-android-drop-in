@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.widget.Adapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.AuthenticationException;
@@ -20,6 +22,7 @@ import com.braintreepayments.api.exceptions.UpgradeRequiredException;
 import com.braintreepayments.api.internal.BraintreeSharedPreferences;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.test.Assertions;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 
 import org.json.JSONException;
@@ -28,7 +31,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowListView;
 import org.robolectric.util.ActivityController;
 
 import static com.braintreepayments.api.test.ReflectionHelper.getField;
@@ -36,6 +41,7 @@ import static com.braintreepayments.api.test.ReflectionHelper.setField;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
@@ -49,7 +55,9 @@ import static org.robolectric.Shadows.shadowOf;
 public class DropInActivityUnitTest {
 
     private ActivityController mActivityController;
+
     private DropInUnitTestActivity mActivity;
+
     private ShadowActivity mShadowActivity;
 
     @Before
@@ -180,7 +188,8 @@ public class DropInActivityUnitTest {
         mActivity.setDropInRequest(dropInRequest);
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(configuration)
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
+                        stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
         setup(httpClient);
         assertEquals(2, ((ListView) mActivity.findViewById(R.id.bt_supported_payment_methods)).getAdapter().getCount());
         assertEquals(2, ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter().getItemCount());
@@ -360,7 +369,7 @@ public class DropInActivityUnitTest {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                       stringFromFixture("responses/get_payment_methods_response.json"));
+                        stringFromFixture("responses/get_payment_methods_response.json"));
         mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
@@ -525,6 +534,27 @@ public class DropInActivityUnitTest {
         setup(mock(BraintreeFragment.class));
 
         assertExceptionIsReturned("sdk-error", new Exception("Error!"));
+    }
+
+    @Test
+    public void testAndroidPayVisible() {
+        DropInRequest dropInRequest = new DropInRequest()
+                .tokenizationKey(TOKENIZATION_KEY)
+                .disableAndroidPay();
+        mActivity.setDropInRequest(dropInRequest);
+        mActivityController.setup();
+        final ListView supportedPaymentMethodsList = (ListView) mActivity.findViewById(R.id.bt_supported_payment_methods);
+        ShadowListView shadowListView = Shadows.shadowOf(supportedPaymentMethodsList);
+        shadowListView.populateItems();
+
+        final Adapter adapter = supportedPaymentMethodsList.getAdapter();
+        boolean androidPayVisible = false;
+        for (int i = 0; i < adapter.getCount(); i++) {
+            if (PaymentMethodType.ANDROID_PAY.equals(adapter.getItem(i))) {
+                androidPayVisible = true;
+            }
+        }
+        assertFalse(androidPayVisible);
     }
 
     private void setup(BraintreeFragment fragment) {
