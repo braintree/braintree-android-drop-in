@@ -535,28 +535,7 @@ public class DropInActivityUnitTest {
 
         assertExceptionIsReturned("sdk-error", new Exception("Error!"));
     }
-
-    @Test
-    public void testAndroidPayVisible() {
-        DropInRequest dropInRequest = new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .disableAndroidPay();
-        mActivity.setDropInRequest(dropInRequest);
-        mActivityController.setup();
-        final ListView supportedPaymentMethodsList = (ListView) mActivity.findViewById(R.id.bt_supported_payment_methods);
-        ShadowListView shadowListView = Shadows.shadowOf(supportedPaymentMethodsList);
-        shadowListView.populateItems();
-
-        final Adapter adapter = supportedPaymentMethodsList.getAdapter();
-        boolean androidPayVisible = false;
-        for (int i = 0; i < adapter.getCount(); i++) {
-            if (PaymentMethodType.ANDROID_PAY.equals(adapter.getItem(i))) {
-                androidPayVisible = true;
-            }
-        }
-        assertFalse(androidPayVisible);
-    }
-
+    
     private void setup(BraintreeFragment fragment) {
         mActivity.braintreeFragment = fragment;
         mActivityController.setup();

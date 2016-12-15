@@ -7,12 +7,15 @@ import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.Venmo;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
+import com.braintreepayments.api.interfaces.BraintreeResponseListener;
+
 import com.google.android.gms.wallet.Cart;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
@@ -103,5 +106,19 @@ public class DropInActivityPowerMockTest {
 
         IntentForResult intent = shadowActivity.peekNextStartedActivityForResult();
         assertEquals(AddCardActivity.class.getName(), intent.intent.getComponent().getClassName());
+    }
+
+    @Test
+    public void onConfigurationFetch_whenDisabledAndroidPay_doesNotCallAndroidPay() {
+        mockStatic(AndroidPay.class);
+
+        DropInRequest dropInRequest = new DropInRequest()
+                .disableAndroidPay();
+
+        mActivity.setDropInRequest(dropInRequest);
+        mActivity.onConfigurationFetched(null);
+
+        verifyStatic(Mockito.never());
+        AndroidPay.isReadyToPay(any(BraintreeFragment.class), any(BraintreeResponseListener.class));
     }
 }

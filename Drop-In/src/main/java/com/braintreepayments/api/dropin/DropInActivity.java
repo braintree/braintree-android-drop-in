@@ -156,17 +156,24 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
             });
         }
 
-        AndroidPay.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
-            @Override
-            public void onResponse(Boolean isReadyToPay) {
-                mSupportedPaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(
-                        DropInActivity.this, configuration, isReadyToPay && mDropInRequest.isAndroidPayEnabled(), mClientTokenPresent,
-                        DropInActivity.this));
-                mLoadingViewSwitcher.setDisplayedChild(1);
+        if (mDropInRequest.isAndroidPayEnabled()) {
+            AndroidPay.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
+                @Override
+                public void onResponse(Boolean isReadyToPay) {
+                    createAndSetPaymentMethodsAdapter(configuration, isReadyToPay);
+                }
+            });
+        } else {
+            createAndSetPaymentMethodsAdapter(configuration, false);
+        }
+    }
 
-                fetchPaymentMethodNonces();
-            }
-        });
+    private void createAndSetPaymentMethodsAdapter(final Configuration configuration, final boolean withAndroidPay) {
+        mSupportedPaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(
+                DropInActivity.this, configuration, withAndroidPay, mClientTokenPresent,
+                DropInActivity.this));
+        mLoadingViewSwitcher.setDisplayedChild(1);
+        fetchPaymentMethodNonces();
     }
 
     @Override
@@ -251,6 +258,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                     public void run() {
                         if (!DropInActivity.this.isFinishing()) {
                             if (mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
+
                                 onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
                             } else {
                                 PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
