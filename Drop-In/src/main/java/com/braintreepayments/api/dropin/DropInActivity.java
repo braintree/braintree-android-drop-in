@@ -63,34 +63,24 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     public static final String EXTRA_ERROR = "com.braintreepayments.api.dropin.EXTRA_ERROR";
 
     private static final int ADD_CARD_REQUEST_CODE = 1;
-
     private static final String EXTRA_SHEET_SLIDE_UP_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_SLIDE_UP_PERFORMED";
-
     private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
 
     @VisibleForTesting
     protected DropInRequest mDropInRequest;
 
     private BraintreeFragment mBraintreeFragment;
-
     private boolean mClientTokenPresent;
-
     private String mDeviceData;
 
     private View mBottomSheet;
-
     private ViewSwitcher mLoadingViewSwitcher;
-
     private TextView mSupportedPaymentMethodsHeader;
-
     private ListView mSupportedPaymentMethodListView;
-
     private View mVaultedPaymentMethodsContainer;
-
     private RecyclerView mVaultedPaymentMethodsView;
 
     private boolean mSheetSlideUpPerformed;
-
     private boolean mSheetSlideDownPerformed;
 
     @Override
@@ -258,7 +248,6 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                     public void run() {
                         if (!DropInActivity.this.isFinishing()) {
                             if (mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
-
                                 onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
                             } else {
                                 PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
@@ -267,8 +256,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
                     }
                 }, getResources().getInteger(android.R.integer.config_shortAnimTime));
             }
-        } catch (InvalidArgumentException ignored) {
-        }
+        } catch (InvalidArgumentException ignored) {}
     }
 
     @Override
@@ -352,8 +340,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         if (listener != null) {
             slideOutAnimation.setAnimationListener(new AnimationListener() {
                 @Override
-                public void onAnimationStart(Animation animation) {
-                }
+                public void onAnimationStart(Animation animation) {}
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
