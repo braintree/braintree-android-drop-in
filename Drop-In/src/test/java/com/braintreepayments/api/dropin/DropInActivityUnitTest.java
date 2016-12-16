@@ -548,4 +548,18 @@ public class DropInActivityUnitTest {
         assertEquals(exception.getClass(), actualException.getClass());
         assertEquals(exception.getMessage(), actualException.getMessage());
     }
+
+    @Test
+    public void onConfigurationFetched_whenAndroidPayDisabledClientSide_doesNotShowAndroidPay() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .androidPay(new TestConfigurationBuilder.TestAndroidPayConfigurationBuilder())
+                        .build());
+        mActivity.setDropInRequest(new DropInRequest()
+                .disableAndroidPay()
+                .tokenizationKey(TOKENIZATION_KEY));
+        setup(httpClient);
+
+        assertEquals(0, ((ListView) mActivity.findViewById(R.id.bt_supported_payment_methods)).getAdapter().getCount());
+    }
 }
