@@ -360,7 +360,7 @@ public class DropInActivityUnitTest {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_response.json"));
+                       stringFromFixture("responses/get_payment_methods_response.json"));
         mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
