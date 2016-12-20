@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## ## ##3.0.3
+
+* Fix an issue where Drop-in would not repect the `mAndroidPayEnabled` flag (thanks @bblackbelt)
+
 ## 3.0.2
 
 * Fix missing security code name in CVV string. (fixes [#5](https://github.com/braintree/braintree-android-drop-in/issues/5))
