@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.0.4
+
+* Update `android-card-form` to 3.0.3
+
 ## ## ##3.0.3
 
 * Fix an issue where Drop-in would not repect the `mAndroidPayEnabled` flag (thanks @bblackbelt)
