@@ -107,7 +107,6 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
             }
 
             if (formErrors.errorFor("cvv") != null) {
-
                 mCardForm.setCvvError(getContext().getString(R.string.bt_cvv_invalid,
                         getContext().getString(
                                 mCardForm.getCardEditText().getCardType().getSecurityCodeName())));
