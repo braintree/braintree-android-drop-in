@@ -150,18 +150,17 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
             AndroidPay.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
                 @Override
                 public void onResponse(Boolean isReadyToPay) {
-                    createAndSetPaymentMethodsAdapter(configuration, isReadyToPay);
+                    showSupportedPaymentMethods(configuration, isReadyToPay);
                 }
             });
         } else {
-            createAndSetPaymentMethodsAdapter(configuration, false);
+            showSupportedPaymentMethods(configuration, false);
         }
     }
 
-    private void createAndSetPaymentMethodsAdapter(final Configuration configuration, final boolean withAndroidPay) {
-        mSupportedPaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(
-                DropInActivity.this, configuration, withAndroidPay, mClientTokenPresent,
-                DropInActivity.this));
+    private void showSupportedPaymentMethods(Configuration configuration, boolean androidPaySupported) {
+        mSupportedPaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(this,
+                configuration, androidPaySupported, mClientTokenPresent, this));
         mLoadingViewSwitcher.setDisplayedChild(1);
         fetchPaymentMethodNonces();
     }
