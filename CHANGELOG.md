@@ -4,7 +4,7 @@
 
 * Update `android-card-form` to 3.0.3
 
-## ## ##3.0.3
+## 3.0.3
 
 * Fix an issue where Drop-in would not repect the `mAndroidPayEnabled` flag (thanks @bblackbelt)
 
