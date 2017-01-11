@@ -104,8 +104,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         try {
             mBraintreeFragment = getBraintreeFragment();
         } catch (InvalidArgumentException e) {
-            Intent intent = new Intent()
-                    .putExtra(EXTRA_ERROR, e.getMessage());
+            Intent intent = new Intent().putExtra(EXTRA_ERROR, e);
             setResult(RESULT_FIRST_USER, intent);
             finish();
             return;

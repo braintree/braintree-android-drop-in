@@ -16,6 +16,7 @@ import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
 import com.braintreepayments.api.exceptions.ConfigurationException;
 import com.braintreepayments.api.exceptions.DownForMaintenanceException;
+import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.ServerException;
 import com.braintreepayments.api.exceptions.UnexpectedException;
 import com.braintreepayments.api.exceptions.UpgradeRequiredException;
@@ -74,8 +75,10 @@ public class AddCardActivityUnitTest {
         mActivityController.setup();
 
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        assertEquals("Tokenization Key or client token was invalid.", mShadowActivity.getResultIntent()
-                .getStringExtra(DropInActivity.EXTRA_ERROR));
+        Exception exception = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
+        assertTrue(exception instanceof InvalidArgumentException);
+        assertEquals("Tokenization Key or client token was invalid.", exception.getMessage());
     }
 
     @Test
@@ -86,8 +89,11 @@ public class AddCardActivityUnitTest {
         mActivityController.setup();
 
         assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        assertEquals("A client token or client key must be specified in the DropInRequest", mShadowActivity.getResultIntent()
-                .getStringExtra(DropInActivity.EXTRA_ERROR));
+        Exception exception = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
+        assertTrue(exception instanceof InvalidArgumentException);
+        assertEquals("A client token or client key must be specified in the DropInRequest",
+                exception.getMessage());
     }
 
     @Test

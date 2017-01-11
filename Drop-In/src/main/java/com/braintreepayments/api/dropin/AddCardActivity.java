@@ -120,8 +120,7 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         try {
             mBraintreeFragment = getBraintreeFragment();
         } catch (InvalidArgumentException e) {
-            Intent intent = new Intent()
-                    .putExtra(DropInActivity.EXTRA_ERROR, e.getMessage());
+            Intent intent = new Intent().putExtra(DropInActivity.EXTRA_ERROR, e);
             setResult(RESULT_FIRST_USER, intent);
             finish();
             return;
