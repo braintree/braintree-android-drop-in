@@ -14,8 +14,8 @@ android {
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 25
-        versionCode 58
-        versionName '3.0.4-SNAPSHOT'
+        versionCode 59
+        versionName '3.0.5'
 
         consumerProguardFiles 'proguard.pro'
 

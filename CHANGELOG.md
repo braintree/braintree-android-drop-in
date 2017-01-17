@@ -1,5 +1,13 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.0.5
+
+* Filter Android Pay from the list of vaulted payment methods (fixes [#15](https://github.com/braintree/braintree-android-drop-in/issues/15))
+* Always return a serialized exception in `Activity#onActivityResult` when there is an error
+* Upgrade Braintree to 2.4.0
+* Increase `minSdkVersion` to 16
+  * API 16 is the first version of Android that supports TLSv1.2. For more information on Braintree's upgrade to TLSv1.2 see [the blog post](https://www.braintreepayments.com/blog/updating-your-production-environment-to-support-tlsv1-2/).
+
 ## 3.0.4
 
 * Update `android-card-form` to 3.0.3
