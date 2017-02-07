@@ -75,12 +75,18 @@ DropInResult.fetchDropInResult(activity, clientToken, new DropInResult.DropInRes
             int name = result.getPaymentMethodType().getLocalizedName();
 
             if (result.getPaymentMethodType() == PaymentMethodType.ANDROID_PAY) {
-                // the last payment method the user used was Android Pay
-                // the Android Pay flow will need to be performed by the
-                // user again at the time of checkout
+                // The last payment method the user used was Android Pay. The Android Pay
+                // flow will need to be performed by the user again at the time of checkout
+                // using AndroidPay#requestAndroidPay(...). No PaymentMethodNonce will be
+                // present in result.getPaymentMethodNonce(), this is only an indication that
+                // the user last used Android Pay. Note: if you have enabled preauthorization
+                // and the user checked the "Use selected info for future purchases from this app"
+                // last time Android Pay was used you may need to call
+                // AndroidPay#requestAndroidPay(...) and then offer the user the option to change
+                // the default payment method using AndroidPay#changePaymentMethod(...)
             } else {
-                // use the payment method show in your UI and charge the user
-                // at the time of checkout
+                // show the payment method in your UI and charge the user at the
+                // time of checkout using the nonce: paymentMethod.getNonce()
                 PaymentMethodNonce paymentMethod = result.getPaymentMethodNonce();
             }
         } else {
