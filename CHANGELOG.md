@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.0.6
+
+* Upgrade Braintree to 2.4.2
+
 ## 3.0.5
 
 * Filter Android Pay from the list of vaulted payment methods (fixes [#15](https://github.com/braintree/braintree-android-drop-in/issues/15))
