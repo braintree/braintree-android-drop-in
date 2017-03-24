@@ -9,6 +9,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.models.Configuration;
@@ -23,19 +24,20 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
     private ArrayList<PaymentMethodType> mAvailablePaymentMethods;
     private PaymentMethodSelectedListener mPaymentMethodSelectedListener;
 
-    public SupportedPaymentMethodsAdapter(Context context, Configuration configuration,
-                                          boolean androidPayEnabled, boolean unionpaySupported,
+    public SupportedPaymentMethodsAdapter(Context context,
                                           PaymentMethodSelectedListener paymentMethodSelectedListener) {
         mContext = context;
         mPaymentMethodSelectedListener = paymentMethodSelectedListener;
-
         mAvailablePaymentMethods = new ArrayList<>();
+    }
 
-        if (configuration.isPayPalEnabled()) {
+    public void setup(Configuration configuration, DropInRequest dropInRequest,
+                      boolean androidPayEnabled, boolean unionpaySupported) {
+        if (dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled()) {
             mAvailablePaymentMethods.add(PaymentMethodType.PAYPAL);
         }
 
-        if (configuration.getPayWithVenmo().isEnabled(mContext)) {
+        if (dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(mContext)) {
             mAvailablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
         }
 
@@ -48,7 +50,7 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
             mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
         }
 
-        if (androidPayEnabled) {
+        if (dropInRequest.isAndroidPayEnabled() && androidPayEnabled) {
             mAvailablePaymentMethods.add(PaymentMethodType.ANDROID_PAY);
         }
     }

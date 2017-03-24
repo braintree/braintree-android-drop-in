@@ -220,7 +220,7 @@ public class DropInRequest implements Parcelable {
         return mAndroidPayPhoneNumberRequired;
     }
 
-    boolean isAndroidPayEnabled() {
+    public boolean isAndroidPayEnabled() {
         return mAndroidPayEnabled;
     }
 
@@ -232,11 +232,11 @@ public class DropInRequest implements Parcelable {
         return mPayPalAdditionalScopes;
     }
 
-    boolean isPayPalEnabled() {
+    public boolean isPayPalEnabled() {
         return mPayPalEnabled;
     }
 
-    boolean isVenmoEnabled() {
+    public boolean isVenmoEnabled() {
         return mVenmoEnabled;
     }
 

@@ -165,8 +165,9 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     }
 
     private void showSupportedPaymentMethods(boolean androidPaySupported) {
-        mSupportedPaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(this,
-                mConfiguration, androidPaySupported, mClientTokenPresent, this));
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(this, this);
+        adapter.setup(mConfiguration, mDropInRequest, androidPaySupported, mClientTokenPresent);
+        mSupportedPaymentMethodListView.setAdapter(adapter);
         mLoadingViewSwitcher.setDisplayedChild(1);
         fetchPaymentMethodNonces();
     }
