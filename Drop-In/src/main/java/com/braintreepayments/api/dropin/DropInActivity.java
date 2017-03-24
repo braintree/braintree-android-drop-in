@@ -31,6 +31,7 @@ import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
 import com.braintreepayments.api.exceptions.ConfigurationException;
 import com.braintreepayments.api.exceptions.DownForMaintenanceException;
+import com.braintreepayments.api.exceptions.GoogleApiClientException;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.ServerException;
 import com.braintreepayments.api.exceptions.UnexpectedException;
@@ -73,12 +74,14 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
 
     private BraintreeFragment mBraintreeFragment;
     private boolean mClientTokenPresent;
+    private Configuration mConfiguration;
     private String mDeviceData;
 
     private View mBottomSheet;
     private ViewSwitcher mLoadingViewSwitcher;
     private TextView mSupportedPaymentMethodsHeader;
-    private ListView mSupportedPaymentMethodListView;
+    @VisibleForTesting
+    protected ListView mSupportedPaymentMethodListView;
     private View mVaultedPaymentMethodsContainer;
     private RecyclerView mVaultedPaymentMethodsView;
 
@@ -137,7 +140,9 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     }
 
     @Override
-    public void onConfigurationFetched(final Configuration configuration) {
+    public void onConfigurationFetched(Configuration configuration) {
+        mConfiguration = configuration;
+
         if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
             DataCollector.collectDeviceData(mBraintreeFragment, new BraintreeResponseListener<String>() {
                 @Override
@@ -151,17 +156,17 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
             AndroidPay.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
                 @Override
                 public void onResponse(Boolean isReadyToPay) {
-                    showSupportedPaymentMethods(configuration, isReadyToPay);
+                    showSupportedPaymentMethods(isReadyToPay);
                 }
             });
         } else {
-            showSupportedPaymentMethods(configuration, false);
+            showSupportedPaymentMethods(false);
         }
     }
 
-    private void showSupportedPaymentMethods(Configuration configuration, boolean androidPaySupported) {
+    private void showSupportedPaymentMethods(boolean androidPaySupported) {
         mSupportedPaymentMethodListView.setAdapter(new SupportedPaymentMethodsAdapter(this,
-                configuration, androidPaySupported, mClientTokenPresent, this));
+                mConfiguration, androidPaySupported, mClientTokenPresent, this));
         mLoadingViewSwitcher.setDisplayedChild(1);
         fetchPaymentMethodNonces();
     }
@@ -173,6 +178,11 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
 
     @Override
     public void onError(final Exception error) {
+        if (error instanceof GoogleApiClientException) {
+            showSupportedPaymentMethods(false);
+            return;
+        }
+
         slideDown(new AnimationFinishedListener() {
             @Override
             public void onAnimationFinished() {
