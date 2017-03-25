@@ -1,5 +1,12 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.0.7
+
+* Upgrade android-card-form to 3.0.4
+* Upgrade Braintree to 2.4.3
+* Handle `GoogleApiClientException`s instead of exiting `Activity` (fixes [#22](https://github.com/braintree/braintree-android-drop-in/issues/22))
+* Respect `DropInRequest` payment method overrides (fixes [#27](https://github.com/braintree/braintree-android-drop-in/issues/27))
+
 ## 3.0.6
 
 * Upgrade Braintree to 2.4.2
