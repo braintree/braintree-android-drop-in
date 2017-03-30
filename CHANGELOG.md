@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.0.8
+
+* Prevent dependency resolution of alpha major versions of support libraries (fixes [#28](https://github.com/braintree/braintree-android-drop-in/issues/28))
+
 ## 3.0.7
 
 * Upgrade android-card-form to 3.0.4
