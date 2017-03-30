@@ -15,7 +15,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 62
-        versionName '3.0.8'
+        versionName '3.0.8-SNAPSHOT'
 
         consumerProguardFiles 'proguard.pro'
 
