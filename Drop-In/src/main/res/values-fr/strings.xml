@@ -11,7 +11,7 @@
     <string name="bt_descriptor_pay_with_venmo">Venmo</string>
     <string name="bt_descriptor_android_pay">Android Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
-    <string name="bt_descriptor_unknown">Credit or Debit Card</string>
+    <string name="bt_descriptor_unknown">Carte de débit ou crédit</string>
 
     <string name="bt_recent">Récent</string>
     <string name="bt_other">Autre</string>
