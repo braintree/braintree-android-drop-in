@@ -252,22 +252,20 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     }
 
     private void fetchPaymentMethodNonces() {
-        try {
-            if (Authorization.fromString(mDropInRequest.getAuthorization()) instanceof ClientToken) {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!DropInActivity.this.isFinishing()) {
-                            if (mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
-                                onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
-                            } else {
-                                PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
-                            }
+        if (mClientTokenPresent) {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (!DropInActivity.this.isFinishing()) {
+                        if (mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
+                            onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
+                        } else {
+                            PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
                         }
                     }
-                }, getResources().getInteger(android.R.integer.config_shortAnimTime));
-            }
-        } catch (InvalidArgumentException ignored) {}
+                }
+            }, getResources().getInteger(android.R.integer.config_shortAnimTime));
+        }
     }
 
     @Override
