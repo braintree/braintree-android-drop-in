@@ -9,7 +9,7 @@ def GATEWAY_PORT = System.properties['GATEWAY_PORT'] ?: '"3000"';
 
 android {
     compileSdkVersion 25
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '25.0.3'
 
     defaultConfig {
         minSdkVersion 16
