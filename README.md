@@ -102,7 +102,7 @@ To offer card scanning via [card.io](https://card.io), add the dependency in you
 
 ```groovy
 dependencies {
-    compile 'io.card:android-sdk:[5.5.0,6.0.0)'
+    compile 'io.card:android-sdk:5.+'
 }
 ```
 
