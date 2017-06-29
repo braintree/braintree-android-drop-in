@@ -16,11 +16,19 @@ Please create an [issue](https://github.com/braintree/braintree-android-drop-in/
 
 ## Adding it to your project
 
-In your `build.gradle`:
+Add the dependency in your `build.gradle`:
 
 ```groovy
 dependencies {
-  compile 'com.braintreepayments.api:drop-in:3.+'
+  compile 'com.braintreepayments.api:drop-in:3.0.8'
+}
+```
+
+To use the latest build from the `master` branch use:
+
+```groovy
+dependencies {
+  compile 'com.braintreepayments.api:drop-in:3.0.9-SNAPSHOT'
 }
 ```
 

@@ -42,6 +42,7 @@ task :release do
 
   prompt_for_change_log(version)
   update_version(version)
+  update_readme_version(version)
 
   prompt_for_sonatype_username_and_password
 
@@ -104,6 +105,7 @@ def post_release(version)
   version_values = version.split('.')
   version_values[2] = version_values[2].to_i + 1
   update_version("#{version_values.join('.')}-SNAPSHOT")
+  update_readme_snapshot_version(version_values.join('.'))
   increment_version_code
   sh "git commit -am 'Prepare for development'"
 
@@ -143,6 +145,22 @@ def update_version(version)
   IO.write("Drop-In/build.gradle",
     File.open("Drop-In/build.gradle") do |file|
       file.read.gsub(/versionName '\d+\.\d+\.\d+(-SNAPSHOT)?'/, "versionName '#{version}'")
+    end
+  )
+end
+
+def update_readme_version(version)
+  IO.write("README.md",
+    File.open("README.md") do |file|
+      file.read.gsub(/:drop-in:\d+\.\d+\.\d+'/, ":drop-in:#{version}'")
+    end
+  )
+end
+
+def update_readme_snapshot_version(snapshot_version)
+  IO.write("README.md",
+    File.open("README.md") do |file|
+      file.read.gsub(/:drop-in:\d+\.\d+\.\d+-SNAPSHOT'/, ":drop-in:#{snapshot_version}-SNAPSHOT'")
     end
   )
 end
