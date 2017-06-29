@@ -22,5 +22,4 @@ before_script:
   - ./gradlew assembleDebug || true
   - ./gradlew assembleDebug || true
   - ./gradlew assembleDebug || true
-script: ./gradlew --stacktrace --info lint test
-
+script: ./gradlew --stacktrace --info lint test :Demo:assembleDebug :Demo:assembleRelease
