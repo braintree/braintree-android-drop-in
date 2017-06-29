@@ -1,4 +1,5 @@
 require 'rake'
+require 'io/console'
 
 TMP_CHANGELOG_FILE = "/tmp/braintree-android-drop-in-release.md"
 
@@ -29,6 +30,8 @@ desc "Publish current version as a SNAPSHOT"
 task :publish_snapshot => :tests do
   abort("Version must contain '-SNAPSHOT'!") unless get_current_version.end_with?('-SNAPSHOT')
 
+  prompt_for_sonatype_username_and_password
+
   sh "./gradlew clean :Drop-In:uploadArchives"
 end
 
@@ -40,6 +43,8 @@ task :release do
   prompt_for_change_log(version)
   update_version(version)
 
+  prompt_for_sonatype_username_and_password
+
   sh "./gradlew clean :Drop-In:uploadArchives"
   sh "./gradlew :Drop-In:closeRepository"
   puts "Sleeping for one minute to allow Drop-In modules to close"
@@ -47,6 +52,14 @@ task :release do
   sh "./gradlew :Drop-In:promoteRepository"
 
   post_release(version)
+end
+
+def prompt_for_sonatype_username_and_password
+  puts "Enter Sonatype username:"
+  ENV["SONATYPE_USERNAME"] = $stdin.gets.chomp
+
+  puts "Enter Sonatype password:"
+  ENV["SONATYPE_PASSWORD"] = $stdin.noecho(&:gets).chomp
 end
 
 def prompt_for_change_log(version)
