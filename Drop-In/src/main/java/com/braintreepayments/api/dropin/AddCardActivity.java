@@ -32,11 +32,13 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.ServerException;
 import com.braintreepayments.api.exceptions.UnexpectedException;
 import com.braintreepayments.api.exceptions.UpgradeRequiredException;
+import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.UnionPayListener;
 import com.braintreepayments.api.models.Authorization;
+import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.Configuration;
@@ -50,8 +52,9 @@ import java.lang.annotation.RetentionPolicy;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class AddCardActivity extends AppCompatActivity implements ConfigurationListener, AddPaymentUpdateListener,
-        PaymentMethodNonceCreatedListener, BraintreeErrorListener, UnionPayListener {
+public class AddCardActivity extends AppCompatActivity implements ConfigurationListener,
+        AddPaymentUpdateListener, PaymentMethodNonceCreatedListener, BraintreeErrorListener,
+        BraintreeCancelListener, UnionPayListener {
 
     private static final String EXTRA_STATE = "com.braintreepayments.api.EXTRA_STATE";
     private static final String EXTRA_ENROLLMENT_ID = "com.braintreepayments.api.EXTRA_ENROLLMENT_ID";
@@ -343,6 +346,13 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
             onPaymentUpdated(mEditCardView);
         } else {
             createCard();
+        }
+    }
+
+    @Override
+    public void onCancel(int requestCode) {
+        if (requestCode == BraintreeRequestCodes.THREE_D_SECURE) {
+            mEditCardView.setVisibility(View.VISIBLE);
         }
     }
 

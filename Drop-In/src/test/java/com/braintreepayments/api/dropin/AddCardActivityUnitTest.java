@@ -1,6 +1,10 @@
 package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -20,10 +24,12 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.ServerException;
 import com.braintreepayments.api.exceptions.UnexpectedException;
 import com.braintreepayments.api.exceptions.UpgradeRequiredException;
+import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.test.ExpirationDate;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.api.test.TestConfigurationBuilder.TestUnionPayConfigurationBuilder;
+import com.braintreepayments.api.threedsecure.ThreeDSecureWebViewActivity;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
 import org.json.JSONException;
@@ -42,12 +48,16 @@ import static com.braintreepayments.api.test.CardNumber.UNIONPAY_CREDIT;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_DEBIT;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.api.test.CardNumber.VISA;
+import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
+import static org.powermock.api.mockito.PowerMockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
@@ -675,6 +685,45 @@ public class AddCardActivityUnitTest {
         assertThat(mEditCardView).isGone();
     }
 
+    @Test
+    public void showsSubmitButtonAgainWhenThreeDSecureIsCanceled() throws PackageManager.NameNotFoundException {
+        PackageManager packageManager = mockPackageManager();
+        Context context = spy(RuntimeEnvironment.application);
+        when(context.getPackageManager()).thenReturn(packageManager);
+        mActivity.context = context;
+        mActivity.dropInRequest = new DropInRequest()
+                .tokenizationKey(TOKENIZATION_KEY)
+                .amount("1.00")
+                .requestThreeDSecureVerification(true);
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .threeDSecureEnabled(true)
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        stringFromFixture("payment_methods/visa_credit_card.json"))
+                .successResponse(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP,
+                        stringFromFixture("responses/three_d_secure_lookup_response.json"));
+
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+
+        assertEquals(ThreeDSecureWebViewActivity.class.getName(),
+                shadowOf(mActivity).peekNextStartedActivity().getComponent().getClassName());
+
+        assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+        assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();
+
+        mActivity.onCancel(BraintreeRequestCodes.THREE_D_SECURE);
+
+        assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+        assertThat(mEditCardView.findViewById(R.id.bt_button)).isVisible();
+    }
+
     private void setup(BraintreeFragment fragment) {
         mActivity.braintreeFragment = fragment;
         mActivityController.setup();
@@ -733,5 +782,18 @@ public class AddCardActivityUnitTest {
                 .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName(),
                         PaymentMethodType.AMEX.getCanonicalName(),
                         PaymentMethodType.UNIONPAY.getCanonicalName());
+    }
+
+    private PackageManager mockPackageManager() throws PackageManager.NameNotFoundException {
+        ActivityInfo activityInfo = new ActivityInfo();
+        activityInfo.name = "com.braintreepayments.api.threedsecure.ThreeDSecureWebViewActivity";
+        PackageInfo packageInfo = new PackageInfo();
+        packageInfo.activities = new ActivityInfo[] { activityInfo };
+
+        PackageManager packageManager = spy(RuntimeEnvironment.application.getPackageManager());
+        doReturn(packageInfo).when(packageManager)
+                .getPackageInfo("com.braintreepayments.api.dropin", PackageManager.GET_ACTIVITIES);
+
+        return packageManager;
     }
 }

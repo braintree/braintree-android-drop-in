@@ -18,6 +18,7 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.ServerException;
 import com.braintreepayments.api.exceptions.UnexpectedException;
 import com.braintreepayments.api.exceptions.UpgradeRequiredException;
+import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeSharedPreferences;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
@@ -41,7 +42,10 @@ import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
@@ -425,6 +429,40 @@ public class DropInActivityUnitTest {
         mActivity.onActivityResult(1, Activity.RESULT_CANCELED, null);
 
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void onActivityResult_addCardCancelRefreshesVaultedPaymentMethods() {
+        mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
+        BraintreeUnitTestHttpClient httpClient = spy(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build()))
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
+                        stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
+        setup(httpClient);
+        verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
+
+        mActivity.onActivityResult(1, Activity.RESULT_CANCELED, null);
+
+        verify(httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
+    }
+
+    @Test
+    public void onActivityResult_nonCardCancelDoesNotRefreshVaultedPaymentMethods() {
+        mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
+        BraintreeUnitTestHttpClient httpClient = spy(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build()))
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
+                        stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
+        setup(httpClient);
+        verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
+
+        mActivity.onActivityResult(2, Activity.RESULT_CANCELED, null);
+
+        verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
     }
 
     @Test

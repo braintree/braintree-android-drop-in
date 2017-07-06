@@ -20,6 +20,7 @@ public class BraintreeUnitTestHttpClient extends BraintreeHttpClient {
     public static final String TOKENIZE_CREDIT_CARD = "/v1/payment_methods/" + new CardBuilder().getApiPath();
     public static final String UNIONPAY_CAPABILITIES_PATH = "/v1/payment_methods/credit_cards/capabilities.*";
     public static final String UNIONPAY_ENROLLMENT_PATH = "/v1/union_pay_enrollments";
+    public static final String THREE_D_SECURE_LOOKUP = "/v1/payment_methods/.*/three_d_secure/lookup";
 
     private Map<String, String> mResponseMap;
     private Map<String, SimpleEntry<Integer, String>> mErrorResponseMap;

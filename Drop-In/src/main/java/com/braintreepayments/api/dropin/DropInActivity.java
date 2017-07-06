@@ -169,7 +169,7 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         adapter.setup(mConfiguration, mDropInRequest, androidPaySupported, mClientTokenPresent);
         mSupportedPaymentMethodListView.setAdapter(adapter);
         mLoadingViewSwitcher.setDisplayedChild(1);
-        fetchPaymentMethodNonces();
+        fetchPaymentMethodNonces(false);
     }
 
     @Override
@@ -251,13 +251,13 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         }
     }
 
-    private void fetchPaymentMethodNonces() {
+    private void fetchPaymentMethodNonces(final boolean refetch) {
         if (mClientTokenPresent) {
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     if (!DropInActivity.this.isFinishing()) {
-                        if (mBraintreeFragment.hasFetchedPaymentMethodNonces()) {
+                        if (mBraintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
                             onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
                         } else {
                             PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
@@ -299,6 +299,10 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         mLoadingViewSwitcher.setDisplayedChild(0);
 
         if (resultCode == Activity.RESULT_CANCELED) {
+            if (requestCode == ADD_CARD_REQUEST_CODE) {
+                fetchPaymentMethodNonces(true);
+            }
+
             mLoadingViewSwitcher.setDisplayedChild(1);
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
             final Intent response;

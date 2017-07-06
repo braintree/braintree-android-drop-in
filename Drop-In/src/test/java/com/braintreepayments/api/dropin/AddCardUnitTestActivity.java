@@ -1,5 +1,6 @@
 package com.braintreepayments.api.dropin;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KE
 
 public class AddCardUnitTestActivity extends AddCardActivity {
 
+    public Context context;
     public DropInRequest dropInRequest;
     public BraintreeFragment braintreeFragment;
     public BraintreeUnitTestHttpClient httpClient;
@@ -45,5 +47,14 @@ public class AddCardUnitTestActivity extends AddCardActivity {
         }
 
         return braintreeFragment;
+    }
+
+    @Override
+    public Context getApplicationContext() {
+        if (context != null) {
+            return context;
+        }
+
+        return super.getApplicationContext();
     }
 }
