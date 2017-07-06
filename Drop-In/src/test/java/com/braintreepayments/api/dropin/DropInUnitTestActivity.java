@@ -29,6 +29,8 @@ public class DropInUnitTestActivity extends DropInActivity {
                 .putExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST, mDropInRequest);
         setIntent(intent);
 
+        ConfigurationManagerTestUtils.setFetchingConfiguration(true);
+
         super.onCreate(savedInstanceState);
 
         if (braintreeFragment != null) {
