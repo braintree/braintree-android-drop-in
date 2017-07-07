@@ -6,18 +6,11 @@ notifications:
 sudo: true
 android:
   components:
+    - tools
+    - tools
     - platform-tools
-    - tools
-    - tools
-    - extra-android-support
-    - extra-android-m2repository
+    - build-tools-25.0.3
+    - android-25
     - extra-google-m2repository
-before_script:
-  - echo y | android update sdk --no-ui --all --filter tools,platform-tools
-  # Build three times, the first two builds will resolve dependencies via sdk-manager-plugin and then fail
-  # https://github.com/JakeWharton/sdk-manager-plugin/issues/10
-  - ./gradlew assembleDebug || true
-  - ./gradlew assembleDebug || true
-  - ./gradlew assembleDebug || true
 script: ./gradlew --stacktrace --info lint test :Demo:assembleDebug :Demo:assembleRelease
 after_success: ./script/deploy_snapshot.sh
