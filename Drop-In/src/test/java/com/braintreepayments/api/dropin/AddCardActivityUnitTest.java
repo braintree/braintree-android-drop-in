@@ -31,10 +31,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
-import org.robolectric.util.ActivityController;
 
 import static com.braintreepayments.api.test.Assertions.assertIsANonce;
 import static com.braintreepayments.api.test.CardNumber.AMEX;
@@ -50,7 +50,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class AddCardActivityUnitTest {
 
     private ActivityController mActivityController;
@@ -653,7 +653,8 @@ public class AddCardActivityUnitTest {
         setText(mEnrollmentCardView, R.id.bt_sms_code, "12345");
 
         assertThat(mEnrollmentCardView).isVisible();
-        assertThat((EditText) mEnrollmentCardView.findViewById(R.id.bt_sms_code)).hasText("12345");
+        assertThat((EditText) mEnrollmentCardView.findViewById(R.id.bt_sms_code))
+                .hasTextString("12345");
         assertThat((TextView) mEnrollmentCardView.findViewById(R.id.bt_sms_sent_text))
                 .hasText("Enter the SMS code sent to 868-888-888888");
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
@@ -664,7 +665,8 @@ public class AddCardActivityUnitTest {
         triggerConfigurationChange(httpClient);
 
         assertThat(mEnrollmentCardView).isVisible();
-        assertThat(((EditText) mEnrollmentCardView.findViewById(R.id.bt_sms_code))).hasText("12345");
+        assertThat(((EditText) mEnrollmentCardView.findViewById(R.id.bt_sms_code)))
+                .hasTextString("12345");
         assertThat((TextView) mEnrollmentCardView.findViewById(R.id.bt_sms_sent_text))
                 .hasText("Enter the SMS code sent to 868-888-888888");
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))

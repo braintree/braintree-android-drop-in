@@ -11,7 +11,7 @@ import com.braintreepayments.cardform.utils.CardType;
 import org.json.JSONException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RobolectricTestRunner;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -19,7 +19,7 @@ import java.util.Set;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 
-@RunWith(RobolectricGradleTestRunner.class)
+@RunWith(RobolectricTestRunner.class)
 public class PaymentMethodTypeUnitTest {
 
     @Test
