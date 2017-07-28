@@ -4,9 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
-import android.support.annotation.VisibleForTesting;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
@@ -15,7 +13,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ViewSwitcher;
 
-import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.Card;
 import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.UnionPay;
@@ -37,10 +34,8 @@ import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.UnionPayListener;
-import com.braintreepayments.api.models.Authorization;
 import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardBuilder;
-import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.UnionPayCapabilities;
@@ -52,7 +47,7 @@ import java.lang.annotation.RetentionPolicy;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class AddCardActivity extends AppCompatActivity implements ConfigurationListener,
+public class AddCardActivity extends BaseActivity implements ConfigurationListener,
         AddPaymentUpdateListener, PaymentMethodNonceCreatedListener, BraintreeErrorListener,
         BraintreeCancelListener, UnionPayListener {
 
@@ -81,10 +76,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
     private boolean mUnionPayCard;
     private boolean mUnionPayDebitCard;
 
-    private DropInRequest mDropInRequest;
-    private BraintreeFragment mBraintreeFragment;
-    private Configuration mConfiguration;
-    private boolean mClientTokenPresent;
     private String mEnrollmentId;
 
     @State
@@ -118,8 +109,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
 
         enterState(LOADING);
 
-        mDropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
-
         try {
             mBraintreeFragment = getBraintreeFragment();
         } catch (InvalidArgumentException e) {
@@ -130,23 +119,6 @@ public class AddCardActivity extends AppCompatActivity implements ConfigurationL
         }
 
         mBraintreeFragment.sendAnalyticsEvent("card.selected");
-    }
-
-    @VisibleForTesting
-    protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
-        if (TextUtils.isEmpty(mDropInRequest.getAuthorization())) {
-            throw new InvalidArgumentException("A client token or client key must be specified " +
-                    "in the " + DropInRequest.class.getSimpleName());
-        }
-
-        try {
-            mClientTokenPresent =
-                    Authorization.fromString(mDropInRequest.getAuthorization()) instanceof ClientToken;
-        } catch (InvalidArgumentException e) {
-            mClientTokenPresent = false;
-        }
-
-        return BraintreeFragment.newInstance(this, mDropInRequest.getAuthorization());
     }
 
     @Override

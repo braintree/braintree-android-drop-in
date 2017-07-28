@@ -21,6 +21,8 @@ public class DropInUnitTestActivity extends DropInActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        setTheme(R.style.bt_drop_in_activity_theme);
+
         if (mDropInRequest == null) {
             mDropInRequest = new DropInRequest().tokenizationKey(TOKENIZATION_KEY);
         }

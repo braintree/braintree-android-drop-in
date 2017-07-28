@@ -45,7 +45,7 @@ public class AddCardActivityPowerMockTest {
 
         mActivity = Robolectric.buildActivity(AddCardUnitTestActivity.class).get();
 
-        setField(AddCardActivity.class, mActivity, "mBraintreeFragment", mFragment);
+        setField(BaseActivity.class, mActivity, "mBraintreeFragment", mFragment);
 
         EditCardView editCardView = mock(EditCardView.class);
         when(editCardView.getCardForm()).thenReturn(mock(CardForm.class));
@@ -125,7 +125,7 @@ public class AddCardActivityPowerMockTest {
 
     private void setConfiguration(DropInRequest dropInRequest, Configuration configuration)
             throws NoSuchFieldException, IllegalAccessException {
-        setField(AddCardActivity.class, mActivity, "mDropInRequest", dropInRequest);
-        setField(AddCardActivity.class, mActivity, "mConfiguration", configuration);
+        setField(BaseActivity.class, mActivity, "mDropInRequest", dropInRequest);
+        setField(BaseActivity.class, mActivity, "mConfiguration", configuration);
     }
 }

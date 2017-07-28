@@ -17,7 +17,6 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.AndroidPay;
-import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.PaymentMethod;
@@ -43,8 +42,6 @@ import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
 import com.braintreepayments.api.models.AndroidPayCardNonce;
-import com.braintreepayments.api.models.Authorization;
-import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
@@ -53,7 +50,7 @@ import java.util.List;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
 
-public class DropInActivity extends Activity implements ConfigurationListener, BraintreeCancelListener,
+public class DropInActivity extends BaseActivity implements ConfigurationListener, BraintreeCancelListener,
         BraintreeErrorListener, PaymentMethodSelectedListener, PaymentMethodNoncesUpdatedListener,
         PaymentMethodNonceCreatedListener {
 
@@ -69,12 +66,6 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
     private static final String EXTRA_SHEET_SLIDE_UP_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_SLIDE_UP_PERFORMED";
     private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
 
-    @VisibleForTesting
-    protected DropInRequest mDropInRequest;
-
-    private BraintreeFragment mBraintreeFragment;
-    private boolean mClientTokenPresent;
-    private Configuration mConfiguration;
     private String mDeviceData;
 
     private View mBottomSheet;
@@ -93,7 +84,6 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
 
-        mDropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
         mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
         mLoadingViewSwitcher = (ViewSwitcher) findViewById(R.id.bt_loading_view_switcher);
         mSupportedPaymentMethodsHeader = (TextView) findViewById(R.id.bt_supported_payment_methods_header);
@@ -120,23 +110,6 @@ public class DropInActivity extends Activity implements ConfigurationListener, B
         }
 
         slideUp();
-    }
-
-    @VisibleForTesting
-    protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
-        if (TextUtils.isEmpty(mDropInRequest.getAuthorization())) {
-            throw new InvalidArgumentException("A client token or client key must be specified " +
-                    "in the " + DropInRequest.class.getSimpleName());
-        }
-
-        try {
-            mClientTokenPresent =
-                    Authorization.fromString(mDropInRequest.getAuthorization()) instanceof ClientToken;
-        } catch (InvalidArgumentException e) {
-            mClientTokenPresent = false;
-        }
-
-        return BraintreeFragment.newInstance(this, mDropInRequest.getAuthorization());
     }
 
     @Override
