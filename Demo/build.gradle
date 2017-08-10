@@ -1,15 +1,15 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.3'
+    compileSdkVersion 26
+    buildToolsVersion '26.0.0'
 
     defaultConfig {
-        applicationId "com.braintreepayments.demo"
+        applicationId 'com.braintreepayments.demo'
         minSdkVersion 18
-        targetSdkVersion 25
+        targetSdkVersion 26
         versionCode 1
-        versionName "1.0.0"
+        versionName '1.0.0'
         testInstrumentationRunner 'android.support.test.runner.AndroidJUnitRunner'
     }
 
@@ -59,7 +59,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:25.4.0'
+    compile 'com.android.support:support-v4:26.0.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
     compile 'com.google.android.gms:play-services-wallet:10.2.6'
     compile 'com.lukekorth:mailable_log:0.1.6'
