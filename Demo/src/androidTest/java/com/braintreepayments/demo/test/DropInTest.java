@@ -204,7 +204,7 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void exitsAfterCancelingAddingAPaymentMethod() {
         uninstallPayPalWallet();
-        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
         onDevice(withContentDescription("Proceed with Sandbox Purchase")).waitForExists();
