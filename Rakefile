@@ -143,7 +143,7 @@ end
 def update_version(version)
   IO.write("Drop-In/build.gradle",
     File.open("Drop-In/build.gradle") do |file|
-      file.read.gsub(/versionName '\d+\.\d+\.\d+(-SNAPSHOT)?'/, "versionName '#{version}'")
+      file.read.gsub(/version '\d+\.\d+\.\d+(-SNAPSHOT)?'/, "version '#{version}'")
     end
   )
 end

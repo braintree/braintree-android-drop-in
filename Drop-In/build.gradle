@@ -7,6 +7,8 @@ def LOCALHOST_IP = System.properties['LOCALHOST_IP'] ?: '"10.0.2.2"';
 def GATEWAY_IP = System.properties['GATEWAY_IP'] ?: '"10.0.2.2"';
 def GATEWAY_PORT = System.properties['GATEWAY_PORT'] ?: '"3000"';
 
+version '3.0.9-SNAPSHOT'
+
 android {
     compileSdkVersion 26
     buildToolsVersion '26.0.0'
@@ -15,7 +17,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 63
-        versionName '3.0.9-SNAPSHOT'
+        versionName version
 
         consumerProguardFiles 'proguard.pro'
 
