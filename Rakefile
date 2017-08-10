@@ -31,18 +31,6 @@ task :tests => :unit_tests do
   end
 end
 
-desc "Publish current version as a SNAPSHOT"
-task :publish_snapshot => :unit_tests do
-  abort("Version must contain '-SNAPSHOT'!") unless get_current_version.end_with?('-SNAPSHOT')
-
-  puts "Ensure all tests are passing (`rake tests`)."
-  $stdin.gets
-
-  prompt_for_sonatype_username_and_password
-
-  sh "./gradlew clean :Drop-In:uploadArchives"
-end
-
 desc "Interactive release to publish new version"
 task :release => :unit_tests do
   puts "Ensure all tests are passing (`rake tests`)."
