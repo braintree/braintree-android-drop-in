@@ -2,8 +2,6 @@ package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -48,12 +46,12 @@ import static com.braintreepayments.api.test.CardNumber.UNIONPAY_CREDIT;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_DEBIT;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.api.test.CardNumber.VISA;
+import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerWithThreeDSecureWebViewActivity;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -79,8 +77,8 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void returnsExceptionWhenBraintreeFragmentSetupFails() {
-        mActivity.dropInRequest = new DropInRequest()
-                .tokenizationKey("not a tokenization key");
+        mActivity.setDropInRequest(new DropInRequest()
+                .tokenizationKey("not a tokenization key"));
 
         mActivityController.setup();
 
@@ -93,8 +91,8 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void returnsExceptionWhenAuthorizationIsEmpty() {
-        mActivity.dropInRequest = new DropInRequest()
-                .tokenizationKey(null);
+        mActivity.setDropInRequest(new DropInRequest()
+                .tokenizationKey(null));
 
         mActivityController.setup();
 
@@ -251,8 +249,8 @@ public class AddCardActivityUnitTest {
                         .build())
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"));
-        mActivity.dropInRequest = new DropInRequest()
-                .clientToken(stringFromFixture("client_token.json"));
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -321,8 +319,8 @@ public class AddCardActivityUnitTest {
                         .build())
                 .errorResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, 422,
                         stringFromFixture("responses/credit_card_error_response.json"));
-        mActivity.dropInRequest = new DropInRequest()
-                .clientToken(stringFromFixture("client_token.json"));
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
@@ -359,8 +357,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .errorResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, 422,
                         stringFromFixture("responses/unionpay_enrollment_error_response.json"));
-        mActivity.dropInRequest = new DropInRequest()
-                .clientToken(stringFromFixture("client_token.json"));
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -482,8 +480,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
-        mActivity.dropInRequest = new DropInRequest()
-                .clientToken(stringFromFixture("client_token.json"));
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -511,8 +509,8 @@ public class AddCardActivityUnitTest {
                         .build())
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"));
-        mActivity.dropInRequest = new DropInRequest()
-                .clientToken(stringFromFixture("client_token.json"));
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -535,8 +533,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
-        mActivity.dropInRequest = new DropInRequest()
-                .clientToken(stringFromFixture("client_token.json"));
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -566,8 +564,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_enrollment_sms_not_required.json"))
                 .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
                         stringFromFixture("payment_methods/unionpay_credit_card.json"));
-        mActivity.dropInRequest = new DropInRequest()
-                .clientToken(stringFromFixture("client_token.json"));
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
@@ -616,8 +614,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
-        mActivity.dropInRequest = new DropInRequest()
-                .clientToken(stringFromFixture("client_token.json"));
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -649,8 +647,8 @@ public class AddCardActivityUnitTest {
                         stringFromFixture("responses/unionpay_capabilities_success_response.json"))
                 .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
                         stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
-        mActivity.dropInRequest = new DropInRequest()
-                .clientToken(stringFromFixture("client_token.json"));
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -687,14 +685,14 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void showsSubmitButtonAgainWhenThreeDSecureIsCanceled() throws PackageManager.NameNotFoundException {
-        PackageManager packageManager = mockPackageManager();
+        PackageManager packageManager = mockPackageManagerWithThreeDSecureWebViewActivity();
         Context context = spy(RuntimeEnvironment.application);
         when(context.getPackageManager()).thenReturn(packageManager);
         mActivity.context = context;
-        mActivity.dropInRequest = new DropInRequest()
+        mActivity.setDropInRequest(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .amount("1.00")
-                .requestThreeDSecureVerification(true);
+                .requestThreeDSecureVerification(true));
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
                         .creditCards(getSupportedCardConfiguration())
@@ -737,9 +735,9 @@ public class AddCardActivityUnitTest {
     }
 
     private void setupViews() {
-        mAddCardView = (AddCardView) mActivity.findViewById(R.id.bt_add_card_view);
-        mEditCardView = (EditCardView) mActivity.findViewById(R.id.bt_edit_card_view);
-        mEnrollmentCardView = (EnrollmentCardView) mActivity.findViewById(R.id.bt_enrollment_card_view);
+        mAddCardView = mActivity.findViewById(R.id.bt_add_card_view);
+        mEditCardView = mActivity.findViewById(R.id.bt_edit_card_view);
+        mEnrollmentCardView = mActivity.findViewById(R.id.bt_enrollment_card_view);
     }
 
     private static void setText(View view, int id, String text) {
@@ -782,18 +780,5 @@ public class AddCardActivityUnitTest {
                 .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName(),
                         PaymentMethodType.AMEX.getCanonicalName(),
                         PaymentMethodType.UNIONPAY.getCanonicalName());
-    }
-
-    private PackageManager mockPackageManager() throws PackageManager.NameNotFoundException {
-        ActivityInfo activityInfo = new ActivityInfo();
-        activityInfo.name = "com.braintreepayments.api.threedsecure.ThreeDSecureWebViewActivity";
-        PackageInfo packageInfo = new PackageInfo();
-        packageInfo.activities = new ActivityInfo[] { activityInfo };
-
-        PackageManager packageManager = spy(RuntimeEnvironment.application.getPackageManager());
-        doReturn(packageInfo).when(packageManager)
-                .getPackageInfo("com.braintreepayments.api.dropin", PackageManager.GET_ACTIVITIES);
-
-        return packageManager;
     }
 }

@@ -275,9 +275,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
                     .postalCode(mEditCardView.getCardForm().getPostalCode())
                     .validate(mClientTokenPresent);
 
-            if (mDropInRequest.shouldRequestThreeDSecureVerification() &&
-                    !TextUtils.isEmpty(mDropInRequest.getAmount()) &&
-                    mConfiguration.isThreeDSecureEnabled()) {
+            if (shouldRequestThreeDSecureVerification()) {
                 ThreeDSecure.performVerification(mBraintreeFragment, cardBuilder,
                         mDropInRequest.getAmount());
             } else {

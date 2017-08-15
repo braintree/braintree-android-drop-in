@@ -1,5 +1,6 @@
 package com.braintreepayments.api.dropin;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import static org.mockito.Mockito.when;
 
 public class DropInUnitTestActivity extends DropInActivity {
 
+    public Context context;
     public BraintreeFragment braintreeFragment;
     public BraintreeUnitTestHttpClient httpClient;
 
@@ -62,5 +64,14 @@ public class DropInUnitTestActivity extends DropInActivity {
         when(resources.getInteger(android.R.integer.config_mediumAnimTime)).thenReturn(0);
         when(resources.getInteger(android.R.integer.config_shortAnimTime)).thenReturn(0);
         return resources;
+    }
+
+    @Override
+    public Context getApplicationContext() {
+        if (context != null) {
+            return context;
+        }
+
+        return super.getApplicationContext();
     }
 }

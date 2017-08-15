@@ -20,6 +20,7 @@ import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.PaymentMethod;
+import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.Venmo;
 import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter;
 import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
@@ -42,6 +43,7 @@ import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
 import com.braintreepayments.api.models.AndroidPayCardNonce;
+import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
@@ -78,6 +80,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     private boolean mSheetSlideUpPerformed;
     private boolean mSheetSlideDownPerformed;
+    private boolean mRequestedThreeDSecure;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,13 +148,24 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         fetchPaymentMethodNonces(false);
     }
 
+    private void handleThreeDSecureFailure() {
+        if (mRequestedThreeDSecure) {
+            mRequestedThreeDSecure = false;
+            fetchPaymentMethodNonces(true);
+        }
+    }
+
     @Override
     public void onCancel(int requestCode) {
+        handleThreeDSecureFailure();
+
         mLoadingViewSwitcher.setDisplayedChild(1);
     }
 
     @Override
     public void onError(final Exception error) {
+        handleThreeDSecureFailure();
+
         if (error instanceof GoogleApiClientException) {
             showSupportedPaymentMethods(false);
             return;
@@ -181,6 +195,16 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     @Override
     public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethodNonce) {
+        if (!mRequestedThreeDSecure && paymentMethodNonce instanceof CardNonce &&
+                shouldRequestThreeDSecureVerification()) {
+            mRequestedThreeDSecure = true;
+            mLoadingViewSwitcher.setDisplayedChild(0);
+
+            ThreeDSecure.performVerification(mBraintreeFragment, paymentMethodNonce.getNonce(),
+                    mDropInRequest.getAmount());
+            return;
+        }
+
         slideDown(new AnimationFinishedListener() {
             @Override
             public void onAnimationFinished() {

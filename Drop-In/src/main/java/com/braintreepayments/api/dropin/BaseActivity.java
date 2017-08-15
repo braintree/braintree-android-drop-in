@@ -40,4 +40,10 @@ public class BaseActivity extends AppCompatActivity {
 
         return BraintreeFragment.newInstance(this, mDropInRequest.getAuthorization());
     }
+
+    protected boolean shouldRequestThreeDSecureVerification() {
+        return mDropInRequest.shouldRequestThreeDSecureVerification() &&
+                !TextUtils.isEmpty(mDropInRequest.getAmount()) &&
+                mConfiguration.isThreeDSecureEnabled();
+    }
 }

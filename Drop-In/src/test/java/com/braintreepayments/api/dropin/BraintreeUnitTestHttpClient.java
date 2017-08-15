@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 
 public class BraintreeUnitTestHttpClient extends BraintreeHttpClient {
 
-    public static final String GET_PAYMENT_METHODS = "/v1/payment_methods.*";
+    public static final String GET_PAYMENT_METHODS = "/v1/payment_methods\\?default_first.*";
     public static final String TOKENIZE_CREDIT_CARD = "/v1/payment_methods/" + new CardBuilder().getApiPath();
     public static final String UNIONPAY_CAPABILITIES_PATH = "/v1/payment_methods/credit_cards/capabilities.*";
     public static final String UNIONPAY_ENROLLMENT_PATH = "/v1/union_pay_enrollments";

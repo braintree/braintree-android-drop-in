@@ -15,7 +15,6 @@ import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KE
 public class AddCardUnitTestActivity extends AddCardActivity {
 
     public Context context;
-    public DropInRequest dropInRequest;
     public BraintreeFragment braintreeFragment;
     public BraintreeUnitTestHttpClient httpClient;
 
@@ -23,12 +22,12 @@ public class AddCardUnitTestActivity extends AddCardActivity {
     public void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.bt_add_card_activity_theme);
 
-        if (dropInRequest == null) {
-            dropInRequest = new DropInRequest().tokenizationKey(TOKENIZATION_KEY);
+        if (mDropInRequest == null) {
+            mDropInRequest = new DropInRequest().tokenizationKey(TOKENIZATION_KEY);
         }
 
         Intent intent = new Intent()
-                .putExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST, dropInRequest);
+                .putExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST, mDropInRequest);
         setIntent(intent);
 
         super.onCreate(savedInstanceState);
@@ -37,6 +36,10 @@ public class AddCardUnitTestActivity extends AddCardActivity {
             ConfigurationManagerTestUtils.setFetchingConfiguration(false);
             waitForConfiguration(braintreeFragment, this);
         }
+    }
+
+    public void setDropInRequest(DropInRequest dropInRequest) {
+        mDropInRequest = dropInRequest;
     }
 
     @Override

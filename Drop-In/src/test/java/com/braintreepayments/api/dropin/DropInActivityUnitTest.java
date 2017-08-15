@@ -1,7 +1,9 @@
 package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ListView;
@@ -20,6 +22,7 @@ import com.braintreepayments.api.exceptions.UnexpectedException;
 import com.braintreepayments.api.exceptions.UpgradeRequiredException;
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeSharedPreferences;
+import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
@@ -30,9 +33,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 
+import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerWithThreeDSecureWebViewActivity;
 import static com.braintreepayments.api.test.ReflectionHelper.getField;
 import static com.braintreepayments.api.test.ReflectionHelper.setField;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
@@ -43,11 +48,13 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
@@ -159,6 +166,70 @@ public class DropInActivityUnitTest {
         mActivity.onCancel(0);
 
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void onCancel_reloadsPaymentMethodsIfThreeDSecureWasRequestedPreviously()
+            throws Exception {
+        PackageManager packageManager = mockPackageManagerWithThreeDSecureWebViewActivity();
+        Context context = spy(RuntimeEnvironment.application);
+        when(context.getPackageManager()).thenReturn(packageManager);
+        mActivity.context = context;
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json"))
+                .amount("1.00")
+                .requestThreeDSecureVerification(true));
+        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .threeDSecureEnabled(true)
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
+                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+        mActivityController.setup();
+        CardNonce cardNonce = CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json"));
+
+        mActivity.onPaymentMethodNonceCreated(cardNonce);
+
+        verify(mActivity.httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
+
+        mActivity.onCancel(BraintreeRequestCodes.THREE_D_SECURE);
+
+        verify(mActivity.httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
+    }
+
+    @Test
+    public void onError_reloadsPaymentMethodsIfThreeDSecureWasRequestedPreviously()
+            throws Exception {
+        PackageManager packageManager = mockPackageManagerWithThreeDSecureWebViewActivity();
+        Context context = spy(RuntimeEnvironment.application);
+        when(context.getPackageManager()).thenReturn(packageManager);
+        mActivity.context = context;
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json"))
+                .amount("1.00")
+                .requestThreeDSecureVerification(true));
+        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .threeDSecureEnabled(true)
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
+                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+        mActivityController.setup();
+        CardNonce cardNonce = CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json"));
+
+        mActivity.onPaymentMethodNonceCreated(cardNonce);
+
+        verify(mActivity.httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
+
+        mActivity.onError(new Exception());
+
+        verify(mActivity.httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
     }
 
     @Test
@@ -309,6 +380,31 @@ public class DropInActivityUnitTest {
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertEquals(cardNonce.getNonce(), result.getPaymentMethodNonce().getNonce());
         assertEquals(cardNonce.getLastTwo(), ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+    }
+
+    @Test
+    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationWhenEnabled()
+            throws Exception {
+        PackageManager packageManager = mockPackageManagerWithThreeDSecureWebViewActivity();
+        Context context = spy(RuntimeEnvironment.application);
+        when(context.getPackageManager()).thenReturn(packageManager);
+        mActivity.context = context;
+        mActivity.setDropInRequest(new DropInRequest()
+                .tokenizationKey(TOKENIZATION_KEY)
+                .amount("1.00")
+                .requestThreeDSecureVerification(true));
+        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .threeDSecureEnabled(true)
+                        .build()));
+        mActivityController.setup();
+        CardNonce cardNonce = CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json"));
+
+        mActivity.onPaymentMethodNonceCreated(cardNonce);
+
+        verify(mActivity.httpClient).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP),
+                anyString(), any(HttpResponseCallback.class));
     }
 
     @Test
