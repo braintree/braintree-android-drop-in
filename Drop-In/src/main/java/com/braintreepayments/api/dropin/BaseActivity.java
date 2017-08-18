@@ -27,8 +27,8 @@ public class BaseActivity extends AppCompatActivity {
 
     protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
         if (TextUtils.isEmpty(mDropInRequest.getAuthorization())) {
-            throw new InvalidArgumentException("A client token or client key must be specified " +
-                    "in the " + DropInRequest.class.getSimpleName());
+            throw new InvalidArgumentException("A client token or tokenization key must be " +
+                    "specified in the " + DropInRequest.class.getSimpleName());
         }
 
         try {

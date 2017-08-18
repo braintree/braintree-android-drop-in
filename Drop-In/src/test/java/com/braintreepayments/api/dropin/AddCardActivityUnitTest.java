@@ -100,7 +100,7 @@ public class AddCardActivityUnitTest {
         Exception exception = (Exception) mShadowActivity.getResultIntent()
                 .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertTrue(exception instanceof InvalidArgumentException);
-        assertEquals("A client token or client key must be specified in the DropInRequest",
+        assertEquals("A client token or tokenization key must be specified in the DropInRequest",
                 exception.getMessage());
     }
 
