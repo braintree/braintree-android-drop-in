@@ -88,11 +88,11 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         setContentView(R.layout.bt_drop_in_activity);
 
         mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
-        mLoadingViewSwitcher = (ViewSwitcher) findViewById(R.id.bt_loading_view_switcher);
-        mSupportedPaymentMethodsHeader = (TextView) findViewById(R.id.bt_supported_payment_methods_header);
-        mSupportedPaymentMethodListView = (ListView) findViewById(R.id.bt_supported_payment_methods);
+        mLoadingViewSwitcher = findViewById(R.id.bt_loading_view_switcher);
+        mSupportedPaymentMethodsHeader = findViewById(R.id.bt_supported_payment_methods_header);
+        mSupportedPaymentMethodListView = findViewById(R.id.bt_supported_payment_methods);
         mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
-        mVaultedPaymentMethodsView = (RecyclerView) findViewById(R.id.bt_vaulted_payment_methods);
+        mVaultedPaymentMethodsView = findViewById(R.id.bt_vaulted_payment_methods);
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);

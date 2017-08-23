@@ -60,8 +60,8 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
 
         LayoutInflater.from(getContext()).inflate(R.layout.bt_edit_card, this);
 
-        mCardForm = (CardForm) findViewById(R.id.bt_card_form);
-        mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.bt_animated_button_view);
+        mCardForm = findViewById(R.id.bt_card_form);
+        mAnimatedButtonView = findViewById(R.id.bt_animated_button_view);
     }
 
     public void setup(Activity activity, Configuration configuration) {

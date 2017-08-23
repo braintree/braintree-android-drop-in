@@ -44,8 +44,8 @@ public class AnimatedButtonView extends RelativeLayout implements OnClickListene
 
         LayoutInflater.from(getContext()).inflate(R.layout.bt_animated_button_view, this);
 
-        mViewAnimator = (ViewAnimator)findViewById(R.id.bt_view_animator);
-        mButton = (Button) findViewById(R.id.bt_button);
+        mViewAnimator = findViewById(R.id.bt_view_animator);
+        mButton = findViewById(R.id.bt_button);
         mButton.setOnClickListener(this);
 
         mViewAnimator.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));

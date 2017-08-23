@@ -64,14 +64,14 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener,
 
         LayoutInflater.from(getContext()).inflate(R.layout.bt_enrollment_card, this, true);
 
-        mSmsCode = (ErrorEditText) findViewById(R.id.bt_sms_code);
+        mSmsCode = findViewById(R.id.bt_sms_code);
         mSmsCode.setImeOptions(EditorInfo.IME_ACTION_GO);
         mSmsCode.setImeActionLabel(getContext().getString(R.string.bt_confirm), EditorInfo.IME_ACTION_GO);
         mSmsCode.setOnEditorActionListener(this);
 
-        mSmsSentTextView = (TextView) findViewById(R.id.bt_sms_sent_text);
-        mSmsHelpButton = (Button) findViewById(R.id.bt_sms_help_button);
-        mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.bt_animated_button_view);
+        mSmsSentTextView = findViewById(R.id.bt_sms_sent_text);
+        mSmsHelpButton = findViewById(R.id.bt_sms_help_button);
+        mAnimatedButtonView = findViewById(R.id.bt_animated_button_view);
 
         mAnimatedButtonView.setClickListener(this);
         mSmsHelpButton.setOnClickListener(this);

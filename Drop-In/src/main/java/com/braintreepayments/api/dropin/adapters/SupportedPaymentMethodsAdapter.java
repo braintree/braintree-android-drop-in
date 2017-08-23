@@ -78,7 +78,7 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
         final PaymentMethodType type = mAvailablePaymentMethods.get(position);
 
-        ImageView icon = (ImageView) convertView.findViewById(R.id.bt_payment_method_icon);
+        ImageView icon = convertView.findViewById(R.id.bt_payment_method_icon);
         icon.setImageResource(type.getDrawable());
 
         ((TextView) convertView.findViewById(R.id.bt_payment_method_type))

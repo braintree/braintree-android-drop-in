@@ -54,7 +54,7 @@ public class AddCardViewUnitTest {
         UnitTestActivity.view = R.layout.bt_add_card_activity;
         mActivityController = Robolectric.buildActivity(UnitTestActivity.class);
         mActivity = (Activity) mActivityController.setup().get();
-        mView = (AddCardView) mActivity.findViewById(R.id.bt_add_card_view);
+        mView = mActivity.findViewById(R.id.bt_add_card_view);
         mView.setup(mActivity, (Configuration) new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
                         .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName()))
@@ -207,7 +207,7 @@ public class AddCardViewUnitTest {
             IllegalAccessException {
         mView.onCardTypeChanged(CardType.EMPTY);
 
-        SupportedCardTypesView supportedCardTypesView = (SupportedCardTypesView) mView.findViewById(
+        SupportedCardTypesView supportedCardTypesView = mView.findViewById(
                 R.id.bt_supported_card_types);
         List<PaddedImageSpan> allSpans = Arrays.asList(new SpannableString(supportedCardTypesView.getText())
                 .getSpans(0, supportedCardTypesView.length(), PaddedImageSpan.class));
@@ -226,7 +226,7 @@ public class AddCardViewUnitTest {
 
         mView.getCardForm().getCardEditText().setText(VISA);
 
-        SupportedCardTypesView supportedCardTypesView = (SupportedCardTypesView) mView.findViewById(
+        SupportedCardTypesView supportedCardTypesView = mView.findViewById(
                 R.id.bt_supported_card_types);
         List<PaddedImageSpan> allSpans = Arrays.asList(new SpannableString(supportedCardTypesView.getText())
                 .getSpans(0, supportedCardTypesView.length(), PaddedImageSpan.class));
@@ -311,7 +311,7 @@ public class AddCardViewUnitTest {
         mActivityController = Robolectric.buildActivity(UnitTestActivity.class)
                 .setup(bundle);
         mActivity = (Activity) mActivityController.get();
-        mView = (AddCardView) mActivity.findViewById(R.id.bt_add_card_view);
+        mView = mActivity.findViewById(R.id.bt_add_card_view);
         mView.setup(mActivity, (Configuration) basicConfig(), true);
 
         assertEquals(VISA, mView.getCardForm().getCardNumber());

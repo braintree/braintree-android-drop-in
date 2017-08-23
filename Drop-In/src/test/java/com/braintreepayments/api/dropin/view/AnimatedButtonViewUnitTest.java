@@ -27,7 +27,7 @@ public class AnimatedButtonViewUnitTest {
         Activity activity = Robolectric.buildActivity(UnitTestActivity.class)
                 .setup()
                 .get();
-        mView = (AnimatedButtonView) activity.findViewById(R.id.bt_animated_button_view);
+        mView = activity.findViewById(R.id.bt_animated_button_view);
     }
 
     @Test

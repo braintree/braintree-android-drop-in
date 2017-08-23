@@ -45,7 +45,7 @@ public class EnrollmentCardViewUnitTest {
         UnitTestActivity.view = R.layout.bt_add_card_activity;
         mActivityController = Robolectric.buildActivity(UnitTestActivity.class);
         mActivity = (Activity) mActivityController.setup().get();
-        mView = (EnrollmentCardView) mActivity.findViewById(R.id.bt_enrollment_card_view);
+        mView = mActivity.findViewById(R.id.bt_enrollment_card_view);
     }
 
     @Test
@@ -76,7 +76,7 @@ public class EnrollmentCardViewUnitTest {
 
     @Test
     public void setsImeOptionsonSmsEditText() {
-        EditText smsCode = (EditText) mView.findViewById(R.id.bt_sms_code);
+        EditText smsCode = mView.findViewById(R.id.bt_sms_code);
 
         assertEquals(EditorInfo.IME_ACTION_GO, smsCode.getImeOptions());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_confirm), smsCode.getImeActionLabel());

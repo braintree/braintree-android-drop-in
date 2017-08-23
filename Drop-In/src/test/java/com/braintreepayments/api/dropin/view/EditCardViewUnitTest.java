@@ -47,7 +47,7 @@ public class EditCardViewUnitTest {
         UnitTestActivity.view = R.layout.bt_add_card_activity;
         mActivityController = Robolectric.buildActivity(UnitTestActivity.class);
         mActivity = (Activity) mActivityController.setup().get();
-        mView = (EditCardView) mActivity.findViewById(R.id.bt_edit_card_view);
+        mView = mActivity.findViewById(R.id.bt_edit_card_view);
     }
 
     @Test
@@ -96,7 +96,7 @@ public class EditCardViewUnitTest {
         mActivityController = Robolectric.buildActivity(UnitTestActivity.class)
                 .setup(bundle);
         mActivity = (Activity) mActivityController.get();
-        mView = (EditCardView) mActivity.findViewById(R.id.bt_edit_card_view);
+        mView = mActivity.findViewById(R.id.bt_edit_card_view);
         mView.setup(mActivity, configuration);
         mView.useUnionPay(mActivity, true, false);
 
@@ -110,7 +110,7 @@ public class EditCardViewUnitTest {
 
     @Test
     public void getCardForm_returnsCardForm() {
-        CardForm cardForm = (CardForm) mView.findViewById(R.id.bt_card_form);
+        CardForm cardForm = mView.findViewById(R.id.bt_card_form);
 
         assertEquals(cardForm, mView.getCardForm());
     }

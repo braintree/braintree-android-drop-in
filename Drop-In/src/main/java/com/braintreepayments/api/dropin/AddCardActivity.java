@@ -86,10 +86,10 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_add_card_activity);
 
-        mViewSwitcher = (ViewSwitcher) findViewById(R.id.bt_loading_view_switcher);
-        mAddCardView = (AddCardView) findViewById(R.id.bt_add_card_view);
-        mEditCardView = (EditCardView) findViewById(R.id.bt_edit_card_view);
-        mEnrollmentCardView = (EnrollmentCardView) findViewById(R.id.bt_enrollment_card_view);
+        mViewSwitcher = findViewById(R.id.bt_loading_view_switcher);
+        mAddCardView = findViewById(R.id.bt_add_card_view);
+        mEditCardView = findViewById(R.id.bt_edit_card_view);
+        mEnrollmentCardView = findViewById(R.id.bt_enrollment_card_view);
         mEnrollmentCardView.setup(this);
 
         setSupportActionBar((Toolbar) findViewById(R.id.bt_toolbar));

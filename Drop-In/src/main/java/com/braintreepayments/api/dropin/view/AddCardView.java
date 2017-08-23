@@ -70,9 +70,9 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
 
         LayoutInflater.from(getContext()).inflate(R.layout.bt_add_card, this, true);
 
-        mCardForm = (CardForm) findViewById(R.id.bt_card_form);
-        mSupportedCardTypesView = (SupportedCardTypesView) findViewById(R.id.bt_supported_card_types);
-        mAnimatedButtonView = (AnimatedButtonView) findViewById(R.id.bt_animated_button_view);
+        mCardForm = findViewById(R.id.bt_card_form);
+        mSupportedCardTypesView = findViewById(R.id.bt_supported_card_types);
+        mAnimatedButtonView = findViewById(R.id.bt_animated_button_view);
     }
 
     public void setup(Activity activity, Configuration configuration, boolean unionpaySupported) {

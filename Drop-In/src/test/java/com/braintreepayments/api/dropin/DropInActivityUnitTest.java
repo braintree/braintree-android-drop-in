@@ -460,7 +460,7 @@ public class DropInActivityUnitTest {
         mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 
-        RecyclerView recyclerView = ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods));
+        RecyclerView recyclerView = mActivity.findViewById(R.id.bt_vaulted_payment_methods);
         recyclerView.measure(0, 0);
         recyclerView.layout(0, 0, 100, 10000);
         recyclerView.findViewHolderForAdapterPosition(0).itemView.callOnClick();

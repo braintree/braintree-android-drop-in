@@ -69,9 +69,9 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
         ViewHolder(View view) {
             super(view);
 
-            icon = (ImageView) view.findViewById(R.id.bt_payment_method_icon);
-            title = (TextView) view.findViewById(R.id.bt_payment_method_title);
-            description = (TextView) view.findViewById(R.id.bt_payment_method_description);
+            icon = view.findViewById(R.id.bt_payment_method_icon);
+            title = view.findViewById(R.id.bt_payment_method_title);
+            description = view.findViewById(R.id.bt_payment_method_description);
         }
     }
 }
