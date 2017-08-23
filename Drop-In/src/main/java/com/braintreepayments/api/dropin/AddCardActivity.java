@@ -1,7 +1,6 @@
 package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.v7.app.ActionBar;
@@ -112,9 +111,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
         try {
             mBraintreeFragment = getBraintreeFragment();
         } catch (InvalidArgumentException e) {
-            Intent intent = new Intent().putExtra(DropInActivity.EXTRA_ERROR, e);
-            setResult(RESULT_FIRST_USER, intent);
-            finish();
+            finish(e);
             return;
         }
 
@@ -287,13 +284,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
         mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
-
-        DropInResult result = new DropInResult()
-                .paymentMethodNonce(paymentMethod);
-        Intent intent = new Intent()
-                .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
-        setResult(Activity.RESULT_OK, intent);
-        finish();
+        finish(paymentMethod, null);
     }
 
     @Override
@@ -340,18 +331,15 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
             if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                     error instanceof UpgradeRequiredException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
-                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR, error));
             } else if (error instanceof ConfigurationException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
-                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR, error));
             } else if (error instanceof ServerException || error instanceof UnexpectedException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR, error));
             } else if (error instanceof DownForMaintenanceException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
-                setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR, error));
             }
-            finish();
+
+            finish(error);
         }
     }
 

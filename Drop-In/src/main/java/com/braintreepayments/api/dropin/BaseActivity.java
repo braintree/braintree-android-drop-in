@@ -1,5 +1,7 @@
 package com.braintreepayments.api.dropin;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -10,6 +12,7 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.models.Authorization;
 import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.Configuration;
+import com.braintreepayments.api.models.PaymentMethodNonce;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -45,5 +48,20 @@ public class BaseActivity extends AppCompatActivity {
         return mDropInRequest.shouldRequestThreeDSecureVerification() &&
                 !TextUtils.isEmpty(mDropInRequest.getAmount()) &&
                 mConfiguration.isThreeDSecureEnabled();
+    }
+
+    protected void finish(PaymentMethodNonce paymentMethod, String deviceData) {
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(paymentMethod)
+                .deviceData(deviceData);
+
+        setResult(Activity.RESULT_OK,
+                new Intent().putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result));
+        finish();
+    }
+
+    protected void finish(Exception e) {
+        setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR, e));
+        finish();
     }
 }

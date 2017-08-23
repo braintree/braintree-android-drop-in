@@ -100,9 +100,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         try {
             mBraintreeFragment = getBraintreeFragment();
         } catch (InvalidArgumentException e) {
-            Intent intent = new Intent().putExtra(EXTRA_ERROR, e);
-            setResult(RESULT_FIRST_USER, intent);
-            finish();
+            finish(e);
             return;
         }
 
@@ -187,8 +185,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                     mBraintreeFragment.sendAnalyticsEvent("sdk.exit.sdk-error");
                 }
 
-                setResult(RESULT_FIRST_USER, new Intent().putExtra(EXTRA_ERROR, error));
-                finish();
+                finish(error);
             }
         });
     }
@@ -212,13 +209,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
                 DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, paymentMethodNonce);
 
-                DropInResult result = new DropInResult()
-                        .paymentMethodNonce(paymentMethodNonce)
-                        .deviceData(mDeviceData);
-                Intent intent = new Intent().putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
-
-                setResult(RESULT_OK, intent);
-                finish();
+                finish(paymentMethodNonce, mDeviceData);
             }
         });
     }
