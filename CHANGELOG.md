@@ -1,5 +1,17 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.1.0
+
+* Fix missing French translations (fixes [#35](https://github.com/braintree/braintree-android-drop-in/issues/35))
+* Stop using dependency ranges (https://github.com/braintree/android-card-form/pull/29)
+* Prevent users from getting stuck when canceling 3D Secure (fixes [#41](https://github.com/braintree/braintree-android-drop-in/issues/41))
+* Run 3D Secure verifications for vaulted credit cards (fixes [#41](https://github.com/braintree/braintree-android-drop-in/issues/41))
+* Update compile and target SDK versions to 26
+  * Any support library dependencies must now be 26.0.0 or newer
+* Fix incorrect error message for empty client tokens or tokenization keys
+* Upgrade card-form to 3.1.0
+* Upgrade Braintree to 2.6.2
+
 ## 3.0.8
 
 * Prevent dependency resolution of alpha major versions of support libraries (fixes [#28](https://github.com/braintree/braintree-android-drop-in/issues/28))
