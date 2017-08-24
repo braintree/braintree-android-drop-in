@@ -66,7 +66,7 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void performsThreeDSecureVerification() {
         enableThreeDSecure();
-        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(THREE_D_SECURE_VERIFICATON);
 
