@@ -68,16 +68,16 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        mPaymentMethod = (CardView) findViewById(R.id.payment_method);
-        mPaymentMethodIcon = (ImageView) findViewById(R.id.payment_method_icon);
-        mPaymentMethodTitle = (TextView) findViewById(R.id.payment_method_title);
-        mPaymentMethodDescription = (TextView) findViewById(R.id.payment_method_description);
-        mNonceString = (TextView) findViewById(R.id.nonce);
-        mNonceDetails = (TextView) findViewById(R.id.nonce_details);
-        mDeviceData = (TextView) findViewById(R.id.device_data);
+        mPaymentMethod = findViewById(R.id.payment_method);
+        mPaymentMethodIcon = findViewById(R.id.payment_method_icon);
+        mPaymentMethodTitle = findViewById(R.id.payment_method_title);
+        mPaymentMethodDescription = findViewById(R.id.payment_method_description);
+        mNonceString = findViewById(R.id.nonce);
+        mNonceDetails = findViewById(R.id.nonce_details);
+        mDeviceData = findViewById(R.id.device_data);
 
-        mAddPaymentMethodButton = (Button) findViewById(R.id.add_payment_method);
-        mPurchaseButton = (Button) findViewById(R.id.purchase);
+        mAddPaymentMethodButton = findViewById(R.id.add_payment_method);
+        mPurchaseButton = findViewById(R.id.purchase);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_NONCE)) {
