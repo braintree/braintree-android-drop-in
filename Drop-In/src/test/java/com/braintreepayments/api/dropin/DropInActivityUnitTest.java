@@ -491,7 +491,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onPaymentMethodNoncesUpdated_filtersOutVaultedAndroidPayCardNonces() {
+    public void onPaymentMethodNoncesUpdated_doesNotIncludeVaultedAndroidPayCardNonces() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
