@@ -50,6 +50,7 @@ import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageMana
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -311,7 +312,7 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void cardValidationErrorsAreShownToTheUser() {
+    public void cardNumberValidationErrorsAreShownToTheUser() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
                         .creditCards(getSupportedCardConfiguration())
@@ -328,12 +329,48 @@ public class AddCardActivityUnitTest {
         setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
         setText(mEditCardView, R.id.bt_card_form_cvv, "123");
         setText(mEditCardView, R.id.bt_card_form_postal_code, "12345");
-        setText(mEditCardView, R.id.bt_card_form_country_code, "123");
-        setText(mEditCardView, R.id.bt_card_form_mobile_number, "12345678");
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
+        assertThat(mAddCardView).isVisible();
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
-                mEditCardView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
+                mAddCardView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
+
+        assertThat(mEditCardView).isGone();
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
+                mEditCardView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_cvv_invalid,
+                RuntimeEnvironment.application.getString(
+                        mEditCardView.getCardForm().getCardEditText().getCardType()
+                                .getSecurityCodeName())),
+                mEditCardView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_invalid),
+                mEditCardView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
+    }
+
+    @Test
+    public void cardValidationErrorsAreShownToTheUser() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .challenges("cvv", "postal_code")
+                        .build())
+                .errorResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, 422,
+                        stringFromFixture("responses/credit_card_non_number_error_response.json"));
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(stringFromFixture("client_token.json")));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_postal_code, "12345");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+
+        assertThat(mAddCardView).isGone();
+        assertNull(mAddCardView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
+
+        assertThat(mEditCardView).isVisible();
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
                 mEditCardView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_cvv_invalid,

@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
+import com.braintreepayments.api.exceptions.BraintreeError;
+import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.OnCardFormValidListener;
@@ -119,6 +121,23 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
 
     public void showCardNotSupportedError() {
         mCardForm.getCardEditText().setError(getContext().getString(R.string.bt_card_not_accepted));
+        mAnimatedButtonView.showButton();
+    }
+
+    public boolean isCardNumberError(ErrorWithResponse errors) {
+        BraintreeError formErrors = errors.errorFor("creditCard");
+        return formErrors != null && formErrors.errorFor("number") != null;
+    }
+
+    public void setErrors(ErrorWithResponse errors) {
+        BraintreeError formErrors = errors.errorFor("creditCard");
+
+        if (formErrors != null) {
+            if (formErrors.errorFor("number") != null) {
+                mCardForm.setCardNumberError(getContext().getString(R.string.bt_card_number_invalid));
+            }
+        }
+
         mAnimatedButtonView.showButton();
     }
 

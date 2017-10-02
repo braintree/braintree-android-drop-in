@@ -96,10 +96,6 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
         }
 
         if (formErrors != null) {
-            if (formErrors.errorFor("number") != null) {
-                mCardForm.setCardNumberError(getContext().getString(R.string.bt_card_number_invalid));
-            }
-
             if (formErrors.errorFor("expirationYear") != null ||
                     formErrors.errorFor("expirationMonth") != null ||
                     formErrors.errorFor("expirationDate") != null) {

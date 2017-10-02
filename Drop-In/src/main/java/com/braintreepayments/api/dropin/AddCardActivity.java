@@ -320,12 +320,20 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     @Override
     public void onError(Exception error) {
         if (error instanceof ErrorWithResponse) {
-            if (mEnrollmentCardView.isEnrollmentError((ErrorWithResponse) error)) {
+            ErrorWithResponse errorResponse = (ErrorWithResponse) error;
+
+            if (mEnrollmentCardView.isEnrollmentError(errorResponse)) {
                 setState(mState, ENROLLMENT_ENTRY);
                 mEnrollmentCardView.setErrors((ErrorWithResponse) error);
             } else {
-                setState(mState, DETAILS_ENTRY);
                 mEditCardView.setErrors((ErrorWithResponse) error);
+
+                if (mAddCardView.isCardNumberError(errorResponse)) {
+                    mAddCardView.setErrors((ErrorWithResponse) error);
+                    setState(mState, CARD_ENTRY);
+                } else {
+                    setState(mState, DETAILS_ENTRY);
+                }
             }
         } else {
             if (error instanceof AuthenticationException || error instanceof AuthorizationException ||

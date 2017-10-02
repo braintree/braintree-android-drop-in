@@ -9,6 +9,7 @@ import android.widget.Button;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
+import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.api.test.TestConfigurationBuilder.TestUnionPayConfigurationBuilder;
@@ -18,6 +19,7 @@ import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.PaddedImageSpan;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,8 +35,10 @@ import static com.braintreepayments.api.test.CardNumber.AMEX;
 import static com.braintreepayments.api.test.CardNumber.VISA;
 import static com.braintreepayments.api.test.ReflectionHelper.getField;
 import static com.braintreepayments.api.test.TestConfigurationBuilder.basicConfig;
+import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -200,6 +204,57 @@ public class AddCardViewUnitTest {
                 mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
         assertThat(mView.findViewById(R.id.bt_button)).isVisible();
         assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+    }
+
+    @Test
+    public void isCardNumberError_returnsFalseForNonCardNumberError() throws JSONException {
+        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(
+                stringFromFixture("responses/credit_card_expiration_error_response.json"));
+
+        assertFalse(mView.isCardNumberError(errorWithResponse));
+    }
+
+    @Test
+    public void isCardNumberError_returnsTrueForCardNumberError() throws JSONException {
+        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(
+                stringFromFixture("responses/credit_card_error_response.json"));
+
+        assertTrue(mView.isCardNumberError(errorWithResponse));
+    }
+
+    @Test
+    public void setErrors_doesNothingForNonCardNumberError() throws JSONException {
+        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(
+                stringFromFixture("responses/credit_card_expiration_error_response.json"));
+
+        mView.getCardForm().getCardEditText().setText(VISA);
+        mView.findViewById(R.id.bt_button).performClick();
+        assertThat(mView.findViewById(R.id.bt_button)).isGone();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+
+        mView.setErrors(errorWithResponse);
+
+        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+        assertNull(mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
+    }
+
+    @Test
+    public void setErrors_displaysError() throws JSONException {
+        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(
+                stringFromFixture("responses/credit_card_error_response.json"));
+
+        mView.getCardForm().getCardEditText().setText(VISA);
+        mView.findViewById(R.id.bt_button).performClick();
+        assertThat(mView.findViewById(R.id.bt_button)).isGone();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+
+        mView.setErrors(errorWithResponse);
+
+        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
+                mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
     }
 
     @Test

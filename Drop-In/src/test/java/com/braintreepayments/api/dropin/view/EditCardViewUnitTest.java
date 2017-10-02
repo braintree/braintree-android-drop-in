@@ -246,8 +246,6 @@ public class EditCardViewUnitTest {
 
         mView.setErrors(new ErrorWithResponse(422, stringFromFixture("responses/credit_card_error_response.json")));
 
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
-                mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
                 mView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_cvv_invalid,
