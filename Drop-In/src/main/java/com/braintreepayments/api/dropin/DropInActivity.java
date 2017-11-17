@@ -18,6 +18,7 @@ import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.DataCollector;
+import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.ThreeDSecure;
@@ -124,7 +125,14 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             });
         }
 
-        if (mDropInRequest.isAndroidPayEnabled()) {
+        if (mDropInRequest.isGooglePaymentEnabled()) {
+            GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
+                @Override
+                public void onResponse(Boolean isReadyToPay) {
+                    showSupportedPaymentMethods(isReadyToPay);
+                }
+            });
+        } else if (mDropInRequest.isAndroidPayEnabled()) {
             AndroidPay.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
                 @Override
                 public void onResponse(Boolean isReadyToPay) {
@@ -136,9 +144,9 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
     }
 
-    private void showSupportedPaymentMethods(boolean androidPaySupported) {
+    private void showSupportedPaymentMethods(boolean androidPayOrPayWithGoogleEnabled) {
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(this, this);
-        adapter.setup(mConfiguration, mDropInRequest, androidPaySupported, mClientTokenPresent);
+        adapter.setup(mConfiguration, mDropInRequest, androidPayOrPayWithGoogleEnabled, mClientTokenPresent);
         mSupportedPaymentMethodListView.setAdapter(adapter);
         mLoadingViewSwitcher.setDisplayedChild(1);
         fetchPaymentMethodNonces(false);
@@ -225,6 +233,9 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                         mDropInRequest.isAndroidPayShippingAddressRequired(),
                         mDropInRequest.isAndroidPayPhoneNumberRequired(),
                         mDropInRequest.getAndroidPayAllowedCountriesForShipping());
+                break;
+            case PAY_WITH_GOOGLE:
+                GooglePayment.requestPayment(mBraintreeFragment, mDropInRequest.getGooglePaymentRequest());
                 break;
             case PAY_WITH_VENMO:
                 Venmo.authorizeAccount(mBraintreeFragment);

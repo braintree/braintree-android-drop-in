@@ -53,6 +53,10 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
         if (dropInRequest.isAndroidPayEnabled() && androidPayEnabled) {
             mAvailablePaymentMethods.add(PaymentMethodType.ANDROID_PAY);
         }
+
+        if (dropInRequest.isGooglePaymentEnabled() && androidPayEnabled) {
+            mAvailablePaymentMethods.add(PaymentMethodType.PAY_WITH_GOOGLE);
+        }
     }
 
     @Override

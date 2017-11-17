@@ -7,6 +7,7 @@ import android.os.Parcel;
 import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.ConfigurationManagerTestUtils;
+import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
@@ -52,7 +53,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(RobolectricTestRunner.class)
 @PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*", "org.json.*" })
-@PrepareForTest(AndroidPay.class)
+@PrepareForTest({AndroidPay.class, GooglePayment.class})
 public class DropInResultUnitTest {
 
     @Rule
@@ -171,6 +172,34 @@ public class DropInResultUnitTest {
     }
 
     @Test
+    public void fetchDropInResult_callsListenerWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle()
+            throws InterruptedException {
+        BraintreeSharedPreferences.getSharedPreferences(mActivity)
+                .edit()
+                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+                        PaymentMethodType.PAY_WITH_GOOGLE.getCanonicalName())
+                .commit();
+        googlePaymentReadyToPay(true);
+        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+            @Override
+            public void onError(Exception exception) {
+                fail("onError called");
+            }
+
+            @Override
+            public void onResult(DropInResult result) {
+                assertEquals(PaymentMethodType.PAY_WITH_GOOGLE, result.getPaymentMethodType());
+                assertNull(result.getPaymentMethodNonce());
+                mCountDownLatch.countDown();
+            }
+        };
+
+        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+
+        mCountDownLatch.await();
+    }
+
+    @Test
     public void fetchDropInResult_doesNotCallListenerWithAndroidPayIfAndroidPayIsNotAvailable()
             throws InterruptedException, InvalidArgumentException {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -179,6 +208,38 @@ public class DropInResultUnitTest {
                         PaymentMethodType.ANDROID_PAY.getCanonicalName())
                 .commit();
         androidPayReadyToPay(false);
+        setupFragment(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build())
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
+                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+            @Override
+            public void onError(Exception exception) {
+                fail("onError called");
+            }
+
+            @Override
+            public void onResult(DropInResult result) {
+                assertEquals(PaymentMethodType.VISA, result.getPaymentMethodType());
+                assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+                mCountDownLatch.countDown();
+            }
+        };
+
+        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+
+        mCountDownLatch.await();
+    }
+
+    @Test
+    public void fetchDropInResult_doesNotCallListenerWithPayWithGoogleIfPayWithGoogleIsNotAvailable()
+            throws InterruptedException, InvalidArgumentException {
+        BraintreeSharedPreferences.getSharedPreferences(mActivity)
+                .edit()
+                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+                        PaymentMethodType.PAY_WITH_GOOGLE.getCanonicalName())
+                .commit();
+        googlePaymentReadyToPay(false);
         setupFragment(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
@@ -246,6 +307,49 @@ public class DropInResultUnitTest {
     }
 
     @Test
+    public void fetchDropInResult_resetsBraintreeListenersWhenPayWithGoogleResultIsReturned()
+            throws InvalidArgumentException, InterruptedException {
+        BraintreeSharedPreferences.getSharedPreferences(mActivity)
+                .edit()
+                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+                        PaymentMethodType.PAY_WITH_GOOGLE.getCanonicalName())
+                .commit();
+        googlePaymentReadyToPay(true);
+        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build()));
+        BraintreeErrorListener errorListener = new BraintreeErrorListener() {
+            @Override
+            public void onError(Exception error) {}
+        };
+        fragment.addListener(errorListener);
+        PaymentMethodNoncesUpdatedListener paymentMethodListener = new PaymentMethodNoncesUpdatedListener() {
+            @Override
+            public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {}
+        };
+        fragment.addListener(paymentMethodListener);
+        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+            @Override
+            public void onError(Exception exception) {
+                fail("onError called");
+            }
+
+            @Override
+            public void onResult(DropInResult result) {
+                assertEquals(PaymentMethodType.PAY_WITH_GOOGLE, result.getPaymentMethodType());
+                mCountDownLatch.countDown();
+            }
+        };
+
+        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+
+        mCountDownLatch.await();
+        List<BraintreeListener> listeners = fragment.getListeners();
+        assertEquals(2, listeners.size());
+        assertTrue(listeners.contains(errorListener));
+        assertTrue(listeners.contains(paymentMethodListener));
+    }
+
+    @Test
     public void fetchDropInResult_clearsListenersWhenAndroidPayResultIsReturned()
             throws InvalidArgumentException, InterruptedException {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -265,6 +369,37 @@ public class DropInResultUnitTest {
             @Override
             public void onResult(DropInResult result) {
                 assertEquals(PaymentMethodType.ANDROID_PAY, result.getPaymentMethodType());
+                mCountDownLatch.countDown();
+            }
+        };
+
+        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+
+        mCountDownLatch.await();
+        List<BraintreeListener> listeners = fragment.getListeners();
+        assertEquals(0, listeners.size());
+    }
+
+    @Test
+    public void fetchDropInResult_clearsListenersWhenPayWithGoogleResultIsReturned()
+            throws InvalidArgumentException, InterruptedException {
+        BraintreeSharedPreferences.getSharedPreferences(mActivity)
+                .edit()
+                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+                        PaymentMethodType.PAY_WITH_GOOGLE.getCanonicalName())
+                .commit();
+        googlePaymentReadyToPay(true);
+        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build()));
+        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+            @Override
+            public void onError(Exception exception) {
+                fail("onError called");
+            }
+
+            @Override
+            public void onResult(DropInResult result) {
+                assertEquals(PaymentMethodType.PAY_WITH_GOOGLE, result.getPaymentMethodType());
                 mCountDownLatch.countDown();
             }
         };
@@ -529,5 +664,18 @@ public class DropInResultUnitTest {
             }
         }).when(AndroidPay.class);
         AndroidPay.isReadyToPay(any(BraintreeFragment.class), any(BraintreeResponseListener.class));
+    }
+
+    private void googlePaymentReadyToPay(final boolean readyToPay) {
+        mockStatic(GooglePayment.class);
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) throws Throwable {
+                ((BraintreeResponseListener<Boolean>) invocation.getArguments()[1])
+                        .onResponse(readyToPay);
+                return null;
+            }
+        }).when(GooglePayment.class);
+        GooglePayment.isReadyToPay(any(BraintreeFragment.class), any(BraintreeResponseListener.class));
     }
 }

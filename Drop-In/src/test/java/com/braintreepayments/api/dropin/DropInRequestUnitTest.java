@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Parcel;
 
 import com.braintreepayments.api.PayPal;
+import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.google.android.gms.wallet.Cart;
+import com.google.android.gms.wallet.TransactionInfo;
+import com.google.android.gms.wallet.WalletConstants;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +31,14 @@ public class DropInRequestUnitTest {
         Cart cart = Cart.newBuilder()
                 .setTotalPrice("5.00")
                 .build();
+        GooglePaymentRequest googlePaymentRequest = new GooglePaymentRequest()
+                .transactionInfo(TransactionInfo.newBuilder()
+                        .setTotalPrice("10")
+                        .setCurrencyCode("USD")
+                        .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
+                        .build())
+                .emailRequired(true);
+
         Intent intent = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
@@ -37,6 +48,8 @@ public class DropInRequestUnitTest {
                 .androidPayPhoneNumberRequired(true)
                 .androidPayAllowedCountriesForShipping("GB")
                 .disableAndroidPay()
+                .googlePaymentRequest(googlePaymentRequest)
+                .disableGooglePayment()
                 .paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS))
                 .disablePayPal()
                 .disableVenmo()
@@ -53,6 +66,11 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.isAndroidPayShippingAddressRequired());
         assertTrue(dropInRequest.isAndroidPayPhoneNumberRequired());
         assertFalse(dropInRequest.isAndroidPayEnabled());
+        assertEquals("10", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPrice());
+        assertEquals("USD", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getCurrencyCode());
+        assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPriceStatus());
+        assertTrue(dropInRequest.getGooglePaymentRequest().isEmailRequired());
+        assertFalse(dropInRequest.isGooglePaymentEnabled());
         assertEquals(1, dropInRequest.getAndroidPayAllowedCountriesForShipping().size());
         assertEquals("GB", dropInRequest.getAndroidPayAllowedCountriesForShipping().get(0).getCountryCode());
         assertEquals(Collections.singletonList(PayPal.SCOPE_ADDRESS), dropInRequest.getPayPalAdditionalScopes());
@@ -76,6 +94,7 @@ public class DropInRequestUnitTest {
         assertFalse(dropInRequest.isAndroidPayShippingAddressRequired());
         assertFalse(dropInRequest.isAndroidPayPhoneNumberRequired());
         assertTrue(dropInRequest.isAndroidPayEnabled());
+        assertTrue(dropInRequest.isGooglePaymentEnabled());
         assertTrue(dropInRequest.getAndroidPayAllowedCountriesForShipping().isEmpty());
         assertNull(dropInRequest.getPayPalAdditionalScopes());
         assertTrue(dropInRequest.isPayPalEnabled());
@@ -88,6 +107,14 @@ public class DropInRequestUnitTest {
         Cart cart = Cart.newBuilder()
                 .setTotalPrice("5.00")
                 .build();
+        GooglePaymentRequest googlePaymentRequest = new GooglePaymentRequest()
+                .transactionInfo(TransactionInfo.newBuilder()
+                        .setTotalPrice("10")
+                        .setCurrencyCode("USD")
+                        .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
+                        .build())
+                .emailRequired(true);
+
         DropInRequest dropInRequest = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
@@ -97,6 +124,8 @@ public class DropInRequestUnitTest {
                 .androidPayPhoneNumberRequired(true)
                 .androidPayAllowedCountriesForShipping("GB")
                 .disableAndroidPay()
+                .googlePaymentRequest(googlePaymentRequest)
+                .disableGooglePayment()
                 .paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS))
                 .disablePayPal()
                 .disableVenmo()
@@ -116,6 +145,11 @@ public class DropInRequestUnitTest {
         assertFalse(parceledDropInRequest.isAndroidPayEnabled());
         assertEquals(1, parceledDropInRequest.getAndroidPayAllowedCountriesForShipping().size());
         assertEquals("GB", parceledDropInRequest.getAndroidPayAllowedCountriesForShipping().get(0).getCountryCode());
+        assertEquals("10", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPrice());
+        assertEquals("USD", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getCurrencyCode());
+        assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPriceStatus());
+        assertTrue(dropInRequest.getGooglePaymentRequest().isEmailRequired());
+        assertFalse(dropInRequest.isGooglePaymentEnabled());
         assertEquals(Collections.singletonList(PayPal.SCOPE_ADDRESS), parceledDropInRequest.getPayPalAdditionalScopes());
         assertFalse(parceledDropInRequest.isPayPalEnabled());
         assertFalse(parceledDropInRequest.isVenmoEnabled());

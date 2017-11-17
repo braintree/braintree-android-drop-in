@@ -7,6 +7,7 @@ import android.os.Parcelable;
 
 import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.PayPal;
+import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.wallet.Cart;
 
@@ -27,9 +28,11 @@ public class DropInRequest implements Parcelable {
     private boolean mRequestThreeDSecureVerification;
 
     private Cart mAndroidPayCart;
+    private GooglePaymentRequest mGooglePaymentRequest;
     private boolean mAndroidPayShippingAddressRequired;
     private boolean mAndroidPayPhoneNumberRequired;
     private boolean mAndroidPayEnabled = true;
+    private boolean mGooglePaymentEnabled = true;
     private ArrayList<CountrySpecification> mAndroidAllowedCountriesForShipping = new ArrayList<>();
 
     private List<String> mPayPalAdditionalScopes;
@@ -82,6 +85,11 @@ public class DropInRequest implements Parcelable {
      */
     public DropInRequest collectDeviceData(boolean collectDeviceData) {
         mCollectDeviceData = collectDeviceData;
+        return this;
+    }
+
+    public DropInRequest googlePaymentRequest(GooglePaymentRequest request) {
+        mGooglePaymentRequest = request;
         return this;
     }
 
@@ -138,6 +146,11 @@ public class DropInRequest implements Parcelable {
      */
     public DropInRequest disableAndroidPay() {
         mAndroidPayEnabled = false;
+        return this;
+    }
+
+    public DropInRequest disableGooglePayment() {
+        mGooglePaymentEnabled = false;
         return this;
     }
 
@@ -240,6 +253,14 @@ public class DropInRequest implements Parcelable {
         return mVenmoEnabled;
     }
 
+    public GooglePaymentRequest getGooglePaymentRequest() {
+        return mGooglePaymentRequest;
+    }
+
+    public boolean isGooglePaymentEnabled() {
+        return mGooglePaymentEnabled;
+    }
+
     boolean shouldRequestThreeDSecureVerification() {
         return mRequestThreeDSecureVerification;
     }
@@ -263,6 +284,9 @@ public class DropInRequest implements Parcelable {
             dest.writeTypedList(mAndroidAllowedCountriesForShipping);
         } catch (NoClassDefFoundError ignored) {}
 
+        // TODO: comment back in when braintree-android 2.7.4 is released
+        //dest.writeParcelable(mGooglePaymentRequest);
+        dest.writeByte(mGooglePaymentEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mAndroidPayEnabled ? (byte) 1 : (byte) 0);
         dest.writeStringList(mPayPalAdditionalScopes);
         dest.writeByte(mPayPalEnabled ? (byte) 1 : (byte) 0);
@@ -282,6 +306,8 @@ public class DropInRequest implements Parcelable {
             in.readTypedList(mAndroidAllowedCountriesForShipping, CountrySpecification.CREATOR);
         } catch (NoClassDefFoundError ignored) {}
 
+        mGooglePaymentRequest = in.readParcelable(GooglePaymentRequest.class.getClassLoader());
+        mGooglePaymentEnabled = in.readByte() != 0;
         mAndroidPayEnabled = in.readByte() != 0;
         mPayPalAdditionalScopes = in.createStringArrayList();
         mPayPalEnabled = in.readByte() != 0;

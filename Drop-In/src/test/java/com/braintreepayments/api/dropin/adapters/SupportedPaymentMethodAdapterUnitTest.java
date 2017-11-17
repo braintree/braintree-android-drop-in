@@ -47,11 +47,12 @@ public class SupportedPaymentMethodAdapterUnitTest {
                 RuntimeEnvironment.application, null);
         adapter.setup(configuration, new DropInRequest(), true, true);
 
-        assertEquals(4, adapter.getCount());
+        assertEquals(5, adapter.getCount());
         assertEquals(PaymentMethodType.PAYPAL, adapter.getItem(0));
         assertEquals(PaymentMethodType.PAY_WITH_VENMO, adapter.getItem(1));
         assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(2));
         assertEquals(PaymentMethodType.ANDROID_PAY, adapter.getItem(3));
+        assertEquals(PaymentMethodType.PAY_WITH_GOOGLE, adapter.getItem(4));
     }
 
     @Test
@@ -124,6 +125,20 @@ public class SupportedPaymentMethodAdapterUnitTest {
         Configuration configuration = getConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest()
                 .disableAndroidPay();
+
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
+                RuntimeEnvironment.application, null);
+        adapter.setup(configuration, dropInRequest, true, false);
+
+        assertEquals(0, adapter.getCount());
+    }
+
+    @Test
+    public void googlePayNotAvailableIfDisabledInDropInRequest() {
+        Configuration configuration = getConfiguration(false, false, false, true);
+        DropInRequest dropInRequest = new DropInRequest()
+                .disableAndroidPay()
+                .disableGooglePayment();
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 RuntimeEnvironment.application, null);

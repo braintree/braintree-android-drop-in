@@ -14,6 +14,7 @@ public enum PaymentMethodType {
 
     AMEX(CardType.AMEX.getFrontResource(), R.drawable.bt_ic_vaulted_amex, R.string.bt_descriptor_amex, "American Express", CardType.AMEX),
     ANDROID_PAY(R.drawable.bt_ic_android_pay, 0, R.string.bt_descriptor_android_pay, "Android Pay", null),
+    PAY_WITH_GOOGLE(R.drawable.bt_ic_pay_with_google, 0, R.string.bt_descriptor_pay_with_google, "Pay with Google", null),
     DINERS(CardType.DINERS_CLUB.getFrontResource(), R.drawable.bt_ic_vaulted_diners_club, R.string.bt_descriptor_diners, "Diners", CardType.DINERS_CLUB),
     DISCOVER(CardType.DISCOVER.getFrontResource(), R.drawable.bt_ic_vaulted_discover, R.string.bt_descriptor_discover, "Discover", CardType.DISCOVER),
     JCB(CardType.JCB.getFrontResource(), R.drawable.bt_ic_vaulted_jcb, R.string.bt_descriptor_jcb, "JCB", CardType.JCB),

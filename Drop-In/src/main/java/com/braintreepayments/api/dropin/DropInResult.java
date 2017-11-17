@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 
 import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
@@ -179,23 +180,34 @@ public class DropInResult implements Parcelable {
         fragment.addListener(errorListener);
         fragment.addListener(paymentMethodsListener);
 
-        if (PaymentMethodType.forType(BraintreeSharedPreferences.getSharedPreferences(activity)
-                .getString(LAST_USED_PAYMENT_METHOD_TYPE, null)) == PaymentMethodType.ANDROID_PAY) {
-            AndroidPay.isReadyToPay(fragment, new BraintreeResponseListener<Boolean>() {
+        final PaymentMethodType lastUsedPaymentMethodType = PaymentMethodType.forType(BraintreeSharedPreferences.getSharedPreferences(activity)
+                .getString(LAST_USED_PAYMENT_METHOD_TYPE, null));
+
+        if (lastUsedPaymentMethodType == PaymentMethodType.ANDROID_PAY || lastUsedPaymentMethodType == PaymentMethodType.PAY_WITH_GOOGLE) {
+            BraintreeResponseListener<Boolean> isReadyToPayCallback = new BraintreeResponseListener<Boolean>() {
                 @Override
                 public void onResponse(Boolean isReadyToPay) {
                     if (isReadyToPay) {
                         resetListeners(fragment, listenerHolder, previousListeners);
 
                         DropInResult result = new DropInResult();
-                        result.mPaymentMethodType = PaymentMethodType.ANDROID_PAY;
+                        result.mPaymentMethodType = lastUsedPaymentMethodType;
 
                         listener.onResult(result);
                     } else {
                         PaymentMethod.getPaymentMethodNonces(fragment);
                     }
                 }
-            });
+            };
+
+            switch (lastUsedPaymentMethodType) {
+                case ANDROID_PAY:
+                    AndroidPay.isReadyToPay(fragment, isReadyToPayCallback);
+                    break;
+                case PAY_WITH_GOOGLE:
+                    GooglePayment.isReadyToPay(fragment, isReadyToPayCallback);
+                    break;
+            }
         } else {
             PaymentMethod.getPaymentMethodNonces(fragment);
         }

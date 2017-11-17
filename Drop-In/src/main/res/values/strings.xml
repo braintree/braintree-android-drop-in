@@ -10,6 +10,7 @@
     <string name="bt_descriptor_paypal">PayPal</string>
     <string name="bt_descriptor_pay_with_venmo">Venmo</string>
     <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_pay_with_google">Pay with Google</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
     <string name="bt_descriptor_unknown">Credit or Debit Card</string>
 
