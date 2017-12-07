@@ -284,8 +284,7 @@ public class DropInRequest implements Parcelable {
             dest.writeTypedList(mAndroidAllowedCountriesForShipping);
         } catch (NoClassDefFoundError ignored) {}
 
-        // TODO: comment back in when braintree-android 2.7.4 is released
-        //dest.writeParcelable(mGooglePaymentRequest);
+        dest.writeParcelable(mGooglePaymentRequest, 0);
         dest.writeByte(mGooglePaymentEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mAndroidPayEnabled ? (byte) 1 : (byte) 0);
         dest.writeStringList(mPayPalAdditionalScopes);
