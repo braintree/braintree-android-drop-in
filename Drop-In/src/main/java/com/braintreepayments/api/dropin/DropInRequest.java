@@ -88,6 +88,11 @@ public class DropInRequest implements Parcelable {
         return this;
     }
 
+    /**
+     * This method is optional.
+     *
+     * @param request The Google Payment Request {@link GooglePaymentRequest} for the transaction.
+     */
     public DropInRequest googlePaymentRequest(GooglePaymentRequest request) {
         mGooglePaymentRequest = request;
         return this;
@@ -149,6 +154,9 @@ public class DropInRequest implements Parcelable {
         return this;
     }
 
+    /**
+     * Disables Google Payment in Drop-in.
+     */
     public DropInRequest disableGooglePayment() {
         mGooglePaymentEnabled = false;
         return this;

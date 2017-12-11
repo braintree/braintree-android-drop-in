@@ -47,12 +47,11 @@ public class SupportedPaymentMethodAdapterUnitTest {
                 RuntimeEnvironment.application, null);
         adapter.setup(configuration, new DropInRequest(), true, true);
 
-        assertEquals(5, adapter.getCount());
+        assertEquals(4, adapter.getCount());
         assertEquals(PaymentMethodType.PAYPAL, adapter.getItem(0));
         assertEquals(PaymentMethodType.PAY_WITH_VENMO, adapter.getItem(1));
         assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(2));
-        assertEquals(PaymentMethodType.ANDROID_PAY, adapter.getItem(3));
-        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, adapter.getItem(4));
+        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, adapter.getItem(3));
     }
 
     @Test
@@ -135,6 +134,19 @@ public class SupportedPaymentMethodAdapterUnitTest {
     }
 
     @Test
+    public void prefersGooglePayOverAndroidPayIfBothEnabled() {
+        Configuration configuration = getConfiguration(false, false, false, true);
+        DropInRequest dropInRequest = new DropInRequest();
+
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
+                RuntimeEnvironment.application, null);
+        adapter.setup(configuration, dropInRequest, true, false);
+
+        assertEquals(1, adapter.getCount());
+        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, adapter.getItem(0));
+    }
+
+    @Test
     public void googlePayNotAvailableIfDisabledInDropInRequest() {
         Configuration configuration = getConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest()
@@ -165,7 +177,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         verify(listener).onPaymentMethodSelected(PaymentMethodType.PAYPAL);
         verify(listener).onPaymentMethodSelected(PaymentMethodType.PAY_WITH_VENMO);
         verify(listener).onPaymentMethodSelected(PaymentMethodType.UNKNOWN);
-        verify(listener).onPaymentMethodSelected(PaymentMethodType.ANDROID_PAY);
+        verify(listener).onPaymentMethodSelected(PaymentMethodType.GOOGLE_PAYMENT);
         verifyNoMoreInteractions(listener);
     }
 
