@@ -124,6 +124,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
     public void androidPayNotAvailableIfDisabledInDropInRequest() {
         Configuration configuration = getConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest()
+                .disableGooglePayment()
                 .disableAndroidPay();
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(

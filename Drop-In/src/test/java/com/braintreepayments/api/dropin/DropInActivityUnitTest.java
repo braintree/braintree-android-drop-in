@@ -152,6 +152,7 @@ public class DropInActivityUnitTest {
                         .build());
         mActivity.setDropInRequest(new DropInRequest()
                 .disableAndroidPay()
+                .disableGooglePayment()
                 .tokenizationKey(TOKENIZATION_KEY));
         setup(httpClient);
 

@@ -79,7 +79,8 @@ public class DropInActivityPowerMockTest {
                 .androidPay(new TestConfigurationBuilder.TestAndroidPayConfigurationBuilder()
                         .enabled(true))
                 .buildConfiguration();
-        mActivity.setDropInRequest(new DropInRequest());
+        mActivity.setDropInRequest(new DropInRequest()
+                .disableGooglePayment());
         mActivity.mSupportedPaymentMethodListView = mock(ListView.class);
         mActivity.onConfigurationFetched(configuration);
 
