@@ -177,7 +177,7 @@ public class DropInResultUnitTest {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        PaymentMethodType.PAY_WITH_GOOGLE.getCanonicalName())
+                        PaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
                 .commit();
         googlePaymentReadyToPay(true);
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
@@ -188,7 +188,7 @@ public class DropInResultUnitTest {
 
             @Override
             public void onResult(DropInResult result) {
-                assertEquals(PaymentMethodType.PAY_WITH_GOOGLE, result.getPaymentMethodType());
+                assertEquals(PaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
                 assertNull(result.getPaymentMethodNonce());
                 mCountDownLatch.countDown();
             }
@@ -237,7 +237,7 @@ public class DropInResultUnitTest {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        PaymentMethodType.PAY_WITH_GOOGLE.getCanonicalName())
+                        PaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
                 .commit();
         googlePaymentReadyToPay(false);
         setupFragment(new BraintreeUnitTestHttpClient()
@@ -312,7 +312,7 @@ public class DropInResultUnitTest {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        PaymentMethodType.PAY_WITH_GOOGLE.getCanonicalName())
+                        PaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
                 .commit();
         googlePaymentReadyToPay(true);
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
@@ -335,7 +335,7 @@ public class DropInResultUnitTest {
 
             @Override
             public void onResult(DropInResult result) {
-                assertEquals(PaymentMethodType.PAY_WITH_GOOGLE, result.getPaymentMethodType());
+                assertEquals(PaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
                 mCountDownLatch.countDown();
             }
         };
@@ -386,7 +386,7 @@ public class DropInResultUnitTest {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        PaymentMethodType.PAY_WITH_GOOGLE.getCanonicalName())
+                        PaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
                 .commit();
         googlePaymentReadyToPay(true);
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
@@ -399,7 +399,7 @@ public class DropInResultUnitTest {
 
             @Override
             public void onResult(DropInResult result) {
-                assertEquals(PaymentMethodType.PAY_WITH_GOOGLE, result.getPaymentMethodType());
+                assertEquals(PaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
                 mCountDownLatch.countDown();
             }
         };

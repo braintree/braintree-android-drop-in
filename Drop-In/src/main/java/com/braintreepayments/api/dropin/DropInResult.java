@@ -183,7 +183,7 @@ public class DropInResult implements Parcelable {
         final PaymentMethodType lastUsedPaymentMethodType = PaymentMethodType.forType(BraintreeSharedPreferences.getSharedPreferences(activity)
                 .getString(LAST_USED_PAYMENT_METHOD_TYPE, null));
 
-        if (lastUsedPaymentMethodType == PaymentMethodType.ANDROID_PAY || lastUsedPaymentMethodType == PaymentMethodType.PAY_WITH_GOOGLE) {
+        if (lastUsedPaymentMethodType == PaymentMethodType.ANDROID_PAY || lastUsedPaymentMethodType == PaymentMethodType.GOOGLE_PAYMENT) {
             BraintreeResponseListener<Boolean> isReadyToPayCallback = new BraintreeResponseListener<Boolean>() {
                 @Override
                 public void onResponse(Boolean isReadyToPay) {
@@ -204,7 +204,7 @@ public class DropInResult implements Parcelable {
                 case ANDROID_PAY:
                     AndroidPay.isReadyToPay(fragment, isReadyToPayCallback);
                     break;
-                case PAY_WITH_GOOGLE:
+                case GOOGLE_PAYMENT:
                     GooglePayment.isReadyToPay(fragment, isReadyToPayCallback);
                     break;
             }

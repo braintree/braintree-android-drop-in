@@ -234,7 +234,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                         mDropInRequest.isAndroidPayPhoneNumberRequired(),
                         mDropInRequest.getAndroidPayAllowedCountriesForShipping());
                 break;
-            case PAY_WITH_GOOGLE:
+            case GOOGLE_PAYMENT:
                 GooglePayment.requestPayment(mBraintreeFragment, mDropInRequest.getGooglePaymentRequest());
                 break;
             case PAY_WITH_VENMO:

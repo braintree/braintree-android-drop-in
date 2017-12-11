@@ -52,7 +52,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         assertEquals(PaymentMethodType.PAY_WITH_VENMO, adapter.getItem(1));
         assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(2));
         assertEquals(PaymentMethodType.ANDROID_PAY, adapter.getItem(3));
-        assertEquals(PaymentMethodType.PAY_WITH_GOOGLE, adapter.getItem(4));
+        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, adapter.getItem(4));
     }
 
     @Test
