@@ -99,38 +99,53 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * @deprecated
+     * This method is deprecated. Use {@link DropInRequest#googlePaymentRequest(GooglePaymentRequest)} instead.
+     *
      * This method is optional.
      *
      * @param cart The Android Pay {@link Cart} for the transaction.
      */
+    @Deprecated
     public DropInRequest androidPayCart(Cart cart) {
         mAndroidPayCart = cart;
         return this;
     }
 
     /**
+     * @deprecated
+     * This method is deprecated. Please use {@link GooglePaymentRequest#shippingAddressRequired(boolean)} instead.
+     *
      * This method is optional.
      *
      * @param shippingAddressRequired {@code true} if Android Pay requests should request a
      *        shipping address from the user.
      */
+    @Deprecated
     public DropInRequest androidPayShippingAddressRequired(boolean shippingAddressRequired) {
         mAndroidPayShippingAddressRequired = shippingAddressRequired;
         return this;
     }
 
     /**
+     * @deprecated
+     * This method is deprecated. Please use {@link GooglePaymentRequest#phoneNumberRequired(boolean)} instead.
+     *
      * This method is optional.
      *
      * @param phoneNumberRequired {@code true} if Android Pay requests should request a phone
      *        number from the user.
      */
+    @Deprecated
     public DropInRequest androidPayPhoneNumberRequired(boolean phoneNumberRequired) {
         mAndroidPayPhoneNumberRequired = phoneNumberRequired;
         return this;
     }
 
     /**
+     * @deprecated
+     * This method is deprecated. Please use {@link GooglePaymentRequest#getShippingAddressRequirements()} instead.
+     *
      * This method is optional.
      *
      * @param countryCodes countries to which shipping is supported.
@@ -138,6 +153,7 @@ public class DropInRequest implements Parcelable {
      *
      * @see <a href="https://en.wikipedia.org/wiki/ISO_3166-2#Current_codes">ISO 3166 country codes</a>
      */
+    @Deprecated
     public DropInRequest androidPayAllowedCountriesForShipping(String... countryCodes) {
         mAndroidAllowedCountriesForShipping.clear();
         for(String countryCode : countryCodes) {
