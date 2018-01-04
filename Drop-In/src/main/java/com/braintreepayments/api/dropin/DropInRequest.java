@@ -7,6 +7,7 @@ import android.os.Parcelable;
 
 import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.PayPal;
+import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.wallet.Cart;
 
@@ -27,9 +28,11 @@ public class DropInRequest implements Parcelable {
     private boolean mRequestThreeDSecureVerification;
 
     private Cart mAndroidPayCart;
+    private GooglePaymentRequest mGooglePaymentRequest;
     private boolean mAndroidPayShippingAddressRequired;
     private boolean mAndroidPayPhoneNumberRequired;
     private boolean mAndroidPayEnabled = true;
+    private boolean mGooglePaymentEnabled = true;
     private ArrayList<CountrySpecification> mAndroidAllowedCountriesForShipping = new ArrayList<>();
 
     private List<String> mPayPalAdditionalScopes;
@@ -88,36 +91,61 @@ public class DropInRequest implements Parcelable {
     /**
      * This method is optional.
      *
+     * @param request The Google Payment Request {@link GooglePaymentRequest} for the transaction.
+     */
+    public DropInRequest googlePaymentRequest(GooglePaymentRequest request) {
+        mGooglePaymentRequest = request;
+        return this;
+    }
+
+    /**
+     * @deprecated
+     * This method is deprecated. Use {@link DropInRequest#googlePaymentRequest(GooglePaymentRequest)} instead.
+     *
+     * This method is optional.
+     *
      * @param cart The Android Pay {@link Cart} for the transaction.
      */
+    @Deprecated
     public DropInRequest androidPayCart(Cart cart) {
         mAndroidPayCart = cart;
         return this;
     }
 
     /**
+     * @deprecated
+     * This method is deprecated. Please use {@link GooglePaymentRequest#shippingAddressRequired(boolean)} instead.
+     *
      * This method is optional.
      *
      * @param shippingAddressRequired {@code true} if Android Pay requests should request a
      *        shipping address from the user.
      */
+    @Deprecated
     public DropInRequest androidPayShippingAddressRequired(boolean shippingAddressRequired) {
         mAndroidPayShippingAddressRequired = shippingAddressRequired;
         return this;
     }
 
     /**
+     * @deprecated
+     * This method is deprecated. Please use {@link GooglePaymentRequest#phoneNumberRequired(boolean)} instead.
+     *
      * This method is optional.
      *
      * @param phoneNumberRequired {@code true} if Android Pay requests should request a phone
      *        number from the user.
      */
+    @Deprecated
     public DropInRequest androidPayPhoneNumberRequired(boolean phoneNumberRequired) {
         mAndroidPayPhoneNumberRequired = phoneNumberRequired;
         return this;
     }
 
     /**
+     * @deprecated
+     * This method is deprecated. Please use {@link GooglePaymentRequest#getShippingAddressRequirements()} instead.
+     *
      * This method is optional.
      *
      * @param countryCodes countries to which shipping is supported.
@@ -125,6 +153,7 @@ public class DropInRequest implements Parcelable {
      *
      * @see <a href="https://en.wikipedia.org/wiki/ISO_3166-2#Current_codes">ISO 3166 country codes</a>
      */
+    @Deprecated
     public DropInRequest androidPayAllowedCountriesForShipping(String... countryCodes) {
         mAndroidAllowedCountriesForShipping.clear();
         for(String countryCode : countryCodes) {
@@ -138,6 +167,14 @@ public class DropInRequest implements Parcelable {
      */
     public DropInRequest disableAndroidPay() {
         mAndroidPayEnabled = false;
+        return this;
+    }
+
+    /**
+     * Disables Google Payment in Drop-in.
+     */
+    public DropInRequest disableGooglePayment() {
+        mGooglePaymentEnabled = false;
         return this;
     }
 
@@ -240,6 +277,14 @@ public class DropInRequest implements Parcelable {
         return mVenmoEnabled;
     }
 
+    public GooglePaymentRequest getGooglePaymentRequest() {
+        return mGooglePaymentRequest;
+    }
+
+    public boolean isGooglePaymentEnabled() {
+        return mGooglePaymentEnabled;
+    }
+
     boolean shouldRequestThreeDSecureVerification() {
         return mRequestThreeDSecureVerification;
     }
@@ -263,6 +308,8 @@ public class DropInRequest implements Parcelable {
             dest.writeTypedList(mAndroidAllowedCountriesForShipping);
         } catch (NoClassDefFoundError ignored) {}
 
+        dest.writeParcelable(mGooglePaymentRequest, 0);
+        dest.writeByte(mGooglePaymentEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mAndroidPayEnabled ? (byte) 1 : (byte) 0);
         dest.writeStringList(mPayPalAdditionalScopes);
         dest.writeByte(mPayPalEnabled ? (byte) 1 : (byte) 0);
@@ -282,6 +329,8 @@ public class DropInRequest implements Parcelable {
             in.readTypedList(mAndroidAllowedCountriesForShipping, CountrySpecification.CREATOR);
         } catch (NoClassDefFoundError ignored) {}
 
+        mGooglePaymentRequest = in.readParcelable(GooglePaymentRequest.class.getClassLoader());
+        mGooglePaymentEnabled = in.readByte() != 0;
         mAndroidPayEnabled = in.readByte() != 0;
         mPayPalAdditionalScopes = in.createStringArrayList();
         mPayPalEnabled = in.readByte() != 0;

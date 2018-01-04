@@ -152,6 +152,23 @@ public class DropInActivityUnitTest {
                         .build());
         mActivity.setDropInRequest(new DropInRequest()
                 .disableAndroidPay()
+                .disableGooglePayment()
+                .tokenizationKey(TOKENIZATION_KEY));
+        setup(httpClient);
+
+        assertEquals(0, ((ListView) mActivity.findViewById(R.id.bt_supported_payment_methods)).getAdapter().getCount());
+    }
+
+    @Test
+    public void onConfigurationFetched_whenGooglePayDisabledClientSide_doesNotShowGooglePay() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .androidPay(new TestConfigurationBuilder.TestAndroidPayConfigurationBuilder()
+                                .enabled(true))
+                        .build());
+        mActivity.setDropInRequest(new DropInRequest()
+                .disableAndroidPay()
+                .disableGooglePayment()
                 .tokenizationKey(TOKENIZATION_KEY));
         setup(httpClient);
 

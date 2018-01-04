@@ -10,6 +10,7 @@
     <string name="bt_descriptor_paypal">贝宝</string>
     <string name="bt_descriptor_pay_with_venmo">Venmo</string>
     <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">银联</string>
     <string name="bt_descriptor_unknown">信用卡或借记卡</string>
 

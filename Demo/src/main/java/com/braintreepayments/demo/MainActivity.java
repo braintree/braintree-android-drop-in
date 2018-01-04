@@ -23,6 +23,8 @@ import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.AndroidPayCardNonce;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.ClientToken;
+import com.braintreepayments.api.models.GooglePaymentCardNonce;
+import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.PostalAddress;
@@ -31,6 +33,8 @@ import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.wallet.Cart;
 import com.google.android.gms.wallet.LineItem;
+import com.google.android.gms.wallet.TransactionInfo;
+import com.google.android.gms.wallet.WalletConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -120,6 +124,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .amount("1.00")
                 .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))
                 .collectDeviceData(Settings.shouldCollectDeviceData(this))
+                .googlePaymentRequest(getGooglePaymentRequest())
                 .androidPayCart(getAndroidPayCart())
                 .androidPayShippingAddressRequired(Settings.isAndroidPayShippingAddressRequired(this))
                 .androidPayPhoneNumberRequired(Settings.isAndroidPayPhoneNumberRequired(this))
@@ -287,6 +292,13 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
             VenmoAccountNonce venmoAccountNonce = (VenmoAccountNonce) mNonce;
 
             details = "Username: " + venmoAccountNonce.getUsername();
+        } else if (mNonce instanceof GooglePaymentCardNonce) {
+            GooglePaymentCardNonce googlePaymentCardNonce = (GooglePaymentCardNonce) mNonce;
+
+            details = "Underlying Card Last Two: " + googlePaymentCardNonce.getLastTwo() + "\n";
+            details += "Email: " + googlePaymentCardNonce.getEmail() + "\n";
+            details += "Billing address: " + formatAddress(googlePaymentCardNonce.getBillingAddress()) + "\n";
+            details += "Shipping address: " + formatAddress(googlePaymentCardNonce.getShippingAddress());
         }
 
         mNonceDetails.setText(details);
@@ -321,6 +333,16 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 address.getAddress3() + " " + address.getAddress4() + " " + address.getAddress5() + " " +
                 address.getLocality() + " " + address.getAdministrativeArea() + " " + address.getPostalCode() + " " +
                 address.getSortingCode() + " " + address.getCountryCode();
+    }
+
+    private GooglePaymentRequest getGooglePaymentRequest() {
+        return new GooglePaymentRequest()
+                .transactionInfo(TransactionInfo.newBuilder()
+                        .setTotalPrice("1.00")
+                        .setCurrencyCode("USD")
+                        .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
+                        .build())
+                .emailRequired(true);
     }
 
     private Cart getAndroidPayCart() {

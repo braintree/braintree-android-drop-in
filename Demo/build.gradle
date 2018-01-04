@@ -61,7 +61,7 @@ android {
 dependencies {
     compile 'com.android.support:support-v4:26.0.0'
     compile 'com.squareup.retrofit:retrofit:1.9.0'
-    compile 'com.google.android.gms:play-services-wallet:10.2.6'
+    compile 'com.google.android.gms:play-services-wallet:11.4.0'
     compile 'com.lukekorth:mailable_log:0.1.6'
     compile 'io.card:android-sdk:5.5.1'
 
