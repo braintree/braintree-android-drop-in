@@ -1,5 +1,13 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.2.0
+* Add Google Pay support
+* Update vaulted Maestro logos
+* Update vaulted Mastercard logos
+* Upgrade Braintree to 2.8.1
+* Fix card number errors not being displayed
+* Upgrade card-form to 3.1.1
+
 ## 3.1.0
 
 * Fix missing French translations (fixes [#35](https://github.com/braintree/braintree-android-drop-in/issues/35))
