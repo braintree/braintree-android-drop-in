@@ -2,9 +2,12 @@ package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.models.CardNonce;
+import com.braintreepayments.api.models.Configuration;
+import com.braintreepayments.api.test.ReflectionHelper;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 
 import org.json.JSONException;
@@ -45,6 +48,65 @@ public class BaseActivityUnitTest {
 
         assertNotNull(mActivity.mDropInRequest);
         assertEquals(TOKENIZATION_KEY, mActivity.mDropInRequest.getAuthorization());
+    }
+
+    @Test
+    public void onCreate_setsConfigurationIfSaved() throws NoSuchFieldException, IllegalAccessException {
+        Configuration configuration = new TestConfigurationBuilder().buildConfiguration();
+
+        Bundle savedState = new Bundle();
+        savedState.putString(BaseActivity.EXTRA_CONFIGURATION_DATA, configuration.toJson());
+        mActivityController = Robolectric.buildActivity(BaseActivity.class);
+
+        mActivityController.create(savedState);
+        mActivity = (BaseActivity) mActivityController.get();
+
+        Configuration restoredConfiguration = (Configuration)ReflectionHelper.getField(mActivity, "mConfiguration");
+        assertNotNull(restoredConfiguration);
+        assertNotNull(restoredConfiguration.getMerchantId());
+        assertEquals(configuration.getMerchantId(), restoredConfiguration.getMerchantId());
+    }
+
+    @Test
+    public void onCreate_doesNotSetConfigurationIfNotInBundle() throws NoSuchFieldException, IllegalAccessException {
+        Bundle savedState = new Bundle();
+        mActivityController = Robolectric.buildActivity(BaseActivity.class).create(savedState);
+        mActivity = (BaseActivity) mActivityController.get();
+
+        Configuration restoredConfiguration = (Configuration)ReflectionHelper.getField(mActivity, "mConfiguration");
+        assertNull(restoredConfiguration);
+    }
+
+    @Test
+    public void onSaveInstanceState_savesConfigurationAsJSON() throws NoSuchFieldException, IllegalAccessException, JSONException {
+        Configuration configuration = new TestConfigurationBuilder().buildConfiguration();
+
+        mActivityController = Robolectric.buildActivity(BaseActivity.class).create();
+
+        mActivity = (BaseActivity) mActivityController.get();
+        ReflectionHelper.setField(mActivity, "mConfiguration", configuration);
+
+        Bundle outputState = new Bundle();
+        mActivityController.saveInstanceState(outputState);
+        String configAsString = outputState.getString(BaseActivity.EXTRA_CONFIGURATION_DATA);
+        assertNotNull(configAsString);
+
+        Configuration savedConfiguration = Configuration.fromJson(configAsString);
+        assertNotNull(savedConfiguration.getMerchantId());
+        assertEquals(configuration.getMerchantId(), savedConfiguration.getMerchantId());
+    }
+
+    @Test
+    public void onSaveInstanceState_doesNotThrowExceptionIfNoConfiguration() throws NoSuchFieldException, IllegalAccessException {
+        mActivityController = Robolectric.buildActivity(BaseActivity.class).create();
+
+        mActivity = (BaseActivity) mActivityController.get();
+        ReflectionHelper.setField(mActivity, "mConfiguration", null);
+
+        Bundle outputState = new Bundle();
+        mActivityController.saveInstanceState(outputState);
+        String configAsString = outputState.getString(BaseActivity.EXTRA_CONFIGURATION_DATA);
+        assertNull(configAsString);
     }
 
     @Test
