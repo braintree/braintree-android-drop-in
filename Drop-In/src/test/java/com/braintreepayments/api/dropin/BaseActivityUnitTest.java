@@ -78,7 +78,7 @@ public class BaseActivityUnitTest {
     }
 
     @Test
-    public void onSaveInstanceState_savesConfigurationAsJSON() throws NoSuchFieldException, IllegalAccessException, JSONException {
+    public void onSaveInstanceState_savesConfigurationAsJson() throws NoSuchFieldException, IllegalAccessException, JSONException {
         Configuration configuration = new TestConfigurationBuilder().buildConfiguration();
 
         mActivityController = Robolectric.buildActivity(BaseActivity.class).create();

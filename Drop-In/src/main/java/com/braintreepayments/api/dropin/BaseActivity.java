@@ -32,7 +32,7 @@ public class BaseActivity extends AppCompatActivity {
         if (savedInstanceState != null) {
             try {
                 mConfiguration = Configuration.fromJson(savedInstanceState.getString(EXTRA_CONFIGURATION_DATA));
-            } catch (JSONException e) {}
+            } catch (JSONException ignored) {}
         }
 
         mDropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
