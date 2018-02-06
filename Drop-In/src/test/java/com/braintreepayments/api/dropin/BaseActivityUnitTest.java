@@ -61,7 +61,7 @@ public class BaseActivityUnitTest {
         mActivityController.create(savedState);
         mActivity = (BaseActivity) mActivityController.get();
 
-        Configuration restoredConfiguration = (Configuration)ReflectionHelper.getField(mActivity, "mConfiguration");
+        Configuration restoredConfiguration = (Configuration) ReflectionHelper.getField(mActivity, "mConfiguration");
         assertNotNull(restoredConfiguration);
         assertNotNull(restoredConfiguration.getMerchantId());
         assertEquals(configuration.getMerchantId(), restoredConfiguration.getMerchantId());
@@ -73,7 +73,7 @@ public class BaseActivityUnitTest {
         mActivityController = Robolectric.buildActivity(BaseActivity.class).create(savedState);
         mActivity = (BaseActivity) mActivityController.get();
 
-        Configuration restoredConfiguration = (Configuration)ReflectionHelper.getField(mActivity, "mConfiguration");
+        Configuration restoredConfiguration = (Configuration) ReflectionHelper.getField(mActivity, "mConfiguration");
         assertNull(restoredConfiguration);
     }
 
