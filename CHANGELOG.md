@@ -1,5 +1,10 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.2.1
+
+* Upgrade Braintree to 2.10.0
+* Restore the configuration after activity resumed (fixes [#181](https://github.com/braintree/braintree_android/issues/181))
+
 ## 3.2.0
 * Add Google Pay support
 * Update vaulted Maestro logos
