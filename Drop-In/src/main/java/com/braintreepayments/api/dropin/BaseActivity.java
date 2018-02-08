@@ -14,7 +14,11 @@ import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
+import org.json.JSONException;
+
 public class BaseActivity extends AppCompatActivity {
+
+    static final String EXTRA_CONFIGURATION_DATA = "com.braintreepayments.api.EXTRA_CONFIGURATION_DATA";
 
     protected DropInRequest mDropInRequest;
     protected BraintreeFragment mBraintreeFragment;
@@ -25,7 +29,21 @@ public class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (savedInstanceState != null) {
+            try {
+                mConfiguration = Configuration.fromJson(savedInstanceState.getString(EXTRA_CONFIGURATION_DATA));
+            } catch (JSONException ignored) {}
+        }
+
         mDropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mConfiguration != null) {
+            outState.putString(EXTRA_CONFIGURATION_DATA, mConfiguration.toJson());
+        }
     }
 
     protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
