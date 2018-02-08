@@ -8,6 +8,7 @@
   "details":
   {
     "cardType": "UnionPay",
-    "lastTwo": "85"
+    "lastTwo": "85",
+    "lastFour": "0085"
   }
 }
