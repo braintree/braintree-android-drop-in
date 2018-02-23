@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -87,6 +88,14 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
 
     public void setCardNumber(String cardNumber) {
         mCardForm.getCardEditText().setText(cardNumber);
+    }
+
+    public void setMaskCardNumber(boolean mask) {
+        mCardForm.maskedCardNumber(mask);
+    }
+
+    public void setMaskCvv(boolean mask) {
+        mCardForm.maskedCvv(mask);
     }
 
     public void setErrors(ErrorWithResponse errors) {

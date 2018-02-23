@@ -33,6 +33,8 @@ public class DropInRequest implements Parcelable {
     private boolean mAndroidPayPhoneNumberRequired;
     private boolean mAndroidPayEnabled = true;
     private boolean mGooglePaymentEnabled = true;
+    private boolean mMaskCardNumber = false;
+    private boolean mMaskSecurityCode = false;
     private ArrayList<CountrySpecification> mAndroidAllowedCountriesForShipping = new ArrayList<>();
 
     private List<String> mPayPalAdditionalScopes;
@@ -222,6 +224,24 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * @param maskCardNumber {@code true} to mask the card number when the field is not focused.
+     * See {@link com.braintreepayments.cardform.view.CardEditText} for more details. Defaults to
+     * {@code false}.
+     */
+    public DropInRequest maskCardNumber(boolean maskCardNumber) {
+        mMaskCardNumber = maskCardNumber;
+        return this;
+    }
+
+    /**
+     * @param maskSecurityCode {@code true} to mask the security code during input. Defaults to {@code false}.
+     */
+    public DropInRequest maskSecurityCode(boolean maskSecurityCode) {
+        mMaskSecurityCode = maskSecurityCode;
+        return this;
+    }
+
+    /**
      * Get an {@link Intent} that can be used in {@link android.app.Activity#startActivityForResult(Intent, int)}
      * to launch {@link DropInActivity} and the Drop-in UI.
      *
@@ -289,6 +309,14 @@ public class DropInRequest implements Parcelable {
         return mRequestThreeDSecureVerification;
     }
 
+    boolean shouldMaskCardNumber() {
+        return mMaskCardNumber;
+    }
+
+    boolean shouldMaskSecurityCode() {
+        return mMaskSecurityCode;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -315,6 +343,8 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(mPayPalEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mVenmoEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mRequestThreeDSecureVerification ? (byte) 1 : (byte) 0);
+        dest.writeByte(mMaskCardNumber ? (byte) 1 : (byte) 0);
+        dest.writeByte(mMaskSecurityCode ? (byte) 1 : (byte) 0);
     }
 
     protected DropInRequest(Parcel in) {
@@ -336,6 +366,8 @@ public class DropInRequest implements Parcelable {
         mPayPalEnabled = in.readByte() != 0;
         mVenmoEnabled = in.readByte() != 0;
         mRequestThreeDSecureVerification = in.readByte() != 0;
+        mMaskCardNumber = in.readByte() != 0;
+        mMaskSecurityCode = in.readByte() != 0;
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {

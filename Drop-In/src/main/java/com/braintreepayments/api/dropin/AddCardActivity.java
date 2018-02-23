@@ -106,6 +106,10 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
             mState = CARD_ENTRY;
         }
 
+        mAddCardView.getCardForm().maskedCardNumber(mDropInRequest.shouldMaskCardNumber());
+        mEditCardView.getCardForm().maskedCardNumber(mDropInRequest.shouldMaskCardNumber());
+        mEditCardView.getCardForm().maskedCvv(mDropInRequest.shouldMaskSecurityCode());
+
         enterState(LOADING);
 
         try {

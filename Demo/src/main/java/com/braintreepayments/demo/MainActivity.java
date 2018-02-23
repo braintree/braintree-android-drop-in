@@ -125,6 +125,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))
                 .collectDeviceData(Settings.shouldCollectDeviceData(this))
                 .googlePaymentRequest(getGooglePaymentRequest())
+                .maskCardNumber(true)
+                .maskSecurityCode(true)
                 .androidPayCart(getAndroidPayCart())
                 .androidPayShippingAddressRequired(Settings.isAndroidPayShippingAddressRequired(this))
                 .androidPayPhoneNumberRequired(Settings.isAndroidPayPhoneNumberRequired(this))

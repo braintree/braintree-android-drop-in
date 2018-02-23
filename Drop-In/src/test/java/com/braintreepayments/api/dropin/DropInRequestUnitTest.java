@@ -54,6 +54,8 @@ public class DropInRequestUnitTest {
                 .disablePayPal()
                 .disableVenmo()
                 .requestThreeDSecureVerification(true)
+                .maskCardNumber(true)
+                .maskSecurityCode(true)
                 .getIntent(RuntimeEnvironment.application);
 
         DropInRequest dropInRequest = intent.getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
@@ -77,6 +79,8 @@ public class DropInRequestUnitTest {
         assertFalse(dropInRequest.isPayPalEnabled());
         assertFalse(dropInRequest.isVenmoEnabled());
         assertTrue(dropInRequest.shouldRequestThreeDSecureVerification());
+        assertTrue(dropInRequest.shouldMaskCardNumber());
+        assertTrue(dropInRequest.shouldMaskSecurityCode());
     }
 
     @Test
@@ -100,6 +104,8 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.isPayPalEnabled());
         assertTrue(dropInRequest.isVenmoEnabled());
         assertFalse(dropInRequest.shouldRequestThreeDSecureVerification());
+        assertFalse(dropInRequest.shouldMaskCardNumber());
+        assertFalse(dropInRequest.shouldMaskSecurityCode());
     }
 
     @Test
@@ -129,7 +135,9 @@ public class DropInRequestUnitTest {
                 .paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS))
                 .disablePayPal()
                 .disableVenmo()
-                .requestThreeDSecureVerification(true);
+                .requestThreeDSecureVerification(true)
+                .maskCardNumber(true)
+                .maskSecurityCode(true);
 
         Parcel parcel = Parcel.obtain();
         dropInRequest.writeToParcel(parcel, 0);
@@ -154,6 +162,8 @@ public class DropInRequestUnitTest {
         assertFalse(parceledDropInRequest.isPayPalEnabled());
         assertFalse(parceledDropInRequest.isVenmoEnabled());
         assertTrue(parceledDropInRequest.shouldRequestThreeDSecureVerification());
+        assertTrue(parceledDropInRequest.shouldMaskCardNumber());
+        assertTrue(parceledDropInRequest.shouldMaskSecurityCode());
     }
 
     @Test
