@@ -91,11 +91,11 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
     }
 
     public void setMaskCardNumber(boolean mask) {
-        mCardForm.maskedCardNumber(mask);
+        mCardForm.maskCardNumber(mask);
     }
 
     public void setMaskCvv(boolean mask) {
-        mCardForm.maskedCvv(mask);
+        mCardForm.maskCvv(mask);
     }
 
     public void setErrors(ErrorWithResponse errors) {
