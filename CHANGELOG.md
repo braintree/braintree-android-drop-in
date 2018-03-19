@@ -1,5 +1,10 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.3.0
+
+* Enable input masking in AddCardActivity
+* Update target SDK versions
+
 ## 3.2.1
 
 * Upgrade Braintree to 2.10.0
