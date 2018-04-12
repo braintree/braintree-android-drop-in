@@ -12,7 +12,7 @@
     <string name="bt_descriptor_android_pay">Android Pay</string>
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
-    <string name="bt_descriptor_unknown">Credit or Debit Card</string>
+    <string name="bt_descriptor_unknown">Tarjeta de débito o crédito</string>
 
     <string name="bt_recent">Reciente(s)</string>
     <string name="bt_other">Otra</string>
