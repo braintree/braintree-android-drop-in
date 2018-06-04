@@ -1,5 +1,10 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.4.0
+
+* Update spanish translation for bt_descriptor_unknown
+* Upgrade Braintree to 2.13.1
+
 ## 3.3.0
 
 * Enable input masking in AddCardActivity
