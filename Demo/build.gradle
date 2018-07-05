@@ -50,6 +50,10 @@ android {
         warning 'MissingTranslation'
         textReport true
         textOutput 'stdout'
+
+        // TODO Mailable log is using classes now available in Android.
+        // Update mailable log to use the Android version of these classes.
+        checkReleaseBuilds false
     }
 
     packagingOptions {
