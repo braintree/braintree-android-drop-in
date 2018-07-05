@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.dropin.DropInActivity;
@@ -29,14 +28,12 @@ import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.PostalAddress;
 import com.braintreepayments.api.models.VenmoAccountNonce;
-import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.wallet.Cart;
 import com.google.android.gms.wallet.LineItem;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 import static android.view.View.GONE;
@@ -140,24 +137,11 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     }
 
     public void purchase(View v) {
-        if (mPaymentMethodType == PaymentMethodType.ANDROID_PAY && mNonce == null) {
-            ArrayList<CountrySpecification> countries = new ArrayList<>();
-            for(String countryCode : Settings.getAndroidPayAllowedCountriesForShipping(this)) {
-                countries.add(new CountrySpecification(countryCode));
-            }
+        Intent intent = new Intent(this, CreateTransactionActivity.class)
+                .putExtra(CreateTransactionActivity.EXTRA_PAYMENT_METHOD_NONCE, mNonce);
+        startActivity(intent);
 
-            mShouldMakePurchase = true;
-
-            AndroidPay.requestAndroidPay(mBraintreeFragment, getAndroidPayCart(),
-                    Settings.isAndroidPayShippingAddressRequired(this),
-                    Settings.isAndroidPayPhoneNumberRequired(this), countries);
-        } else {
-            Intent intent = new Intent(this, CreateTransactionActivity.class)
-                    .putExtra(CreateTransactionActivity.EXTRA_PAYMENT_METHOD_NONCE, mNonce);
-            startActivity(intent);
-
-            mPurchased = true;
-        }
+        mPurchased = true;
     }
 
     @Override

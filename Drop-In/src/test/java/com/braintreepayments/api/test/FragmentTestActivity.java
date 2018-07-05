@@ -1,10 +1,10 @@
 package com.braintreepayments.api.test;
 
-import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.widget.LinearLayout;
 
-public class FragmentTestActivity extends Activity {
+public class FragmentTestActivity extends FragmentActivity {
 
     @SuppressWarnings("ResourceType")
     @Override

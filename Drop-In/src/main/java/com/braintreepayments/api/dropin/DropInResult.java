@@ -7,8 +7,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 
-import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.PaymentMethod;
@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * Contains the result from launching {@link DropInActivity} or calling
- * {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)}.
+ * {@link DropInResult#fetchDropInResult(FragmentActivity, String, DropInResultListener)}.
  */
 public class DropInResult implements Parcelable {
 
@@ -40,12 +40,12 @@ public class DropInResult implements Parcelable {
             "com.braintreepayments.api.dropin.EXTRA_DROP_IN_RESULT";
 
     /**
-     * Listener used with {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)}
+     * Listener used with {@link DropInResult#fetchDropInResult(FragmentActivity, String, DropInResultListener)}
      */
     public interface DropInResultListener {
         /**
          * Any errors that occur during
-         * {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)} will be
+         * {@link DropInResult#fetchDropInResult(FragmentActivity, String, DropInResultListener)} will be
          * returned here.
          *
          * @param exception the {@link Exception} that occurred.
@@ -54,7 +54,7 @@ public class DropInResult implements Parcelable {
 
         /**
          * The {@link DropInResult} from
-         * {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)}
+         * {@link DropInResult#fetchDropInResult(FragmentActivity, String, DropInResultListener)}
          *
          * @param result
          */
@@ -122,13 +122,13 @@ public class DropInResult implements Parcelable {
      * Note: a client token must be used and will only return a payment method if it contains a
      * customer id.
      *
-     * @param activity the current {@link Activity}
+     * @param activity the current {@link FragmentActivity}
      * @param clientToken A client token from your server. Note that this method will only return a
      *                    result if the client token contains a customer id.
      * @param listener The {@link DropInResultListener} to handle the error or {@link DropInResult}
      *                 response.
      */
-    public static void fetchDropInResult(Activity activity, String clientToken,
+    public static void fetchDropInResult(FragmentActivity activity, String clientToken,
                                          @NonNull final DropInResultListener listener) {
         try {
             if (!(Authorization.fromString(clientToken) instanceof ClientToken)) {
@@ -201,9 +201,6 @@ public class DropInResult implements Parcelable {
             };
 
             switch (lastUsedPaymentMethodType) {
-                case ANDROID_PAY:
-                    AndroidPay.isReadyToPay(fragment, isReadyToPayCallback);
-                    break;
                 case GOOGLE_PAYMENT:
                     GooglePayment.isReadyToPay(fragment, isReadyToPayCallback);
                     break;
