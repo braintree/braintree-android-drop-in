@@ -149,4 +149,8 @@ public class Settings {
     public static boolean isThreeDSecureRequired(Context context) {
         return getPreferences(context).getBoolean("require_three_d_secure", true);
     }
+
+    public static boolean isVaultManagerEnabled(Context context) {
+        return getPreferences(context).getBoolean("enable_vault_manager", false);
+    }
 }
