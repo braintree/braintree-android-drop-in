@@ -83,7 +83,6 @@ public class DropInTest extends TestHelper {
 
         onDevice(withText("Purchase")).perform(click());
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
-
     }
 
     @Test
@@ -166,7 +165,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
-        onDevice(withTextStartingWith("Proceed with Sandbox")).perform(click());
+        onDevice(withText("Proceed with Sandbox Purchase")).perform(click());
 
         getNonceDetails().check(text(containsString("Email: bt_buyer_us@paypal.com")));
 
@@ -182,7 +181,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
-        onDevice(withTextStartingWith("Proceed with Sandbox")).perform(click());
+        onDevice(withText("Proceed with Sandbox Purchase")).perform(click());
 
         getNonceDetails().check(text(containsString("Email: bt_buyer_us@paypal.com")));
 
@@ -192,10 +191,10 @@ public class DropInTest extends TestHelper {
 
     @RequiresDevice
     @Test(timeout = 60000)
-    public void tokenizesAndroidPay() {
+    public void tokenizesGooglePay() {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
-        onDevice(withTextContaining("Google")).perform(click());
+        onDevice(withText("Google Pay")).perform(click());
         onDevice(withText("Continue")).waitForExists().perform(click());
 
         getNonceDetails().check(text(containsString("Underlying Card Last Two")));
@@ -210,7 +209,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
-        onDevice(withTextStartingWith("Proceed with Sandbox")).waitForExists();
+        onDevice(withText("Proceed with Sandbox Purchase")).waitForExists();
         onDevice().pressBack();
         onDevice(withContentDescription("Pay with PayPal")).waitForExists();
 
