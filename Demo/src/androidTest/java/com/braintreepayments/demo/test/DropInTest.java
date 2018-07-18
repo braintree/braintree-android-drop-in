@@ -25,6 +25,8 @@ import static com.lukekorth.deviceautomator.UiObjectMatcher.withContentDescripti
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextStartingWith;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
@@ -70,7 +72,7 @@ public class DropInTest extends TestHelper {
 
         tokenizeCard(THREE_D_SECURE_VERIFICATON);
 
-        onDevice(withText("Authentication")).waitForExists();
+        onDevice(withText("Added Protection")).waitForExists();
         onDevice().pressTab();
         onDevice().typeText("1234");
         onDevice().pressTab().pressTab().pressEnter();
@@ -228,4 +230,55 @@ public class DropInTest extends TestHelper {
         onDevice(withContentDescription("Postal Code")).perform(setText("12345"));
         onDevice(withTextContaining("Add Card")).perform(click());
     }
+
+    @Test
+    public void editPaymentMethodDoesNotExistForNoVaultedPayments() {
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+
+        try {
+            onDevice(withText("Edit")).waitForExists().perform(click());
+        } catch(RuntimeException e) {
+            return;
+        }
+
+        fail("Edit option found for non vaulted payments");
+    }
+
+    @Test
+    public void editPaymentMethodDoesNotExistForVaultedPaymentsAndVaultManagerDisabled() {
+        setCustomerId("test_customer");
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+
+        tokenizeCard(VISA);
+        onDevice(withText("Visa")).perform(click());
+        onDevice(withText("Recent")).waitForExists();
+
+        assertEquals(false, Settings.isVaultManagerEnabled(getTargetContext()));
+        try {
+            onDevice(withText("Edit")).waitForExists().perform(click());
+        } catch(RuntimeException e) {
+            return;
+        }
+
+
+        fail("Edit option found for vaultManager disabled");
+    }
+
+    @Test
+    public void editPaymentMethodExistsForVaultedPaymentsAndVaultManagerEnabled() {
+        setCustomerId("test_customer");
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+
+        tokenizeCard(VISA);
+        onDevice(withText("Visa")).perform(click());
+        onDevice(withText("Recent")).waitForExists();
+
+        enableVaultManager();
+
+        assertEquals(true, Settings.isVaultManagerEnabled(getTargetContext()));
+
+        onDevice(withText("Edit")).waitForExists().perform(click());
+
+    }
+
 }
