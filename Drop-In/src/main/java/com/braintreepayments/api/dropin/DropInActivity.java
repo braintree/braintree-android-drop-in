@@ -9,9 +9,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -51,6 +53,7 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import java.util.List;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
+import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 public class DropInActivity extends BaseActivity implements ConfigurationListener, BraintreeCancelListener,
         BraintreeErrorListener, PaymentMethodSelectedListener, PaymentMethodNoncesUpdatedListener,
@@ -77,6 +80,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     protected ListView mSupportedPaymentMethodListView;
     private View mVaultedPaymentMethodsContainer;
     private RecyclerView mVaultedPaymentMethodsView;
+    private Button mVaultManagerButton;
 
     private boolean mSheetSlideUpPerformed;
     private boolean mSheetSlideDownPerformed;
@@ -93,6 +97,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         mSupportedPaymentMethodListView = findViewById(R.id.bt_supported_payment_methods);
         mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = findViewById(R.id.bt_vaulted_payment_methods);
+        mVaultManagerButton = findViewById(R.id.bt_vault_edit_button);
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
@@ -251,7 +256,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 break;
             case UNKNOWN:
                 Intent intent = new Intent(this, AddCardActivity.class)
-                        .putExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST, mDropInRequest);
+                        .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest);
                 startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
                 break;
         }

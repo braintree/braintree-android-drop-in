@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/bt_full_width"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        style="@style/bt_choose_payment_label"
+        android:id="@+id/bt_vault_manager_title"
+        android:text="Edit Payment Methods"
+        android:paddingTop="@dimen/bt_choose_new_payment_label_padding_top"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/bt_vault_manager_list"
+        android:scrollbars="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

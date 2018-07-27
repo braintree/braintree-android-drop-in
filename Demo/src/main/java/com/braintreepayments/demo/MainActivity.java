@@ -121,7 +121,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     public void launchDropIn(View v) {
         DropInRequest dropInRequest = new DropInRequest()
                 .clientToken(mAuthorization)
-                .amount("3.14")
+                .amount("1.00")
                 .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))
                 .collectDeviceData(Settings.shouldCollectDeviceData(this))
                 .googlePaymentRequest(getGooglePaymentRequest())
