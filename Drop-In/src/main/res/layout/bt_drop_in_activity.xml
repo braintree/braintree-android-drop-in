@@ -55,17 +55,37 @@
                     android:animateLayoutChanges="true"
                     android:visibility="gone">
 
-                    <TextView
-                        style="@style/bt_choose_payment_label"
-                        android:paddingTop="@dimen/bt_choose_existing_payment_label_padding_top"
-                        android:text="@string/bt_recent"/>
+                    <RelativeLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
-                        <android.support.v7.widget.RecyclerView
-                            android:id="@+id/bt_vaulted_payment_methods"
-                            android:layout_width="match_parent"
+                        <TextView
+                            style="@style/bt_choose_payment_label"
+                            android:paddingTop="@dimen/bt_choose_existing_payment_label_padding_top"
+                            android:text="@string/bt_recent"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingLeft="4dp"
-                            android:paddingRight="4dp"/>
+                            android:layout_alignParentRight="true">
+
+                            <Button
+                                android:id="@+id/bt_vault_edit_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/bt_edit"/>
+
+                        </LinearLayout>
+
+                    </RelativeLayout>
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/bt_vaulted_payment_methods"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"/>
 
                     <include layout="@layout/bt_section_divider" />
 

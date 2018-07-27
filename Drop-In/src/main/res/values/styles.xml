@@ -32,6 +32,10 @@
         <item name="textColorError">@color/bt_error_red</item>
     </style>
 
+    <style name="bt_vault_manager_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="bt_three_d_secure_theme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/bt_action_bar_theme</item>
     </style>

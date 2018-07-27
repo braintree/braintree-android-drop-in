@@ -33,4 +33,5 @@
     <string name="bt_card_not_accepted">Card not accepted</string>
     <string name="bt_unionpay_sms_code_invalid">SMS code is invalid</string>
     <string name="bt_unionpay_mobile_number_explanation">Enrollment may be required for this card. An SMS code will be sent to this number if required.</string>
+    <string name="bt_edit">Edit</string>
 </resources>
