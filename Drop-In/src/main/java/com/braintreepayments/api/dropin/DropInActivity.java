@@ -286,6 +286,10 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
             mVaultedPaymentMethodsView.setAdapter(new VaultedPaymentMethodsAdapter(this,
                     paymentMethodNonces));
+
+            if (mDropInRequest.isVaultManagerEnabled()) {
+                mVaultManagerButton.setVisibility(View.VISIBLE);
+            }
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
         }
