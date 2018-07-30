@@ -56,6 +56,7 @@ public class DropInRequestUnitTest {
                 .requestThreeDSecureVerification(true)
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
+                .vaultManager(true)
                 .getIntent(RuntimeEnvironment.application);
 
         DropInRequest dropInRequest = intent.getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
@@ -81,6 +82,7 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.shouldRequestThreeDSecureVerification());
         assertTrue(dropInRequest.shouldMaskCardNumber());
         assertTrue(dropInRequest.shouldMaskSecurityCode());
+        assertTrue(dropInRequest.isVaultManagerEnabled());
     }
 
     @Test
@@ -106,6 +108,7 @@ public class DropInRequestUnitTest {
         assertFalse(dropInRequest.shouldRequestThreeDSecureVerification());
         assertFalse(dropInRequest.shouldMaskCardNumber());
         assertFalse(dropInRequest.shouldMaskSecurityCode());
+        assertFalse(dropInRequest.isVaultManagerEnabled());
     }
 
     @Test
@@ -137,7 +140,8 @@ public class DropInRequestUnitTest {
                 .disableVenmo()
                 .requestThreeDSecureVerification(true)
                 .maskCardNumber(true)
-                .maskSecurityCode(true);
+                .maskSecurityCode(true)
+                .vaultManager(true);
 
         Parcel parcel = Parcel.obtain();
         dropInRequest.writeToParcel(parcel, 0);
@@ -164,6 +168,7 @@ public class DropInRequestUnitTest {
         assertTrue(parceledDropInRequest.shouldRequestThreeDSecureVerification());
         assertTrue(parceledDropInRequest.shouldMaskCardNumber());
         assertTrue(parceledDropInRequest.shouldMaskSecurityCode());
+        assertTrue(parceledDropInRequest.isVaultManagerEnabled());
     }
 
     @Test
