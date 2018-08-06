@@ -17,13 +17,10 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<VaultManagerPaymentMethodsAdapter.ViewHolder> {
     private final List<PaymentMethodNonce> mPaymentMethodNonces = new ArrayList<>();
-
-    public VaultManagerPaymentMethodsAdapter(List<PaymentMethodNonce> paymentMethodNonces) {
-        mPaymentMethodNonces.addAll(paymentMethodNonces);
-    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -43,26 +40,47 @@ public class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<Vaul
         } else {
             holder.description.setText(paymentMethodNonce.getDescription());
         }
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("kanyewest", "Something is happening");
-            }
-        });
     }
 
+    public PaymentMethodNonce getPaymentMethodNonce(int index) {
+        return mPaymentMethodNonces.get(index);
+    }
+
+    public void paymentMethodDeleted(PaymentMethodNonce paymentMethodNonce) {
+        int index = mPaymentMethodNonces.indexOf(paymentMethodNonce);
+        mPaymentMethodNonces.remove(index);
+        this.notifyItemRemoved(index);
+    }
 
     @Override
     public int getItemCount() {
         return mPaymentMethodNonces.size();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    public void setPaymentMethodNonces(List<PaymentMethodNonce> paymentMethodNonces) {
+        mPaymentMethodNonces.clear();
+        mPaymentMethodNonces.addAll(paymentMethodNonces);
+    }
 
+    public ArrayList<PaymentMethodNonce> getPaymentMethodNonces() {
+        return new ArrayList<>(mPaymentMethodNonces);
+    }
+
+    public void cancelSwipeOnPaymentMethodNonce(PaymentMethodNonce paymentMethodNonce) {
+        int index = mPaymentMethodNonces.indexOf(paymentMethodNonce);
+
+        mPaymentMethodNonces.remove(index);
+        mPaymentMethodNonces.add(index, paymentMethodNonce);
+
+        this.notifyItemChanged(index);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView icon;
         public TextView title;
         public TextView description;
+        public View foreground;
+        public View background;
 
         ViewHolder(View view) {
             super(view);
@@ -70,6 +88,9 @@ public class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<Vaul
             icon = view.findViewById(R.id.bt_payment_method_icon);
             title = view.findViewById(R.id.bt_payment_method_title);
             description = view.findViewById(R.id.bt_payment_method_description);
+            foreground = view.findViewById(R.id.bt_payment_method_foreground);
+            background = view.findViewById(R.id.bt_payment_method_background);
         }
     }
 }
+

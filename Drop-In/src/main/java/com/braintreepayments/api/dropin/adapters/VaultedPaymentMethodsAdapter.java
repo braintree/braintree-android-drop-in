@@ -1,10 +1,6 @@
 package com.braintreepayments.api.dropin.adapters;
 
-import android.support.annotation.IntDef;
-import android.support.annotation.LayoutRes;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -15,7 +11,6 @@ import android.widget.TextView;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
@@ -25,25 +20,16 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
 
     private PaymentMethodNonceCreatedListener mSelectedListener;
     private List<PaymentMethodNonce> mPaymentMethodNonces;
-    private @LayoutRes int mLayout;
 
     public VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener,
             List<PaymentMethodNonce> paymentMethodNonces) {
-        this(listener, paymentMethodNonces, R.layout.bt_vaulted_payment_method_card);
-    }
-
-    public VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener,
-                                        List<PaymentMethodNonce> paymentMethodNonces,
-                                        @LayoutRes int layout) {
         mSelectedListener = listener;
         mPaymentMethodNonces = paymentMethodNonces;
-        mLayout = layout;
     }
-
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(mLayout,
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.bt_vaulted_payment_method_card,
                 parent, false));
     }
 
@@ -64,9 +50,7 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mSelectedListener != null) {
-                    mSelectedListener.onPaymentMethodNonceCreated(paymentMethodNonce);
-                }
+                mSelectedListener.onPaymentMethodNonceCreated(paymentMethodNonce);
             }
         });
     }

@@ -1,96 +1,136 @@
 package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.helper.ItemTouchHelper;
 
 import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
-import com.braintreepayments.api.dropin.adapters.VaultedPaymentMethodsAdapter;
+import com.braintreepayments.api.dropin.helper.VaultManagerHelper;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
+import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
+import com.braintreepayments.api.interfaces.BraintreeErrorListener;
+import com.braintreepayments.api.interfaces.PaymentMethodNonceDeletedListener;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
+import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 
-public class
-VaultManagerActivity extends BaseActivity implements PaymentMethodNoncesUpdatedListener,
-        PaymentMethodNonceCreatedListener {
+public class VaultManagerActivity extends BaseActivity implements PaymentMethodNonceDeletedListener,
+        BraintreeErrorListener, VaultManagerHelper.Interaction {
 
-    private RecyclerView mVaultManagerView;
+    private VaultManagerPaymentMethodsAdapter mAdapter = new VaultManagerPaymentMethodsAdapter();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_vault_management_activity);
 
-        mVaultManagerView = findViewById(R.id.bt_vault_manager_list);
-        mVaultManagerView.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.VERTICAL, false));
-        new LinearSnapHelper().attachToRecyclerView(mVaultManagerView);
-
+        RecyclerView vaultManagerView = findViewById(R.id.bt_vault_manager_list);
 
         try {
             mBraintreeFragment = getBraintreeFragment();
         } catch (InvalidArgumentException e) {
             finish(e);
-            return;
         }
 
-        fetchPaymentMethodNonces(false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,
+                layoutManager.getOrientation());
+        VaultManagerHelper swipeController = new VaultManagerHelper(this);
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeController);
+
+        ArrayList<PaymentMethodNonce> nonces;
+        if (savedInstanceState == null) {
+            nonces = getIntent().getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES);
+        } else {
+            nonces = savedInstanceState.getParcelableArrayList(EXTRA_PAYMENT_METHOD_NONCES);
+        }
+
+        mAdapter.setPaymentMethodNonces(nonces);
+
+        new LinearSnapHelper().attachToRecyclerView(vaultManagerView);
+        itemTouchHelper.attachToRecyclerView(vaultManagerView);
+        vaultManagerView.setLayoutManager(layoutManager);
+        vaultManagerView.addItemDecoration(dividerItemDecoration);
+        vaultManagerView.setAdapter(mAdapter);
     }
 
-    private void fetchPaymentMethodNonces(final boolean refetch) {
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!VaultManagerActivity.this.isFinishing()) {
-                    if (mBraintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
-                        onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
-                    } else {
-                        PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList(EXTRA_PAYMENT_METHOD_NONCES, mAdapter.getPaymentMethodNonces());
+    }
+
+    @Override
+    public void onPaymentMethodNonceDeleted(PaymentMethodNonce paymentMethodNonce) {
+        mAdapter.paymentMethodDeleted(paymentMethodNonce);
+
+        mBraintreeFragment.sendAnalyticsEvent("manager.delete.succeeded");
+        setResult(Activity.RESULT_OK);
+    }
+
+    @Override
+    public void onError(Exception error) {
+        if(error instanceof PaymentMethodDeleteException) {
+            PaymentMethodDeleteException exception = (PaymentMethodDeleteException)error;
+            PaymentMethodNonce paymentMethodNonce = exception.getPaymentMethodNonce();
+
+            mAdapter.cancelSwipeOnPaymentMethodNonce(paymentMethodNonce);
+
+            Snackbar.make(findViewById(R.id.bt_base_view), "We couldn't delete your payment method right now, try again later", Snackbar.LENGTH_LONG).show();
+            mBraintreeFragment.sendAnalyticsEvent("manager.delete.failed");
+        } else {
+            // TODO what should we do for unknown errors
+            mBraintreeFragment.sendAnalyticsEvent("manager.unknown.failed");
+            finish(error);
+        }
+    }
+
+    @Override
+    public void onSwipe(int index) {
+        final PaymentMethodNonce paymentMethodNonceToDelete =
+                mAdapter.getPaymentMethodNonce(index);
+
+        final AtomicBoolean positiveSelected = new AtomicBoolean(false);
+
+        new AlertDialog.Builder(VaultManagerActivity.this)
+                .setMessage("Are you sure you want to delete this payment method?")
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        positiveSelected.set(true);
+                        mBraintreeFragment.sendAnalyticsEvent("manager.delete.confirmation.positive");
+                        PaymentMethod.deletePaymentMethod(mBraintreeFragment, paymentMethodNonceToDelete);
                     }
-                }
-            }
-        }, getResources().getInteger(android.R.integer.config_shortAnimTime));
-    }
-
-    @Override
-    public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {
-        mVaultManagerView.setAdapter(new VaultManagerPaymentMethodsAdapter(paymentMethodNonces));
-    }
-
-    @Override
-    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-
-    }
-
-    public void onPaymentMethodNonceSwiped(PaymentMethodNonce paymentMethodNonce) {
-        // TODO move this to swipe listener and delete this function.
-        PaymentMethod.deletePaymentMethod(mBraintreeFragment, paymentMethodNonce.getNonce());
-        onPaymentMethodDeleted(true);
-    }
-
-    // @Override
-    public void onPaymentMethodDeleted(boolean success) {
-        PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
-        if(mBraintreeFragment.getCachedPaymentMethodNonces().size() > 0) {
-            onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
-
-            setResult(Activity.RESULT_OK, new Intent()
-                    .putExtra("TODO use the same key as the result we look up in DropinActivity", (Parcelable) mBraintreeFragment.getCachedPaymentMethodNonces()));
-            finish();
-        }
+                })
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (!positiveSelected.get()) {
+                            mAdapter.cancelSwipeOnPaymentMethodNonce(paymentMethodNonceToDelete);
+                            mBraintreeFragment.sendAnalyticsEvent("manager.delete.confirmation.negative");
+                        }
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .create()
+                .show();
     }
 }
