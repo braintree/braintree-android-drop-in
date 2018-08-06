@@ -12,4 +12,5 @@
     <color name="bt_color_primary_dark">#363439</color>
     <color name="bt_text_blue">#199ddc</color>
     <color name="bt_error_red">#dd5555</color>
+    <color name="bt_payment_method_delete_background_color">#fc5457</color>
 </resources>
