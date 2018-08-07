@@ -18,6 +18,9 @@
     <dimen name="bt_payment_label_padding_bottom">12dp</dimen>
     <dimen name="bt_choose_existing_payment_label_padding_top">24dp</dimen>
     <dimen name="bt_choose_new_payment_label_padding_top">24dp</dimen>
+    <dimen name="bt_vault_manager_title_padding_top">24dp</dimen>
+    <dimen name="bt_vault_manager_list_item_margin">14dp</dimen>
+    <dimen name="bt_vault_manager_list_item_text_margin">5dp</dimen>
     <dimen name="bt_progress_bar_diameter">28dp</dimen>
 
     <!-- http://stackoverflow.com/a/19043952/1486568 -->

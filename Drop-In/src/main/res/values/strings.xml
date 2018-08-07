@@ -34,4 +34,6 @@
     <string name="bt_unionpay_sms_code_invalid">SMS code is invalid</string>
     <string name="bt_unionpay_mobile_number_explanation">Enrollment may be required for this card. An SMS code will be sent to this number if required.</string>
     <string name="bt_edit">Edit</string>
+    <string name="bt_delete">Delete</string>
+    <string name="bt_vault_manager_title">Edit Payment Methods</string>
 </resources>

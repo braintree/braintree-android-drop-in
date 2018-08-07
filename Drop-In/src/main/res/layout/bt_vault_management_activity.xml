@@ -8,8 +8,8 @@
     <TextView
         style="@style/bt_choose_payment_label"
         android:id="@+id/bt_vault_manager_title"
-        android:text="Edit Payment Methods"
-        android:paddingTop="@dimen/bt_choose_new_payment_label_padding_top"/>
+        android:text="@string/bt_vault_manager_title"
+        android:paddingTop="@dimen/bt_vault_manager_title_padding_top"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/bt_vault_manager_list"
