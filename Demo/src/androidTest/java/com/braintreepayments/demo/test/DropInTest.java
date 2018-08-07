@@ -7,6 +7,7 @@ import android.widget.Button;
 
 import com.braintreepayments.demo.Settings;
 import com.braintreepayments.demo.test.utilities.TestHelper;
+import com.lukekorth.deviceautomator.DropinAutomatorAction;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,10 +23,12 @@ import static com.lukekorth.deviceautomator.AutomatorAction.setText;
 import static com.lukekorth.deviceautomator.AutomatorAssertion.text;
 import static com.lukekorth.deviceautomator.DeviceAutomator.onDevice;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withContentDescription;
+import static com.lukekorth.deviceautomator.UiObjectMatcher.withResourceId;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextStartingWith;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
@@ -232,53 +235,28 @@ public class DropInTest extends TestHelper {
     }
 
     @Test
-    public void editPaymentMethodDoesNotExistForNoVaultedPayments() {
-        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
-
-        try {
-            onDevice(withText("Edit")).waitForExists().perform(click());
-        } catch(RuntimeException e) {
-            return;
-        }
-
-        fail("Edit option found for non vaulted payments");
-    }
-
-    @Test
-    public void editPaymentMethodDoesNotExistForVaultedPaymentsAndVaultManagerDisabled() {
-        setCustomerId("test_customer");
-        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
-
-        tokenizeCard(VISA);
-        onDevice(withText("Visa")).perform(click());
-        onDevice(withText("Recent")).waitForExists();
-
-        assertEquals(false, Settings.isVaultManagerEnabled(getTargetContext()));
-        try {
-            onDevice(withText("Edit")).waitForExists().perform(click());
-        } catch(RuntimeException e) {
-            return;
-        }
-
-
-        fail("Edit option found for vaultManager disabled");
-    }
-
-    @Test
-    public void editPaymentMethodExistsForVaultedPaymentsAndVaultManagerEnabled() {
-        setCustomerId("test_customer");
-        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
-
-        tokenizeCard(VISA);
-        onDevice(withText("Visa")).perform(click());
-        onDevice(withText("Recent")).waitForExists();
-
+    public void deletesPaymentMethod() {
+        setCustomerId("delete-payment-method");
         enableVaultManager();
 
-        assertEquals(true, Settings.isVaultManagerEnabled(getTargetContext()));
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+        tokenizeCard(VISA);
 
+        onDevice(withText("Visa")).waitForExists().perform(click());
         onDevice(withText("Edit")).waitForExists().perform(click());
 
-    }
+        onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_foreground"))
+                .waitForExists().perform(DropinAutomatorAction.swipeLeft(10));
 
+        onDevice(withText("Delete")).waitForExists().perform(click());
+
+        while(onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_background")).exists()) {
+           // Wait for it to disappear
+        }
+
+        onDevice().pressBack();
+        onDevice(withText("Select Payment Method")).waitForExists();
+
+        assertFalse(onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_title")).exists());
+    }
 }
