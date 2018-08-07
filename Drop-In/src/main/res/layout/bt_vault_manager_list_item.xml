@@ -20,7 +20,7 @@
             android:layout_centerVertical="true"
             android:gravity="center"
             android:textColor="@android:color/white"
-            android:text="Delete"/>
+            android:text="@string/bt_delete"/>
 
     </RelativeLayout>
 
@@ -48,8 +48,8 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/bt_payment_method_icon"
             android:layout_toEndOf="@id/bt_payment_method_icon"
-            android:layout_marginLeft="14dp"
-            android:layout_marginStart="14dp"
+            android:layout_marginLeft="@dimen/bt_vault_manager_list_item_margin"
+            android:layout_marginStart="@dimen/bt_vault_manager_list_item_margin"
             android:orientation="vertical">
 
             <TextView
@@ -63,8 +63,8 @@
                 android:layoutDirection="ltr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginLeft="@dimen/bt_vault_manager_list_item_text_margin"
+                android:layout_marginRight="@dimen/bt_vault_manager_list_item_text_margin"
                 android:layout_gravity="left"
                 android:textSize="@dimen/bt_default_small_text_size"
                 android:textColor="@color/bt_black_54"
