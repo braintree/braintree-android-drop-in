@@ -37,6 +37,8 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 
+import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
+import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerWithThreeDSecureWebViewActivity;
 import static com.braintreepayments.api.test.ReflectionHelper.getField;
 import static com.braintreepayments.api.test.ReflectionHelper.setField;
@@ -574,7 +576,7 @@ public class DropInActivityUnitTest {
 
         mActivity.onActivityResult(2, Activity.RESULT_CANCELED, null);
 
-        verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+        verify(httpClient, times(1)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
                 any(HttpResponseCallback.class));
     }
 
@@ -653,6 +655,32 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void onActivityResult_whenVaultManagerResultOk_refreshesVaultedPaymentMethods() {
+        mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
+        BraintreeUnitTestHttpClient httpClient = spy(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build()))
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
+                        stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
+        setup(httpClient);
+        verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
+
+        mActivity.onActivityResult(2, Activity.RESULT_OK, null);
+
+        verify(httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
+    }
+
+    @Test
+    public void onActivityResult_whenVaultManagerResultOk_removesLoadingIndicator() {
+        mActivityController.setup();
+
+        mActivity.onActivityResult(2, Activity.RESULT_FIRST_USER, null);
+
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
     public void configurationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
@@ -713,6 +741,29 @@ public class DropInActivityUnitTest {
         setup(mock(BraintreeFragment.class));
 
         assertExceptionIsReturned("sdk-error", new Exception("Error!"));
+    }
+
+    @Test
+    public void onVaultEditButtonClick_sendsAnalyticEvent() {
+        setup(mock(BraintreeFragment.class));
+
+        mActivity.onVaultEditButtonClick(null);
+
+        verify(mActivity.mBraintreeFragment).sendAnalyticsEvent("manager.appeared");
+    }
+
+    @Test
+    public void onVaultEditButtonClick_launchesVaultManagerActivity() {
+        setup(mock(BraintreeFragment.class));
+
+        mActivity.onVaultEditButtonClick(null);
+
+        ShadowActivity.IntentForResult intent = mShadowActivity.getNextStartedActivityForResult();
+
+        assertEquals(2, intent.requestCode);
+        assertEquals(mActivity.mDropInRequest, intent.intent.getParcelableExtra(EXTRA_CHECKOUT_REQUEST));
+        assertEquals(mActivity.mBraintreeFragment.getCachedPaymentMethodNonces(),
+                intent.intent.getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES));
     }
 
     private void setup(BraintreeFragment fragment) {

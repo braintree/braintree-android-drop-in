@@ -93,7 +93,6 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
             Snackbar.make(findViewById(R.id.bt_base_view), "We couldn't delete your payment method right now, try again later", Snackbar.LENGTH_LONG).show();
             mBraintreeFragment.sendAnalyticsEvent("manager.delete.failed");
         } else {
-            // TODO what should we do for unknown errors
             mBraintreeFragment.sendAnalyticsEvent("manager.unknown.failed");
             finish(error);
         }

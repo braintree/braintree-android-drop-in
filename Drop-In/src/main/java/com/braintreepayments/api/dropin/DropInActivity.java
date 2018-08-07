@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.support.annotation.VisibleForTesting;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -49,6 +49,7 @@ import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
@@ -67,8 +68,10 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     public static final String EXTRA_ERROR = "com.braintreepayments.api.dropin.EXTRA_ERROR";
 
     private static final int ADD_CARD_REQUEST_CODE = 1;
+    private static final int DELETE_PAYMENT_METHOD_NONCE_CODE = 2;
     private static final String EXTRA_SHEET_SLIDE_UP_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_SLIDE_UP_PERFORMED";
     private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
+    static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";
 
     private String mDeviceData;
 
@@ -283,6 +286,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             }
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
+            mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
         }
     }
 
@@ -296,7 +300,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     @Override
     protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
         mLoadingViewSwitcher.setDisplayedChild(0);
-
         if (resultCode == Activity.RESULT_CANCELED) {
             if (requestCode == ADD_CARD_REQUEST_CODE) {
                 fetchPaymentMethodNonces(true);
@@ -323,6 +326,11 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                     finish();
                 }
             });
+        } else if (requestCode == DELETE_PAYMENT_METHOD_NONCE_CODE) {
+            if (resultCode == Activity.RESULT_OK) {
+                fetchPaymentMethodNonces(true);
+            }
+            mLoadingViewSwitcher.setDisplayedChild(1);
         }
     }
 
@@ -368,9 +376,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 }
 
                 @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
+                public void onAnimationRepeat(Animation animation) {}
             });
         }
         mBottomSheet.startAnimation(slideOutAnimation);
@@ -380,5 +386,16 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     public void finish() {
         super.finish();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    public void onVaultEditButtonClick(View view) {
+        ArrayList<Parcelable> parcelableArrayList = new ArrayList<Parcelable>(mBraintreeFragment.getCachedPaymentMethodNonces());
+
+        Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
+                .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest)
+                .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, parcelableArrayList);
+        startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
+
+        mBraintreeFragment.sendAnalyticsEvent("manager.appeared");
     }
 }
