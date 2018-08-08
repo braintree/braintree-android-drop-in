@@ -7,28 +7,24 @@ import android.os.Bundle;
 import android.os.Parcelable;
 
 import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.PaymentMethod;
+import com.braintreepayments.api.VaultManagerUnitTestActivity;
 import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
 import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
+import com.braintreepayments.api.interfaces.HttpResponseCallback;
+import com.braintreepayments.api.internal.BraintreeGraphQLHttpClient;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.test.ReflectionHelper;
 import com.braintreepayments.api.test.UnitTestFixturesHelper;
 
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.modules.junit4.PowerMockRunnerDelegate;
-import org.powermock.modules.junit4.rule.PowerMockRule;
+import org.mockito.invocation.InvocationOnMock;
+import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
-import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowAlertDialog;
 
@@ -39,36 +35,30 @@ import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METH
 import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
-import static org.powermock.api.mockito.PowerMockito.verifyStatic;
 import static org.robolectric.Shadows.shadowOf;
 
-@RunWith(PowerMockRunner.class)
-@PowerMockRunnerDelegate(RobolectricTestRunner.class)
-@PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*", "org.json.*"})
-@PrepareForTest({PaymentMethod.class})
-@Config(constants = BuildConfig.class)
+@RunWith(RobolectricTestRunner.class)
 public class VaultManagerActivityUnitTest {
-
-    @Rule
-    public PowerMockRule mPowerMockRule = new PowerMockRule();
 
     private PaymentMethodNonce mCardNonce;
     private Intent mIntent = new Intent();
     private List<PaymentMethodNonce> mPaymentMethodNonces = new ArrayList<>();
-    private VaultManagerActivity mActivity;
-    private ActivityController<VaultManagerActivity> mActivityController;
+    private VaultManagerUnitTestActivity mActivity;
+    private ActivityController<VaultManagerUnitTestActivity> mActivityController;
     private ShadowActivity mShadowActivity;
+    private BraintreeGraphQLHttpClient mGraphQlClient;
 
     @Before
     public void setup() {
+        mGraphQlClient = mock(BraintreeGraphQLHttpClient.class);
         mCardNonce = mock(CardNonce.class);
         when(mCardNonce.getNonce()).thenReturn("card-nonce");
 
@@ -86,24 +76,24 @@ public class VaultManagerActivityUnitTest {
         in.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
         mIntent.putExtras(in);
 
-        mActivityController = Robolectric.buildActivity(VaultManagerActivity.class, mIntent);
+        mActivityController = Robolectric.buildActivity(VaultManagerUnitTestActivity.class, mIntent);
         mActivity = mActivityController.get();
         mShadowActivity = shadowOf(mActivity);
 
-        mActivityController.create();
-        mActivity.mBraintreeFragment = mock(BraintreeFragment.class);
+        mActivity.graphQLHttpClient = mGraphQlClient;
+        mActivityController.setup();
     }
 
     @Test
     public void onCreate_setsPaymentMethodNoncesInAdapter() {
-        VaultManagerPaymentMethodsAdapter adapter = mockAdapter();
+        VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
 
         assertEquals(mPaymentMethodNonces.size(), adapter.getItemCount());
     }
 
     @Test
     public void onRestart_setsPaymentMethodNoncesInAdapter() {
-        VaultManagerPaymentMethodsAdapter adapter = mockAdapter();
+        VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
         ArrayList<PaymentMethodNonce> nonces = new ArrayList<>();
         nonces.add(mCardNonce);
         adapter.setPaymentMethodNonces(nonces);
@@ -115,9 +105,10 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onPaymentMethodNonceDeleted_sendsAnalyticCall() {
+        BraintreeFragment fragment = mActivity.mockFragment();
         mActivity.onPaymentMethodNonceDeleted(mCardNonce);
 
-        verify(mActivity.mBraintreeFragment).sendAnalyticsEvent("manager.delete.succeeded");
+        verify(fragment).sendAnalyticsEvent("manager.delete.succeeded");
     }
 
     @Test
@@ -129,17 +120,18 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onError_whenPaymentMethodDeletedException_sendsAnalyticCall() {
+        BraintreeFragment fragment = mActivity.mockFragment();
         Exception originalException = new RuntimeException("Real Exception");
         Exception error = new PaymentMethodDeleteException(mCardNonce, originalException);
 
         mActivity.onError(error);
 
-        verify(mActivity.mBraintreeFragment).sendAnalyticsEvent("manager.delete.failed");
+        verify(fragment).sendAnalyticsEvent("manager.delete.failed");
     }
 
     @Test
     public void onError_whenPaymentMethodDeletedException_doesntDeleteThePaymentMethod() {
-        VaultManagerPaymentMethodsAdapter adapter = mockAdapter();
+        VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
         Exception originalException = new RuntimeException("Real Exception");
         Exception error = new PaymentMethodDeleteException(mCardNonce, originalException);
 
@@ -150,9 +142,10 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onError_whenUnknownError_sendsAnalyticCall() {
+        BraintreeFragment fragment = mActivity.mockFragment();
         mActivity.onError(new RuntimeException());
 
-        verify(mActivity.mBraintreeFragment).sendAnalyticsEvent("manager.unknown.failed");
+        verify(fragment).sendAnalyticsEvent("manager.unknown.failed");
     }
 
     @Test
@@ -171,38 +164,41 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onSwipe_selectingPositiveButton_sendsAnalyticEvent() {
-        mockStatic(PaymentMethod.class);
-        mActivity.onSwipe(0);
+        BraintreeFragment fragment = mActivity.mockFragment();
+        mockGraphQlResponse(true);
 
+        mActivity.onSwipe(0);
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
 
-        verify(mActivity.mBraintreeFragment).sendAnalyticsEvent("manager.delete.confirmation.positive");
+        verify(fragment).sendAnalyticsEvent("manager.delete.confirmation.positive");
     }
 
     @Test
     public void onSwipe_selectingPositiveButton_callsDeletePaymentMethod() {
-        mockStatic(PaymentMethod.class);
+        VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
+        mockGraphQlResponse(true);
+
         mActivity.onSwipe(0);
 
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
 
-        verifyStatic();
-        PaymentMethod.deletePaymentMethod(eq(mActivity.mBraintreeFragment), eq(mCardNonce));
+        verify(adapter).paymentMethodDeleted(eq(mCardNonce));
     }
 
     @Test
     public void onSwipe_selectingPositiveButton_doesNotSendNegativeAnalyticEvent() {
-        mockStatic(PaymentMethod.class);
+        BraintreeFragment fragment = mActivity.mockFragment();
+        mockGraphQlResponse(true);
         mActivity.onSwipe(0);
 
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
 
-        verify(mActivity.mBraintreeFragment, times(0)).sendAnalyticsEvent("manager.delete.confirmation.negative");
+        verify(fragment, times(0)).sendAnalyticsEvent("manager.delete.confirmation.negative");
     }
 
     @Test
     public void onSwipe_selectingNegativeButton_doesntDeletePaymentMethod() {
-        VaultManagerPaymentMethodsAdapter adapter = mockAdapter();
+        VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
 
         mActivity.onSwipe(0);
 
@@ -213,16 +209,17 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onSwipe_selectingNegativeButton_sendsAnalyticEvent() {
+        BraintreeFragment fragment = mActivity.mockFragment();
         mActivity.onSwipe(0);
 
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_NEGATIVE).callOnClick();
 
-        verify(mActivity.mBraintreeFragment).sendAnalyticsEvent("manager.delete.confirmation.negative");
+        verify(fragment).sendAnalyticsEvent("manager.delete.confirmation.negative");
     }
 
     @Test
     public void onSwipe_dismissingDialog_doesntDeletePaymentMethod() {
-        VaultManagerPaymentMethodsAdapter adapter = mockAdapter();
+        VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
 
         mActivity.onSwipe(0);
 
@@ -233,11 +230,13 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onSwipe_dismissingDialog_sendsAnalyticEvent() {
+        BraintreeFragment fragment = mActivity.mockFragment();
+        mActivity.mockAdapter();
         mActivity.onSwipe(0);
 
         getDeleteConfirmationDialog().dismiss();
 
-        verify(mActivity.mBraintreeFragment).sendAnalyticsEvent("manager.delete.confirmation.negative");
+        verify(fragment).sendAnalyticsEvent("manager.delete.confirmation.negative");
     }
 
     private static android.support.v7.app.AlertDialog getDeleteConfirmationDialog() {
@@ -248,15 +247,18 @@ public class VaultManagerActivityUnitTest {
         return (android.support.v7.app.AlertDialog) ShadowAlertDialog.getShownDialogs().get(0);
     }
 
-    private VaultManagerPaymentMethodsAdapter mockAdapter() {
-        VaultManagerPaymentMethodsAdapter adapter = null;
-        try {
-            adapter = spy((VaultManagerPaymentMethodsAdapter)ReflectionHelper.getField(mActivity, "mAdapter"));
-            ReflectionHelper.setField(mActivity, "mAdapter", adapter);
-        } catch (Exception e) {
-            fail(e.getMessage());
-        }
-
-        return adapter;
+    private void mockGraphQlResponse(final boolean success) {
+        doAnswer(new Answer() {
+            @Override
+            public Object answer(InvocationOnMock invocation) {
+                HttpResponseCallback callback = (HttpResponseCallback) invocation.getArguments()[1];
+                if (success) {
+                    callback.success(null);
+                } else {
+                    callback.failure(null);
+                }
+                return null;
+            }
+        }).when(mGraphQlClient).post(anyString(), any(HttpResponseCallback.class));
     }
 }

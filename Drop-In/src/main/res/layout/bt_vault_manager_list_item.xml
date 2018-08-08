@@ -8,8 +8,8 @@
         android:id="@+id/bt_payment_method_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingStart="@dimen/bt_payment_method_card_margin"
-        android:paddingLeft="@dimen/bt_payment_method_card_margin"
+        android:paddingRight="@dimen/bt_vault_manager_delete_icon_margin"
+        android:paddingEnd="@dimen/bt_vault_manager_delete_icon_margin"
         android:background="@color/bt_payment_method_delete_background_color">
 
         <TextView
