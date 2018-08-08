@@ -2,10 +2,9 @@ package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.annotation.VisibleForTesting;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
@@ -31,7 +30,8 @@ import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METH
 public class VaultManagerActivity extends BaseActivity implements PaymentMethodNonceDeletedListener,
         BraintreeErrorListener, VaultManagerHelper.Interaction {
 
-    private VaultManagerPaymentMethodsAdapter mAdapter = new VaultManagerPaymentMethodsAdapter();
+    @VisibleForTesting
+    protected VaultManagerPaymentMethodsAdapter mAdapter = new VaultManagerPaymentMethodsAdapter();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
