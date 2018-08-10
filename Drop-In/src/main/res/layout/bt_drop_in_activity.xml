@@ -71,11 +71,13 @@
                             android:layout_alignParentRight="true">
 
                             <Button
+                                style="@style/Widget.AppCompat.Button.Borderless.Colored"
                                 android:id="@+id/bt_vault_edit_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:visibility="gone"
                                 android:onClick="onVaultEditButtonClick"
+                                android:textAllCaps="true"
                                 android:text="@string/bt_edit"/>
 
                         </LinearLayout>
