@@ -7,7 +7,6 @@ import android.widget.Button;
 
 import com.braintreepayments.demo.Settings;
 import com.braintreepayments.demo.test.utilities.TestHelper;
-import com.lukekorth.deviceautomator.DropinAutomatorAction;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,6 +19,7 @@ import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_
 import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
 import static com.lukekorth.deviceautomator.AutomatorAction.click;
 import static com.lukekorth.deviceautomator.AutomatorAction.setText;
+import static com.lukekorth.deviceautomator.AutomatorAction.swipeLeft;
 import static com.lukekorth.deviceautomator.AutomatorAssertion.text;
 import static com.lukekorth.deviceautomator.DeviceAutomator.onDevice;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withContentDescription;
@@ -27,9 +27,7 @@ import static com.lukekorth.deviceautomator.UiObjectMatcher.withResourceId;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextStartingWith;
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.fail;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
@@ -244,7 +242,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Edit")).waitForExists().perform(click());
 
         onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_foreground"))
-                .waitForExists().perform(DropinAutomatorAction.swipeLeft(10));
+                .waitForExists().perform(swipeLeft(10));
 
         onDevice(withText("Delete")).waitForExists().perform(click());
 
