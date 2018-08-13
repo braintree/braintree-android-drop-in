@@ -16,6 +16,7 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
 import com.braintreepayments.api.dropin.helper.VaultManagerHelper;
+import com.braintreepayments.api.dropin.view.PaymentMethodItemView;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
@@ -105,9 +106,14 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
 
         final AtomicBoolean positiveSelected = new AtomicBoolean(false);
 
+        PaymentMethodItemView paymentMethodItem = new PaymentMethodItemView(this);
+        paymentMethodItem.setPaymentMethod(paymentMethodNonceToDelete);
+
         new AlertDialog.Builder(VaultManagerActivity.this)
-                .setMessage("Are you sure you want to delete this payment method?")
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                .setTitle(R.string.bt_delete_confirmation_title)
+                .setMessage(R.string.bt_delete_confirmation_description)
+                .setView(paymentMethodItem)
+                .setPositiveButton(R.string.bt_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         positiveSelected.set(true);
@@ -124,7 +130,7 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
                         }
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.bt_cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
