@@ -66,7 +66,8 @@
                             android:text="@string/bt_recent"/>
 
                         <Button
-                            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                            style="@style/Widget.AppCompt at.Button.Borderless.Colored"
+                            android:theme="@style/bt_edit_button"
                             android:id="@+id/bt_vault_edit_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -74,7 +75,6 @@
                             android:visibility="visible"
                             android:onClick="onVaultEditButtonClick"
                             android:layout_alignParentRight="true"
-                            android:textAllCaps="true"
                             android:text="@string/bt_edit"/>
 
                     </RelativeLayout>
