@@ -28,7 +28,7 @@ public class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<Vaul
         final PaymentMethodNonce paymentMethodNonce = mPaymentMethodNonces.get(position);
         final PaymentMethodItemView paymentMethodItemView = ((PaymentMethodItemView)holder.itemView);
 
-        paymentMethodItemView.setPaymentMethod(paymentMethodNonce);
+        paymentMethodItemView.setPaymentMethod(paymentMethodNonce, false);
         paymentMethodItemView.setDeleteIconVisible(true);
         paymentMethodItemView.setOnDeleteIconClick(new View.OnClickListener() {
             @Override
