@@ -17,9 +17,10 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 
 public class PaymentMethodItemView extends LinearLayout {
 
-    public ImageView mIcon;
-    public TextView mTitle;
-    public TextView mDescription;
+    private ImageView mIcon;
+    private TextView mTitle;
+    private TextView mDescription;
+    private View mDeleteIcon;
 
     public PaymentMethodItemView(Context context) {
         super(context);
@@ -54,9 +55,7 @@ public class PaymentMethodItemView extends LinearLayout {
         mIcon = findViewById(R.id.bt_payment_method_icon);
         mTitle = findViewById(R.id.bt_payment_method_title);
         mDescription = findViewById(R.id.bt_payment_method_description);
-
-        // TODO temporary until we remove the background
-        findViewById(R.id.bt_payment_method_background).setVisibility(View.GONE);
+        mDeleteIcon = findViewById(R.id.bt_payment_method_delete_icon);
     }
 
     public void setPaymentMethod(PaymentMethodNonce paymentMethodNonce) {
@@ -69,5 +68,9 @@ public class PaymentMethodItemView extends LinearLayout {
         } else {
             mDescription.setText(paymentMethodNonce.getDescription());
         }
+    }
+
+    public void setDeleteIconVisible(boolean visible) {
+        mDeleteIcon.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 }
