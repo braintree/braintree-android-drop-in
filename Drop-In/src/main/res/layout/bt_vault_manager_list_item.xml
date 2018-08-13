@@ -1,75 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/bt_payment_method_card_margin"
+    android:paddingLeft="@dimen/bt_payment_method_card_margin">
 
-    <RelativeLayout
-        android:id="@+id/bt_payment_method_background"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingRight="@dimen/bt_vault_manager_delete_icon_margin"
-        android:paddingEnd="@dimen/bt_vault_manager_delete_icon_margin"
-        android:background="@color/bt_payment_method_delete_background_color">
+
+    <ImageView
+        android:id="@+id/bt_payment_method_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        tools:ignore="ContentDescription"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/bt_payment_method_icon"
+        android:layout_toEndOf="@id/bt_payment_method_icon"
+        android:layout_marginLeft="@dimen/bt_vault_manager_list_item_margin"
+        android:layout_marginStart="@dimen/bt_vault_manager_list_item_margin"
+        android:orientation="vertical">
 
         <TextView
+            style="@style/bt_vaulted_payment_method_title"
+            android:id="@+id/bt_payment_method_title"
+            android:textSize="@dimen/bt_vault_manager_text_size"
+            android:layout_gravity="left"/>
+
+        <TextView
+            android:id="@+id/bt_payment_method_description"
+            android:layoutDirection="ltr"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:drawableRight="@drawable/bt_ic_delete_forever_white"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:gravity="center"
-            android:textColor="@android:color/white"
-            android:text="@string/bt_delete"/>
+            android:layout_marginLeft="@dimen/bt_vault_manager_list_item_text_margin"
+            android:layout_marginRight="@dimen/bt_vault_manager_list_item_text_margin"
+            android:layout_gravity="left"
+            android:textSize="@dimen/bt_default_small_text_size"
+            android:textColor="@color/bt_black_54"
+            android:maxLines="1"
+            android:ellipsize="end"/>
+    </LinearLayout>
 
-    </RelativeLayout>
+     <ImageView
+         android:id="@+id/bt_payment_method_delete_icon"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:src="@drawable/bt_ic_delete_forever"
+         android:layout_alignParentRight="true"
+         android:layout_centerVertical="true"
+         android:paddingEnd="@dimen/bt_payment_method_card_margin"
+         android:paddingRight="@dimen/bt_payment_method_card_margin"
+         android:gravity="center"
+         android:visibility="gone"/>
 
-    <RelativeLayout
-        android:id="@+id/bt_payment_method_foreground"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:foreground="@drawable/bt_payment_method_list_item_bg"
-        android:background="@color/bt_base_background"
-        android:paddingStart="@dimen/bt_payment_method_card_margin"
-        android:paddingLeft="@dimen/bt_payment_method_card_margin">
-
-        <ImageView
-            android:id="@+id/bt_payment_method_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            tools:ignore="ContentDescription"/>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@id/bt_payment_method_icon"
-            android:layout_toEndOf="@id/bt_payment_method_icon"
-            android:layout_marginLeft="@dimen/bt_vault_manager_list_item_margin"
-            android:layout_marginStart="@dimen/bt_vault_manager_list_item_margin"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/bt_vaulted_payment_method_title"
-                android:id="@+id/bt_payment_method_title"
-                android:textSize="@dimen/bt_vault_manager_text_size"
-                android:layout_gravity="left"/>
-
-            <TextView
-                android:id="@+id/bt_payment_method_description"
-                android:layoutDirection="ltr"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/bt_vault_manager_list_item_text_margin"
-                android:layout_marginRight="@dimen/bt_vault_manager_list_item_text_margin"
-                android:layout_gravity="left"
-                android:textSize="@dimen/bt_default_small_text_size"
-                android:textColor="@color/bt_black_54"
-                android:maxLines="1"
-                android:ellipsize="end"/>
-        </LinearLayout>
-    </RelativeLayout>
-</FrameLayout>
+</RelativeLayout>

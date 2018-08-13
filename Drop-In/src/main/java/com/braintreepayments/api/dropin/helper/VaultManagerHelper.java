@@ -1,11 +1,7 @@
 package com.braintreepayments.api.dropin.helper;
 
-import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper.Callback;
-import android.view.View;
-
-import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
 
 import static android.support.v7.widget.helper.ItemTouchHelper.LEFT;
 
@@ -45,31 +41,6 @@ public class VaultManagerHelper extends Callback {
             return 0;
         }
         return super.convertToAbsoluteDirection(flags, layoutDirection);
-    }
-
-    @Override
-    public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        final View foreground = getForeground(viewHolder);
-
-        getDefaultUIUtil().clearView(foreground);
-    }
-
-    @Override
-    public void onChildDrawOver(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        final View foreground = getForeground(viewHolder);
-
-        getDefaultUIUtil().onDrawOver(c, recyclerView, foreground, dX, dY, actionState, isCurrentlyActive);
-    }
-
-    @Override
-    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-        final View foreground = getForeground(viewHolder);
-
-        getDefaultUIUtil().onDraw(c, recyclerView, foreground, dX, dY, actionState, isCurrentlyActive);
-    }
-
-    private View getForeground(RecyclerView.ViewHolder viewHolder) {
-        return ((VaultManagerPaymentMethodsAdapter.ViewHolder)viewHolder).foreground;
     }
 }
 
