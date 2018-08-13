@@ -9,6 +9,7 @@ import android.os.Parcelable;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.VaultManagerUnitTestActivity;
 import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
+import com.braintreepayments.api.dropin.view.PaymentMethodItemView;
 import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeGraphQLHttpClient;
@@ -25,6 +26,7 @@ import org.mockito.stubbing.Answer;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
+import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowAlertDialog;
 
@@ -46,6 +48,7 @@ import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
+@Config(sdk = 21)
 public class VaultManagerActivityUnitTest {
 
     private PaymentMethodNonce mCardNonce;
@@ -55,6 +58,7 @@ public class VaultManagerActivityUnitTest {
     private ActivityController<VaultManagerUnitTestActivity> mActivityController;
     private ShadowActivity mShadowActivity;
     private BraintreeGraphQLHttpClient mGraphQlClient;
+    private PaymentMethodItemView mPaymentMethodItemView;
 
     @Before
     public void setup() {
@@ -82,6 +86,8 @@ public class VaultManagerActivityUnitTest {
 
         mActivity.graphQLHttpClient = mGraphQlClient;
         mActivityController.setup();
+
+        mPaymentMethodItemView = new PaymentMethodItemView(mActivity);
     }
 
     @Test
@@ -163,22 +169,25 @@ public class VaultManagerActivityUnitTest {
     }
 
     @Test
-    public void onSwipe_selectingPositiveButton_sendsAnalyticEvent() {
+    public void onClick_selectingPositiveButton_sendsAnalyticEvent() {
         BraintreeFragment fragment = mActivity.mockFragment();
         mockGraphQlResponse(true);
 
-        mActivity.onSwipe(0);
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
+
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
 
         verify(fragment).sendAnalyticsEvent("manager.delete.confirmation.positive");
     }
 
     @Test
-    public void onSwipe_selectingPositiveButton_callsDeletePaymentMethod() {
+    public void onClick_selectingPositiveButton_callsDeletePaymentMethod() {
         VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
         mockGraphQlResponse(true);
 
-        mActivity.onSwipe(0);
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
 
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
 
@@ -186,10 +195,12 @@ public class VaultManagerActivityUnitTest {
     }
 
     @Test
-    public void onSwipe_selectingPositiveButton_doesNotSendNegativeAnalyticEvent() {
+    public void onClick_selectingPositiveButton_doesNotSendNegativeAnalyticEvent() {
         BraintreeFragment fragment = mActivity.mockFragment();
         mockGraphQlResponse(true);
-        mActivity.onSwipe(0);
+
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
 
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
 
@@ -197,10 +208,11 @@ public class VaultManagerActivityUnitTest {
     }
 
     @Test
-    public void onSwipe_selectingNegativeButton_doesntDeletePaymentMethod() {
+    public void onClick_selectingNegativeButton_doesntDeletePaymentMethod() {
         VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
 
-        mActivity.onSwipe(0);
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
 
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_NEGATIVE).callOnClick();
 
@@ -208,9 +220,11 @@ public class VaultManagerActivityUnitTest {
     }
 
     @Test
-    public void onSwipe_selectingNegativeButton_sendsAnalyticEvent() {
+    public void onClick_selectingNegativeButton_sendsAnalyticEvent() {
         BraintreeFragment fragment = mActivity.mockFragment();
-        mActivity.onSwipe(0);
+
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
 
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_NEGATIVE).callOnClick();
 
@@ -218,10 +232,11 @@ public class VaultManagerActivityUnitTest {
     }
 
     @Test
-    public void onSwipe_dismissingDialog_doesntDeletePaymentMethod() {
+    public void onClick_dismissingDialog_doesntDeletePaymentMethod() {
         VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
 
-        mActivity.onSwipe(0);
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
 
         getDeleteConfirmationDialog().dismiss();
 
@@ -229,10 +244,12 @@ public class VaultManagerActivityUnitTest {
     }
 
     @Test
-    public void onSwipe_dismissingDialog_sendsAnalyticEvent() {
+    public void onClick_dismissingDialog_sendsAnalyticEvent() {
         BraintreeFragment fragment = mActivity.mockFragment();
         mActivity.mockAdapter();
-        mActivity.onSwipe(0);
+
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
 
         getDeleteConfirmationDialog().dismiss();
 
