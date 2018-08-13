@@ -17,6 +17,7 @@
         tools:ignore="ContentDescription"/>
 
     <LinearLayout
+        android:id="@+id/bt_vaulted_payment_method_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
@@ -58,5 +59,14 @@
          android:paddingRight="@dimen/bt_payment_method_card_margin"
          android:gravity="center"
          android:visibility="gone"/>
+
+    <View
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignLeft="@id/bt_vaulted_payment_method_content"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="@drawable/bt_list_view_divider"
+        />
 
 </RelativeLayout>
