@@ -11,11 +11,10 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import android.view.View;
 
 import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
-import com.braintreepayments.api.dropin.helper.VaultManagerHelper;
 import com.braintreepayments.api.dropin.view.PaymentMethodItemView;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
@@ -29,10 +28,10 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 
 public class VaultManagerActivity extends BaseActivity implements PaymentMethodNonceDeletedListener,
-        BraintreeErrorListener, VaultManagerHelper.Interaction {
+        BraintreeErrorListener, View.OnClickListener {
 
     @VisibleForTesting
-    protected VaultManagerPaymentMethodsAdapter mAdapter = new VaultManagerPaymentMethodsAdapter();
+    protected VaultManagerPaymentMethodsAdapter mAdapter = new VaultManagerPaymentMethodsAdapter(this);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,8 +49,6 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this,
                 layoutManager.getOrientation());
-        VaultManagerHelper swipeController = new VaultManagerHelper(this);
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(swipeController);
 
         ArrayList<PaymentMethodNonce> nonces;
         if (savedInstanceState == null) {
@@ -63,7 +60,6 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
         mAdapter.setPaymentMethodNonces(nonces);
 
         new LinearSnapHelper().attachToRecyclerView(vaultManagerView);
-        itemTouchHelper.attachToRecyclerView(vaultManagerView);
         vaultManagerView.setLayoutManager(layoutManager);
         vaultManagerView.addItemDecoration(dividerItemDecoration);
         vaultManagerView.setAdapter(mAdapter);
@@ -100,42 +96,45 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
     }
 
     @Override
-    public void onSwipe(int index) {
-        final PaymentMethodNonce paymentMethodNonceToDelete =
-                mAdapter.getPaymentMethodNonce(index);
+    public void onClick(View v) {
+        if (v instanceof PaymentMethodItemView) {
+            final AtomicBoolean positiveSelected = new AtomicBoolean(false);
 
-        final AtomicBoolean positiveSelected = new AtomicBoolean(false);
+            PaymentMethodItemView paymentMethodItemView = (PaymentMethodItemView)v;
+            final PaymentMethodNonce paymentMethodNonceToDelete = paymentMethodItemView
+                    .getPaymentMethodNonce();
 
-        PaymentMethodItemView paymentMethodItem = new PaymentMethodItemView(this);
-        paymentMethodItem.setPaymentMethod(paymentMethodNonceToDelete);
+            PaymentMethodItemView dialogView = new PaymentMethodItemView(this);
+            dialogView.setPaymentMethod(paymentMethodNonceToDelete);
 
-        new AlertDialog.Builder(VaultManagerActivity.this)
-                .setTitle(R.string.bt_delete_confirmation_title)
-                .setMessage(R.string.bt_delete_confirmation_description)
-                .setView(paymentMethodItem)
-                .setPositiveButton(R.string.bt_delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        positiveSelected.set(true);
-                        mBraintreeFragment.sendAnalyticsEvent("manager.delete.confirmation.positive");
-                        PaymentMethod.deletePaymentMethod(mBraintreeFragment, paymentMethodNonceToDelete);
-                    }
-                })
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        if (!positiveSelected.get()) {
-                            mAdapter.cancelSwipeOnPaymentMethodNonce(paymentMethodNonceToDelete);
-                            mBraintreeFragment.sendAnalyticsEvent("manager.delete.confirmation.negative");
+            new AlertDialog.Builder(VaultManagerActivity.this)
+                    .setTitle(R.string.bt_delete_confirmation_title)
+                    .setMessage(R.string.bt_delete_confirmation_description)
+                    .setView(dialogView)
+                    .setPositiveButton(R.string.bt_delete, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            positiveSelected.set(true);
+                            mBraintreeFragment.sendAnalyticsEvent("manager.delete.confirmation.positive");
+                            PaymentMethod.deletePaymentMethod(mBraintreeFragment, paymentMethodNonceToDelete);
                         }
-                    }
-                })
-                .setNegativeButton(R.string.bt_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .create()
-                .show();
+                    })
+                    .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                        @Override
+                        public void onDismiss(DialogInterface dialog) {
+                            if (!positiveSelected.get()) {
+                                mAdapter.cancelSwipeOnPaymentMethodNonce(paymentMethodNonceToDelete);
+                                mBraintreeFragment.sendAnalyticsEvent("manager.delete.confirmation.negative");
+                            }
+                        }
+                    })
+                    .setNegativeButton(R.string.bt_cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    })
+                    .create()
+                    .show();
+        }
     }
 }

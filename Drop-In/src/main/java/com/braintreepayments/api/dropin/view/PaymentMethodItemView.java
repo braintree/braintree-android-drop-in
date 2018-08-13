@@ -21,6 +21,7 @@ public class PaymentMethodItemView extends LinearLayout {
     private TextView mTitle;
     private TextView mDescription;
     private View mDeleteIcon;
+    private PaymentMethodNonce mPaymentMethodNonce;
 
     public PaymentMethodItemView(Context context) {
         super(context);
@@ -59,6 +60,8 @@ public class PaymentMethodItemView extends LinearLayout {
     }
 
     public void setPaymentMethod(PaymentMethodNonce paymentMethodNonce) {
+        mPaymentMethodNonce = paymentMethodNonce;
+
         PaymentMethodType paymentMethodType = PaymentMethodType.forType(paymentMethodNonce);
 
         mIcon.setImageResource(paymentMethodType.getVaultedDrawable());
@@ -72,5 +75,13 @@ public class PaymentMethodItemView extends LinearLayout {
 
     public void setDeleteIconVisible(boolean visible) {
         mDeleteIcon.setVisibility(visible ? View.VISIBLE : View.GONE);
+    }
+
+    public void setOnDeleteIconClick(OnClickListener clickListener) {
+        mDeleteIcon.setOnClickListener(clickListener);
+    }
+
+    public PaymentMethodNonce getPaymentMethodNonce() {
+        return mPaymentMethodNonce;
     }
 }
