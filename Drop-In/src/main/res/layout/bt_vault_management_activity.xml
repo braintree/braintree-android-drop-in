@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/bt_base_view"
     android:layout_width="@dimen/bt_full_width"
     android:layout_height="wrap_content"
@@ -7,14 +7,29 @@
 
     <TextView
         style="@style/bt_choose_payment_label"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         android:id="@+id/bt_vault_manager_title"
         android:text="@string/bt_vault_manager_title"
         android:paddingTop="@dimen/bt_vault_manager_title_padding_top"/>
 
+    <Button
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+        android:id="@+id/bt_vault_manager_close"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@id/bt_vault_manager_title"
+        android:layout_alignBottom="@id/bt_vault_manager_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/bt_vault_manager_title_padding_top"
+        android:paddingBottom="@dimen/bt_payment_label_padding_bottom"
+        android:text="@string/bt_done"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/bt_vault_manager_list"
         android:scrollbars="vertical"
+        android:layout_below="@id/bt_vault_manager_title"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-</LinearLayout>
+</RelativeLayout>

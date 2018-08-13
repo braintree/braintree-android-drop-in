@@ -39,6 +39,14 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
         setContentView(R.layout.bt_vault_management_activity);
 
         RecyclerView vaultManagerView = findViewById(R.id.bt_vault_manager_list);
+        View closeButton = findViewById(R.id.bt_vault_manager_close);
+
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         try {
             mBraintreeFragment = getBraintreeFragment();
