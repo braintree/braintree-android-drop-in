@@ -47,6 +47,7 @@
     </LinearLayout>
 
      <ImageView
+         style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
          android:id="@+id/bt_payment_method_delete_icon"
          android:layout_width="wrap_content"
          android:layout_height="wrap_content"

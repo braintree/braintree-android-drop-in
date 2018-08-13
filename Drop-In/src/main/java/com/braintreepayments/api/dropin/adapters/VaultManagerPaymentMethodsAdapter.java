@@ -12,6 +12,11 @@ import java.util.List;
 
 public class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<VaultManagerPaymentMethodsAdapter.ViewHolder> {
     private final List<PaymentMethodNonce> mPaymentMethodNonces = new ArrayList<>();
+    private View.OnClickListener mClickListener;
+
+    public VaultManagerPaymentMethodsAdapter(View.OnClickListener clickListener) {
+        mClickListener = clickListener;
+    }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -21,10 +26,18 @@ public class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<Vaul
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final PaymentMethodNonce paymentMethodNonce = mPaymentMethodNonces.get(position);
-        PaymentMethodItemView paymentMethodItemView = ((PaymentMethodItemView)holder.itemView);
+        final PaymentMethodItemView paymentMethodItemView = ((PaymentMethodItemView)holder.itemView);
 
         paymentMethodItemView.setPaymentMethod(paymentMethodNonce);
         paymentMethodItemView.setDeleteIconVisible(true);
+        paymentMethodItemView.setOnDeleteIconClick(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mClickListener != null) {
+                    mClickListener.onClick(paymentMethodItemView);
+                }
+            }
+        });
     }
 
     public PaymentMethodNonce getPaymentMethodNonce(int index) {
