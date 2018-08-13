@@ -1,5 +1,6 @@
 package com.braintreepayments.demo.test;
 
+import android.os.Build;
 import android.support.test.filters.RequiresDevice;
 import android.support.test.filters.SdkSuppress;
 import android.support.test.runner.AndroidJUnit4;
@@ -19,7 +20,6 @@ import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_
 import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
 import static com.lukekorth.deviceautomator.AutomatorAction.click;
 import static com.lukekorth.deviceautomator.AutomatorAction.setText;
-import static com.lukekorth.deviceautomator.AutomatorAction.swipeLeft;
 import static com.lukekorth.deviceautomator.AutomatorAssertion.text;
 import static com.lukekorth.deviceautomator.DeviceAutomator.onDevice;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withContentDescription;
@@ -32,6 +32,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.junit.Assume.assumeTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class DropInTest extends TestHelper {
@@ -221,6 +222,31 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).check(text(equalToIgnoringCase("Add Payment Method")));
     }
 
+    @Test(timeout = 60000)
+    public void deletesPaymentMethod() {
+        assumeTrue("braintree-api.com SSL connection does not support API < 21 (Lollipop)",
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+
+        setCustomerId("delete-payment-method");
+        enableVaultManager();
+
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+        tokenizeCard(VISA);
+
+        onDevice(withText("Visa")).waitForExists().perform(click());
+        onDevice(withText("Edit")).waitForExists().perform(click());
+        onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_delete_icon"))
+                .waitForExists().perform(click());
+
+        onDevice(withText("Delete")).waitForExists().perform(click());
+        onDevice(withText("Done")).waitForExists().perform(click());
+
+        onDevice().pressBack();
+        onDevice(withText("Select Payment Method")).waitForExists();
+
+        assertFalse(onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_title")).exists());
+    }
+
     private void tokenizeCard(String cardNumber) {
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withContentDescription("Card Number")).perform(setText(cardNumber));
@@ -230,31 +256,5 @@ public class DropInTest extends TestHelper {
         onDevice(withContentDescription("CVV")).perform(setText("123"));
         onDevice(withContentDescription("Postal Code")).perform(setText("12345"));
         onDevice(withTextContaining("Add Card")).perform(click());
-    }
-
-    @Test
-    public void deletesPaymentMethod() {
-        setCustomerId("delete-payment-method");
-        enableVaultManager();
-
-        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
-        tokenizeCard(VISA);
-
-        onDevice(withText("Visa")).waitForExists().perform(click());
-        onDevice(withText("Edit")).waitForExists().perform(click());
-
-        onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_foreground"))
-                .waitForExists().perform(swipeLeft(10));
-
-        onDevice(withText("Delete")).waitForExists().perform(click());
-
-        while(onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_background")).exists()) {
-           // Wait for it to disappear
-        }
-
-        onDevice().pressBack();
-        onDevice(withText("Select Payment Method")).waitForExists();
-
-        assertFalse(onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_title")).exists());
     }
 }
