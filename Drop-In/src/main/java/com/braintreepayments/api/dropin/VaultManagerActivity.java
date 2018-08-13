@@ -111,9 +111,10 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
                     .getPaymentMethodNonce();
 
             PaymentMethodItemView dialogView = new PaymentMethodItemView(this);
-            dialogView.setPaymentMethod(paymentMethodNonceToDelete);
+            dialogView.setPaymentMethod(paymentMethodNonceToDelete, true);
 
-            new AlertDialog.Builder(VaultManagerActivity.this)
+            new AlertDialog.Builder(VaultManagerActivity.this,
+                    R.style.Theme_AppCompat_Light_Dialog_Alert)
                     .setTitle(R.string.bt_delete_confirmation_title)
                     .setMessage(R.string.bt_delete_confirmation_description)
                     .setView(dialogView)

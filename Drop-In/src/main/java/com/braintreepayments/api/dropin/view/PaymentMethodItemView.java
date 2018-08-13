@@ -59,12 +59,17 @@ public class PaymentMethodItemView extends LinearLayout {
         mDeleteIcon = findViewById(R.id.bt_payment_method_delete_icon);
     }
 
-    public void setPaymentMethod(PaymentMethodNonce paymentMethodNonce) {
+    public void setPaymentMethod(PaymentMethodNonce paymentMethodNonce, boolean useVaultedPaymentMethodIcon) {
         mPaymentMethodNonce = paymentMethodNonce;
 
         PaymentMethodType paymentMethodType = PaymentMethodType.forType(paymentMethodNonce);
 
-        mIcon.setImageResource(paymentMethodType.getVaultedDrawable());
+        if (useVaultedPaymentMethodIcon) {
+            mIcon.setImageResource(paymentMethodType.getVaultedDrawable());
+        } else {
+            mIcon.setImageResource(paymentMethodType.getDrawable());
+        }
+
         mTitle.setText(paymentMethodType.getLocalizedName());
         if (paymentMethodNonce instanceof CardNonce) {
             mDescription.setText("••• ••" + ((CardNonce) paymentMethodNonce).getLastTwo());

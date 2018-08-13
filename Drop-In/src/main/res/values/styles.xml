@@ -32,8 +32,17 @@
         <item name="textColorError">@color/bt_error_red</item>
     </style>
 
-    <style name="bt_vault_manager_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="bt_vault_manager_activity_theme" parent="Theme.AppCompat.NoActionBar">
         <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
+        <item name="android:windowAnimationStyle">@style/bt_fade_activity_animation</item>
+        <item name="colorPrimary">@color/bt_color_primary</item>
+        <item name="colorPrimaryDark">@color/bt_color_primary_dark</item>
+        <item name="colorAccent">@color/bt_blue</item>
     </style>
 
     <style name="bt_three_d_secure_theme" parent="@android:style/Theme.Holo.Light">
