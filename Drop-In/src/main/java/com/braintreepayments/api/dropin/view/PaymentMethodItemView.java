@@ -22,6 +22,7 @@ public class PaymentMethodItemView extends LinearLayout {
     private TextView mDescription;
     private View mDeleteIcon;
     private PaymentMethodNonce mPaymentMethodNonce;
+    private View mDivider;
 
     public PaymentMethodItemView(Context context) {
         super(context);
@@ -57,17 +58,22 @@ public class PaymentMethodItemView extends LinearLayout {
         mTitle = findViewById(R.id.bt_payment_method_title);
         mDescription = findViewById(R.id.bt_payment_method_description);
         mDeleteIcon = findViewById(R.id.bt_payment_method_delete_icon);
+        mDivider = findViewById(R.id.bt_payment_method_divider);
     }
 
-    public void setPaymentMethod(PaymentMethodNonce paymentMethodNonce, boolean useVaultedPaymentMethodIcon) {
+    public void setPaymentMethod(PaymentMethodNonce paymentMethodNonce, boolean usedInList) {
         mPaymentMethodNonce = paymentMethodNonce;
 
         PaymentMethodType paymentMethodType = PaymentMethodType.forType(paymentMethodNonce);
 
-        if (useVaultedPaymentMethodIcon) {
-            mIcon.setImageResource(paymentMethodType.getVaultedDrawable());
-        } else {
+        if (usedInList) {
             mIcon.setImageResource(paymentMethodType.getDrawable());
+            mDeleteIcon.setVisibility(View.VISIBLE);
+            mDivider.setVisibility(View.VISIBLE);
+        } else {
+            mIcon.setImageResource(paymentMethodType.getVaultedDrawable());
+            mDeleteIcon.setVisibility(View.GONE);
+            mDivider.setVisibility(View.GONE);
         }
 
         mTitle.setText(paymentMethodType.getLocalizedName());
@@ -76,10 +82,6 @@ public class PaymentMethodItemView extends LinearLayout {
         } else {
             mDescription.setText(paymentMethodNonce.getDescription());
         }
-    }
-
-    public void setDeleteIconVisible(boolean visible) {
-        mDeleteIcon.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
     public void setOnDeleteIconClick(OnClickListener clickListener) {
