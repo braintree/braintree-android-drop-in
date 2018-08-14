@@ -51,18 +51,18 @@
             android:ellipsize="end"/>
     </LinearLayout>
 
-     <ImageView
-         style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
-         android:id="@+id/bt_payment_method_delete_icon"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:src="@drawable/bt_ic_delete_forever"
-         android:layout_alignParentRight="true"
-         android:layout_centerVertical="true"
-         android:paddingEnd="@dimen/bt_payment_method_card_margin"
-         android:paddingRight="@dimen/bt_payment_method_card_margin"
-         android:gravity="center"
-         android:visibility="gone"/>
+    <ImageButton
+        android:id="@+id/bt_payment_method_delete_icon"
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/bt_payment_method_card_margin"
+        android:layout_marginRight="@dimen/bt_payment_method_card_margin"
+        android:gravity="center"
+        android:src="@drawable/bt_ic_delete_forever"
+        android:theme="@style/bt_edit_button" />
 
     <View
         android:id="@+id/bt_payment_method_divider"
