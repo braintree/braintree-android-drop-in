@@ -20,7 +20,8 @@
             android:paddingTop="@dimen/bt_vault_manager_title_padding_top"/>
 
         <Button
-            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:theme="@style/bt_edit_button"
             android:id="@+id/bt_vault_manager_close"
             android:layout_alignParentRight="true"
             android:layout_alignTop="@id/bt_vault_manager_title"

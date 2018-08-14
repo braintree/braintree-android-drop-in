@@ -87,7 +87,7 @@
     <style name="bt_edit_button" parent="Theme.AppCompat.Light">
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless.Colored</item>
         <item name="colorControlHighlight">@color/bt_color_highlight</item>
-        <item name="colorAccent">@color/bt_color_primary</item>
+        <item name="colorAccent">@color/bt_text_blue</item>
         <item name="android:textAllCaps">true</item>
     </style>
 </resources>
