@@ -7,6 +7,7 @@ import android.os.Parcelable;
 
 import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.PayPal;
+import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.wallet.Cart;
@@ -29,6 +30,7 @@ public class DropInRequest implements Parcelable {
 
     private Cart mAndroidPayCart;
     private GooglePaymentRequest mGooglePaymentRequest;
+    private PayPalRequest mPayPalRequest;
     private boolean mAndroidPayShippingAddressRequired;
     private boolean mAndroidPayPhoneNumberRequired;
     private boolean mAndroidPayEnabled = true;
@@ -97,6 +99,16 @@ public class DropInRequest implements Parcelable {
      */
     public DropInRequest googlePaymentRequest(GooglePaymentRequest request) {
         mGooglePaymentRequest = request;
+        return this;
+    }
+
+    /**
+     * This method is optional.
+     *
+     * @param request The PayPal Request {@link PayPalRequest} for the transaction.
+     */
+    public DropInRequest paypalRequest(PayPalRequest request) {
+        mPayPalRequest = request;
         return this;
     }
 
@@ -293,6 +305,8 @@ public class DropInRequest implements Parcelable {
         return mPayPalEnabled;
     }
 
+    public PayPalRequest getPayPalRequest() { return mPayPalRequest; }
+
     public boolean isVenmoEnabled() {
         return mVenmoEnabled;
     }
@@ -339,6 +353,7 @@ public class DropInRequest implements Parcelable {
         dest.writeParcelable(mGooglePaymentRequest, 0);
         dest.writeByte(mGooglePaymentEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mAndroidPayEnabled ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(mPayPalRequest, 0);
         dest.writeStringList(mPayPalAdditionalScopes);
         dest.writeByte(mPayPalEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mVenmoEnabled ? (byte) 1 : (byte) 0);
@@ -362,6 +377,7 @@ public class DropInRequest implements Parcelable {
         mGooglePaymentRequest = in.readParcelable(GooglePaymentRequest.class.getClassLoader());
         mGooglePaymentEnabled = in.readByte() != 0;
         mAndroidPayEnabled = in.readByte() != 0;
+        mPayPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());
         mPayPalAdditionalScopes = in.createStringArrayList();
         mPayPalEnabled = in.readByte() != 0;
         mVenmoEnabled = in.readByte() != 0;

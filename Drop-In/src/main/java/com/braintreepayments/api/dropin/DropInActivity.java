@@ -45,6 +45,7 @@ import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
+import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.List;
@@ -226,7 +227,12 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
         switch (type) {
             case PAYPAL:
-                PayPal.authorizeAccount(mBraintreeFragment);
+                if(mDropInRequest.getPayPalRequest() != null) {
+                    PayPal.requestOneTimePayment(mBraintreeFragment, mDropInRequest.getPayPalRequest());
+                } else {
+                    PayPalRequest payPalRequest = new PayPalRequest();
+                    PayPal.requestBillingAgreement(mBraintreeFragment, payPalRequest);
+                }
                 break;
             case ANDROID_PAY:
                 AndroidPay.requestAndroidPay(mBraintreeFragment, mDropInRequest.getAndroidPayCart(),
