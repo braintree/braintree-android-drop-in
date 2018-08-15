@@ -52,7 +52,6 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
             finish(e);
         }
 
-
         ArrayList<PaymentMethodNonce> nonces;
         if (savedInstanceState == null) {
             nonces = getIntent().getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES);
@@ -89,7 +88,8 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
 
             mAdapter.cancelSwipeOnPaymentMethodNonce(paymentMethodNonce);
 
-            Snackbar.make(findViewById(R.id.bt_base_view), "We couldn't delete your payment method right now, try again later", Snackbar.LENGTH_LONG).show();
+            Snackbar.make(findViewById(R.id.bt_base_view), R.string.bt_vault_manager_delete_failure,
+                    Snackbar.LENGTH_LONG).show();
             mBraintreeFragment.sendAnalyticsEvent("manager.delete.failed");
         } else {
             mBraintreeFragment.sendAnalyticsEvent("manager.unknown.failed");
