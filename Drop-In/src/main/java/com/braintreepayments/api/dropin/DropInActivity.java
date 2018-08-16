@@ -232,9 +232,9 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                     paypalRequest = new PayPalRequest();
                 }
                 if (paypalRequest.getAmount() != null) {
-                    PayPal.requestOneTimePayment(mBraintreeFragment, mDropInRequest.getPayPalRequest());
+                    PayPal.requestOneTimePayment(mBraintreeFragment, paypalRequest);
                 } else {
-                    PayPal.requestBillingAgreement(mBraintreeFragment, mDropInRequest.getPayPalRequest());
+                    PayPal.requestBillingAgreement(mBraintreeFragment, paypalRequest);
                 }
                 break;
             case ANDROID_PAY:
@@ -360,8 +360,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         if (listener != null) {
             slideOutAnimation.setAnimationListener(new AnimationListener() {
                 @Override
-                public void onAnimationStart(Animation animation) {
-                }
+                public void onAnimationStart(Animation animation) {}
 
                 @Override
                 public void onAnimationEnd(Animation animation) {

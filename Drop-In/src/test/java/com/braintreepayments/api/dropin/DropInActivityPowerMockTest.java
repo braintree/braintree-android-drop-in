@@ -98,7 +98,7 @@ public class DropInActivityPowerMockTest {
     }
 
     @Test
-    public void onPaymentMethodSelected_startsPayPalRequestBillingAgreement() {
+    public void onPaymentMethodSelected_startsPayPalRequestBillingAgreementByDefault() {
         DropInRequest dropInRequest = new DropInRequest();
         mActivity.setDropInRequest(dropInRequest);
         mockStatic(PayPal.class);
@@ -112,7 +112,7 @@ public class DropInActivityPowerMockTest {
     }
 
     @Test
-    public void onPaymentMethodSelected_startsPayPalRequestOneTimePayment() {
+    public void onPaymentMethodSelected_startsPayPalRequestWithAmountUsesOneTimePayment() {
         PayPalRequest paypalRequest = new PayPalRequest("10")
                 .currencyCode("USD");
         DropInRequest dropInRequest = new DropInRequest()
@@ -129,7 +129,7 @@ public class DropInActivityPowerMockTest {
     }
 
     @Test
-    public void onPaymentMethodSelected_startsPayPalWIthRequestDefaultsToBillingAgreement() {
+    public void onPaymentMethodSelected_startsPayPalWIthRequestWithoutAmountUsesBillingAgreement() {
         PayPalRequest paypalRequest = new PayPalRequest()
                 .billingAgreementDescription("Peter Pipers Pepper Pickers");
         DropInRequest dropInRequest = new DropInRequest()

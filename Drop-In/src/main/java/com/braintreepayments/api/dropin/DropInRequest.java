@@ -105,9 +105,9 @@ public class DropInRequest implements Parcelable {
     /**
      * This method is optional.
      *
-     * @param request The PayPal Request {@link PayPalRequest} for the transaction.  If not set or passed
-     *                with no amount, PayPal will default to the billing agreement (Vault) flow.  If
-     *                passed with an amount, PayPal will follow the one time payment (Checkout) flow.
+     * @param request The PayPal Request {@link PayPalRequest} for the transaction.
+     * If not set or passed with no amount, PayPal will default to the billing agreement (Vault) flow.
+     * If passed with an amount, PayPal will follow the one time payment (Checkout) flow.
      */
     public DropInRequest paypalRequest(PayPalRequest request) {
         mPayPalRequest = request;
