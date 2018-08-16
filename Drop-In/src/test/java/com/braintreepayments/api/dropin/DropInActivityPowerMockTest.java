@@ -98,8 +98,42 @@ public class DropInActivityPowerMockTest {
     }
 
     @Test
-    public void onPaymentMethodSelected_startsPayPal() {
+    public void onPaymentMethodSelected_startsPayPalRequestBillingAgreement() {
         DropInRequest dropInRequest = new DropInRequest();
+        mActivity.setDropInRequest(dropInRequest);
+        mockStatic(PayPal.class);
+        doNothing().when(PayPal.class);
+        PayPal.requestBillingAgreement(any(BraintreeFragment.class), any(PayPalRequest.class));
+
+        mActivity.onPaymentMethodSelected(PaymentMethodType.PAYPAL);
+
+        verifyStatic();
+        PayPal.requestBillingAgreement(eq(mActivity.braintreeFragment), any(PayPalRequest.class));
+    }
+
+    @Test
+    public void onPaymentMethodSelected_startsPayPalRequestOneTimePayment() {
+        PayPalRequest paypalRequest = new PayPalRequest("10")
+                .currencyCode("USD");
+        DropInRequest dropInRequest = new DropInRequest()
+                .paypalRequest(paypalRequest);
+        mActivity.setDropInRequest(dropInRequest);
+        mockStatic(PayPal.class);
+        doNothing().when(PayPal.class);
+        PayPal.requestOneTimePayment(any(BraintreeFragment.class), any(PayPalRequest.class));
+
+        mActivity.onPaymentMethodSelected(PaymentMethodType.PAYPAL);
+
+        verifyStatic();
+        PayPal.requestOneTimePayment(eq(mActivity.braintreeFragment), any(PayPalRequest.class));
+    }
+
+    @Test
+    public void onPaymentMethodSelected_startsPayPalWIthRequestDefaultsToBillingAgreement() {
+        PayPalRequest paypalRequest = new PayPalRequest()
+                .billingAgreementDescription("Peter Pipers Pepper Pickers");
+        DropInRequest dropInRequest = new DropInRequest()
+                .paypalRequest(paypalRequest);
         mActivity.setDropInRequest(dropInRequest);
         mockStatic(PayPal.class);
         doNothing().when(PayPal.class);

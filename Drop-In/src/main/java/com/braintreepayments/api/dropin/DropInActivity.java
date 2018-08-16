@@ -228,7 +228,11 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         switch (type) {
             case PAYPAL:
                 if(mDropInRequest.getPayPalRequest() != null) {
-                    PayPal.requestOneTimePayment(mBraintreeFragment, mDropInRequest.getPayPalRequest());
+                    if(mDropInRequest.getPayPalRequest().getAmount() != null) {
+                        PayPal.requestOneTimePayment(mBraintreeFragment, mDropInRequest.getPayPalRequest());
+                    } else {
+                        PayPal.requestBillingAgreement(mBraintreeFragment, mDropInRequest.getPayPalRequest());
+                    }
                 } else {
                     PayPalRequest payPalRequest = new PayPalRequest();
                     PayPal.requestBillingAgreement(mBraintreeFragment, payPalRequest);
