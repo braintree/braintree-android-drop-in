@@ -32,6 +32,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
 
 @RunWith(AndroidJUnit4.class)
@@ -227,10 +228,14 @@ public class DropInTest extends TestHelper {
         assumeTrue("braintree-api.com SSL connection does not support API < 21 (Lollipop)",
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
 
-        setCustomerId("delete-payment-method");
+        setCustomerId("delete-payment-method-uitest");
         enableVaultManager();
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+
+        assumeFalse("Vaulted payment methods exist for this customer. Expecting no vaulted payments precondition for this test.",
+                onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_title")).exists());
+
         tokenizeCard(VISA);
 
         onDevice(withText("Visa")).waitForExists().perform(click());
