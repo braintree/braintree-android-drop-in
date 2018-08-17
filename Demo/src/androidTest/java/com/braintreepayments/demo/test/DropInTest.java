@@ -40,7 +40,7 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void tokenizesACard() {
-        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(VISA);
 
@@ -53,7 +53,7 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void tokenizesACardWithATokenizationKey() {
         useTokenizationKey();
-        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(VISA);
 
@@ -75,6 +75,8 @@ public class DropInTest extends TestHelper {
         onDevice().typeText("1234");
         onDevice().pressTab().pressTab().pressEnter();
 
+        onDevice(withText("Return To App")).waitForExists().waitForEnabled().perform(click());
+
         getNonceDetails().check(text(containsString("Card Last Two: 02")));
         getNonceDetails().check(text(containsString("3DS isLiabilityShifted: true")));
         getNonceDetails().check(text(containsString("3DS isLiabilityShiftPossible: true")));
@@ -86,7 +88,7 @@ public class DropInTest extends TestHelper {
     @Test
     public void tokenizesUnionPay() {
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
-        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withContentDescription("Card Number")).perform(setText(UNIONPAY_CREDIT));
@@ -110,7 +112,7 @@ public class DropInTest extends TestHelper {
     @Test
     public void tokenizesUnionPayWhenEnrollmentIsNotRequired() {
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
-        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withContentDescription("Card Number")).perform(setText(UNIONPAY_SMS_NOT_REQUIRED));
@@ -132,7 +134,7 @@ public class DropInTest extends TestHelper {
     @Test
     public void tokenizesUnionPayWhenFirstSMSCodeIsInvalid() {
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
-        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withContentDescription("Card Number")).perform(setText(UNIONPAY_CREDIT));
@@ -163,7 +165,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
-        onDevice(withContentDescription("Proceed with Sandbox Purchase")).perform(click());
+        onDevice(withText("Proceed with Sandbox Purchase")).perform(click());
 
         getNonceDetails().check(text(containsString("Email: bt_buyer_us@paypal.com")));
 
@@ -176,10 +178,10 @@ public class DropInTest extends TestHelper {
     public void tokenizesPayPalWithATokenizationKey() {
         uninstallPayPalWallet();
         useTokenizationKey();
-        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
-        onDevice(withContentDescription("Proceed with Sandbox Purchase")).perform(click());
+        onDevice(withText("Proceed with Sandbox Purchase")).perform(click());
 
         getNonceDetails().check(text(containsString("Email: bt_buyer_us@paypal.com")));
 
@@ -189,11 +191,11 @@ public class DropInTest extends TestHelper {
 
     @RequiresDevice
     @Test(timeout = 60000)
-    public void tokenizesAndroidPay() {
-        onDevice(withText("Add Payment Method")).waitForEnabled().perform(click());
+    public void tokenizesGooglePay() {
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
-        onDevice(withText("Android Pay")).perform(click());
-        onDevice(withText("CONTINUE")).perform(click());
+        onDevice(withText("Google Pay")).perform(click());
+        onDevice(withText("Continue")).waitForExists().perform(click());
 
         getNonceDetails().check(text(containsString("Underlying Card Last Two")));
 
@@ -207,7 +209,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
-        onDevice(withContentDescription("Proceed with Sandbox Purchase")).waitForExists();
+        onDevice(withText("Proceed with Sandbox Purchase")).waitForExists();
         onDevice().pressBack();
         onDevice(withContentDescription("Pay with PayPal")).waitForExists();
 
