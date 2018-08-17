@@ -1,5 +1,10 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.5.0
+
+* Add support for `PayPalRequest` to customize the PayPal flow
+  * Specifying an `amount` on the `PayPalRequest` will result in a One-Time payment
+
 ## 3.4.0
 
 * Update spanish translation for bt_descriptor_unknown
