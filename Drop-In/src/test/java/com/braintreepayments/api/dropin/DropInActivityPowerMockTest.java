@@ -12,6 +12,7 @@ import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.GoogleApiClientException;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.models.Configuration;
+import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.google.android.gms.wallet.Cart;
 
@@ -38,6 +39,7 @@ import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -96,15 +98,51 @@ public class DropInActivityPowerMockTest {
     }
 
     @Test
-    public void onPaymentMethodSelected_startsPayPal() {
+    public void onPaymentMethodSelected_withoutPayPalRequest_startsRequestBillingAgreement() {
+        DropInRequest dropInRequest = new DropInRequest();
+        mActivity.setDropInRequest(dropInRequest);
         mockStatic(PayPal.class);
         doNothing().when(PayPal.class);
-        PayPal.authorizeAccount(any(BraintreeFragment.class));
+        PayPal.requestBillingAgreement(any(BraintreeFragment.class), any(PayPalRequest.class));
 
         mActivity.onPaymentMethodSelected(PaymentMethodType.PAYPAL);
 
         verifyStatic();
-        PayPal.authorizeAccount(mActivity.braintreeFragment);
+        PayPal.requestBillingAgreement(eq(mActivity.braintreeFragment), any(PayPalRequest.class));
+    }
+
+    @Test
+    public void onPaymentMethodSelected_withPayPalRequestAndAmount_startsRequestOneTimePayment() {
+        PayPalRequest paypalRequest = new PayPalRequest("10")
+                .currencyCode("USD");
+        DropInRequest dropInRequest = new DropInRequest()
+                .paypalRequest(paypalRequest);
+        mActivity.setDropInRequest(dropInRequest);
+        mockStatic(PayPal.class);
+        doNothing().when(PayPal.class);
+        PayPal.requestOneTimePayment(any(BraintreeFragment.class), any(PayPalRequest.class));
+
+        mActivity.onPaymentMethodSelected(PaymentMethodType.PAYPAL);
+
+        verifyStatic();
+        PayPal.requestOneTimePayment(eq(mActivity.braintreeFragment), any(PayPalRequest.class));
+    }
+
+    @Test
+    public void onPaymentMethodSelected_withPayPalRequestWithoutAmount_startsRequestBillingAgreement() {
+        PayPalRequest paypalRequest = new PayPalRequest()
+                .billingAgreementDescription("Peter Pipers Pepper Pickers");
+        DropInRequest dropInRequest = new DropInRequest()
+                .paypalRequest(paypalRequest);
+        mActivity.setDropInRequest(dropInRequest);
+        mockStatic(PayPal.class);
+        doNothing().when(PayPal.class);
+        PayPal.requestBillingAgreement(any(BraintreeFragment.class), any(PayPalRequest.class));
+
+        mActivity.onPaymentMethodSelected(PaymentMethodType.PAYPAL);
+
+        verifyStatic();
+        PayPal.requestBillingAgreement(eq(mActivity.braintreeFragment), any(PayPalRequest.class));
     }
 
     @Test
