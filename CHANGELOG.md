@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.5.1
+
+* Upgrade card-form to 3.4.0
+
 ## 3.5.0
 
 * Add support for `PayPalRequest` to customize the PayPal flow
