@@ -33,4 +33,12 @@
     <string name="bt_card_not_accepted">このカードは使用できません</string>
     <string name="bt_unionpay_sms_code_invalid">SMSのコードが無効です</string>
     <string name="bt_unionpay_mobile_number_explanation">このカードに対して登録が必要な場合があります。SMSのコードが、必要に応じてこの番号に送信されます。</string>
+    <string name="bt_edit">編集</string>
+    <string name="bt_delete">削除</string>
+    <string name="bt_cancel">キャンセル</string>
+    <string name="bt_vault_manager_title">編集が保存されました</string>
+    <string name="bt_delete_confirmation_title">支払方法を削除しますか?</string>
+    <string name="bt_delete_confirmation_description">このアプリではこの支払方法を使用できなくなります。</string>
+    <string name="bt_done">完了</string>
+    <string name="bt_vault_manager_delete_failure">支払方法を削除できませんでした。後でもう一度お試しください。</string>
 </resources>

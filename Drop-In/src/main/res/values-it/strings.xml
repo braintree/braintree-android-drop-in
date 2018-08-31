@@ -33,4 +33,12 @@
     <string name="bt_card_not_accepted">Carta non accettata</string>
     <string name="bt_unionpay_sms_code_invalid">Il codice ricevuto tramite SMS non è valido</string>
     <string name="bt_unionpay_mobile_number_explanation">Questa carta potrebbe richiedere la registrazione. Se necessario, verrà inviato un codice tramite SMS a questo numero.</string>
+    <string name="bt_edit">Modifica</string>
+    <string name="bt_delete">Rimuovi</string>
+    <string name="bt_cancel">Annulla</string>
+    <string name="bt_vault_manager_title">Modifica salvata</string>
+    <string name="bt_delete_confirmation_title">Vuoi eliminare il metodo di pagamento?</string>
+    <string name="bt_delete_confirmation_description">Non potrai più utilizzare questo metodo di pagamento con questa app.</string>
+    <string name="bt_done">Fine</string>
+    <string name="bt_vault_manager_delete_failure">Al momento non è possibile eliminare il tuo metodo di pagamento; riprova più tardi.</string>
 </resources>

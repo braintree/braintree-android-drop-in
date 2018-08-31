@@ -33,4 +33,12 @@
     <string name="bt_card_not_accepted">البطاقة غير مقبولة</string>
     <string name="bt_unionpay_sms_code_invalid">كود الرسالة النصية القصيرة غير صالح</string>
     <string name="bt_unionpay_mobile_number_explanation">قد يُشترط التسجيل لهذه البطاقة. سيتم إرسال كود في رسالة نصية قصيرة إلى هذا الرقم إذا لزم الأمر.</string>
+    <string name="bt_edit">تحرير</string>
+    <string name="bt_delete">حذف</string>
+    <string name="bt_cancel">إلغاء</string>
+    <string name="bt_vault_manager_title">تحرير النسخة المحفوظة</string>
+    <string name="bt_delete_confirmation_title">هل تريد حذف طريقة الدفع؟</string>
+    <string name="bt_delete_confirmation_description">لن تتمكن بعد ذلك من استخدام طريقة الدفع هذه في هذا التطبيق.</string>
+    <string name="bt_done">تم</string>
+    <string name="bt_vault_manager_delete_failure">لم نتمكن من حذف طريقة الدفع الخاصة بك في الوقت الحالي، يرجى إعادة المحاولة لاحقاً.</string>
 </resources>
