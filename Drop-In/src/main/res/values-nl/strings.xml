@@ -33,4 +33,12 @@
     <string name="bt_card_not_accepted">Kaart niet geaccepteerd</string>
     <string name="bt_unionpay_sms_code_invalid">Sms-code is ongeldig</string>
     <string name="bt_unionpay_mobile_number_explanation">Aanmelding kan vereist zijn voor deze kaart. Indien nodig wordt er een sms-code verzonden naar dit nummer.</string>
+    <string name="bt_edit">Bewerken</string>
+    <string name="bt_delete">Verwijderen</string>
+    <string name="bt_cancel">Annuleren</string>
+    <string name="bt_vault_manager_title">Bewerking opgeslagen</string>
+    <string name="bt_delete_confirmation_title">Betaalmethode verwijderen?</string>
+    <string name="bt_delete_confirmation_description">U kunt deze betaalmethode niet meer gebruiken in deze app.</string>
+    <string name="bt_done">Gereed</string>
+    <string name="bt_vault_manager_delete_failure">We kunnen uw betaalmethode op dit moment niet verwijderen. Probeer het later opnieuw.</string>
 </resources>

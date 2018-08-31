@@ -33,4 +33,12 @@
     <string name="bt_card_not_accepted">Cartão não aceite</string>
     <string name="bt_unionpay_sms_code_invalid">O código SMS é inválido</string>
     <string name="bt_unionpay_mobile_number_explanation">O registo poderá ser obrigatório para este cartão. Será enviado um código SMS para este número, se necessário.</string>
+    <string name="bt_edit">Editar</string>
+    <string name="bt_delete">Eliminar</string>
+    <string name="bt_cancel">Cancelar</string>
+    <string name="bt_vault_manager_title">Edição guardada</string>
+    <string name="bt_delete_confirmation_title">Eliminar meio de pagamento?</string>
+    <string name="bt_delete_confirmation_description">Já não poderá usar este meio de pagamento nesta aplicação.</string>
+    <string name="bt_done">Concluído</string>
+    <string name="bt_vault_manager_delete_failure">Neste momento, não foi possível eliminar o seu meio de pagamento, tente novamente mais tarde.</string>
 </resources>
