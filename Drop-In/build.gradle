@@ -61,7 +61,7 @@ dependencies {
     testCompile 'org.powermock:powermock-module-junit4-rule:1.6.6'
     testCompile 'org.powermock:powermock-api-mockito:1.6.6'
     testCompile 'org.powermock:powermock-classloading-xstream:1.6.6'
-    testCompile 'org.robolectric:robolectric:3.3.2'
+    testCompile 'org.robolectric:robolectric:3.8'
     testCompile 'org.skyscreamer:jsonassert:1.4.0'
     testCompile 'com.squareup.assertj:assertj-android:1.1.1'
 }
