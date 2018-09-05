@@ -146,4 +146,11 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
                     .show();
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        if (mLoadingViewSwitcher.getDisplayedChild() == 0) {
+            super.onBackPressed();
+        }
+    }
 }

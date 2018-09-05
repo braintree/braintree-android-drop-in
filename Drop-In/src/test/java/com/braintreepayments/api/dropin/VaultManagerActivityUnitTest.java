@@ -37,6 +37,7 @@ import java.util.List;
 import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -301,6 +302,22 @@ public class VaultManagerActivityUnitTest {
         getDeleteConfirmationDialog().dismiss();
 
         verify(fragment).sendAnalyticsEvent("manager.delete.confirmation.negative");
+    }
+
+    @Test
+    public void onBackPressed_leavesActivity() {
+        mActivity.onBackPressed();
+
+        assertTrue(mShadowActivity.isFinishing());
+    }
+
+    @Test
+    public void onBackPressed_whileLoading_doesNotLeaveActivity() {
+        ((ViewSwitcher)mActivity.findViewById(R.id.bt_loading_view_switcher)).setDisplayedChild(1);
+
+        mActivity.onBackPressed();
+
+        assertFalse(mShadowActivity.isFinishing());
     }
 
     private static android.support.v7.app.AlertDialog getDeleteConfirmationDialog() {
