@@ -14,9 +14,5 @@ android:
     - extra-google-m2repository
 before_install:
   - yes | sdkmanager "platforms;android-27"
-script: 
-  - ./gradlew --stacktrace lint
-  - ./gradlew --debug --stacktrace test 
-  - ./gradlew --stacktrace :Demo:assembleDebug
-  - ./gradlew --stacktrace :Demo:assembleRelease
+script: ./gradlew --stacktrace lint test :Demo:assembleDebug :Demo:assembleRelease
 after_success: ./script/deploy_snapshot.sh
