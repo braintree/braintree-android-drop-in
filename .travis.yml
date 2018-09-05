@@ -4,8 +4,6 @@ notifications:
   email:
     - external-ci-notifications+braintree-android-drop-in@getbraintree.com
 sudo: true
-env:
-    - JAVA_OPTS="-XX:MaxPermSize=1024m -XX:+CMSClassUnloadingEnabled -XX:+HeapDumpOnOutOfMemoryError -Xmx2048m"
 android:
   components:
     - tools
@@ -19,6 +17,6 @@ before_install:
 script: 
   - ./gradlew --stacktrace lint
   - ./gradlew --debug --stacktrace test 
-  # - ./gradlew --stacktrace :Demo:assembleDebug
-  # - ./gradlew --stacktrace :Demo:assembleRelease
+  - ./gradlew --stacktrace :Demo:assembleDebug
+  - ./gradlew --stacktrace :Demo:assembleRelease
 after_success: ./script/deploy_snapshot.sh
