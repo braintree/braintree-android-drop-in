@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
@@ -31,12 +32,14 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
 
     @VisibleForTesting
     protected VaultManagerPaymentMethodsAdapter mAdapter = new VaultManagerPaymentMethodsAdapter(this);
+    private ViewSwitcher mLoadingViewSwitcher;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_vault_management_activity);
 
+        mLoadingViewSwitcher = findViewById(R.id.bt_loading_view_switcher);
         RecyclerView vaultManagerView = findViewById(R.id.bt_vault_manager_list);
         View closeButton = findViewById(R.id.bt_vault_manager_close);
 
@@ -80,19 +83,20 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
         mBraintreeFragment.sendAnalyticsEvent("manager.delete.succeeded");
         setResult(Activity.RESULT_OK, new Intent()
                 .putExtra(EXTRA_PAYMENT_METHOD_NONCES, mAdapter.getPaymentMethodNonces()));
+
+        mLoadingViewSwitcher.setDisplayedChild(0);
     }
 
     @Override
     public void onError(Exception error) {
         if(error instanceof PaymentMethodDeleteException) {
             PaymentMethodDeleteException exception = (PaymentMethodDeleteException)error;
-            PaymentMethodNonce paymentMethodNonce = exception.getPaymentMethodNonce();
-
-            mAdapter.cancelSwipeOnPaymentMethodNonce(paymentMethodNonce);
 
             Snackbar.make(findViewById(R.id.bt_base_view), R.string.bt_vault_manager_delete_failure,
                     Snackbar.LENGTH_LONG).show();
             mBraintreeFragment.sendAnalyticsEvent("manager.delete.failed");
+
+            mLoadingViewSwitcher.setDisplayedChild(0);
         } else {
             mBraintreeFragment.sendAnalyticsEvent("manager.unknown.failed");
             finish(error);
@@ -122,13 +126,13 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
                             positiveSelected.set(true);
                             mBraintreeFragment.sendAnalyticsEvent("manager.delete.confirmation.positive");
                             PaymentMethod.deletePaymentMethod(mBraintreeFragment, paymentMethodNonceToDelete);
+                            mLoadingViewSwitcher.setDisplayedChild(1);
                         }
                     })
                     .setOnDismissListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
                             if (!positiveSelected.get()) {
-                                mAdapter.cancelSwipeOnPaymentMethodNonce(paymentMethodNonceToDelete);
                                 mBraintreeFragment.sendAnalyticsEvent("manager.delete.confirmation.negative");
                             }
                         }

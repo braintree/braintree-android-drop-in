@@ -3,42 +3,53 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/bt_base_view"
+    <ViewSwitcher
+        android:id="@+id/bt_loading_view_switcher"
         android:layout_width="@dimen/bt_full_width"
-        android:layout_height="400dp"
-        android:orientation="vertical"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
+        android:layout_height="400dp"
         android:background="@android:color/white">
 
-        <TextView
-            style="@style/bt_choose_payment_label"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
-            android:id="@+id/bt_vault_manager_title"
-            android:text="@string/bt_vault_manager_title"
-            android:paddingTop="@dimen/bt_vault_manager_title_padding_top"/>
-
-        <Button
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:theme="@style/bt_edit_button"
-            android:id="@+id/bt_vault_manager_close"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@id/bt_vault_manager_title"
-            android:layout_alignBottom="@id/bt_vault_manager_title"
+        <RelativeLayout
+            android:id="@+id/bt_base_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/bt_vault_manager_title_padding_top"
-            android:paddingBottom="@dimen/bt_payment_label_padding_bottom"
-            android:text="@string/bt_done"/>
+            android:orientation="vertical">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/bt_vault_manager_list"
-            android:scrollbars="vertical"
-            android:layout_below="@id/bt_vault_manager_title"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            <TextView
+                style="@style/bt_choose_payment_label"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/bt_vault_manager_title"
+                android:text="@string/bt_vault_manager_title"
+                android:paddingTop="@dimen/bt_vault_manager_title_padding_top"/>
 
-    </RelativeLayout>
+            <Button
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:theme="@style/bt_edit_button"
+                android:id="@+id/bt_vault_manager_close"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@id/bt_vault_manager_title"
+                android:layout_alignBottom="@id/bt_vault_manager_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/bt_vault_manager_title_padding_top"
+                android:paddingBottom="@dimen/bt_payment_label_padding_bottom"
+                android:text="@string/bt_done"/>
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/bt_vault_manager_list"
+                android:scrollbars="vertical"
+                android:layout_below="@id/bt_vault_manager_title"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+        </RelativeLayout>
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+    </ViewSwitcher>
 </RelativeLayout>

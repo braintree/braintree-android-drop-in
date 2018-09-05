@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.VaultManagerUnitTestActivity;
@@ -41,9 +42,11 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -136,6 +139,15 @@ public class VaultManagerActivityUnitTest {
     }
 
     @Test
+    public void onPaymentMethodNonceDeleted_removesLoadingView() {
+        ((ViewSwitcher)mActivity.findViewById(R.id.bt_loading_view_switcher)).setDisplayedChild(1);
+        mActivity.onPaymentMethodNonceDeleted(mCardNonce);
+
+        assertEquals(0, ((ViewSwitcher)mActivity
+                .findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
     public void onError_whenPaymentMethodDeletedException_sendsAnalyticCall() {
         BraintreeFragment fragment = mActivity.mockFragment();
         Exception originalException = new RuntimeException("Real Exception");
@@ -154,7 +166,19 @@ public class VaultManagerActivityUnitTest {
 
         mActivity.onError(error);
 
-        verify(adapter).cancelSwipeOnPaymentMethodNonce(mCardNonce);
+        verifyZeroInteractions(adapter);
+    }
+
+    @Test
+    public void onError_whenPaymentMethodDeletedException_removesLoadingView() {
+        Exception originalException = new RuntimeException("Real Exception");
+        Exception error = new PaymentMethodDeleteException(mCardNonce, originalException);
+
+        ((ViewSwitcher)mActivity.findViewById(R.id.bt_loading_view_switcher)).setDisplayedChild(1);
+        mActivity.onError(error);
+
+        assertEquals(0, ((ViewSwitcher)mActivity
+                .findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
     @Test
@@ -206,6 +230,18 @@ public class VaultManagerActivityUnitTest {
     }
 
     @Test
+    public void onClick_selectingPositiveButton_showsLoadingView() {
+        mockGraphQlResponseNotToCallback();
+
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
+
+        getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
+
+        assertEquals(1, ((ViewSwitcher)mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
     public void onClick_selectingPositiveButton_doesNotSendNegativeAnalyticEvent() {
         BraintreeFragment fragment = mActivity.mockFragment();
         mockGraphQlResponse(true);
@@ -227,7 +263,7 @@ public class VaultManagerActivityUnitTest {
 
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_NEGATIVE).callOnClick();
 
-        verify(adapter).cancelSwipeOnPaymentMethodNonce(mCardNonce);
+        verifyZeroInteractions(adapter);
     }
 
     @Test
@@ -251,7 +287,7 @@ public class VaultManagerActivityUnitTest {
 
         getDeleteConfirmationDialog().dismiss();
 
-        verify(adapter).cancelSwipeOnPaymentMethodNonce(mCardNonce);
+        verifyZeroInteractions(adapter);
     }
 
     @Test
@@ -273,6 +309,10 @@ public class VaultManagerActivityUnitTest {
         //
         // This allows us to return the first (and only) v7 alert dialog
         return (android.support.v7.app.AlertDialog) ShadowAlertDialog.getShownDialogs().get(0);
+    }
+
+    private void mockGraphQlResponseNotToCallback() {
+        doNothing().when(mGraphQlClient).post(anyString(), any(HttpResponseCallback.class));
     }
 
     private void mockGraphQlResponse(final boolean success) {

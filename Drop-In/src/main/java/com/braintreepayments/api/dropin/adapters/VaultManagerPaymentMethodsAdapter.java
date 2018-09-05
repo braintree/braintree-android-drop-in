@@ -63,15 +63,6 @@ public class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<Vaul
         return new ArrayList<>(mPaymentMethodNonces);
     }
 
-    public void cancelSwipeOnPaymentMethodNonce(PaymentMethodNonce paymentMethodNonce) {
-        int index = mPaymentMethodNonces.indexOf(paymentMethodNonce);
-
-        mPaymentMethodNonces.remove(index);
-        mPaymentMethodNonces.add(index, paymentMethodNonce);
-
-        this.notifyItemChanged(index);
-    }
-
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ViewHolder(View view) {
             super(view);
