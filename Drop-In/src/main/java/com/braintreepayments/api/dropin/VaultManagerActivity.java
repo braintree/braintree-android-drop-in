@@ -2,6 +2,7 @@ package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
@@ -77,7 +78,8 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
         mAdapter.paymentMethodDeleted(paymentMethodNonce);
 
         mBraintreeFragment.sendAnalyticsEvent("manager.delete.succeeded");
-        setResult(Activity.RESULT_OK);
+        setResult(Activity.RESULT_OK, new Intent()
+                .putExtra(EXTRA_PAYMENT_METHOD_NONCES, mAdapter.getPaymentMethodNonces()));
     }
 
     @Override

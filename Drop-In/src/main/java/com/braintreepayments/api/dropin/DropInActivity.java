@@ -337,6 +337,16 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             });
         } else if (requestCode == DELETE_PAYMENT_METHOD_NONCE_CODE) {
             if (resultCode == Activity.RESULT_OK) {
+
+                if (data != null) {
+                    ArrayList<PaymentMethodNonce> paymentMethodNonces = data
+                            .getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES);
+
+                    if (paymentMethodNonces != null) {
+                        onPaymentMethodNoncesUpdated(paymentMethodNonces);
+                    }
+                }
+
                 fetchPaymentMethodNonces(true);
             }
             mLoadingViewSwitcher.setDisplayedChild(1);

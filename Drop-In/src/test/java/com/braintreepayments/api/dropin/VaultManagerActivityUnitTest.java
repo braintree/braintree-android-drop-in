@@ -66,11 +66,11 @@ public class VaultManagerActivityUnitTest {
         mCardNonce = mock(CardNonce.class);
         when(mCardNonce.getNonce()).thenReturn("card-nonce");
 
-        PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
-        when(paypalNonce.getNonce()).thenReturn("paypal-nonce");
+        PaymentMethodNonce payPalNonce = mock(PayPalAccountNonce.class);
+        when(payPalNonce.getNonce()).thenReturn("paypal-nonce");
 
         mPaymentMethodNonces.add(mCardNonce);
-        mPaymentMethodNonces.add(paypalNonce);
+        mPaymentMethodNonces.add(payPalNonce);
 
         DropInRequest dropInRequest = new DropInRequest()
                 .clientToken(UnitTestFixturesHelper.stringFromFixture("client_token.json"));
@@ -122,6 +122,17 @@ public class VaultManagerActivityUnitTest {
         mActivity.onPaymentMethodNonceDeleted(mCardNonce);
 
         assertEquals(BaseActivity.RESULT_OK, mShadowActivity.getResultCode());
+    }
+
+    @Test
+    public void onPaymentMethodNonceDelete_returnsAvailablePaymentMethods() {
+         mActivity.onPaymentMethodNonceDeleted(mCardNonce);
+
+        ArrayList<PaymentMethodNonce> availableNonces = mShadowActivity.getResultIntent()
+                .getParcelableArrayListExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES");
+
+        assertTrue(availableNonces.size() == 1);
+        assertEquals("paypal-nonce", availableNonces.get(0).getNonce());
     }
 
     @Test
