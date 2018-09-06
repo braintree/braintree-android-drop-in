@@ -56,14 +56,9 @@
                     android:visibility="gone">
 
                     <RelativeLayout
-                        android:orientation="horizontal"
+                        android:paddingTop="@dimen/bt_choose_existing_payment_label_padding_top"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
-
-                        <TextView
-                            style="@style/bt_choose_payment_label"
-                            android:paddingTop="@dimen/bt_choose_existing_payment_label_padding_top"
-                            android:text="@string/bt_recent"/>
 
                         <Button
                             style="@style/Widget.AppCompat.Button.Borderless.Colored"
@@ -71,11 +66,23 @@
                             android:id="@+id/bt_vault_edit_button"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingTop="@dimen/bt_choose_existing_payment_label_padding_top"
-                            android:visibility="visible"
                             android:onClick="onVaultEditButtonClick"
+                            android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
                             android:text="@string/bt_edit"/>
+
+                        <TextView
+                            style="@style/bt_choose_payment_label"
+                            android:layout_alignTop="@id/bt_vault_edit_button"
+                            android:layout_alignBottom="@id/bt_vault_edit_button"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentLeft="true"
+                            android:gravity="center_vertical"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginStart="20dp"
+                            android:text="@string/bt_recent" />
 
                     </RelativeLayout>
 
@@ -94,7 +101,8 @@
                     style="@style/bt_choose_payment_label"
                     android:id="@+id/bt_supported_payment_methods_header"
                     android:text="@string/bt_select_payment_method"
-                    android:paddingTop="@dimen/bt_choose_new_payment_label_padding_top"/>
+                    android:paddingTop="@dimen/bt_choose_new_payment_label_padding_top"
+                    android:paddingBottom="@dimen/bt_payment_label_padding_bottom"/>
 
                 <ListView
                     android:id="@+id/bt_supported_payment_methods"

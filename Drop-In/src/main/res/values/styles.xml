@@ -64,11 +64,10 @@
     </style>
 
     <style name="bt_choose_payment_label">
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">20dp</item>
         <item name="android:layout_marginStart" tools:ignore="NewApi">20dp</item>
-        <item name="android:paddingBottom">@dimen/bt_payment_label_padding_bottom</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/bt_black_54</item>
     </style>
@@ -87,6 +86,7 @@
     <style name="bt_edit_button" parent="Theme.AppCompat.Light">
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless.Colored</item>
         <item name="colorControlHighlight">@color/bt_color_highlight</item>
+        <item name="android:textSize">16sp</item>
         <item name="colorAccent">@color/bt_text_blue</item>
         <item name="android:textAllCaps">true</item>
     </style>

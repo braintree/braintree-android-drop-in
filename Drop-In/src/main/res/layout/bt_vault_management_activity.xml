@@ -13,30 +13,31 @@
 
         <RelativeLayout
             android:id="@+id/bt_base_view"
+            android:paddingTop="@dimen/bt_choose_existing_payment_label_padding_top"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/bt_choose_payment_label"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:id="@+id/bt_vault_manager_title"
-                android:text="@string/bt_vault_manager_title"
-                android:paddingTop="@dimen/bt_vault_manager_title_padding_top"/>
+            android:layout_height="wrap_content">
 
             <Button
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:theme="@style/bt_edit_button"
                 android:id="@+id/bt_vault_manager_close"
+                android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignTop="@id/bt_vault_manager_title"
-                android:layout_alignBottom="@id/bt_vault_manager_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/bt_vault_manager_title_padding_top"
-                android:paddingBottom="@dimen/bt_payment_label_padding_bottom"
                 android:text="@string/bt_done"/>
+
+            <TextView
+                style="@style/bt_choose_payment_label"
+                android:layout_alignTop="@id/bt_vault_manager_close"
+                android:layout_alignBottom="@id/bt_vault_manager_close"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:id="@+id/bt_vault_manager_title"
+                android:text="@string/bt_vault_manager_title"/>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/bt_vault_manager_list"
