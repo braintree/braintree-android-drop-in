@@ -1,5 +1,10 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.6.0
+
+* Vault Manager
+  * Allows for the deletion of vaulted payment methods
+
 ## 3.5.2
 
 * Upgrade card-form to 3.4.1
