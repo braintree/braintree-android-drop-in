@@ -10,6 +10,11 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
+    <style name="bt_activity_slide_animation">
+        <item name="android:windowEnterAnimation">@anim/bt_slide_in_up</item>
+        <item name="android:windowExitAnimation">@anim/bt_slide_out_down</item>
+    </style>
+
     <style name="bt_drop_in_activity_theme" parent="Theme.AppCompat.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -32,6 +37,19 @@
         <item name="textColorError">@color/bt_error_red</item>
     </style>
 
+    <style name="bt_vault_manager_activity_theme" parent="Theme.AppCompat.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
+        <item name="android:windowAnimationStyle">@style/bt_activity_slide_animation</item>
+        <item name="colorPrimary">@color/bt_color_primary</item>
+        <item name="colorPrimaryDark">@color/bt_color_primary_dark</item>
+        <item name="colorAccent">@color/bt_blue</item>
+    </style>
+
     <style name="bt_three_d_secure_theme" parent="@android:style/Theme.Holo.Light">
         <item name="android:actionBarStyle">@style/bt_action_bar_theme</item>
     </style>
@@ -51,11 +69,10 @@
     </style>
 
     <style name="bt_choose_payment_label">
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">20dp</item>
         <item name="android:layout_marginStart" tools:ignore="NewApi">20dp</item>
-        <item name="android:paddingBottom">@dimen/bt_payment_label_padding_bottom</item>
         <item name="android:textSize">16sp</item>
         <item name="android:textColor">@color/bt_black_54</item>
     </style>
@@ -69,5 +86,13 @@
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/bt_black_87</item>
+    </style>
+
+    <style name="bt_edit_button" parent="Theme.AppCompat.Light">
+        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless.Colored</item>
+        <item name="colorControlHighlight">@color/bt_color_highlight</item>
+        <item name="android:textSize">16sp</item>
+        <item name="colorAccent">@color/bt_text_blue</item>
+        <item name="android:textAllCaps">true</item>
     </style>
 </resources>

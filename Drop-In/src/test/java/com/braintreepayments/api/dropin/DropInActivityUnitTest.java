@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeSharedPreferences;
 import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardNonce;
+import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 
@@ -37,6 +39,10 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 
+import java.util.ArrayList;
+
+import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
+import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerWithThreeDSecureWebViewActivity;
 import static com.braintreepayments.api.test.ReflectionHelper.getField;
 import static com.braintreepayments.api.test.ReflectionHelper.setField;
@@ -574,7 +580,7 @@ public class DropInActivityUnitTest {
 
         mActivity.onActivityResult(2, Activity.RESULT_CANCELED, null);
 
-        verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+        verify(httpClient, times(1)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
                 any(HttpResponseCallback.class));
     }
 
@@ -598,8 +604,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onActivityResult_returnsDeviceData() throws JSONException, NoSuchFieldException,
-            IllegalAccessException {
+    public void onActivityResult_returnsDeviceData() throws JSONException {
         mActivity.mDropInRequest = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true);
@@ -650,6 +655,52 @@ public class DropInActivityUnitTest {
         assertEquals(PaymentMethodType.VISA.getCanonicalName(),
                 BraintreeSharedPreferences.getSharedPreferences(mActivity)
                         .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
+    }
+
+    @Test
+    public void onActivityResult_whenVaultManagerResultOk_refreshesVaultedPaymentMethods() {
+        mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
+
+        BraintreeUnitTestHttpClient httpClient = spy(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder().build()))
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
+                        stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
+        setup(httpClient);
+        verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
+
+        mActivity.onActivityResult(2, Activity.RESULT_OK, null);
+
+        verify(httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+                any(HttpResponseCallback.class));
+    }
+
+    @Test
+    public void onActivityResult_whenVaultManagerResultOk_setsVaultedPaymentMethodsFromVaultManager() {
+        mActivityController.setup();
+
+        PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
+        when(paypalNonce.getDescription()).thenReturn("paypal-nonce");
+
+        ArrayList<Parcelable> paymentMethodNonces = new ArrayList<Parcelable>();
+        paymentMethodNonces.add(paypalNonce);
+
+        assertNull(((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter());
+
+        mActivity.onActivityResult(2, Activity.RESULT_OK, new Intent()
+                .putExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES", paymentMethodNonces));
+
+        assertEquals(1, ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods))
+                .getAdapter().getItemCount());
+    }
+
+    @Test
+    public void onActivityResult_whenVaultManagerResultOk_removesLoadingIndicator() {
+        mActivityController.setup();
+
+        mActivity.onActivityResult(2, Activity.RESULT_FIRST_USER, null);
+
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
     @Test
@@ -713,6 +764,29 @@ public class DropInActivityUnitTest {
         setup(mock(BraintreeFragment.class));
 
         assertExceptionIsReturned("sdk-error", new Exception("Error!"));
+    }
+
+    @Test
+    public void onVaultEditButtonClick_sendsAnalyticEvent() {
+        setup(mock(BraintreeFragment.class));
+
+        mActivity.onVaultEditButtonClick(null);
+
+        verify(mActivity.mBraintreeFragment).sendAnalyticsEvent("manager.appeared");
+    }
+
+    @Test
+    public void onVaultEditButtonClick_launchesVaultManagerActivity() {
+        setup(mock(BraintreeFragment.class));
+
+        mActivity.onVaultEditButtonClick(null);
+
+        ShadowActivity.IntentForResult intent = mShadowActivity.getNextStartedActivityForResult();
+
+        assertEquals(2, intent.requestCode);
+        assertEquals(mActivity.mDropInRequest, intent.intent.getParcelableExtra(EXTRA_CHECKOUT_REQUEST));
+        assertEquals(mActivity.mBraintreeFragment.getCachedPaymentMethodNonces(),
+                intent.intent.getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES));
     }
 
     private void setup(BraintreeFragment fragment) {

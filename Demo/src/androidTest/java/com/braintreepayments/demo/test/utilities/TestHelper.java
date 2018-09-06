@@ -97,6 +97,16 @@ public class TestHelper {
         }
     }
 
+    public void setCustomerId(String customerId) {
+        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+                .edit()
+                .putString("customer", customerId)
+                .commit();
+
+        onDevice(withText("Reset")).perform(click());
+        SystemClock.sleep(2000);
+    }
+
     public void setMerchantAccountId(String merchantAccountId) {
         PreferenceManager.getDefaultSharedPreferences(getTargetContext())
                 .edit()
@@ -121,6 +131,13 @@ public class TestHelper {
         PreferenceManager.getDefaultSharedPreferences(getTargetContext())
                 .edit()
                 .putBoolean("enable_three_d_secure", true)
+                .commit();
+    }
+
+    public void enableVaultManager() {
+        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+                .edit()
+                .putBoolean("enable_vault_manager", true)
                 .commit();
     }
 

@@ -37,6 +37,7 @@ public class DropInRequest implements Parcelable {
     private boolean mGooglePaymentEnabled = true;
     private boolean mMaskCardNumber = false;
     private boolean mMaskSecurityCode = false;
+    private boolean mVaultManagerEnabled = false;
     private ArrayList<CountrySpecification> mAndroidAllowedCountriesForShipping = new ArrayList<>();
 
     private List<String> mPayPalAdditionalScopes;
@@ -256,6 +257,15 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * @param vaultManager {@code true} to allow customers to manage their vaulted payment methods.
+     * Defaults to {@code false}.
+     */
+    public DropInRequest vaultManager(boolean vaultManager) {
+        mVaultManagerEnabled = vaultManager;
+        return this;
+    }
+
+    /**
      * Get an {@link Intent} that can be used in {@link android.app.Activity#startActivityForResult(Intent, int)}
      * to launch {@link DropInActivity} and the Drop-in UI.
      *
@@ -333,6 +343,8 @@ public class DropInRequest implements Parcelable {
         return mMaskSecurityCode;
     }
 
+    boolean isVaultManagerEnabled() { return mVaultManagerEnabled; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -362,6 +374,7 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(mRequestThreeDSecureVerification ? (byte) 1 : (byte) 0);
         dest.writeByte(mMaskCardNumber ? (byte) 1 : (byte) 0);
         dest.writeByte(mMaskSecurityCode ? (byte) 1 : (byte) 0);
+        dest.writeByte(mVaultManagerEnabled ? (byte) 1 : (byte) 0);
     }
 
     protected DropInRequest(Parcel in) {
@@ -386,6 +399,7 @@ public class DropInRequest implements Parcelable {
         mRequestThreeDSecureVerification = in.readByte() != 0;
         mMaskCardNumber = in.readByte() != 0;
         mMaskSecurityCode = in.readByte() != 0;
+        mVaultManagerEnabled = in.readByte() != 0;
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {

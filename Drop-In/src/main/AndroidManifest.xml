@@ -15,6 +15,8 @@
             android:theme="@style/bt_drop_in_activity_theme"/>
         <activity android:name="com.braintreepayments.api.dropin.AddCardActivity"
             android:theme="@style/bt_add_card_activity_theme" />
+        <activity android:name="com.braintreepayments.api.dropin.VaultManagerActivity"
+            android:theme="@style/bt_vault_manager_activity_theme" />
     </application>
 
 </manifest>

@@ -1,5 +1,6 @@
 package com.braintreepayments.demo.test;
 
+import android.os.Build;
 import android.support.test.filters.RequiresDevice;
 import android.support.test.filters.SdkSuppress;
 import android.support.test.runner.AndroidJUnit4;
@@ -22,13 +23,17 @@ import static com.lukekorth.deviceautomator.AutomatorAction.setText;
 import static com.lukekorth.deviceautomator.AutomatorAssertion.text;
 import static com.lukekorth.deviceautomator.DeviceAutomator.onDevice;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withContentDescription;
+import static com.lukekorth.deviceautomator.UiObjectMatcher.withResourceId;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextStartingWith;
+import static junit.framework.Assert.assertFalse;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
 import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 @RunWith(AndroidJUnit4.class)
 public class DropInTest extends TestHelper {
@@ -70,7 +75,7 @@ public class DropInTest extends TestHelper {
 
         tokenizeCard(THREE_D_SECURE_VERIFICATON);
 
-        onDevice(withText("Authentication")).waitForExists();
+        onDevice(withText("Added Protection")).waitForExists();
         onDevice().pressTab();
         onDevice().typeText("1234");
         onDevice().pressTab().pressTab().pressEnter();
@@ -216,6 +221,35 @@ public class DropInTest extends TestHelper {
         onDevice().pressBack();
 
         onDevice(withText("Add Payment Method")).check(text(equalToIgnoringCase("Add Payment Method")));
+    }
+
+    @Test(timeout = 60000)
+    public void deletesPaymentMethod() {
+        assumeTrue("braintree-api.com SSL connection does not support API < 21 (Lollipop)",
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
+
+        setCustomerId("delete-payment-method-uitest");
+        enableVaultManager();
+
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+
+        assumeFalse("Vaulted payment methods exist for this customer. Expecting no vaulted payments precondition for this test.",
+                onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_title")).exists());
+
+        tokenizeCard(VISA);
+
+        onDevice(withText("Visa")).waitForExists().perform(click());
+        onDevice(withText("Edit")).waitForExists().perform(click());
+        onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_delete_icon"))
+                .waitForExists().perform(click());
+
+        onDevice(withText("Delete")).waitForExists().perform(click());
+        onDevice(withText("Done")).waitForExists().perform(click());
+
+        onDevice().pressBack();
+        onDevice(withText("Select Payment Method")).waitForExists();
+
+        assertFalse(onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_title")).exists());
     }
 
     private void tokenizeCard(String cardNumber) {

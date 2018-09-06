@@ -33,4 +33,12 @@
     <string name="bt_card_not_accepted">Карта не принимается</string>
     <string name="bt_unionpay_sms_code_invalid">SMS-код недействит</string>
     <string name="bt_unionpay_mobile_number_explanation">Для этой карты может потребоваться подтверждение участия. При необходимости на этот номер будет отправлен SMS-код.</string>
+    <string name="bt_edit">Изменить</string>
+    <string name="bt_delete">Удалить</string>
+    <string name="bt_cancel">Отмена</string>
+    <string name="bt_vault_manager_title">Редактировать сохраненное</string>
+    <string name="bt_delete_confirmation_title">Удалить способ оплаты?</string>
+    <string name="bt_delete_confirmation_description">Вы больше не сможете использовать этот способ оплаты в данном приложении.</string>
+    <string name="bt_done">Готово</string>
+    <string name="bt_vault_manager_delete_failure">Нам не удалось удалить ваш способ оплаты, повторите попытку позже.</string>
 </resources>

@@ -8,8 +8,9 @@
     <color name="bt_paypal_monogram_button_background_pressed">#008AC5</color>
     <color name="bt_border_color">#99999A</color>
 
-    <color name="bt_color_primary">#3e3c42</color>
+    <color name="bt_color_primary">#3E3C42</color>
+    <color name="bt_color_highlight">#9F9EA1</color>
     <color name="bt_color_primary_dark">#363439</color>
-    <color name="bt_text_blue">#199ddc</color>
-    <color name="bt_error_red">#dd5555</color>
+    <color name="bt_text_blue">#199DDC</color>
+    <color name="bt_error_red">#DD5555</color>
 </resources>
