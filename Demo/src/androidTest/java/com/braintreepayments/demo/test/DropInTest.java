@@ -18,6 +18,7 @@ import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECUR
 import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
 import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
+import static com.braintreepayments.demo.test.utilities.UiTestActions.clickWebViewText;
 import static com.lukekorth.deviceautomator.AutomatorAction.click;
 import static com.lukekorth.deviceautomator.AutomatorAction.setText;
 import static com.lukekorth.deviceautomator.AutomatorAssertion.text;
@@ -80,7 +81,10 @@ public class DropInTest extends TestHelper {
         onDevice().typeText("1234");
         onDevice().pressTab().pressTab().pressEnter();
 
-        onDevice(withText("Return To App")).waitForExists().waitForEnabled().perform(click());
+        onDevice(withText("Return To App")).waitForExists(1000);
+        if (onDevice(withText("Return To App")).exists()) {
+            clickWebViewText("Return To App");
+        }
 
         getNonceDetails().check(text(containsString("Card Last Two: 02")));
         getNonceDetails().check(text(containsString("3DS isLiabilityShifted: true")));
@@ -170,7 +174,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
-        onDevice(withText("Proceed with Sandbox Purchase")).perform(click());
+        clickWebViewText("Proceed with Sandbox Purchase");
 
         getNonceDetails().check(text(containsString("Email: bt_buyer_us@paypal.com")));
 
@@ -186,7 +190,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
-        onDevice(withText("Proceed with Sandbox Purchase")).perform(click());
+        clickWebViewText("Proceed with Sandbox Purchase");
 
         getNonceDetails().check(text(containsString("Email: bt_buyer_us@paypal.com")));
 
