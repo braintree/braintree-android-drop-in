@@ -1,14 +1,11 @@
 buildscript {
     repositories {
-        maven {
-            url 'https://maven.google.com/'
-            name 'Google'
-        }
+        google()
         jcenter()
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.1.4'
 
         classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
     }
@@ -16,10 +13,7 @@ buildscript {
 
 allprojects {
     repositories {
-        maven {
-            url 'https://maven.google.com'
-            name 'Google'
-        }
+        google()
         jcenter()
         maven {
             url 'https://oss.sonatype.org/content/repositories/releases/'

@@ -20,7 +20,7 @@ Add the dependency in your `build.gradle`:
 
 ```groovy
 dependencies {
-  compile 'com.braintreepayments.api:drop-in:3.6.1'
+  implementation 'com.braintreepayments.api:drop-in:3.6.1'
 }
 ```
 
@@ -28,7 +28,7 @@ To use the latest build from the `master` branch use:
 
 ```groovy
 dependencies {
-  compile 'com.braintreepayments.api:drop-in:3.6.2-SNAPSHOT'
+  implementation 'com.braintreepayments.api:drop-in:3.6.2-SNAPSHOT'
 }
 ```
 
@@ -110,7 +110,7 @@ To offer card scanning via [card.io](https://card.io), add the dependency in you
 
 ```groovy
 dependencies {
-    compile 'io.card:android-sdk:5.+'
+    implementation 'io.card:android-sdk:5.+'
 }
 ```
 
