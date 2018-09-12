@@ -31,6 +31,11 @@ android {
         exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
     }
 
+    testOptions.unitTests {
+        returnDefaultValues true
+        includeAndroidResources true
+    }
+
     lintOptions {
         warning 'GradleCompatible'
         textReport true
