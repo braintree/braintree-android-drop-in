@@ -50,6 +50,10 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy.force 'com.android.support:support-v4:28.0.0-rc02'
+}
+
 android.buildTypes.debug { type ->
     type.buildConfigField 'String', 'LOCALHOST_IP', LOCALHOST_IP
     type.buildConfigField 'String', 'GATEWAY_IP', GATEWAY_IP
