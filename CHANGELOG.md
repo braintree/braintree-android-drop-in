@@ -1,5 +1,10 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.6.1
+
+* Vault Manager
+  * Fix edit button default visibility
+
 ## 3.6.0
 
 * Vault Manager
