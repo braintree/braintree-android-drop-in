@@ -69,6 +69,7 @@
                             android:onClick="onVaultEditButtonClick"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentRight="true"
+                            android:visibility="invisible"
                             android:text="@string/bt_edit"/>
 
                         <TextView
