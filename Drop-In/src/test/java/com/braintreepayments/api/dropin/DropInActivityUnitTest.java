@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -764,6 +765,35 @@ public class DropInActivityUnitTest {
         setup(mock(BraintreeFragment.class));
 
         assertExceptionIsReturned("sdk-error", new Exception("Error!"));
+    }
+
+    @Test
+    public void vaultEditButton_whenVaultManagerEnabled_isVisible() {
+        mActivity.setDropInRequest(new DropInRequest()
+               .vaultManager(true));
+
+        mActivityController.setup();
+
+        assertEquals(View.VISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
+    }
+
+    @Test
+    public void vaultEditButton_whenVaultManagerUnspecified_isInvisible() {
+        mActivity.setDropInRequest(new DropInRequest());
+
+        mActivityController.setup();
+
+        assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
+    }
+
+    @Test
+    public void vaultEditButton_whenVaultManagerDisabled_isInvisible() {
+        mActivity.setDropInRequest(new DropInRequest()
+                .vaultManager(false));
+
+        mActivityController.setup();
+
+        assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
     }
 
     @Test
