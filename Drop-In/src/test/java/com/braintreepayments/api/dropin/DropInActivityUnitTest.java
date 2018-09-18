@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
@@ -40,6 +41,7 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
@@ -764,6 +766,60 @@ public class DropInActivityUnitTest {
         setup(mock(BraintreeFragment.class));
 
         assertExceptionIsReturned("sdk-error", new Exception("Error!"));
+    }
+
+    @Test
+    public void onCreate_vaultEditButtonIsInvisible() {
+        mActivity.setDropInRequest(new DropInRequest()
+                .vaultManager(true));
+
+        mActivityController.setup();
+
+        assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
+    }
+
+    @Test
+    public void vaultEditButton_whenVaultManagerEnabled_isVisible() {
+        List<PaymentMethodNonce> nonceList = new ArrayList<>();
+        nonceList.add(mock(CardNonce.class));
+
+        mActivity.setDropInRequest(new DropInRequest()
+               .vaultManager(true));
+
+        mActivityController.setup();
+
+        mActivity.onPaymentMethodNoncesUpdated(nonceList);
+
+        assertEquals(View.VISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
+    }
+
+    @Test
+    public void vaultEditButton_whenVaultManagerUnspecified_isInvisible() {
+        List<PaymentMethodNonce> nonceList = new ArrayList<>();
+        nonceList.add(mock(CardNonce.class));
+
+        mActivity.setDropInRequest(new DropInRequest());
+
+        mActivityController.setup();
+
+        mActivity.onPaymentMethodNoncesUpdated(nonceList);
+
+        assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
+    }
+
+    @Test
+    public void vaultEditButton_whenVaultManagerDisabled_isInvisible() {
+        List<PaymentMethodNonce> nonceList = new ArrayList<>();
+        nonceList.add(mock(CardNonce.class));
+
+        mActivity.setDropInRequest(new DropInRequest()
+                .vaultManager(false));
+
+        mActivityController.setup();
+
+        mActivity.onPaymentMethodNoncesUpdated(nonceList);
+
+        assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
     }
 
     @Test
