@@ -51,7 +51,7 @@ android {
 }
 
 configurations.all {
-    resolutionStrategy.force 'com.android.support:support-v4:28.0.0-rc02'
+    resolutionStrategy.force 'com.android.support:support-v4:28.0.0'
 }
 
 android.buildTypes.debug { type ->
@@ -63,7 +63,7 @@ android.buildTypes.debug { type ->
 dependencies {
     api 'com.braintreepayments.api:braintree:2.16.0'
     api 'com.braintreepayments:card-form:3.4.2-SNAPSHOT'
-    implementation 'com.android.support:cardview-v7:28.0.0-rc02'
+    implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.google.android.gms:play-services-wallet:16.0.0'
 
     testImplementation 'org.powermock:powermock-module-junit4:1.6.6'
