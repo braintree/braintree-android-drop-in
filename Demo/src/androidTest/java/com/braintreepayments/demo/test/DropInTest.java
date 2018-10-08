@@ -190,7 +190,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
-        clickWebViewText("Proceed with Sandbox Purchase");
+        clickWebViewText("Proceed with Sandbox Purchase", 3000);
 
         getNonceDetails().check(text(containsString("Email: bt_buyer_us@paypal.com")));
 
