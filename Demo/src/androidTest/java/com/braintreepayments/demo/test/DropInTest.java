@@ -19,6 +19,7 @@ import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CRED
 import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
 import static com.braintreepayments.demo.test.utilities.UiTestActions.clickWebViewText;
+import static com.lukekorth.deviceautomator.AutomatorAction.clearTextField;
 import static com.lukekorth.deviceautomator.AutomatorAction.click;
 import static com.lukekorth.deviceautomator.AutomatorAction.setText;
 import static com.lukekorth.deviceautomator.AutomatorAssertion.text;
@@ -158,7 +159,7 @@ public class DropInTest extends TestHelper {
         onDevice(withContentDescription("SMS Code")).perform(setText("999999"));
         onDevice(withTextContaining("Confirm", Button.class)).perform(click());
         onDevice(withText("SMS code is invalid")).check(text(is("SMS code is invalid")));
-        onDevice(withContentDescription("SMS Code")).perform(setText("12345"));
+        onDevice(withContentDescription("SMS Code")).perform(clearTextField(), setText("12345"));
         onDevice(withTextContaining("Confirm", Button.class)).perform(click());
 
         getNonceDetails().check(text(containsString("Card Last Two: 32")));
