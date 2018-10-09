@@ -10,12 +10,12 @@ def GATEWAY_PORT = System.properties['GATEWAY_PORT'] ?: '"3000"';
 version '3.6.2-SNAPSHOT'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode 73
         versionName version
 
@@ -29,6 +29,11 @@ android {
     packagingOptions {
         exclude 'META-INF/maven/com.google.guava/guava/pom.properties'
         exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
+    }
+
+    testOptions.unitTests {
+        returnDefaultValues true
+        includeAndroidResources true
     }
 
     lintOptions {
@@ -45,6 +50,10 @@ android {
     }
 }
 
+configurations.all {
+    resolutionStrategy.force 'com.android.support:support-v4:28.0.0'
+}
+
 android.buildTypes.debug { type ->
     type.buildConfigField 'String', 'LOCALHOST_IP', LOCALHOST_IP
     type.buildConfigField 'String', 'GATEWAY_IP', GATEWAY_IP
@@ -52,18 +61,18 @@ android.buildTypes.debug { type ->
 }
 
 dependencies {
-    compile 'com.braintreepayments.api:braintree:2.16.0'
-    compile 'com.braintreepayments:card-form:3.4.1'
-    compile 'com.android.support:cardview-v7:27.0.0'
-    compile 'com.google.android.gms:play-services-wallet:11.4.0'
+    api 'com.braintreepayments.api:braintree:2.16.0'
+    api 'com.braintreepayments:card-form:3.4.2-SNAPSHOT'
+    implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.google.android.gms:play-services-wallet:16.0.0'
 
-    testCompile 'org.powermock:powermock-module-junit4:1.6.6'
-    testCompile 'org.powermock:powermock-module-junit4-rule:1.6.6'
-    testCompile 'org.powermock:powermock-api-mockito:1.6.6'
-    testCompile 'org.powermock:powermock-classloading-xstream:1.6.6'
-    testCompile 'org.robolectric:robolectric:3.8'
-    testCompile 'org.skyscreamer:jsonassert:1.4.0'
-    testCompile 'com.squareup.assertj:assertj-android:1.1.1'
+    testImplementation 'org.powermock:powermock-module-junit4:1.6.6'
+    testImplementation 'org.powermock:powermock-module-junit4-rule:1.6.6'
+    testImplementation 'org.powermock:powermock-api-mockito:1.6.6'
+    testImplementation 'org.powermock:powermock-classloading-xstream:1.6.6'
+    testImplementation 'org.robolectric:robolectric:3.8'
+    testImplementation 'org.skyscreamer:jsonassert:1.4.0'
+    testImplementation 'com.squareup.assertj:assertj-android:1.1.1'
 }
 
 /* maven deploy + signing */

@@ -38,7 +38,7 @@ public class ApiClientUnitTest {
                 .create(ApiClient.class);
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 30000)
     public void getClientToken_returnsAClientToken() throws InterruptedException {
         mApiClient.getClientToken(null, null, new Callback<ClientToken>() {
             @Override
@@ -56,7 +56,7 @@ public class ApiClientUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 30000)
     public void getClientToken_returnsAClientTokenForACustomer() throws InterruptedException {
         mApiClient.getClientToken("customer", null, new Callback<ClientToken>() {
             @Override
@@ -74,7 +74,7 @@ public class ApiClientUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 30000)
     public void getClientToken_returnsAClientTokenForAMerchantAccount() throws InterruptedException {
         mApiClient.getClientToken(null, "fake_switch_usd", new Callback<ClientToken>() {
             @Override
@@ -92,7 +92,7 @@ public class ApiClientUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 30000)
     public void createTransaction_createsATransaction() throws InterruptedException {
         mApiClient.createTransaction("fake-valid-nonce", new Callback<Transaction>() {
             @Override
@@ -110,7 +110,7 @@ public class ApiClientUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 30000)
     public void createTransaction_createsATransactionWhenMerchantAccountIsNull() throws InterruptedException {
         mApiClient.createTransaction("fake-valid-nonce", null, new Callback<Transaction>() {
             @Override
@@ -128,7 +128,7 @@ public class ApiClientUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 30000)
     public void createTransaction_createsATransactionWhenMerchantAccountIsEmpty() throws InterruptedException {
         mApiClient.createTransaction("fake-valid-nonce", "", new Callback<Transaction>() {
             @Override
@@ -146,7 +146,7 @@ public class ApiClientUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 30000)
     public void createTransaction_failsWhenNonceIsAlreadyConsumed() throws InterruptedException {
         mApiClient.createTransaction("fake-consumed-nonce", new Callback<Transaction>() {
             @Override
@@ -164,7 +164,7 @@ public class ApiClientUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 30000)
     public void createTransaction_failsWhenThreeDSecureIsRequired() throws InterruptedException {
         mApiClient.createTransaction("fake-valid-nonce", null, true, new Callback<Transaction>() {
             @Override
@@ -182,7 +182,7 @@ public class ApiClientUnitTest {
         mCountDownLatch.await();
     }
 
-    @Test(timeout = 10000)
+    @Test(timeout = 30000)
     public void createTransaction_createsAUnionPayTransaction() throws InterruptedException {
         mApiClient.createTransaction("fake-valid-unionpay-credit-nonce", "fake_switch_usd",
                 new Callback<Transaction>() {

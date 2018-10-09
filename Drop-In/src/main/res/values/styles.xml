@@ -34,7 +34,7 @@
         <item name="colorPrimaryDark">@color/bt_color_primary_dark</item>
         <item name="colorAccent">@color/bt_blue</item>
         <item name="titleTextColor">@color/bt_white</item>
-        <item name="textColorError">@color/bt_error_red</item>
+        <item name="colorError">@color/bt_error_red</item>
     </style>
 
     <style name="bt_vault_manager_activity_theme" parent="Theme.AppCompat.NoActionBar">
