@@ -24,6 +24,7 @@ import static com.lukekorth.deviceautomator.AutomatorAction.click;
 import static com.lukekorth.deviceautomator.AutomatorAction.setText;
 import static com.lukekorth.deviceautomator.AutomatorAssertion.text;
 import static com.lukekorth.deviceautomator.DeviceAutomator.onDevice;
+import static com.lukekorth.deviceautomator.UiObjectMatcher.withContentDescription;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withResourceId;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
@@ -158,7 +159,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("SMS Code")).perform(setText("999999"));
         onDevice(withTextContaining("Confirm", Button.class)).perform(click());
         onDevice(withText("SMS code is invalid")).check(text(is("SMS code is invalid")));
-        onDevice(withText("SMS Code")).perform(clearTextField(), setText("12345"));
+        onDevice(withContentDescription("SMS Code")).perform(clearTextField(), setText("12345"));
         onDevice(withTextContaining("Confirm", Button.class)).perform(click());
 
         getNonceDetails().check(text(containsString("Card Last Two: 32")));
