@@ -24,9 +24,8 @@ import static com.lukekorth.deviceautomator.AutomatorAction.click;
 import static com.lukekorth.deviceautomator.AutomatorAction.setText;
 import static com.lukekorth.deviceautomator.AutomatorAssertion.text;
 import static com.lukekorth.deviceautomator.DeviceAutomator.onDevice;
-import static com.lukekorth.deviceautomator.UiObjectMatcher.withContentDescription;
-import static com.lukekorth.deviceautomator.UiObjectMatcher.withResourceId;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
+import static com.lukekorth.deviceautomator.UiObjectMatcher.withResourceId;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextStartingWith;
 import static junit.framework.Assert.assertFalse;
@@ -101,16 +100,16 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("Credit or Debit Card")).perform(click());
-        onDevice(withContentDescription("Card Number")).perform(setText(UNIONPAY_CREDIT));
+        onDevice(withText("Card Number")).perform(setText(UNIONPAY_CREDIT));
         onDevice(withText("12")).perform(click());
         onDevice(withText("2019")).perform(click());
         onDevice().pressBack();
-        onDevice(withContentDescription("CVN")).perform(setText("123"));
-        onDevice(withContentDescription("Postal Code")).perform(setText("12345"));
-        onDevice(withContentDescription("Country Code")).perform(setText("01"));
-        onDevice(withContentDescription("Mobile Number")).perform(setText("5555555555"));
+        onDevice(withText("CVN")).perform(setText("123"));
+        onDevice(withText("Postal Code")).perform(setText("12345"));
+        onDevice(withText("Country Code")).perform(setText("01"));
+        onDevice(withText("Mobile Number")).perform(setText("5555555555"));
         onDevice(withTextContaining("Add Card")).perform(click());
-        onDevice(withContentDescription("SMS Code")).perform(setText("12345"));
+        onDevice(withText("SMS Code")).perform(setText("12345"));
         onDevice(withTextContaining("Confirm", Button.class)).perform(click());
 
         getNonceDetails().check(text(containsString("Card Last Two: 32")));
@@ -125,14 +124,14 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("Credit or Debit Card")).perform(click());
-        onDevice(withContentDescription("Card Number")).perform(setText(UNIONPAY_SMS_NOT_REQUIRED));
+        onDevice(withText("Card Number")).perform(setText(UNIONPAY_SMS_NOT_REQUIRED));
         onDevice(withText("12")).perform(click());
         onDevice(withText("2019")).perform(click());
         onDevice().pressBack();
-        onDevice(withContentDescription("CVN")).perform(setText("123"));
-        onDevice(withContentDescription("Postal Code")).perform(setText("12345"));
-        onDevice(withContentDescription("Country Code")).perform(setText("01"));
-        onDevice(withContentDescription("Mobile Number")).perform(setText("5555555555"));
+        onDevice(withText("CVN")).perform(setText("123"));
+        onDevice(withText("Postal Code")).perform(setText("12345"));
+        onDevice(withText("Country Code")).perform(setText("01"));
+        onDevice(withText("Mobile Number")).perform(setText("5555555555"));
         onDevice(withTextContaining("Add Card")).perform(click());
 
         getNonceDetails().check(text(containsString("Card Last Two: 85")));
@@ -147,19 +146,19 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("Credit or Debit Card")).perform(click());
-        onDevice(withContentDescription("Card Number")).perform(setText(UNIONPAY_CREDIT));
+        onDevice(withText("Card Number")).perform(setText(UNIONPAY_CREDIT));
         onDevice(withText("12")).perform(click());
         onDevice(withText("2019")).perform(click());
         onDevice().pressBack();
-        onDevice(withContentDescription("CVN")).perform(setText("123"));
-        onDevice(withContentDescription("Postal Code")).perform(setText("12345"));
-        onDevice(withContentDescription("Country Code")).perform(setText("01"));
-        onDevice(withContentDescription("Mobile Number")).perform(setText("5555555555"));
+        onDevice(withText("CVN")).perform(setText("123"));
+        onDevice(withText("Postal Code")).perform(setText("12345"));
+        onDevice(withText("Country Code")).perform(setText("01"));
+        onDevice(withText("Mobile Number")).perform(setText("5555555555"));
         onDevice(withTextContaining("Add Card")).perform(click());
-        onDevice(withContentDescription("SMS Code")).perform(setText("999999"));
+        onDevice(withText("SMS Code")).perform(setText("999999"));
         onDevice(withTextContaining("Confirm", Button.class)).perform(click());
         onDevice(withText("SMS code is invalid")).check(text(is("SMS code is invalid")));
-        onDevice(withContentDescription("SMS Code")).perform(clearTextField(), setText("12345"));
+        onDevice(withText("SMS Code")).perform(clearTextField(), setText("12345"));
         onDevice(withTextContaining("Confirm", Button.class)).perform(click());
 
         getNonceDetails().check(text(containsString("Card Last Two: 32")));
@@ -221,7 +220,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("PayPal")).perform(click());
         onDevice(withText("Proceed with Sandbox Purchase")).waitForExists();
         onDevice().pressBack();
-        onDevice(withContentDescription("Pay with PayPal")).waitForExists();
+        onDevice(withText("Pay with PayPal")).waitForExists();
 
         onDevice().pressBack();
 
@@ -259,12 +258,12 @@ public class DropInTest extends TestHelper {
 
     private void tokenizeCard(String cardNumber) {
         onDevice(withText("Credit or Debit Card")).perform(click());
-        onDevice(withContentDescription("Card Number")).perform(setText(cardNumber));
+        onDevice(withText("Card Number")).perform(setText(cardNumber));
         onDevice(withText("12")).perform(click());
         onDevice(withText("2019")).perform(click());
         onDevice().pressBack();
-        onDevice(withContentDescription("CVV")).perform(setText("123"));
-        onDevice(withContentDescription("Postal Code")).perform(setText("12345"));
+        onDevice(withText("CVV")).perform(setText("123"));
+        onDevice(withText("Postal Code")).perform(setText("12345"));
         onDevice(withTextContaining("Add Card")).perform(click());
     }
 }
