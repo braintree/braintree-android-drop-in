@@ -9,6 +9,7 @@ import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.GooglePaymentRequest;
+import com.braintreepayments.cardform.view.CardForm;
 import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.wallet.Cart;
 
@@ -39,11 +40,10 @@ public class DropInRequest implements Parcelable {
     private boolean mMaskSecurityCode = false;
     private boolean mVaultManagerEnabled = false;
     private ArrayList<CountrySpecification> mAndroidAllowedCountriesForShipping = new ArrayList<>();
-
     private List<String> mPayPalAdditionalScopes;
     private boolean mPayPalEnabled = true;
-
     private boolean mVenmoEnabled = true;
+    private int mCardholderNameStatus = CardForm.FIELD_DISABLED;
 
     public DropInRequest() {}
 
@@ -266,6 +266,18 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * Sets the Cardholder Name field status, which is how it will behave in {@link CardForm}.
+     * Default is {@link CardForm#FIELD_DISABLED}.
+     *
+     * Can be {@link CardForm#FIELD_DISABLED}, {@link CardForm#FIELD_OPTIONAL}, or
+     * {@link CardForm#FIELD_REQUIRED}.
+     */
+    public DropInRequest cardholderNameStatus(int fieldStatus) {
+        mCardholderNameStatus = fieldStatus;
+        return this;
+    }
+
+    /**
      * Get an {@link Intent} that can be used in {@link android.app.Activity#startActivityForResult(Intent, int)}
      * to launch {@link DropInActivity} and the Drop-in UI.
      *
@@ -345,6 +357,10 @@ public class DropInRequest implements Parcelable {
 
     boolean isVaultManagerEnabled() { return mVaultManagerEnabled; }
 
+    public int getCardholderNameStatus() {
+        return mCardholderNameStatus;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -375,6 +391,7 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(mMaskCardNumber ? (byte) 1 : (byte) 0);
         dest.writeByte(mMaskSecurityCode ? (byte) 1 : (byte) 0);
         dest.writeByte(mVaultManagerEnabled ? (byte) 1 : (byte) 0);
+        dest.writeInt(mCardholderNameStatus);
     }
 
     protected DropInRequest(Parcel in) {
@@ -400,6 +417,7 @@ public class DropInRequest implements Parcelable {
         mMaskCardNumber = in.readByte() != 0;
         mMaskSecurityCode = in.readByte() != 0;
         mVaultManagerEnabled = in.readByte() != 0;
+        mCardholderNameStatus = in.readInt();
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {
