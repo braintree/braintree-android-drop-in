@@ -28,6 +28,7 @@ import com.braintreepayments.api.test.ExpirationDate;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.api.test.TestConfigurationBuilder.TestUnionPayConfigurationBuilder;
 import com.braintreepayments.api.threedsecure.ThreeDSecureWebViewActivity;
+import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
 import org.json.JSONException;
@@ -301,6 +302,95 @@ public class AddCardActivityUnitTest {
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         mAddCardView.findViewById(R.id.bt_button).performClick();
         setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+
+        assertTrue(mActivity.isFinishing());
+        DropInResult result = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertIsANonce(result.getPaymentMethodNonce().getNonce());
+        assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+    }
+
+    @Test
+    public void addingACard_whenCardholderNameOptionalAndEmpty_doesNotSendCardholderNameToTokenize() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .build())
+                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        "^(?!cardholderName).*$")
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        stringFromFixture("payment_methods/visa_credit_card.json"));
+
+        mActivity.setDropInRequest(new DropInRequest()
+                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
+                .clientToken(stringFromFixture("client_token.json")));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+
+        assertTrue(mActivity.isFinishing());
+        DropInResult result = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertIsANonce(result.getPaymentMethodNonce().getNonce());
+        assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+    }
+
+    @Test
+    public void addingACard_whenCardholderNameOptionalAndFilled_sendsCardholderNameToTokenize() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .build())
+                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        "cardholderName\":\"Brian Tree\"")
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        stringFromFixture("payment_methods/visa_credit_card.json"));
+
+        mActivity.setDropInRequest(new DropInRequest()
+                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
+                .clientToken(stringFromFixture("client_token.json")));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cardholder_name, "Brian Tree");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+
+        assertTrue(mActivity.isFinishing());
+        DropInResult result = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertIsANonce(result.getPaymentMethodNonce().getNonce());
+        assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+    }
+
+    @Test
+    public void addingACard_whenCardholderNameRequired_sendsCardholderNameToTokenize() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .build())
+                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        "cardholderName\":\"Brian Tree\"")
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        stringFromFixture("payment_methods/visa_credit_card.json"));
+
+        mActivity.setDropInRequest(new DropInRequest()
+                .cardholderNameStatus(CardForm.FIELD_REQUIRED)
+                .clientToken(stringFromFixture("client_token.json")));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cardholder_name, "Brian Tree");
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
         assertTrue(mActivity.isFinishing());
@@ -611,6 +701,119 @@ public class AddCardActivityUnitTest {
         setText(mEditCardView, R.id.bt_card_form_cvv, "123");
         setText(mEditCardView, R.id.bt_card_form_country_code, "86");
         setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+
+        assertTrue(mActivity.isFinishing());
+        DropInResult result = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertIsANonce(result.getPaymentMethodNonce().getNonce());
+        assertEquals("85", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+    }
+
+    @Test
+    public void addingAUnionPayCard_whenCardholderNameOptionalAndEmpty_tokenizesWithoutCardholderName() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .unionPay(new TestUnionPayConfigurationBuilder()
+                                .enabled(true))
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
+                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
+                        stringFromFixture("responses/unionpay_enrollment_sms_not_required.json"))
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        stringFromFixture("payment_methods/unionpay_credit_card.json"))
+                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        "^(?!cardholderName).*$");
+        mActivity.setDropInRequest(new DropInRequest()
+                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
+                .clientToken(stringFromFixture("client_token.json")));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "86");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+
+        assertTrue(mActivity.isFinishing());
+        DropInResult result = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertIsANonce(result.getPaymentMethodNonce().getNonce());
+        assertEquals("85", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+    }
+
+    @Test
+    public void addingAUnionPayCard_whenCardholderNameOptionalAndFilled_tokenizesWithCardholderName() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .unionPay(new TestUnionPayConfigurationBuilder()
+                                .enabled(true))
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
+                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
+                        stringFromFixture("responses/unionpay_enrollment_sms_not_required.json"))
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        stringFromFixture("payment_methods/unionpay_credit_card.json"))
+                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        "cardholderName\":\"Brian Tree\"");
+        mActivity.setDropInRequest(new DropInRequest()
+                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
+                .clientToken(stringFromFixture("client_token.json")));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "86");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
+        setText(mEditCardView, R.id.bt_card_form_cardholder_name, "Brian Tree");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+
+        assertTrue(mActivity.isFinishing());
+        DropInResult result = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertIsANonce(result.getPaymentMethodNonce().getNonce());
+        assertEquals("85", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+    }
+
+    @Test
+    public void addingAUnionPayCard_whenCardholderNameRequired_tokenizesWithCardholderName() {
+        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(getSupportedCardConfiguration())
+                        .unionPay(new TestUnionPayConfigurationBuilder()
+                                .enabled(true))
+                        .build())
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
+                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
+                        stringFromFixture("responses/unionpay_enrollment_sms_not_required.json"))
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        stringFromFixture("payment_methods/unionpay_credit_card.json"))
+                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
+                        "cardholderName\":\"Brian Tree\"");
+        mActivity.setDropInRequest(new DropInRequest()
+                .cardholderNameStatus(CardForm.FIELD_REQUIRED)
+                .clientToken(stringFromFixture("client_token.json")));
+        setup(httpClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "86");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
+        setText(mEditCardView, R.id.bt_card_form_cardholder_name, "Brian Tree");
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
         assertTrue(mActivity.isFinishing());

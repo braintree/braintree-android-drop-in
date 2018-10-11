@@ -196,14 +196,15 @@ public class TestHelper {
         }
     }
 
-    public void performCardDetailsEntry() {
+    protected void performCardDetailsEntry() {
         onDevice(withText("12")).perform(click());
         onDevice(withText("2019")).perform(click());
         onDevice().pressBack();
         onDevice(withText("CVV")).perform(setText("123"));
         onDevice(withText("Postal Code")).perform(setText("12345"));
     }
-    public void tokenizeCard(String cardNumber) {
+
+    protected void tokenizeCard(String cardNumber) {
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withText("Card Number")).perform(setText(cardNumber));
         performCardDetailsEntry();

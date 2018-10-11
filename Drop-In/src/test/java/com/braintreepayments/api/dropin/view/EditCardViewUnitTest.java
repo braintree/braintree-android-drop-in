@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
@@ -71,6 +72,39 @@ public class EditCardViewUnitTest {
 
         assertThat(mView.getCardForm().getCvvEditText()).isGone();
         assertThat(mView.getCardForm().getPostalCodeEditText()).isGone();
+    }
+
+    @Test
+    public void setup_withDropinRequestRequiringCardholderName_setsCardFormsCardholderNameToRequired() {
+        Configuration configuration = new TestConfigurationBuilder()
+                .challenges("cvv", "postal_code")
+                .buildConfiguration();
+        DropInRequest dropInRequest = new DropInRequest()
+                .cardholderNameStatus(CardForm.FIELD_REQUIRED);
+        mView.setup(mActivity, configuration, dropInRequest);
+        mView.getCardForm().getCardEditText().setText(VISA);
+        mView.getCardForm().getExpirationDateEditText().setText(VALID_EXPIRATION);
+        mView.getCardForm().getCvvEditText().setText("123");
+        mView.getCardForm().getPostalCodeEditText().setText("12345");
+        mView.getCardForm().getCountryCodeEditText().setText("88");
+        mView.getCardForm().getMobileNumberEditText().setText("888888888");
+
+        Bundle bundle = new Bundle();
+        mActivityController.saveInstanceState(bundle)
+                .pause()
+                .stop()
+                .destroy();
+        mActivityController = Robolectric.buildActivity(UnitTestActivity.class)
+                .setup(bundle);
+        mActivity = (Activity) mActivityController.get();
+        mView = mActivity.findViewById(R.id.bt_edit_card_view);
+        mView.setup(mActivity, configuration, dropInRequest);
+
+        assertFalse(mView.getCardForm().isValid());
+
+        mView.getCardForm().getCardholderNameEditText().setText("Brian Tree");
+
+        assertTrue(mView.getCardForm().isValid());
     }
 
     @Test

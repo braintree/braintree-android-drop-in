@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -64,6 +65,14 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
 
         mCardForm = findViewById(R.id.bt_card_form);
         mAnimatedButtonView = findViewById(R.id.bt_animated_button_view);
+    }
+
+    /**
+     * Deprecated. Use {@link #setup(Activity, Configuration, DropInRequest)}
+     */
+    @Deprecated
+    public void setup(Activity activity, Configuration configuration) {
+        setup(activity, configuration, new DropInRequest());
     }
 
     public void setup(Activity activity, Configuration configuration, DropInRequest dropInRequest) {
