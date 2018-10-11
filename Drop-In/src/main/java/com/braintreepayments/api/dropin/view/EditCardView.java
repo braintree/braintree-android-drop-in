@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
+import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.exceptions.BraintreeError;
@@ -65,13 +66,14 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
         mAnimatedButtonView = findViewById(R.id.bt_animated_button_view);
     }
 
-    public void setup(Activity activity, Configuration configuration) {
+    public void setup(Activity activity, Configuration configuration, DropInRequest dropInRequest) {
         mConfiguration = configuration;
 
         mCardForm.cardRequired(true)
                 .expirationRequired(true)
                 .cvvRequired(configuration.isCvvChallengePresent())
                 .postalCodeRequired(configuration.isPostalCodeChallengePresent())
+                .cardholderName(dropInRequest.getCardholderNameStatus())
                 .setup(activity);
         mCardForm.setOnCardFormSubmitListener(this);
 

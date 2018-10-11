@@ -39,6 +39,7 @@ import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.UnionPayCapabilities;
 import com.braintreepayments.api.models.UnionPayCardBuilder;
+import com.braintreepayments.cardform.view.CardForm;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -127,7 +128,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
         mConfiguration = configuration;
 
         mAddCardView.setup(this, configuration, mClientTokenPresent);
-        mEditCardView.setup(this, configuration);
+        mEditCardView.setup(this, configuration, mDropInRequest);
 
         setState(LOADING, mState);
     }
@@ -254,26 +255,30 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     }
 
     protected void createCard() {
+        CardForm cardForm = mEditCardView.getCardForm();
+
         if (mUnionPayCard) {
             UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
-                    .cardNumber(mEditCardView.getCardForm().getCardNumber())
-                    .expirationMonth(mEditCardView.getCardForm().getExpirationMonth())
-                    .expirationYear(mEditCardView.getCardForm().getExpirationYear())
-                    .cvv(mEditCardView.getCardForm().getCvv())
-                    .postalCode(mEditCardView.getCardForm().getPostalCode())
-                    .mobileCountryCode(mEditCardView.getCardForm().getCountryCode())
-                    .mobilePhoneNumber(mEditCardView.getCardForm().getMobileNumber())
+                    .cardholderName(cardForm.getCardholderName())
+                    .cardNumber(cardForm.getCardNumber())
+                    .expirationMonth(cardForm.getExpirationMonth())
+                    .expirationYear(cardForm.getExpirationYear())
+                    .cvv(cardForm.getCvv())
+                    .postalCode(cardForm.getPostalCode())
+                    .mobileCountryCode(cardForm.getCountryCode())
+                    .mobilePhoneNumber(cardForm.getMobileNumber())
                     .enrollmentId(mEnrollmentId)
                     .smsCode(mEnrollmentCardView.getSmsCode());
 
             UnionPay.tokenize(mBraintreeFragment, unionPayCardBuilder);
         } else {
             CardBuilder cardBuilder = new CardBuilder()
-                    .cardNumber(mEditCardView.getCardForm().getCardNumber())
-                    .expirationMonth(mEditCardView.getCardForm().getExpirationMonth())
-                    .expirationYear(mEditCardView.getCardForm().getExpirationYear())
-                    .cvv(mEditCardView.getCardForm().getCvv())
-                    .postalCode(mEditCardView.getCardForm().getPostalCode())
+                    .cardholderName(cardForm.getCardholderName())
+                    .cardNumber(cardForm.getCardNumber())
+                    .expirationMonth(cardForm.getExpirationMonth())
+                    .expirationYear(cardForm.getExpirationYear())
+                    .cvv(cardForm.getCvv())
+                    .postalCode(cardForm.getPostalCode())
                     .validate(mClientTokenPresent);
 
             if (shouldRequestThreeDSecureVerification()) {

@@ -62,7 +62,7 @@ public class AddCardViewUnitTest {
         mView.setup(mActivity, (Configuration) new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
                         .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName()))
-                .buildConfiguration(), false);
+                .buildConfiguration(), false, mDropInRequest);
     }
 
     @Test
@@ -72,7 +72,7 @@ public class AddCardViewUnitTest {
 
     @Test
     public void setup_hidesNextButtonIfUnionPayIsNotEnabled() {
-        mView.setup(mActivity, (Configuration) basicConfig(), true);
+        mView.setup(mActivity, (Configuration) basicConfig(), true, mDropInRequest);
 
         assertThat(mView.findViewById(R.id.bt_animated_button_view)).isGone();
     }
@@ -84,7 +84,7 @@ public class AddCardViewUnitTest {
                         .enabled(true))
                 .buildConfiguration();
 
-        mView.setup(mActivity, configuration, true);
+        mView.setup(mActivity, configuration, true, mDropInRequest);
 
         assertThat(mView.findViewById(R.id.bt_animated_button_view)).isVisible();
     }
@@ -101,7 +101,7 @@ public class AddCardViewUnitTest {
                                 PaymentMethodType.JCB.getCanonicalName()))
                 .buildConfiguration();
 
-        mView.setup(mActivity, configuration, true);
+        mView.setup(mActivity, configuration, true, mDropInRequest);
 
         List<CardType> cardTypes = (List<CardType>) getField(
                 mView.findViewById(R.id.bt_supported_card_types), "mSupportedCardTypes");
@@ -122,7 +122,7 @@ public class AddCardViewUnitTest {
                                 PaymentMethodType.VISA.getCanonicalName()))
                 .buildConfiguration();
 
-        mView.setup(mActivity, configuration, true);
+        mView.setup(mActivity, configuration, true, mDropInRequest);
 
         List<CardType> cardTypes = (List<CardType>) getField(
                 mView.findViewById(R.id.bt_supported_card_types), "mSupportedCardTypes");
@@ -140,7 +140,7 @@ public class AddCardViewUnitTest {
                                 PaymentMethodType.VISA.getCanonicalName()))
                 .buildConfiguration();
 
-        mView.setup(mActivity, configuration, false);
+        mView.setup(mActivity, configuration, false, mDropInRequest);
 
         List<CardType> cardTypes = (List<CardType>) getField(
                 mView.findViewById(R.id.bt_supported_card_types), "mSupportedCardTypes");
@@ -156,7 +156,7 @@ public class AddCardViewUnitTest {
                         .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName()))
                 .buildConfiguration();
 
-        mView.setup(mActivity, configuration, false);
+        mView.setup(mActivity, configuration, false, mDropInRequest);
 
         List<CardType> cardTypes = (List<CardType>) getField(
                 mView.findViewById(R.id.bt_supported_card_types), "mSupportedCardTypes");
@@ -277,7 +277,7 @@ public class AddCardViewUnitTest {
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
                         .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName(),
                                 PaymentMethodType.AMEX.getCanonicalName()))
-                .buildConfiguration(), true);
+                .buildConfiguration(), true, mDropInRequest);
 
         mView.getCardForm().getCardEditText().setText(VISA);
 
@@ -367,7 +367,7 @@ public class AddCardViewUnitTest {
                 .setup(bundle);
         mActivity = (Activity) mActivityController.get();
         mView = mActivity.findViewById(R.id.bt_add_card_view);
-        mView.setup(mActivity, (Configuration) basicConfig(), true);
+        mView.setup(mActivity, (Configuration) basicConfig(), true, mDropInRequest);
 
         assertEquals(VISA, mView.getCardForm().getCardNumber());
     }
