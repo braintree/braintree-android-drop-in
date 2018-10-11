@@ -16,4 +16,16 @@
         <item name="future_payment">@string/paypal_future_payment</item>
         <item name="billing_agreement">@string/paypal_billing_agreement</item>
     </string-array>
+
+    <string-array name="cardholder_name_status">
+        <item name="disabled">@string/cardholder_name_disabled</item>
+        <item name="optional">@string/cardholder_name_optional</item>
+        <item name="required">@string/cardholder_name_required</item>
+    </string-array>
+
+    <string-array name="cardholder_name_status_values">
+        <item name="disabled">@string/cardholder_name_disabled</item>
+        <item name="optional">@string/cardholder_name_optional</item>
+        <item name="required">@string/cardholder_name_required</item>
+    </string-array>
 </resources>

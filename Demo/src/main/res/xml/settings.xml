@@ -125,6 +125,12 @@
             android:summary="Allows deleting vaulted payment methods."
             android:defaultValue="false" />
 
+        <ListPreference
+            android:key="cardholder_name_status"
+            android:title="Cardholder Name"
+            android:entries="@array/cardholder_name_status"
+            android:entryValues="@array/cardholder_name_status_values" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

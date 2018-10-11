@@ -4,6 +4,9 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.braintreepayments.api.Card;
+import com.braintreepayments.cardform.view.CardForm;
+
 public class Settings {
 
     protected static final String ENVIRONMENT = "environment";
@@ -152,5 +155,19 @@ public class Settings {
 
     public static boolean isVaultManagerEnabled(Context context) {
         return getPreferences(context).getBoolean("enable_vault_manager", false);
+    }
+
+    public static int getCardholderNameStatus(Context context) {
+        String status = getPreferences(context).getString("cardholder_name_status", "Disabled");
+
+        switch (status) {
+            case "Optional":
+                return CardForm.FIELD_OPTIONAL;
+            case "Required":
+                return CardForm.FIELD_REQUIRED;
+            case "Disabled":
+            default:
+                return CardForm.FIELD_DISABLED;
+        }
     }
 }
