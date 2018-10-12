@@ -10,13 +10,16 @@ task :lint do
   sh "./gradlew clean lint"
 end
 
+desc "Run Android unit tests and tests on a device or emulator"
+task :tests => [:unit_tests, :integration_tests]
+
 desc "Run Android unit tests"
 task :unit_tests => :lint do
   sh "./gradlew --continue test"
 end
 
 desc "Run Android tests on a device or emulator"
-task :tests => :unit_tests do
+task :integration_tests do
   output = `adb devices`
   if output.match(/device$/)
     begin
@@ -33,7 +36,8 @@ end
 
 desc "Interactive release to publish new version"
 task :release => :unit_tests do
-  puts "Ensure all tests are passing (`rake tests`)."
+  puts "Ensure unit tests build above was successful."
+  puts "Ensure integration tests are passing by executing `rake integration_tests`."
   $stdin.gets
 
   puts "What version are you releasing? (x.x.x format)"
