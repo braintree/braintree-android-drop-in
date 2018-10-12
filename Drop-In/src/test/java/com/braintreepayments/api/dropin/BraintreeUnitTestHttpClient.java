@@ -1,5 +1,7 @@
 package com.braintreepayments.api.dropin;
 
+import android.support.annotation.Nullable;
+
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeHttpClient;
 import com.braintreepayments.api.models.CardBuilder;
@@ -23,6 +25,7 @@ public class BraintreeUnitTestHttpClient extends BraintreeHttpClient {
     public static final String THREE_D_SECURE_LOOKUP = "/v1/payment_methods/.*/three_d_secure/lookup";
 
     private Map<String, String> mResponseMap;
+    private Map<String, String> mPostDataVerificationMap = new HashMap<>();
     private Map<String, SimpleEntry<Integer, String>> mErrorResponseMap;
 
     public BraintreeUnitTestHttpClient() {
@@ -41,6 +44,11 @@ public class BraintreeUnitTestHttpClient extends BraintreeHttpClient {
         return this;
     }
 
+    public BraintreeUnitTestHttpClient verifyPostData(String path, String regex) {
+        mPostDataVerificationMap.put(path, regex);
+        return this;
+    }
+
     public BraintreeUnitTestHttpClient errorResponse(String path, int responseCode, String response) {
         mErrorResponseMap.put(path, new SimpleEntry<>(responseCode, response));
         return this;
@@ -48,15 +56,20 @@ public class BraintreeUnitTestHttpClient extends BraintreeHttpClient {
 
     @Override
     public void get(String path, HttpResponseCallback callback) {
-        handleRequest(path, callback);
+        handleRequest(path, null, callback);
     }
 
     @Override
     public void post(String path, String data, HttpResponseCallback callback) {
-        handleRequest(path, callback);
+        handleRequest(path, data, callback);
     }
 
-    private void handleRequest(String path, HttpResponseCallback callback) {
+    private void handleRequest(String path, @Nullable String data, HttpResponseCallback callback) {
+        String regex = mPostDataVerificationMap.get(path);
+        if (regex != null) {
+            data.matches(regex);
+        }
+
         for (String requestPath : mResponseMap.keySet()) {
             if (path.matches(".*" + requestPath)) {
                 callback.success(mResponseMap.get(requestPath));

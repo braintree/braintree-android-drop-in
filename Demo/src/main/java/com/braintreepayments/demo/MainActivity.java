@@ -131,7 +131,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .androidPayShippingAddressRequired(Settings.isAndroidPayShippingAddressRequired(this))
                 .androidPayPhoneNumberRequired(Settings.isAndroidPayPhoneNumberRequired(this))
                 .androidPayAllowedCountriesForShipping(Settings.getAndroidPayAllowedCountriesForShipping(this))
-                .vaultManager(true);
+                .vaultManager(Settings.isVaultManagerEnabled(this))
+                .cardholderNameStatus(Settings.getCardholderNameStatus(this));
 
         if (Settings.isPayPalAddressScopeRequested(this)) {
             dropInRequest.paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS));

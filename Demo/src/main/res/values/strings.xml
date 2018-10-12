@@ -55,4 +55,7 @@
     <string name="paypal_single_payment">Single Payment</string>
     <string name="paypal_billing_agreement">Billing Agreement</string>
     <string name="paypal_payment_type">Payment Type</string>
+    <string name="cardholder_name_disabled">Disabled</string>
+    <string name="cardholder_name_optional">Optional</string>
+    <string name="cardholder_name_required">Required</string>
 </resources>

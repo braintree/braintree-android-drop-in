@@ -9,6 +9,7 @@ import android.support.annotation.CallSuper;
 import android.util.Log;
 import android.widget.Spinner;
 
+import com.braintreepayments.cardform.view.CardForm;
 import com.lukekorth.deviceautomator.DeviceAutomator;
 
 import java.util.concurrent.CountDownLatch;
@@ -16,11 +17,13 @@ import java.util.concurrent.TimeUnit;
 
 import static android.support.test.InstrumentationRegistry.getTargetContext;
 import static com.lukekorth.deviceautomator.AutomatorAction.click;
+import static com.lukekorth.deviceautomator.AutomatorAction.setText;
 import static com.lukekorth.deviceautomator.AutomatorAssertion.text;
 import static com.lukekorth.deviceautomator.DeviceAutomator.onDevice;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withClass;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withResourceId;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
+import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -141,6 +144,31 @@ public class TestHelper {
                 .commit();
     }
 
+    public void setCardholderNameStatus(int cardholderNameStatus) {
+        String status;
+
+        switch(cardholderNameStatus) {
+            case CardForm.FIELD_REQUIRED:
+                status = "Required";
+                break;
+            case CardForm.FIELD_OPTIONAL:
+                status = "Optional";
+                break;
+            default:
+            case CardForm.FIELD_DISABLED:
+                status = "Disabled";
+                break;
+        }
+
+        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+                .edit()
+                .putString("cardholder_name_status", status)
+                .commit();
+
+        onDevice(withText("Reset")).perform(click());
+        SystemClock.sleep(2000);
+    }
+
     private void clearPreference(String preference) {
         getTargetContext().getSharedPreferences(preference, Context.MODE_PRIVATE)
                 .edit()
@@ -166,5 +194,20 @@ public class TestHelper {
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
+    }
+
+    protected void performCardDetailsEntry() {
+        onDevice(withText("12")).perform(click());
+        onDevice(withText("2019")).perform(click());
+        onDevice().pressBack();
+        onDevice(withText("CVV")).perform(setText("123"));
+        onDevice(withText("Postal Code")).perform(setText("12345"));
+    }
+
+    protected void tokenizeCard(String cardNumber) {
+        onDevice(withText("Credit or Debit Card")).perform(click());
+        onDevice(withText("Card Number")).perform(setText(cardNumber));
+        performCardDetailsEntry();
+        onDevice(withTextContaining("Add Card")).perform(click());
     }
 }

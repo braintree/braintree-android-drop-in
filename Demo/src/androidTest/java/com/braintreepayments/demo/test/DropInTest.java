@@ -257,14 +257,4 @@ public class DropInTest extends TestHelper {
         assertFalse(onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_title")).exists());
     }
 
-    private void tokenizeCard(String cardNumber) {
-        onDevice(withText("Credit or Debit Card")).perform(click());
-        onDevice(withText("Card Number")).perform(setText(cardNumber));
-        onDevice(withText("12")).perform(click());
-        onDevice(withText("2019")).perform(click());
-        onDevice().pressBack();
-        onDevice(withText("CVV")).perform(setText("123"));
-        onDevice(withText("Postal Code")).perform(setText("12345"));
-        onDevice(withTextContaining("Add Card")).perform(click());
-    }
 }

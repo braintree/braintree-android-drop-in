@@ -6,6 +6,7 @@ import android.os.Parcel;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalRequest;
+import com.braintreepayments.cardform.view.CardForm;
 import com.google.android.gms.wallet.Cart;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
@@ -62,6 +63,7 @@ public class DropInRequestUnitTest {
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
                 .vaultManager(true)
+                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
                 .getIntent(RuntimeEnvironment.application);
 
         DropInRequest dropInRequest = intent.getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
@@ -90,6 +92,7 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.shouldMaskCardNumber());
         assertTrue(dropInRequest.shouldMaskSecurityCode());
         assertTrue(dropInRequest.isVaultManagerEnabled());
+        assertEquals(CardForm.FIELD_OPTIONAL, dropInRequest.getCardholderNameStatus());
     }
 
     @Test
@@ -117,6 +120,7 @@ public class DropInRequestUnitTest {
         assertFalse(dropInRequest.shouldMaskCardNumber());
         assertFalse(dropInRequest.shouldMaskSecurityCode());
         assertFalse(dropInRequest.isVaultManagerEnabled());
+        assertEquals(CardForm.FIELD_DISABLED, dropInRequest.getCardholderNameStatus());
     }
 
     @Test
@@ -153,7 +157,8 @@ public class DropInRequestUnitTest {
                 .requestThreeDSecureVerification(true)
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
-                .vaultManager(true);
+                .vaultManager(true)
+                .cardholderNameStatus(CardForm.FIELD_OPTIONAL);
 
         Parcel parcel = Parcel.obtain();
         dropInRequest.writeToParcel(parcel, 0);
@@ -183,6 +188,7 @@ public class DropInRequestUnitTest {
         assertTrue(parceledDropInRequest.shouldMaskCardNumber());
         assertTrue(parceledDropInRequest.shouldMaskSecurityCode());
         assertTrue(parceledDropInRequest.isVaultManagerEnabled());
+        assertEquals(CardForm.FIELD_OPTIONAL, parceledDropInRequest.getCardholderNameStatus());
     }
 
     @Test
@@ -206,5 +212,13 @@ public class DropInRequestUnitTest {
                 .tokenizationKey(TOKENIZATION_KEY);
 
         assertEquals(TOKENIZATION_KEY, dropInRequest.getAuthorization());
+    }
+
+    @Test
+    public void getCardholderNameStatus_includesCardHolderNameStatus() {
+        DropInRequest dropInRequest = new DropInRequest()
+                .cardholderNameStatus(CardForm.FIELD_REQUIRED);
+
+        assertEquals(CardForm.FIELD_REQUIRED, dropInRequest.getCardholderNameStatus());
     }
 }

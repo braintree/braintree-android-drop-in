@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
+import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.exceptions.BraintreeError;
@@ -65,13 +67,22 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
         mAnimatedButtonView = findViewById(R.id.bt_animated_button_view);
     }
 
+    /**
+     * Deprecated. Use {@link #setup(Activity, Configuration, DropInRequest)}
+     */
+    @Deprecated
     public void setup(Activity activity, Configuration configuration) {
+        setup(activity, configuration, new DropInRequest());
+    }
+
+    public void setup(Activity activity, Configuration configuration, DropInRequest dropInRequest) {
         mConfiguration = configuration;
 
         mCardForm.cardRequired(true)
                 .expirationRequired(true)
                 .cvvRequired(configuration.isCvvChallengePresent())
                 .postalCodeRequired(configuration.isPostalCodeChallengePresent())
+                .cardholderName(dropInRequest.getCardholderNameStatus())
                 .setup(activity);
         mCardForm.setOnCardFormSubmitListener(this);
 
