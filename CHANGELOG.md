@@ -4,10 +4,9 @@
 
 * Cardholder Name
   * Field for the Cardholder's name
-  * Is disabled by default but Can be required, or an optional field
+  * Is disabled by default but can be required, or an optional field
 * Upgrade card-form to 3.5.0
 * Upgrade Android SDK to 28
-
 
 ## 3.6.1
 
