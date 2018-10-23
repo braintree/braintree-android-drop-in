@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 public class AddCardView extends LinearLayout implements OnCardFormSubmitListener, OnCardFormValidListener,
         OnClickListener, OnCardTypeChangedListener {
 
@@ -77,7 +79,7 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         mAnimatedButtonView = findViewById(R.id.bt_animated_button_view);
     }
 
-    public void setup(Activity activity, Configuration configuration, boolean unionpaySupported) {
+    public void setup(AppCompatActivity activity, Configuration configuration, boolean unionpaySupported) {
         mCardForm.getCardEditText().displayCardTypeIcon(false);
 
         mCardForm.cardRequired(true).setup(activity);

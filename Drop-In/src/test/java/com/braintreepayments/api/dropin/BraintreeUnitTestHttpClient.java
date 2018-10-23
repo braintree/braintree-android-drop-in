@@ -1,6 +1,6 @@
 package com.braintreepayments.api.dropin;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeHttpClient;

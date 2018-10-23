@@ -21,6 +21,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.braintreepayments.api.test.ColorTestUtils.setupActivity;
@@ -37,14 +39,14 @@ import static org.robolectric.Shadows.shadowOf;
 public class EnrollmentCardViewUnitTest {
 
     private ActivityController mActivityController;
-    private Activity mActivity;
+    private AppCompatActivity mActivity;
     private EnrollmentCardView mView;
 
     @Before
     public void setup() {
         UnitTestActivity.view = R.layout.bt_add_card_activity;
         mActivityController = Robolectric.buildActivity(UnitTestActivity.class);
-        mActivity = (Activity) mActivityController.setup().get();
+        mActivity = (AppCompatActivity) mActivityController.setup().get();
         mView = mActivity.findViewById(R.id.bt_enrollment_card_view);
     }
 

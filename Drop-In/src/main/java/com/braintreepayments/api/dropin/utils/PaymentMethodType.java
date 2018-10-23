@@ -1,6 +1,6 @@
 package com.braintreepayments.api.dropin.utils;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.models.PaymentMethodNonce;

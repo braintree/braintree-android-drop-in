@@ -87,7 +87,7 @@
 
                     </RelativeLayout>
 
-                    <android.support.v7.widget.RecyclerView
+                    <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/bt_vaulted_payment_methods"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

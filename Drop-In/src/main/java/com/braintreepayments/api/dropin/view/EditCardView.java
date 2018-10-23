@@ -4,8 +4,9 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.text.Editable;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -68,14 +69,14 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
     }
 
     /**
-     * Deprecated. Use {@link #setup(Activity, Configuration, DropInRequest)}
+     * Deprecated. Use {@link #setup(AppCompatActivity, Configuration, DropInRequest)}
      */
     @Deprecated
-    public void setup(Activity activity, Configuration configuration) {
+    public void setup(AppCompatActivity activity, Configuration configuration) {
         setup(activity, configuration, new DropInRequest());
     }
 
-    public void setup(Activity activity, Configuration configuration, DropInRequest dropInRequest) {
+    public void setup(AppCompatActivity activity, Configuration configuration, DropInRequest dropInRequest) {
         mConfiguration = configuration;
 
         mCardForm.cardRequired(true)
@@ -144,7 +145,7 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
         mAnimatedButtonView.showButton();
     }
 
-    public void useUnionPay(Activity activity, boolean useUnionPay, boolean debitCard) {
+    public void useUnionPay(AppCompatActivity activity, boolean useUnionPay, boolean debitCard) {
         mCardForm.getExpirationDateEditText().setOptional(false);
         mCardForm.getCvvEditText().setOptional(false);
 

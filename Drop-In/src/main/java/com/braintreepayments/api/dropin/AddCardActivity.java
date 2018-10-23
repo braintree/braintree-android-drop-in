@@ -2,9 +2,9 @@ package com.braintreepayments.api.dropin;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.IntDef;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.view.Menu;
