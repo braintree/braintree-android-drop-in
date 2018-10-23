@@ -70,7 +70,7 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
         mAdapter.setPaymentMethodNonces(nonces);
 
         vaultManagerView.setLayoutManager(new LinearLayoutManager(
-                this, LinearLayoutManager.VERTICAL, false));
+                this, RecyclerView.VERTICAL, false));
         vaultManagerView.setAdapter(mAdapter);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
