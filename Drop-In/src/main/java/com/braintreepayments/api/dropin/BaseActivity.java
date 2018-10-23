@@ -1,10 +1,7 @@
 package com.braintreepayments.api.dropin;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 
 import com.braintreepayments.api.BraintreeFragment;
@@ -15,6 +12,9 @@ import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import org.json.JSONException;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class BaseActivity extends AppCompatActivity {
 
@@ -73,7 +73,7 @@ public class BaseActivity extends AppCompatActivity {
                 .paymentMethodNonce(paymentMethod)
                 .deviceData(deviceData);
 
-        setResult(Activity.RESULT_OK,
+        setResult(RESULT_OK,
                 new Intent().putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result));
         finish();
     }

@@ -1,6 +1,5 @@
 package com.braintreepayments.api.dropin.view;
 
-import android.app.Activity;
 import android.view.View.OnClickListener;
 
 import com.braintreepayments.api.dropin.R;
@@ -11,6 +10,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -24,7 +25,7 @@ public class AnimatedButtonViewUnitTest {
     @Before
     public void setup() {
         UnitTestActivity.view = R.layout.bt_add_card_activity;
-        Activity activity = Robolectric.buildActivity(UnitTestActivity.class)
+        AppCompatActivity activity = Robolectric.buildActivity(UnitTestActivity.class)
                 .setup()
                 .get();
         mView = activity.findViewById(R.id.bt_animated_button_view);

@@ -1,17 +1,10 @@
 package com.braintreepayments.api.dropin;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
-import com.google.android.material.snackbar.Snackbar;
-import androidx.appcompat.app.AlertDialog;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,9 +18,16 @@ import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceDeletedListener;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AlertDialog;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 
@@ -91,7 +91,7 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
         mAdapter.paymentMethodDeleted(paymentMethodNonce);
 
         mBraintreeFragment.sendAnalyticsEvent("manager.delete.succeeded");
-        setResult(Activity.RESULT_OK, new Intent()
+        setResult(RESULT_OK, new Intent()
                 .putExtra(EXTRA_PAYMENT_METHOD_NONCES, mAdapter.getPaymentMethodNonces()));
 
         mLoadingViewSwitcher.setDisplayedChild(0);
@@ -100,8 +100,6 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
     @Override
     public void onError(Exception error) {
         if(error instanceof PaymentMethodDeleteException) {
-            PaymentMethodDeleteException exception = (PaymentMethodDeleteException)error;
-
             Snackbar.make(findViewById(R.id.bt_base_view), R.string.bt_vault_manager_delete_failure,
                     Snackbar.LENGTH_LONG).show();
             mBraintreeFragment.sendAnalyticsEvent("manager.delete.failed");

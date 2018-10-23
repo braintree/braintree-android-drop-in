@@ -3,7 +3,6 @@ package com.braintreepayments.demo;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.cardview.widget.CardView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -38,6 +37,8 @@ import com.google.android.gms.wallet.WalletConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import androidx.cardview.widget.CardView;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;

@@ -1,7 +1,6 @@
 package com.braintreepayments.api.dropin.view;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.text.TextUtils;
@@ -23,6 +22,8 @@ import com.braintreepayments.api.exceptions.BraintreeError;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.cardform.utils.ViewUtils;
 import com.braintreepayments.cardform.view.ErrorEditText;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class EnrollmentCardView extends LinearLayout implements OnClickListener, OnEditorActionListener {
 
@@ -77,7 +78,7 @@ public class EnrollmentCardView extends LinearLayout implements OnClickListener,
         mSmsHelpButton.setOnClickListener(this);
     }
 
-    public void setup(Activity activity) {
+    public void setup(AppCompatActivity activity) {
         boolean isDarkBackground = ViewUtils.isDarkBackground(activity);
         ((ImageView) findViewById(R.id.bt_sms_code_icon))
                 .setImageResource(isDarkBackground ? R.drawable.bt_ic_sms_code_dark : R.drawable.bt_ic_sms_code);
