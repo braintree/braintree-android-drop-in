@@ -1,6 +1,7 @@
 package com.braintreepayments.api.test;
 
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 public class UnitTestActivity extends AppCompatActivity {

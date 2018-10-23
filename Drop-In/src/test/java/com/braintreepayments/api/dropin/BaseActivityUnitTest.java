@@ -1,6 +1,5 @@
 package com.braintreepayments.api.dropin;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -19,6 +18,8 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 
+import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
@@ -215,7 +216,7 @@ public class BaseActivityUnitTest {
 
         ShadowActivity shadowActivity = shadowOf(mActivity);
         assertTrue(mActivity.isFinishing());
-        assertEquals(Activity.RESULT_OK, shadowActivity.getResultCode());
+        assertEquals(RESULT_OK, shadowActivity.getResultCode());
         DropInResult result = shadowActivity.getResultIntent()
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertNotNull(result);
@@ -234,7 +235,7 @@ public class BaseActivityUnitTest {
 
         ShadowActivity shadowActivity = shadowOf(mActivity);
         assertTrue(mActivity.isFinishing());
-        assertEquals(Activity.RESULT_FIRST_USER, shadowActivity.getResultCode());
+        assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
         Exception error = (Exception) shadowActivity.getResultIntent()
                 .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertNotNull(error);

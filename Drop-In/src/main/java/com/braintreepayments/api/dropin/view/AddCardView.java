@@ -1,7 +1,6 @@
 package com.braintreepayments.api.dropin.view;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;

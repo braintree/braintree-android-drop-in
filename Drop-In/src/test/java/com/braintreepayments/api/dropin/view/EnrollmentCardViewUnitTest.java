@@ -1,6 +1,5 @@
 package com.braintreepayments.api.dropin.view;
 
-import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -52,11 +51,11 @@ public class EnrollmentCardViewUnitTest {
 
     @Test
     public void setup_correctIconBasedOnBackground() {
-        Activity darkActivity = setupActivity(R.color.bt_black);
+        AppCompatActivity darkActivity = setupActivity(R.color.bt_black);
         mView.setup(darkActivity);
         assertDrawableIsFromResource(R.id.bt_sms_code_icon, R.drawable.bt_ic_sms_code_dark);
 
-        Activity lightActivity = setupActivity(R.color.bt_white);
+        AppCompatActivity lightActivity = setupActivity(R.color.bt_white);
         mView.setup(lightActivity);
         assertDrawableIsFromResource(R.id.bt_sms_code_icon, R.drawable.bt_ic_sms_code);
     }

@@ -1,6 +1,5 @@
 package com.braintreepayments.api.dropin;
 
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -34,6 +33,8 @@ import org.robolectric.shadows.ShadowAlertDialog;
 import java.util.ArrayList;
 import java.util.List;
 
+import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static junit.framework.Assert.assertEquals;
@@ -125,7 +126,7 @@ public class VaultManagerActivityUnitTest {
     public void onPaymentMethodNonceDeleted_setsOkResult() {
         mActivity.onPaymentMethodNonceDeleted(mCardNonce);
 
-        assertEquals(BaseActivity.RESULT_OK, mShadowActivity.getResultCode());
+        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
     }
 
     @Test
@@ -197,7 +198,7 @@ public class VaultManagerActivityUnitTest {
         mActivity.onError(expected);
 
         assertTrue(mShadowActivity.isFinishing());
-        assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception actual = (Exception) mShadowActivity.getResultIntent()
                 .getSerializableExtra(DropInActivity.EXTRA_ERROR);
 

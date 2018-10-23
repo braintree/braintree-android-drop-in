@@ -1,12 +1,8 @@
 package com.braintreepayments.api.dropin.view;
 
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.os.Build;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -24,6 +20,8 @@ import com.braintreepayments.cardform.OnCardFormFieldFocusedListener;
 import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class EditCardView extends LinearLayout implements OnCardFormFieldFocusedListener, OnClickListener,
         OnCardFormSubmitListener {

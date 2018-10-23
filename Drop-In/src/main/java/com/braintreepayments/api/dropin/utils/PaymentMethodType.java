@@ -1,7 +1,5 @@
 package com.braintreepayments.api.dropin.utils;
 
-import androidx.annotation.Nullable;
-
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.cardform.utils.CardType;
@@ -9,6 +7,8 @@ import com.braintreepayments.cardform.utils.CardType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import androidx.annotation.Nullable;
 
 public enum PaymentMethodType {
 

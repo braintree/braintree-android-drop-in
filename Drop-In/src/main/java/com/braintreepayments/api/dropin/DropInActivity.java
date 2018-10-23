@@ -4,11 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
-import androidx.annotation.VisibleForTesting;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
@@ -52,6 +47,11 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.VisibleForTesting;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
 import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
@@ -309,7 +309,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     @Override
     protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
         mLoadingViewSwitcher.setDisplayedChild(0);
-        if (resultCode == AppCompatActivity.RESULT_CANCELED) {
+        if (resultCode == RESULT_CANCELED) {
             if (requestCode == ADD_CARD_REQUEST_CODE) {
                 fetchPaymentMethodNonces(true);
             }
@@ -317,7 +317,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             mLoadingViewSwitcher.setDisplayedChild(1);
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
             final Intent response;
-            if (resultCode == AppCompatActivity.RESULT_OK) {
+            if (resultCode == RESULT_OK) {
                 DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
                 DropInResult.setLastUsedPaymentMethodType(this, result.getPaymentMethodNonce());
 
@@ -336,7 +336,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 }
             });
         } else if (requestCode == DELETE_PAYMENT_METHOD_NONCE_CODE) {
-            if (resultCode == AppCompatActivity.RESULT_OK) {
+            if (resultCode == RESULT_OK) {
 
                 if (data != null) {
                     ArrayList<PaymentMethodNonce> paymentMethodNonces = data
