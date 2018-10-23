@@ -1,6 +1,5 @@
 package com.braintreepayments.api.dropin;
 
-import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Parcel;
 
@@ -37,6 +36,8 @@ import org.robolectric.RobolectricTestRunner;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
@@ -52,14 +53,14 @@ import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(RobolectricTestRunner.class)
-@PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*", "org.json.*" })
+@PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "androidx.*", "android.*", "org.json.*" })
 @PrepareForTest({AndroidPay.class, GooglePayment.class})
 public class DropInResultUnitTest {
 
     @Rule
     public PowerMockRule mPowerMockRule = new PowerMockRule();
 
-    private Activity mActivity;
+    private AppCompatActivity mActivity;
     private CountDownLatch mCountDownLatch;
 
     @Before

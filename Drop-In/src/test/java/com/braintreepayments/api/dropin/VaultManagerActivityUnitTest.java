@@ -320,12 +320,12 @@ public class VaultManagerActivityUnitTest {
         assertFalse(mShadowActivity.isFinishing());
     }
 
-    private static android.support.v7.app.AlertDialog getDeleteConfirmationDialog() {
+    private static androidx.appcompat.app.AlertDialog getDeleteConfirmationDialog() {
         // ShadowAlertDialog#getLatestDialog does not return
         // the support AlertDialog.
         //
         // This allows us to return the first (and only) v7 alert dialog
-        return (android.support.v7.app.AlertDialog) ShadowAlertDialog.getShownDialogs().get(0);
+        return (androidx.appcompat.app.AlertDialog) ShadowAlertDialog.getShownDialogs().get(0);
     }
 
     private void mockGraphQlResponseNotToCallback() {
