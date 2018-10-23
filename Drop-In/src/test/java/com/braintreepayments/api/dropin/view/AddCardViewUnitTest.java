@@ -1,6 +1,5 @@
 package com.braintreepayments.api.dropin.view;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.view.View;
