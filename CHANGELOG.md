@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## 3.7.1
+
+* Upgrade braintree_android to 2.18.1 fixes Chrome Custom Tab integration when using Jetifier to use AndroidX
+
 ## 3.7.0
 
 * Cardholder Name
