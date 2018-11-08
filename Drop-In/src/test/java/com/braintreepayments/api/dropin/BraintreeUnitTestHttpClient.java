@@ -1,7 +1,5 @@
 package com.braintreepayments.api.dropin;
 
-import android.support.annotation.Nullable;
-
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeHttpClient;
 import com.braintreepayments.api.models.CardBuilder;
@@ -11,6 +9,8 @@ import java.net.HttpURLConnection;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.annotation.Nullable;
 
 import static com.braintreepayments.api.test.StringUtils.getStreamFromString;
 import static org.mockito.Mockito.mock;

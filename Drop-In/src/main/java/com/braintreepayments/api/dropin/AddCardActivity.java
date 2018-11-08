@@ -1,10 +1,6 @@
 package com.braintreepayments.api.dropin;
 
-import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.IntDef;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -43,6 +39,10 @@ import com.braintreepayments.cardform.view.CardForm;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -377,7 +377,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
             mAddCardView.getCardForm().scanCard(this);
             return true;
         } else if (item.getItemId() == android.R.id.home) {
-            setResult(Activity.RESULT_CANCELED);
+            setResult(RESULT_CANCELED);
             finish();
             return true;
         }

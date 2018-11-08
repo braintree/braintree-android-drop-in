@@ -39,7 +39,7 @@
                 android:id="@+id/bt_vault_manager_title"
                 android:text="@string/bt_vault_manager_title"/>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/bt_vault_manager_list"
                 android:scrollbars="vertical"
                 android:layout_below="@id/bt_vault_manager_title"

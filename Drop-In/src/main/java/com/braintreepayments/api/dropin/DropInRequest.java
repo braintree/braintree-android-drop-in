@@ -7,8 +7,8 @@ import android.os.Parcelable;
 
 import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.PayPal;
-import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.GooglePaymentRequest;
+import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.cardform.view.CardForm;
 import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.wallet.Cart;
@@ -278,7 +278,7 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
-     * Get an {@link Intent} that can be used in {@link android.app.Activity#startActivityForResult(Intent, int)}
+     * Get an {@link Intent} that can be used in {@link androidx.appcompat.app.AppCompatActivity#startActivityForResult(Intent, int)}
      * to launch {@link DropInActivity} and the Drop-in UI.
      *
      * @param context

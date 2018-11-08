@@ -1,7 +1,6 @@
 package com.braintreepayments.demo;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -11,6 +10,7 @@ import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.demo.models.Transaction;
 
+import androidx.appcompat.app.AppCompatActivity;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;

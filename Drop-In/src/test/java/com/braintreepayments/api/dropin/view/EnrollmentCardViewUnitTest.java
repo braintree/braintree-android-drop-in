@@ -1,6 +1,5 @@
 package com.braintreepayments.api.dropin.view;
 
-import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -21,6 +20,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.braintreepayments.api.test.ColorTestUtils.setupActivity;
@@ -37,24 +38,24 @@ import static org.robolectric.Shadows.shadowOf;
 public class EnrollmentCardViewUnitTest {
 
     private ActivityController mActivityController;
-    private Activity mActivity;
+    private AppCompatActivity mActivity;
     private EnrollmentCardView mView;
 
     @Before
     public void setup() {
         UnitTestActivity.view = R.layout.bt_add_card_activity;
         mActivityController = Robolectric.buildActivity(UnitTestActivity.class);
-        mActivity = (Activity) mActivityController.setup().get();
+        mActivity = (AppCompatActivity) mActivityController.setup().get();
         mView = mActivity.findViewById(R.id.bt_enrollment_card_view);
     }
 
     @Test
     public void setup_correctIconBasedOnBackground() {
-        Activity darkActivity = setupActivity(R.color.bt_black);
+        AppCompatActivity darkActivity = setupActivity(R.color.bt_black);
         mView.setup(darkActivity);
         assertDrawableIsFromResource(R.id.bt_sms_code_icon, R.drawable.bt_ic_sms_code_dark);
 
-        Activity lightActivity = setupActivity(R.color.bt_white);
+        AppCompatActivity lightActivity = setupActivity(R.color.bt_white);
         mView.setup(lightActivity);
         assertDrawableIsFromResource(R.id.bt_sms_code_icon, R.drawable.bt_ic_sms_code);
     }

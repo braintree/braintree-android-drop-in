@@ -1,6 +1,5 @@
 package com.braintreepayments.api.dropin.view;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.view.View;
@@ -31,6 +30,8 @@ import org.robolectric.android.controller.ActivityController;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import static com.braintreepayments.api.test.CardNumber.AMEX;
 import static com.braintreepayments.api.test.CardNumber.VISA;
 import static com.braintreepayments.api.test.ReflectionHelper.getField;
@@ -50,14 +51,14 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 public class AddCardViewUnitTest {
 
     private ActivityController mActivityController;
-    private Activity mActivity;
+    private AppCompatActivity mActivity;
     private AddCardView mView;
 
     @Before
     public void setup() {
         UnitTestActivity.view = R.layout.bt_add_card_activity;
         mActivityController = Robolectric.buildActivity(UnitTestActivity.class);
-        mActivity = (Activity) mActivityController.setup().get();
+        mActivity = (AppCompatActivity) mActivityController.setup().get();
         mView = mActivity.findViewById(R.id.bt_add_card_view);
         mView.setup(mActivity, (Configuration) new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
@@ -365,7 +366,7 @@ public class AddCardViewUnitTest {
                 .destroy();
         mActivityController = Robolectric.buildActivity(UnitTestActivity.class)
                 .setup(bundle);
-        mActivity = (Activity) mActivityController.get();
+        mActivity = (AppCompatActivity) mActivityController.get();
         mView = mActivity.findViewById(R.id.bt_add_card_view);
         mView.setup(mActivity, (Configuration) basicConfig(), true);
 

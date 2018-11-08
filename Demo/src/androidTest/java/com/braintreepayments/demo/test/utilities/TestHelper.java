@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.support.annotation.CallSuper;
 import android.util.Log;
 import android.widget.Spinner;
 
@@ -15,7 +14,9 @@ import com.lukekorth.deviceautomator.DeviceAutomator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import static android.support.test.InstrumentationRegistry.getTargetContext;
+import androidx.annotation.CallSuper;
+
+import static androidx.test.InstrumentationRegistry.getTargetContext;
 import static com.lukekorth.deviceautomator.AutomatorAction.click;
 import static com.lukekorth.deviceautomator.AutomatorAction.setText;
 import static com.lukekorth.deviceautomator.AutomatorAssertion.text;

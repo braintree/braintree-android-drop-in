@@ -1,12 +1,9 @@
 package com.braintreepayments.api.dropin;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
@@ -26,26 +23,30 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 /**
  * Contains the result from launching {@link DropInActivity} or calling
- * {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)}.
+ * {@link DropInResult#fetchDropInResult(AppCompatActivity, String, DropInResultListener)}.
  */
 public class DropInResult implements Parcelable {
 
     /**
      * The key used to return {@link DropInResult} in an {@link android.content.Intent} in
-     * {@link Activity#onActivityResult(int, int, Intent)}
+     * {@link AppCompatActivity#onActivityResult(int, int, Intent)}
      */
     public static final String EXTRA_DROP_IN_RESULT =
             "com.braintreepayments.api.dropin.EXTRA_DROP_IN_RESULT";
 
     /**
-     * Listener used with {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)}
+     * Listener used with {@link DropInResult#fetchDropInResult(AppCompatActivity, String, DropInResultListener)}
      */
     public interface DropInResultListener {
         /**
          * Any errors that occur during
-         * {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)} will be
+         * {@link DropInResult#fetchDropInResult(AppCompatActivity, String, DropInResultListener)} will be
          * returned here.
          *
          * @param exception the {@link Exception} that occurred.
@@ -54,7 +55,7 @@ public class DropInResult implements Parcelable {
 
         /**
          * The {@link DropInResult} from
-         * {@link DropInResult#fetchDropInResult(Activity, String, DropInResultListener)}
+         * {@link DropInResult#fetchDropInResult(AppCompatActivity, String, DropInResultListener)}
          *
          * @param result
          */
@@ -122,13 +123,13 @@ public class DropInResult implements Parcelable {
      * Note: a client token must be used and will only return a payment method if it contains a
      * customer id.
      *
-     * @param activity the current {@link Activity}
+     * @param activity the current {@link AppCompatActivity}
      * @param clientToken A client token from your server. Note that this method will only return a
      *                    result if the client token contains a customer id.
      * @param listener The {@link DropInResultListener} to handle the error or {@link DropInResult}
      *                 response.
      */
-    public static void fetchDropInResult(Activity activity, String clientToken,
+    public static void fetchDropInResult(AppCompatActivity activity, String clientToken,
                                          @NonNull final DropInResultListener listener) {
         try {
             if (!(Authorization.fromString(clientToken) instanceof ClientToken)) {

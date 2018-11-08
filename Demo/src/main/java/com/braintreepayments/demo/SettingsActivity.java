@@ -1,10 +1,11 @@
 package com.braintreepayments.demo;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import com.braintreepayments.demo.fragments.SettingsFragment;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 public class SettingsActivity extends AppCompatActivity {
 

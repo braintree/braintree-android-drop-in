@@ -1,12 +1,10 @@
 package com.braintreepayments.api.dropin;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -43,6 +41,11 @@ import org.robolectric.shadows.ShadowActivity;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+import static androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED;
+import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
+import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerWithThreeDSecureWebViewActivity;
@@ -86,7 +89,7 @@ public class DropInActivityUnitTest {
 
         mActivityController.setup();
 
-        assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception exception = (Exception) mShadowActivity.getResultIntent()
                         .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertTrue(exception instanceof InvalidArgumentException);
@@ -100,7 +103,7 @@ public class DropInActivityUnitTest {
 
         mActivityController.setup();
 
-        assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception exception = (Exception) mShadowActivity.getResultIntent()
                 .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertTrue(exception instanceof InvalidArgumentException);
@@ -350,7 +353,7 @@ public class DropInActivityUnitTest {
         mActivity.onBackPressed();
 
         assertTrue(mActivity.isFinishing());
-        assertEquals(Activity.RESULT_CANCELED, mShadowActivity.getResultCode());
+        assertEquals(RESULT_CANCELED, mShadowActivity.getResultCode());
     }
 
     @Test
@@ -369,7 +372,7 @@ public class DropInActivityUnitTest {
         mActivity.onBackgroundClicked(null);
 
         assertTrue(mActivity.isFinishing());
-        assertEquals(Activity.RESULT_CANCELED, mShadowActivity.getResultCode());
+        assertEquals(RESULT_CANCELED, mShadowActivity.getResultCode());
     }
 
     @Test
@@ -400,7 +403,7 @@ public class DropInActivityUnitTest {
         mActivity.onPaymentMethodNonceCreated(cardNonce);
 
         assertTrue(mActivity.isFinishing());
-        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
         DropInResult result = mShadowActivity.getResultIntent()
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertEquals(cardNonce.getNonce(), result.getPaymentMethodNonce().getNonce());
@@ -470,7 +473,7 @@ public class DropInActivityUnitTest {
         mActivity.onPaymentMethodNonceCreated(cardNonce);
 
         assertTrue(mActivity.isFinishing());
-        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
         DropInResult result = mShadowActivity.getResultIntent()
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertNotNull(result.getDeviceData());
@@ -493,7 +496,7 @@ public class DropInActivityUnitTest {
         PaymentMethodNonce paymentMethodNonce = PaymentMethodNonce.parsePaymentMethodNonces(
                 stringFromFixture("responses/get_payment_methods_response.json")).get(0);
         assertTrue(mActivity.isFinishing());
-        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
         assertEquals(paymentMethodNonce.getNonce(),
                 ((DropInResult) mShadowActivity.getResultIntent()
                         .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT))
@@ -547,7 +550,7 @@ public class DropInActivityUnitTest {
         setup(new BraintreeUnitTestHttpClient());
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
 
-        mActivity.onActivityResult(1, Activity.RESULT_CANCELED, null);
+        mActivity.onActivityResult(1, RESULT_CANCELED, null);
 
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
@@ -563,7 +566,7 @@ public class DropInActivityUnitTest {
         verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
                 any(HttpResponseCallback.class));
 
-        mActivity.onActivityResult(1, Activity.RESULT_CANCELED, null);
+        mActivity.onActivityResult(1, RESULT_CANCELED, null);
 
         verify(httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
                 any(HttpResponseCallback.class));
@@ -580,7 +583,7 @@ public class DropInActivityUnitTest {
         verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
                 any(HttpResponseCallback.class));
 
-        mActivity.onActivityResult(2, Activity.RESULT_CANCELED, null);
+        mActivity.onActivityResult(2, RESULT_CANCELED, null);
 
         verify(httpClient, times(1)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
                 any(HttpResponseCallback.class));
@@ -595,10 +598,10 @@ public class DropInActivityUnitTest {
                 .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
         mActivityController.setup();
 
-        mActivity.onActivityResult(1, Activity.RESULT_OK, data);
+        mActivity.onActivityResult(1, RESULT_OK, data);
 
         assertTrue(mShadowActivity.isFinishing());
-        assertEquals(Activity.RESULT_OK, mShadowActivity.getResultCode());
+        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
         DropInResult response = mShadowActivity.getResultIntent()
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertEquals(result.getPaymentMethodType(), response.getPaymentMethodType());
@@ -620,7 +623,7 @@ public class DropInActivityUnitTest {
         Intent data = new Intent()
                 .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
 
-        mActivity.onActivityResult(1, Activity.RESULT_OK, data);
+        mActivity.onActivityResult(1, RESULT_OK, data);
 
         DropInResult response = mShadowActivity.getResultIntent()
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
@@ -632,10 +635,10 @@ public class DropInActivityUnitTest {
         Intent data = new Intent()
                 .putExtra(DropInActivity.EXTRA_ERROR, new Exception("Error"));
         mActivityController.setup();
-        mActivity.onActivityResult(1, Activity.RESULT_FIRST_USER, data);
+        mActivity.onActivityResult(1, RESULT_FIRST_USER, data);
 
         assertTrue(mShadowActivity.isFinishing());
-        assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         assertEquals("Error",
                 ((Exception) mShadowActivity.getResultIntent()
                         .getSerializableExtra(DropInActivity.EXTRA_ERROR)).getMessage());
@@ -652,7 +655,7 @@ public class DropInActivityUnitTest {
         assertNull(BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
 
-        mActivity.onActivityResult(1, Activity.RESULT_OK, data);
+        mActivity.onActivityResult(1, RESULT_OK, data);
 
         assertEquals(PaymentMethodType.VISA.getCanonicalName(),
                 BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -671,7 +674,7 @@ public class DropInActivityUnitTest {
         verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
                 any(HttpResponseCallback.class));
 
-        mActivity.onActivityResult(2, Activity.RESULT_OK, null);
+        mActivity.onActivityResult(2, RESULT_OK, null);
 
         verify(httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
                 any(HttpResponseCallback.class));
@@ -689,7 +692,7 @@ public class DropInActivityUnitTest {
 
         assertNull(((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter());
 
-        mActivity.onActivityResult(2, Activity.RESULT_OK, new Intent()
+        mActivity.onActivityResult(2, RESULT_OK, new Intent()
                 .putExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES", paymentMethodNonces));
 
         assertEquals(1, ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods))
@@ -700,7 +703,7 @@ public class DropInActivityUnitTest {
     public void onActivityResult_whenVaultManagerResultOk_removesLoadingIndicator() {
         mActivityController.setup();
 
-        mActivity.onActivityResult(2, Activity.RESULT_FIRST_USER, null);
+        mActivity.onActivityResult(2, RESULT_FIRST_USER, null);
 
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
@@ -860,7 +863,7 @@ public class DropInActivityUnitTest {
 
         verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit." + analyticsEvent);
         assertTrue(mActivity.isFinishing());
-        assertEquals(Activity.RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception actualException = (Exception) mShadowActivity.getResultIntent()
                 .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertEquals(exception.getClass(), actualException.getClass());

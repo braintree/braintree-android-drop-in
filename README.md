@@ -50,11 +50,11 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
 
     if (requestCode == DROP_IN_REQUEST) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == RESULT_OK) {
             DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
             String paymentMethodNonce = result.getPaymentMethodNonce().getNonce();
             // send paymentMethodNonce to your server
-        } else if (resultCode == Activity.RESULT_CANCELED) {
+        } else if (resultCode == RESULT_CANCELED) {
             // canceled
         } else {
             // an error occurred, checked the returned exception
