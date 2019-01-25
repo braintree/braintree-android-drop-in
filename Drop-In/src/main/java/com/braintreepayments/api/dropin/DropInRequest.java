@@ -40,6 +40,7 @@ public class DropInRequest implements Parcelable {
     private boolean mMaskSecurityCode = false;
     private boolean mVaultManagerEnabled = false;
     private ArrayList<CountrySpecification> mAndroidAllowedCountriesForShipping = new ArrayList<>();
+    @Deprecated
     private List<String> mPayPalAdditionalScopes;
     private boolean mPayPalEnabled = true;
     private boolean mVenmoEnabled = true;
@@ -196,14 +197,10 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
-     * Set additional scopes to request when a user is authorizing PayPal.
-     *
-     * This method is optional.
-     *
-     * @param additionalScopes A {@link java.util.List} of additional scopes.
-     *        Ex: PayPal.SCOPE_ADDRESS.
-     *        Acceptable scopes are defined in {@link PayPal}.
+     * @deprecated Future Payments has been deprecated and this method will be removed in
+     * the next major version.
      */
+    @Deprecated
     public DropInRequest paypalAdditionalScopes(List<String> additionalScopes) {
         mPayPalAdditionalScopes = additionalScopes;
         return this;
@@ -321,6 +318,7 @@ public class DropInRequest implements Parcelable {
         return mAndroidAllowedCountriesForShipping;
     }
 
+    @Deprecated
     List<String> getPayPalAdditionalScopes() {
         return mPayPalAdditionalScopes;
     }
