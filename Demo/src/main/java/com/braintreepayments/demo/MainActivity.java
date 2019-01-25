@@ -135,10 +135,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .vaultManager(Settings.isVaultManagerEnabled(this))
                 .cardholderNameStatus(Settings.getCardholderNameStatus(this));
 
-        if (Settings.isPayPalAddressScopeRequested(this)) {
-            dropInRequest.paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS));
-        }
-
         startActivityForResult(dropInRequest.getIntent(this), DROP_IN_REQUEST);
     }
 
