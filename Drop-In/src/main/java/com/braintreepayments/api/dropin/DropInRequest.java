@@ -40,8 +40,6 @@ public class DropInRequest implements Parcelable {
     private boolean mMaskSecurityCode = false;
     private boolean mVaultManagerEnabled = false;
     private ArrayList<CountrySpecification> mAndroidAllowedCountriesForShipping = new ArrayList<>();
-    @Deprecated
-    private List<String> mPayPalAdditionalScopes;
     private boolean mPayPalEnabled = true;
     private boolean mVenmoEnabled = true;
     private int mCardholderNameStatus = CardForm.FIELD_DISABLED;
@@ -197,16 +195,6 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
-     * @deprecated Future Payments has been deprecated and this method will be removed in
-     * the next major version.
-     */
-    @Deprecated
-    public DropInRequest paypalAdditionalScopes(List<String> additionalScopes) {
-        mPayPalAdditionalScopes = additionalScopes;
-        return this;
-    }
-
-    /**
      * Disables PayPal in Drop-in.
      */
     public DropInRequest disablePayPal() {
@@ -318,11 +306,6 @@ public class DropInRequest implements Parcelable {
         return mAndroidAllowedCountriesForShipping;
     }
 
-    @Deprecated
-    List<String> getPayPalAdditionalScopes() {
-        return mPayPalAdditionalScopes;
-    }
-
     public boolean isPayPalEnabled() {
         return mPayPalEnabled;
     }
@@ -382,7 +365,6 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(mGooglePaymentEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mAndroidPayEnabled ? (byte) 1 : (byte) 0);
         dest.writeParcelable(mPayPalRequest, 0);
-        dest.writeStringList(mPayPalAdditionalScopes);
         dest.writeByte(mPayPalEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mVenmoEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mRequestThreeDSecureVerification ? (byte) 1 : (byte) 0);
@@ -408,7 +390,6 @@ public class DropInRequest implements Parcelable {
         mGooglePaymentEnabled = in.readByte() != 0;
         mAndroidPayEnabled = in.readByte() != 0;
         mPayPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());
-        mPayPalAdditionalScopes = in.createStringArrayList();
         mPayPalEnabled = in.readByte() != 0;
         mVenmoEnabled = in.readByte() != 0;
         mRequestThreeDSecureVerification = in.readByte() != 0;

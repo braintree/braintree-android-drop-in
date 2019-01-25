@@ -56,7 +56,6 @@ public class DropInRequestUnitTest {
                 .googlePaymentRequest(googlePaymentRequest)
                 .disableGooglePayment()
                 .paypalRequest(paypalRequest)
-                .paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS))
                 .disablePayPal()
                 .disableVenmo()
                 .requestThreeDSecureVerification(true)
@@ -85,7 +84,6 @@ public class DropInRequestUnitTest {
         assertEquals("GB", dropInRequest.getAndroidPayAllowedCountriesForShipping().get(0).getCountryCode());
         assertEquals("10", dropInRequest.getPayPalRequest().getAmount());
         assertEquals("USD", dropInRequest.getPayPalRequest().getCurrencyCode());
-        assertEquals(Collections.singletonList(PayPal.SCOPE_ADDRESS), dropInRequest.getPayPalAdditionalScopes());
         assertFalse(dropInRequest.isPayPalEnabled());
         assertFalse(dropInRequest.isVenmoEnabled());
         assertTrue(dropInRequest.shouldRequestThreeDSecureVerification());
@@ -112,7 +110,6 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.isAndroidPayEnabled());
         assertTrue(dropInRequest.isGooglePaymentEnabled());
         assertTrue(dropInRequest.getAndroidPayAllowedCountriesForShipping().isEmpty());
-        assertNull(dropInRequest.getPayPalAdditionalScopes());
         assertNull(dropInRequest.getPayPalRequest());
         assertTrue(dropInRequest.isPayPalEnabled());
         assertTrue(dropInRequest.isVenmoEnabled());
@@ -151,7 +148,6 @@ public class DropInRequestUnitTest {
                 .googlePaymentRequest(googlePaymentRequest)
                 .disableGooglePayment()
                 .paypalRequest(paypalRequest)
-                .paypalAdditionalScopes(Collections.singletonList(PayPal.SCOPE_ADDRESS))
                 .disablePayPal()
                 .disableVenmo()
                 .requestThreeDSecureVerification(true)
@@ -181,7 +177,6 @@ public class DropInRequestUnitTest {
         assertEquals("10", dropInRequest.getPayPalRequest().getAmount());
         assertEquals("USD", dropInRequest.getPayPalRequest().getCurrencyCode());
         assertFalse(dropInRequest.isGooglePaymentEnabled());
-        assertEquals(Collections.singletonList(PayPal.SCOPE_ADDRESS), parceledDropInRequest.getPayPalAdditionalScopes());
         assertFalse(parceledDropInRequest.isPayPalEnabled());
         assertFalse(parceledDropInRequest.isVenmoEnabled());
         assertTrue(parceledDropInRequest.shouldRequestThreeDSecureVerification());

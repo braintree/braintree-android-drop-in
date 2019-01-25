@@ -128,15 +128,6 @@ public class Settings {
         return countries;
     }
 
-    public static String getPayPalPaymentType(Context context) {
-        return getPreferences(context).getString("paypal_payment_type", context.getString(R.string.paypal_billing_agreement));
-    }
-
-    @Deprecated
-    public static boolean isPayPalAddressScopeRequested(Context context) {
-        return getPreferences(context).getBoolean("paypal_request_address_scope", false);
-    }
-
     public static boolean isPayPalSignatureVerificationDisabled(Context context) {
         return getPreferences(context).getBoolean("paypal_disable_signature_verification", true);
     }
