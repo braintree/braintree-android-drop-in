@@ -29,17 +29,12 @@ public class DropInRequest implements Parcelable {
     private boolean mCollectDeviceData;
     private boolean mRequestThreeDSecureVerification;
 
-    private Cart mAndroidPayCart;
     private GooglePaymentRequest mGooglePaymentRequest;
     private PayPalRequest mPayPalRequest;
-    private boolean mAndroidPayShippingAddressRequired;
-    private boolean mAndroidPayPhoneNumberRequired;
-    private boolean mAndroidPayEnabled = true;
     private boolean mGooglePaymentEnabled = true;
     private boolean mMaskCardNumber = false;
     private boolean mMaskSecurityCode = false;
     private boolean mVaultManagerEnabled = false;
-    private ArrayList<CountrySpecification> mAndroidAllowedCountriesForShipping = new ArrayList<>();
     private boolean mPayPalEnabled = true;
     private boolean mVenmoEnabled = true;
     private int mCardholderNameStatus = CardForm.FIELD_DISABLED;
@@ -111,78 +106,6 @@ public class DropInRequest implements Parcelable {
      */
     public DropInRequest paypalRequest(PayPalRequest request) {
         mPayPalRequest = request;
-        return this;
-    }
-
-    /**
-     * @deprecated
-     * This method is deprecated. Use {@link DropInRequest#googlePaymentRequest(GooglePaymentRequest)} instead.
-     *
-     * This method is optional.
-     *
-     * @param cart The Android Pay {@link Cart} for the transaction.
-     */
-    @Deprecated
-    public DropInRequest androidPayCart(Cart cart) {
-        mAndroidPayCart = cart;
-        return this;
-    }
-
-    /**
-     * @deprecated
-     * This method is deprecated. Please use {@link GooglePaymentRequest#shippingAddressRequired(boolean)} instead.
-     *
-     * This method is optional.
-     *
-     * @param shippingAddressRequired {@code true} if Android Pay requests should request a
-     *        shipping address from the user.
-     */
-    @Deprecated
-    public DropInRequest androidPayShippingAddressRequired(boolean shippingAddressRequired) {
-        mAndroidPayShippingAddressRequired = shippingAddressRequired;
-        return this;
-    }
-
-    /**
-     * @deprecated
-     * This method is deprecated. Please use {@link GooglePaymentRequest#phoneNumberRequired(boolean)} instead.
-     *
-     * This method is optional.
-     *
-     * @param phoneNumberRequired {@code true} if Android Pay requests should request a phone
-     *        number from the user.
-     */
-    @Deprecated
-    public DropInRequest androidPayPhoneNumberRequired(boolean phoneNumberRequired) {
-        mAndroidPayPhoneNumberRequired = phoneNumberRequired;
-        return this;
-    }
-
-    /**
-     * @deprecated
-     * This method is deprecated. Please use {@link GooglePaymentRequest#getShippingAddressRequirements()} instead.
-     *
-     * This method is optional.
-     *
-     * @param countryCodes countries to which shipping is supported.
-     * Follows the ISO 3166-2 format (ex: "US", "CA", "JP")
-     *
-     * @see <a href="https://en.wikipedia.org/wiki/ISO_3166-2#Current_codes">ISO 3166 country codes</a>
-     */
-    @Deprecated
-    public DropInRequest androidPayAllowedCountriesForShipping(String... countryCodes) {
-        mAndroidAllowedCountriesForShipping.clear();
-        for(String countryCode : countryCodes) {
-            mAndroidAllowedCountriesForShipping.add(new CountrySpecification(countryCode));
-        }
-        return this;
-    }
-
-    /**
-     * Disables Android Pay in Drop-in.
-     */
-    public DropInRequest disableAndroidPay() {
-        mAndroidPayEnabled = false;
         return this;
     }
 
@@ -286,26 +209,6 @@ public class DropInRequest implements Parcelable {
         return mCollectDeviceData;
     }
 
-    Cart getAndroidPayCart() throws NoClassDefFoundError {
-        return mAndroidPayCart;
-    }
-
-    boolean isAndroidPayShippingAddressRequired() {
-        return mAndroidPayShippingAddressRequired;
-    }
-
-    boolean isAndroidPayPhoneNumberRequired() {
-        return mAndroidPayPhoneNumberRequired;
-    }
-
-    public boolean isAndroidPayEnabled() {
-        return mAndroidPayEnabled;
-    }
-
-    ArrayList<CountrySpecification> getAndroidPayAllowedCountriesForShipping() {
-        return mAndroidAllowedCountriesForShipping;
-    }
-
     public boolean isPayPalEnabled() {
         return mPayPalEnabled;
     }
@@ -352,18 +255,8 @@ public class DropInRequest implements Parcelable {
         dest.writeString(mAuthorization);
         dest.writeString(mAmount);
         dest.writeByte(mCollectDeviceData ? (byte) 1 : (byte) 0);
-
-        try {
-            Cart.class.getClassLoader();
-            dest.writeParcelable(mAndroidPayCart, 0);
-            dest.writeByte(mAndroidPayShippingAddressRequired ? (byte) 1 : (byte) 0);
-            dest.writeByte(mAndroidPayPhoneNumberRequired ? (byte) 1 : (byte) 0);
-            dest.writeTypedList(mAndroidAllowedCountriesForShipping);
-        } catch (NoClassDefFoundError ignored) {}
-
         dest.writeParcelable(mGooglePaymentRequest, 0);
         dest.writeByte(mGooglePaymentEnabled ? (byte) 1 : (byte) 0);
-        dest.writeByte(mAndroidPayEnabled ? (byte) 1 : (byte) 0);
         dest.writeParcelable(mPayPalRequest, 0);
         dest.writeByte(mPayPalEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mVenmoEnabled ? (byte) 1 : (byte) 0);
@@ -378,17 +271,8 @@ public class DropInRequest implements Parcelable {
         mAuthorization = in.readString();
         mAmount = in.readString();
         mCollectDeviceData = in.readByte() != 0;
-
-        try {
-            mAndroidPayCart = in.readParcelable(Cart.class.getClassLoader());
-            mAndroidPayShippingAddressRequired = in.readByte() != 0;
-            mAndroidPayPhoneNumberRequired = in.readByte() != 0;
-            in.readTypedList(mAndroidAllowedCountriesForShipping, CountrySpecification.CREATOR);
-        } catch (NoClassDefFoundError ignored) {}
-
         mGooglePaymentRequest = in.readParcelable(GooglePaymentRequest.class.getClassLoader());
         mGooglePaymentEnabled = in.readByte() != 0;
-        mAndroidPayEnabled = in.readByte() != 0;
         mPayPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());
         mPayPalEnabled = in.readByte() != 0;
         mVenmoEnabled = in.readByte() != 0;
