@@ -1,6 +1,7 @@
 package com.braintreepayments.api.dropin;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -26,7 +27,6 @@ import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.test.ExpirationDate;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.api.test.TestConfigurationBuilder.TestUnionPayConfigurationBuilder;
-import com.braintreepayments.api.threedsecure.ThreeDSecureWebViewActivity;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
@@ -49,7 +49,7 @@ import static com.braintreepayments.api.test.CardNumber.UNIONPAY_CREDIT;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_DEBIT;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.api.test.CardNumber.VISA;
-import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerWithThreeDSecureWebViewActivity;
+import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerSupportsThreeDSecure;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
@@ -927,7 +927,7 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void showsSubmitButtonAgainWhenThreeDSecureIsCanceled() throws PackageManager.NameNotFoundException {
-        PackageManager packageManager = mockPackageManagerWithThreeDSecureWebViewActivity();
+        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
         Context context = spy(RuntimeEnvironment.application);
         when(context.getPackageManager()).thenReturn(packageManager);
         mActivity.context = context;
@@ -952,8 +952,9 @@ public class AddCardActivityUnitTest {
         setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
-        assertEquals(ThreeDSecureWebViewActivity.class.getName(),
-                shadowOf(mActivity).peekNextStartedActivity().getComponent().getClassName());
+        Intent nextStartedActivity = shadowOf(mActivity).peekNextStartedActivity();
+        assertEquals(Intent.ACTION_VIEW, nextStartedActivity.getAction());
+        assertTrue(nextStartedActivity.getDataString().contains("com.braintreepayments.api.dropin.braintre"));
 
         assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
         assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();
