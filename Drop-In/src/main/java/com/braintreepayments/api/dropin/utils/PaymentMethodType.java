@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 public enum PaymentMethodType {
 
     AMEX(CardType.AMEX.getFrontResource(), R.drawable.bt_ic_vaulted_amex, R.string.bt_descriptor_amex, "American Express", CardType.AMEX),
-    ANDROID_PAY(R.drawable.bt_ic_android_pay, 0, R.string.bt_descriptor_android_pay, "Android Pay", null),
     GOOGLE_PAYMENT(R.drawable.bt_ic_google_pay, 0, R.string.bt_descriptor_google_pay, "Google Pay", null),
     DINERS(CardType.DINERS_CLUB.getFrontResource(), R.drawable.bt_ic_vaulted_diners_club, R.string.bt_descriptor_diners, "Diners", CardType.DINERS_CLUB),
     DISCOVER(CardType.DISCOVER.getFrontResource(), R.drawable.bt_ic_vaulted_discover, R.string.bt_descriptor_discover, "Discover", CardType.DISCOVER),

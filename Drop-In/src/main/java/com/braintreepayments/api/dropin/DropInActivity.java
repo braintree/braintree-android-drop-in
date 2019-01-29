@@ -13,7 +13,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.PayPal;
@@ -141,13 +140,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                     showSupportedPaymentMethods(isReadyToPay);
                 }
             });
-        } else if (mDropInRequest.isAndroidPayEnabled()) {
-            AndroidPay.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
-                @Override
-                public void onResponse(Boolean isReadyToPay) {
-                    showSupportedPaymentMethods(isReadyToPay);
-                }
-            });
         } else {
             showSupportedPaymentMethods(false);
         }
@@ -244,12 +236,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 } else {
                     PayPal.requestBillingAgreement(mBraintreeFragment, paypalRequest);
                 }
-                break;
-            case ANDROID_PAY:
-                AndroidPay.requestAndroidPay(mBraintreeFragment, mDropInRequest.getAndroidPayCart(),
-                        mDropInRequest.isAndroidPayShippingAddressRequired(),
-                        mDropInRequest.isAndroidPayPhoneNumberRequired(),
-                        mDropInRequest.getAndroidPayAllowedCountriesForShipping());
                 break;
             case GOOGLE_PAYMENT:
                 GooglePayment.requestPayment(mBraintreeFragment, mDropInRequest.getGooglePaymentRequest());

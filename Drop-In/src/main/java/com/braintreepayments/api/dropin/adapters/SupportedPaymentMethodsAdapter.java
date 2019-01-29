@@ -32,7 +32,7 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
     }
 
     public void setup(Configuration configuration, DropInRequest dropInRequest,
-                      boolean androidPayEnabled, boolean unionpaySupported) {
+                      boolean googlePayEnabled, boolean unionpaySupported) {
         if (dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled()) {
             mAvailablePaymentMethods.add(PaymentMethodType.PAYPAL);
         }
@@ -50,11 +50,9 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
             mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
         }
 
-        if (androidPayEnabled) {
+        if (googlePayEnabled) {
             if (dropInRequest.isGooglePaymentEnabled()) {
                 mAvailablePaymentMethods.add(PaymentMethodType.GOOGLE_PAYMENT);
-            } else if (dropInRequest.isAndroidPayEnabled()) {
-                mAvailablePaymentMethods.add(PaymentMethodType.ANDROID_PAY);
             }
         }
     }
