@@ -169,7 +169,6 @@ public class DropInTest extends TestHelper {
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
-    @SdkSuppress(minSdkVersion = 21)
     @Test(timeout = 60000)
     public void tokenizesPayPal() {
         uninstallPayPalWallet();
@@ -184,7 +183,6 @@ public class DropInTest extends TestHelper {
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
-    @SdkSuppress(minSdkVersion = 21)
     @Test(timeout = 60000)
     public void tokenizesPayPalWithATokenizationKey() {
         uninstallPayPalWallet();
