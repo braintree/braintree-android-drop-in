@@ -48,7 +48,7 @@ import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
-import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerWithThreeDSecureWebViewActivity;
+import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerSupportsThreeDSecure;
 import static com.braintreepayments.api.test.ReflectionHelper.getField;
 import static com.braintreepayments.api.test.ReflectionHelper.setField;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
@@ -199,7 +199,7 @@ public class DropInActivityUnitTest {
     @Test
     public void onCancel_reloadsPaymentMethodsIfThreeDSecureWasRequestedPreviously()
             throws Exception {
-        PackageManager packageManager = mockPackageManagerWithThreeDSecureWebViewActivity();
+        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
         Context context = spy(RuntimeEnvironment.application);
         when(context.getPackageManager()).thenReturn(packageManager);
         mActivity.context = context;
@@ -218,10 +218,6 @@ public class DropInActivityUnitTest {
                 stringFromFixture("responses/visa_credit_card_response.json"));
 
         mActivity.onPaymentMethodNonceCreated(cardNonce);
-
-        verify(mActivity.httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
-                any(HttpResponseCallback.class));
-
         mActivity.onCancel(BraintreeRequestCodes.THREE_D_SECURE);
 
         verify(mActivity.httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
@@ -231,7 +227,7 @@ public class DropInActivityUnitTest {
     @Test
     public void onError_reloadsPaymentMethodsIfThreeDSecureWasRequestedPreviously()
             throws Exception {
-        PackageManager packageManager = mockPackageManagerWithThreeDSecureWebViewActivity();
+        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
         Context context = spy(RuntimeEnvironment.application);
         when(context.getPackageManager()).thenReturn(packageManager);
         mActivity.context = context;
@@ -250,10 +246,6 @@ public class DropInActivityUnitTest {
                 stringFromFixture("responses/visa_credit_card_response.json"));
 
         mActivity.onPaymentMethodNonceCreated(cardNonce);
-
-        verify(mActivity.httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
-                any(HttpResponseCallback.class));
-
         mActivity.onError(new Exception());
 
         verify(mActivity.httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
@@ -413,7 +405,7 @@ public class DropInActivityUnitTest {
     @Test
     public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationWhenEnabled()
             throws Exception {
-        PackageManager packageManager = mockPackageManagerWithThreeDSecureWebViewActivity();
+        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
         Context context = spy(RuntimeEnvironment.application);
         when(context.getPackageManager()).thenReturn(packageManager);
         mActivity.context = context;

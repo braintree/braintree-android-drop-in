@@ -9,8 +9,6 @@
         android:supportsRtl="true"
         tools:ignore="UnusedAttribute">
 
-        <activity android:name="com.braintreepayments.api.threedsecure.ThreeDSecureWebViewActivity"
-            android:theme="@style/bt_three_d_secure_theme"/>
         <activity android:name="com.braintreepayments.api.dropin.DropInActivity"
             android:theme="@style/bt_drop_in_activity_theme"/>
         <activity android:name="com.braintreepayments.api.dropin.AddCardActivity"
