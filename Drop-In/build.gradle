@@ -7,7 +7,7 @@ def LOCALHOST_IP = System.properties['LOCALHOST_IP'] ?: '"10.0.2.2"';
 def GATEWAY_IP = System.properties['GATEWAY_IP'] ?: '"10.0.2.2"';
 def GATEWAY_PORT = System.properties['GATEWAY_PORT'] ?: '"3000"';
 
-version '4.0.0-SNAPSHOT'
+version '4.0.0-DEVELOPMENT'
 
 android {
     compileSdkVersion 28
@@ -57,7 +57,7 @@ android.buildTypes.debug { type ->
 }
 
 dependencies {
-    api 'com.braintreepayments.api:braintree:3.0.0-SNAPSHOT'
+    api 'com.braintreepayments.api:braintree:3.0.0-DEVELOPMENT'
     api 'com.braintreepayments:card-form:4.0.0-SNAPSHOT'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.gms:play-services-wallet:16.0.0'
@@ -97,7 +97,7 @@ artifacts {
 
 signing {
     required {
-        !version.endsWith("SNAPSHOT") && sonatypeUsername != null
+        !version.endsWith("SNAPSHOT") && !version.endsWith("DEVELOPMENT")
     }
     sign configurations.archives
 }
@@ -114,16 +114,16 @@ uploadArchives {
         mavenDeployer {
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
-                authentication(userName: sonatypeUsername, password: sonatypePassword)
-            }
-
-            if (sonatypeUsername == null) {
-                snapshotRepository(url: 'file:///tmp/maven/')
+            if (version.endsWith("DEVELOPMENT")) {
+                repository(url: 'file:///tmp/maven/')
             } else {
-                snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                repository(url: 'https://oss.sonatype.org/service/local/staging/deploy/maven2/') {
                     authentication(userName: sonatypeUsername, password: sonatypePassword)
                 }
+            }
+
+            snapshotRepository(url: 'https://oss.sonatype.org/content/repositories/snapshots/') {
+                authentication(userName: sonatypeUsername, password: sonatypePassword)
             }
 
             pom.setArtifactId 'drop-in'
