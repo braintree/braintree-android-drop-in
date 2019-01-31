@@ -142,6 +142,6 @@ public class PaymentMethodTypeUnitTest {
 
     @Test
     public void containsOnlyKnownPaymentMethodTypes() {
-        assertEquals(13, PaymentMethodType.values().length);
+        assertEquals(12, PaymentMethodType.values().length);
     }
 }

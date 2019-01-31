@@ -3,8 +3,8 @@ package com.braintreepayments.api.dropin;
 import android.widget.ListView;
 import android.widget.ViewSwitcher;
 
-import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.Venmo;
 import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter;
@@ -12,9 +12,9 @@ import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.GoogleApiClientException;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.models.Configuration;
+import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
-import com.google.android.gms.wallet.Cart;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -32,13 +32,10 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowActivity.IntentForResult;
 
-import java.util.ArrayList;
-
 import static com.braintreepayments.api.test.ReflectionHelper.setField;
 import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -51,7 +48,7 @@ import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "android.*" })
-@PrepareForTest({ PayPal.class, Venmo.class, AndroidPay.class })
+@PrepareForTest({ PayPal.class, Venmo.class, GooglePayment.class })
 public class DropInActivityPowerMockTest {
 
     @Rule
@@ -67,22 +64,22 @@ public class DropInActivityPowerMockTest {
     }
 
     @Test
-    public void googleApiClientExceptionDisablesAndroidPayButDoesNotExitActivity() {
-        mockStatic(AndroidPay.class);
+    public void googleApiClientExceptionDisablesGooglePaymentButDoesNotExitActivity() {
+        mockStatic(GooglePayment.class);
         doAnswer(new Answer<Object>() {
             @Override
             public Object answer(InvocationOnMock invocation) throws Throwable {
                 ((BraintreeResponseListener<Boolean>) invocation.getArguments()[1]).onResponse(true);
                 return null;
             }
-        }).when(AndroidPay.class);
-        AndroidPay.isReadyToPay(any(BraintreeFragment.class), any(BraintreeResponseListener.class));
+        }).when(GooglePayment.class);
+        GooglePayment.isReadyToPay(any(BraintreeFragment.class), any(BraintreeResponseListener.class));
         Configuration configuration = new TestConfigurationBuilder()
-                .androidPay(new TestConfigurationBuilder.TestAndroidPayConfigurationBuilder()
+                .googlePayment(new TestConfigurationBuilder.TestGooglePaymentConfigurationBuilder()
                         .enabled(true))
                 .buildConfiguration();
         mActivity.setDropInRequest(new DropInRequest()
-                .disableGooglePayment());
+                .googlePaymentRequest(new GooglePaymentRequest()));
         mActivity.mSupportedPaymentMethodListView = mock(ListView.class);
         mActivity.onConfigurationFetched(configuration);
 
@@ -146,24 +143,19 @@ public class DropInActivityPowerMockTest {
     }
 
     @Test
-    public void onPaymentMethodSelected_startsAndroidPay() {
-        Cart cart = Cart.newBuilder().build();
+    public void onPaymentMethodSelected_startsGooglePayment() {
         DropInRequest dropInRequest = new DropInRequest()
-                .androidPayCart(cart)
-                .androidPayShippingAddressRequired(true)
-                .androidPayPhoneNumberRequired(true)
-                .androidPayAllowedCountriesForShipping("US");
-        mActivity.setDropInRequest(dropInRequest);
-        mockStatic(AndroidPay.class);
-        doNothing().when(AndroidPay.class);
-        AndroidPay.requestAndroidPay(any(BraintreeFragment.class), any(Cart.class), anyBoolean(),
-                anyBoolean(), any(ArrayList.class));
+                .googlePaymentRequest(new GooglePaymentRequest());
 
-        mActivity.onPaymentMethodSelected(PaymentMethodType.ANDROID_PAY);
+        mActivity.setDropInRequest(dropInRequest);
+        mockStatic(GooglePayment.class);
+        doNothing().when(GooglePayment.class);
+        GooglePayment.requestPayment(any(BraintreeFragment.class), any(GooglePaymentRequest.class));
+
+        mActivity.onPaymentMethodSelected(PaymentMethodType.GOOGLE_PAYMENT);
 
         verifyStatic();
-        AndroidPay.requestAndroidPay(mActivity.braintreeFragment, cart, true, true,
-                dropInRequest.getAndroidPayAllowedCountriesForShipping());
+        GooglePayment.requestPayment(mActivity.braintreeFragment, dropInRequest.getGooglePaymentRequest());
     }
 
     @Test

@@ -145,9 +145,9 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
     }
 
-    private void showSupportedPaymentMethods(boolean androidPayOrPayWithGoogleEnabled) {
+    private void showSupportedPaymentMethods(boolean googlePaymentEnabled) {
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(this, this);
-        adapter.setup(mConfiguration, mDropInRequest, androidPayOrPayWithGoogleEnabled, mClientTokenPresent);
+        adapter.setup(mConfiguration, mDropInRequest, googlePaymentEnabled, mClientTokenPresent);
         mSupportedPaymentMethodListView.setAdapter(adapter);
         mLoadingViewSwitcher.setDisplayedChild(1);
         fetchPaymentMethodNonces(false);

@@ -121,16 +121,16 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
         mCustomerId = Settings.getCustomerId(this);
 
         if (mBraintreeFragment == null) {
-            mBraintreeFragment = (BraintreeFragment) getFragmentManager()
+            mBraintreeFragment = (BraintreeFragment) getSupportFragmentManager()
                     .findFragmentByTag(BraintreeFragment.TAG);
         }
 
         if (mBraintreeFragment != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                getFragmentManager().beginTransaction().remove(mBraintreeFragment).commitNow();
+                getSupportFragmentManager().beginTransaction().remove(mBraintreeFragment).commitNow();
             } else {
-                getFragmentManager().beginTransaction().remove(mBraintreeFragment).commit();
-                getFragmentManager().executePendingTransactions();
+                getSupportFragmentManager().beginTransaction().remove(mBraintreeFragment).commit();
+                getSupportFragmentManager().executePendingTransactions();
             }
 
             mBraintreeFragment = null;

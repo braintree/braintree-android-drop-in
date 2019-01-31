@@ -155,14 +155,13 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onConfigurationFetched_whenAndroidPayDisabledClientSide_doesNotShowAndroidPay() {
+    public void onConfigurationFetched_whenGooglePaymentDisabledClientSide_doesNotShowGooglePayment() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
-                        .androidPay(new TestConfigurationBuilder.TestAndroidPayConfigurationBuilder()
+                        .googlePayment(new TestConfigurationBuilder.TestGooglePaymentConfigurationBuilder()
                         .enabled(true))
                         .build());
         mActivity.setDropInRequest(new DropInRequest()
-                .disableAndroidPay()
                 .disableGooglePayment()
                 .tokenizationKey(TOKENIZATION_KEY));
         setup(httpClient);
@@ -174,11 +173,10 @@ public class DropInActivityUnitTest {
     public void onConfigurationFetched_whenGooglePayDisabledClientSide_doesNotShowGooglePay() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
-                        .androidPay(new TestConfigurationBuilder.TestAndroidPayConfigurationBuilder()
+                        .googlePayment(new TestConfigurationBuilder.TestGooglePaymentConfigurationBuilder()
                                 .enabled(true))
                         .build());
         mActivity.setDropInRequest(new DropInRequest()
-                .disableAndroidPay()
                 .disableGooglePayment()
                 .tokenizationKey(TOKENIZATION_KEY));
         setup(httpClient);
@@ -511,11 +509,11 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onPaymentMethodNoncesUpdated_doesNotIncludeVaultedAndroidPayCardNonces() {
+    public void onPaymentMethodNoncesUpdated_doesNotIncludeVaultedGooglePaymentCardNonces() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_android_pay_response.json"));
+                        stringFromFixture("responses/get_payment_methods_google_pay_response.json"));
         mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
         setup(httpClient);
 

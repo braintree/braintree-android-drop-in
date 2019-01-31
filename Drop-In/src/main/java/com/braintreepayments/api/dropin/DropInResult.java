@@ -87,7 +87,7 @@ public class DropInResult implements Parcelable {
 
     /**
      * @return The previously used {@link PaymentMethodType} or {@code null} if there was no
-     * previous payment method. If the type is {@link PaymentMethodType#ANDROID_PAY} the Android
+     * previous payment method. If the type is {@link PaymentMethodType#GOOGLE_PAYMENT} the Android
      * Pay flow will need to be performed by the user again at the time of checkout,
      * {@link #getPaymentMethodNonce()} will return {@code null} in this case.
      */
@@ -99,7 +99,7 @@ public class DropInResult implements Parcelable {
     /**
      * @return The previous {@link PaymentMethodNonce} or {@code null} if there is no previous
      * payment method or the previous payment method was
-     * {@link com.braintreepayments.api.models.AndroidPayCardNonce}.
+     * {@link com.braintreepayments.api.models.GooglePaymentCardNonce}.
      */
     @Nullable
     public PaymentMethodNonce getPaymentMethodNonce() {
