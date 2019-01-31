@@ -48,11 +48,6 @@ public class DropInRequestUnitTest {
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
                 .amount("1.00")
-                .androidPayCart(cart)
-                .androidPayShippingAddressRequired(true)
-                .androidPayPhoneNumberRequired(true)
-                .androidPayAllowedCountriesForShipping("GB")
-                .disableAndroidPay()
                 .googlePaymentRequest(googlePaymentRequest)
                 .disableGooglePayment()
                 .paypalRequest(paypalRequest)
@@ -71,17 +66,11 @@ public class DropInRequestUnitTest {
         assertEquals(TOKENIZATION_KEY, dropInRequest.getAuthorization());
         assertTrue(dropInRequest.shouldCollectDeviceData());
         assertEquals("1.00", dropInRequest.getAmount());
-        assertEquals("5.00", dropInRequest.getAndroidPayCart().getTotalPrice());
-        assertTrue(dropInRequest.isAndroidPayShippingAddressRequired());
-        assertTrue(dropInRequest.isAndroidPayPhoneNumberRequired());
-        assertFalse(dropInRequest.isAndroidPayEnabled());
         assertEquals("10", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPrice());
         assertEquals("USD", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getCurrencyCode());
         assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPriceStatus());
         assertTrue(dropInRequest.getGooglePaymentRequest().isEmailRequired());
         assertFalse(dropInRequest.isGooglePaymentEnabled());
-        assertEquals(1, dropInRequest.getAndroidPayAllowedCountriesForShipping().size());
-        assertEquals("GB", dropInRequest.getAndroidPayAllowedCountriesForShipping().get(0).getCountryCode());
         assertEquals("10", dropInRequest.getPayPalRequest().getAmount());
         assertEquals("USD", dropInRequest.getPayPalRequest().getCurrencyCode());
         assertFalse(dropInRequest.isPayPalEnabled());
@@ -104,12 +93,7 @@ public class DropInRequestUnitTest {
         assertNull(dropInRequest.getAuthorization());
         assertFalse(dropInRequest.shouldCollectDeviceData());
         assertNull(dropInRequest.getAmount());
-        assertNull(dropInRequest.getAndroidPayCart());
-        assertFalse(dropInRequest.isAndroidPayShippingAddressRequired());
-        assertFalse(dropInRequest.isAndroidPayPhoneNumberRequired());
-        assertTrue(dropInRequest.isAndroidPayEnabled());
         assertTrue(dropInRequest.isGooglePaymentEnabled());
-        assertTrue(dropInRequest.getAndroidPayAllowedCountriesForShipping().isEmpty());
         assertNull(dropInRequest.getPayPalRequest());
         assertTrue(dropInRequest.isPayPalEnabled());
         assertTrue(dropInRequest.isVenmoEnabled());
@@ -140,11 +124,6 @@ public class DropInRequestUnitTest {
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
                 .amount("1.00")
-                .androidPayCart(cart)
-                .androidPayShippingAddressRequired(true)
-                .androidPayPhoneNumberRequired(true)
-                .androidPayAllowedCountriesForShipping("GB")
-                .disableAndroidPay()
                 .googlePaymentRequest(googlePaymentRequest)
                 .disableGooglePayment()
                 .paypalRequest(paypalRequest)
@@ -164,12 +143,6 @@ public class DropInRequestUnitTest {
         assertEquals(TOKENIZATION_KEY, parceledDropInRequest.getAuthorization());
         assertTrue(parceledDropInRequest.shouldCollectDeviceData());
         assertEquals("1.00", parceledDropInRequest.getAmount());
-        assertEquals("5.00", parceledDropInRequest.getAndroidPayCart().getTotalPrice());
-        assertTrue(parceledDropInRequest.isAndroidPayShippingAddressRequired());
-        assertTrue(parceledDropInRequest.isAndroidPayPhoneNumberRequired());
-        assertFalse(parceledDropInRequest.isAndroidPayEnabled());
-        assertEquals(1, parceledDropInRequest.getAndroidPayAllowedCountriesForShipping().size());
-        assertEquals("GB", parceledDropInRequest.getAndroidPayAllowedCountriesForShipping().get(0).getCountryCode());
         assertEquals("10", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPrice());
         assertEquals("USD", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getCurrencyCode());
         assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPriceStatus());
@@ -184,13 +157,6 @@ public class DropInRequestUnitTest {
         assertTrue(parceledDropInRequest.shouldMaskSecurityCode());
         assertTrue(parceledDropInRequest.isVaultManagerEnabled());
         assertEquals(CardForm.FIELD_OPTIONAL, parceledDropInRequest.getCardholderNameStatus());
-    }
-
-    @Test
-    public void androidPayAllowedCountriesForShipping_defaultsToEmpty() {
-        DropInRequest dropInRequest = new DropInRequest();
-
-        assertTrue(dropInRequest.getAndroidPayAllowedCountriesForShipping().isEmpty());
     }
 
     @Test

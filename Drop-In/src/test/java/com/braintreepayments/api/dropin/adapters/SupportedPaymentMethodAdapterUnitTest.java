@@ -5,7 +5,7 @@ import android.content.Context;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
-import com.braintreepayments.api.models.AndroidPayConfiguration;
+import com.braintreepayments.api.models.GooglePaymentConfiguration;
 import com.braintreepayments.api.models.CardConfiguration;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.VenmoConfiguration;
@@ -120,11 +120,11 @@ public class SupportedPaymentMethodAdapterUnitTest {
     }
 
     @Test
-    public void androidPayNotAvailableIfDisabledInDropInRequest() {
+    public void googlePaymentNotAvailableIfDisabledInDropInRequest() {
         Configuration configuration = getConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest()
                 .disableGooglePayment()
-                .disableAndroidPay();
+                .disableGooglePayment();
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 RuntimeEnvironment.application, null);
@@ -134,7 +134,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
     }
 
     @Test
-    public void prefersGooglePayOverAndroidPayIfBothEnabled() {
+    public void prefersGooglePayOverGooglePaymentIfBothEnabled() {
         Configuration configuration = getConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest();
 
@@ -150,7 +150,6 @@ public class SupportedPaymentMethodAdapterUnitTest {
     public void googlePayNotAvailableIfDisabledInDropInRequest() {
         Configuration configuration = getConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest()
-                .disableAndroidPay()
                 .disableGooglePayment();
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
@@ -182,7 +181,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
     }
 
     private Configuration getConfiguration(boolean paypalEnabled, boolean venmoEnabled,
-                                           boolean cardEnabled, boolean androidPayEnabled) {
+                                           boolean cardEnabled, boolean googlePaymentEnabled) {
         Configuration configuration = mock(Configuration.class);
 
         if (paypalEnabled) {
@@ -202,10 +201,10 @@ public class SupportedPaymentMethodAdapterUnitTest {
                     new HashSet<>(Arrays.asList(PaymentMethodType.VISA.getCanonicalName())));
         }
 
-        AndroidPayConfiguration androidPayConfiguration = mock(AndroidPayConfiguration.class);
-        when(configuration.getAndroidPay()).thenReturn(androidPayConfiguration);
-        if (androidPayEnabled) {
-            when(androidPayConfiguration.isEnabled(any(Context.class))).thenReturn(true);
+        GooglePaymentConfiguration googlePaymentConfiguration = mock(GooglePaymentConfiguration.class);
+        when(configuration.getGooglePayment()).thenReturn(googlePaymentConfiguration);
+        if (googlePaymentEnabled) {
+            when(googlePaymentConfiguration.isEnabled(any(Context.class))).thenReturn(true);
         }
 
         return configuration;

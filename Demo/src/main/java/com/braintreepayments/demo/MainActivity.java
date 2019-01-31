@@ -8,9 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.dropin.DropInActivity;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.DropInResult;
@@ -19,7 +17,6 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.models.AndroidPayCardNonce;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.GooglePaymentCardNonce;
@@ -28,15 +25,11 @@ import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.PostalAddress;
 import com.braintreepayments.api.models.VenmoAccountNonce;
-import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.wallet.Cart;
 import com.google.android.gms.wallet.LineItem;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 import androidx.cardview.widget.CardView;
 
@@ -128,10 +121,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .googlePaymentRequest(getGooglePaymentRequest())
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
-                .androidPayCart(getAndroidPayCart())
-                .androidPayShippingAddressRequired(Settings.isAndroidPayShippingAddressRequired(this))
-                .androidPayPhoneNumberRequired(Settings.isAndroidPayPhoneNumberRequired(this))
-                .androidPayAllowedCountriesForShipping(Settings.getAndroidPayAllowedCountriesForShipping(this))
                 .vaultManager(Settings.isVaultManagerEnabled(this))
                 .cardholderNameStatus(Settings.getCardholderNameStatus(this));
 
@@ -139,24 +128,11 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     }
 
     public void purchase(View v) {
-        if (mPaymentMethodType == PaymentMethodType.ANDROID_PAY && mNonce == null) {
-            ArrayList<CountrySpecification> countries = new ArrayList<>();
-            for(String countryCode : Settings.getAndroidPayAllowedCountriesForShipping(this)) {
-                countries.add(new CountrySpecification(countryCode));
-            }
+        Intent intent = new Intent(this, CreateTransactionActivity.class)
+                .putExtra(CreateTransactionActivity.EXTRA_PAYMENT_METHOD_NONCE, mNonce);
+        startActivity(intent);
 
-            mShouldMakePurchase = true;
-
-            AndroidPay.requestAndroidPay(mBraintreeFragment, getAndroidPayCart(),
-                    Settings.isAndroidPayShippingAddressRequired(this),
-                    Settings.isAndroidPayPhoneNumberRequired(this), countries);
-        } else {
-            Intent intent = new Intent(this, CreateTransactionActivity.class)
-                    .putExtra(CreateTransactionActivity.EXTRA_PAYMENT_METHOD_NONCE, mNonce);
-            startActivity(intent);
-
-            mPurchased = true;
-        }
+        mPurchased = true;
     }
 
     @Override
@@ -171,10 +147,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
             mPaymentMethodIcon.setImageResource(result.getPaymentMethodType().getDrawable());
             if (result.getPaymentMethodNonce() != null) {
                 displayResult(result.getPaymentMethodNonce(), result.getDeviceData());
-            } else if (result.getPaymentMethodType() == PaymentMethodType.ANDROID_PAY) {
-                mPaymentMethodTitle.setText(PaymentMethodType.ANDROID_PAY.getLocalizedName());
-                mPaymentMethodDescription.setText("");
-                mPaymentMethod.setVisibility(VISIBLE);
             }
 
             mPurchaseButton.setEnabled(true);
@@ -282,13 +254,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
             details += "Client metadata id: " + paypalAccountNonce.getClientMetadataId() + "\n";
             details += "Billing address: " + formatAddress(paypalAccountNonce.getBillingAddress()) + "\n";
             details += "Shipping address: " + formatAddress(paypalAccountNonce.getShippingAddress());
-        } else if (mNonce instanceof AndroidPayCardNonce) {
-            AndroidPayCardNonce androidPayCardNonce = (AndroidPayCardNonce) mNonce;
-
-            details = "Underlying Card Last Two: " + androidPayCardNonce.getLastTwo() + "\n";
-            details += "Email: " + androidPayCardNonce.getEmail() + "\n";
-            details += "Billing address: " + formatAddress(androidPayCardNonce.getBillingAddress()) + "\n";
-            details += "Shipping address: " + formatAddress(androidPayCardNonce.getShippingAddress());
         } else if (mNonce instanceof VenmoAccountNonce) {
             VenmoAccountNonce venmoAccountNonce = (VenmoAccountNonce) mNonce;
 
@@ -344,20 +309,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                         .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
                         .build())
                 .emailRequired(true);
-    }
-
-    private Cart getAndroidPayCart() {
-        return Cart.newBuilder()
-                .setCurrencyCode(Settings.getAndroidPayCurrency(this))
-                .setTotalPrice("1.00")
-                .addLineItem(LineItem.newBuilder()
-                        .setCurrencyCode("USD")
-                        .setDescription("Description")
-                        .setQuantity("1")
-                        .setUnitPrice("1.00")
-                        .setTotalPrice("1.00")
-                        .build())
-                .build();
     }
 
     private void safelyCloseLoadingView() {
