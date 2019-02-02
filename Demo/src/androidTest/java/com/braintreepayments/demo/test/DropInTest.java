@@ -79,9 +79,7 @@ public class DropInTest extends TestHelper {
         tokenizeCard(THREE_D_SECURE_VERIFICATON);
 
         onDevice(withText("Added Protection")).waitForExists();
-        onDevice().pressTab();
-        onDevice().typeText("1234");
-        onDevice().pressTab().pressTab().pressEnter();
+        onDevice().typeText("1234").pressEnter();
 
         onDevice(withText("Return To App")).waitForExists(1000);
         if (onDevice(withText("Return To App")).exists()) {
