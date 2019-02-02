@@ -1,5 +1,11 @@
 # Braintree Android Drop-In Release Notes
 
+## 4.0.0
+
+* Bump minSdkVersion to 21
+* Convert to AndroidX
+* Removed Android Pay
+
 ## 3.7.1
 
 * Upgrade braintree_android to 2.18.1 fixes Chrome Custom Tab integration when using Jetifier to use AndroidX
