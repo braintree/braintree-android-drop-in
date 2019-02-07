@@ -279,7 +279,10 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
                     .expirationYear(cardForm.getExpirationYear())
                     .cvv(cardForm.getCvv())
                     .postalCode(cardForm.getPostalCode())
-                    .streetAddress(cardForm.getAddressLine1())
+                    .streetAddress(cardForm.getStreetAddress())
+                    .extendedAddress(cardForm.getExtendedAddress())
+                    .locality(cardForm.getLocality())
+                    .region(cardForm.getRegion())
                     .validate(mClientTokenPresent);
 
             if (shouldRequestThreeDSecureVerification()) {
