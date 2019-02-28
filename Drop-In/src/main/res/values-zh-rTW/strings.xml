@@ -12,6 +12,7 @@
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
     <string name="bt_descriptor_hiper">Hiper</string>
+    <string name="bt_descriptor_hipercard">Hipercard</string>
     <string name="bt_descriptor_unknown">信用卡或扣帳卡</string>
 
     <string name="bt_recent">近期</string>
@@ -41,5 +42,4 @@
     <string name="bt_delete_confirmation_description">你將無法再次於本應用軟體中使用此付款方式。</string>
     <string name="bt_done">完成</string>
     <string name="bt_vault_manager_delete_failure">我們目前無法刪除你的付款方式，請稍後再試一次。</string>
-    <string name="bt_descriptor_hipercard">Hipercard</string>
 </resources>

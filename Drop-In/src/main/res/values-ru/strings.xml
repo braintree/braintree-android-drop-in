@@ -12,6 +12,7 @@
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
     <string name="bt_descriptor_hiper">Hiper</string>
+    <string name="bt_descriptor_hipercard">Hipercard</string>
     <string name="bt_descriptor_unknown">Банковская карта</string>
 
     <string name="bt_recent">Недавние</string>
@@ -41,5 +42,4 @@
     <string name="bt_delete_confirmation_description">Вы больше не сможете использовать этот способ оплаты в данном приложении.</string>
     <string name="bt_done">Готово</string>
     <string name="bt_vault_manager_delete_failure">Нам не удалось удалить ваш способ оплаты, повторите попытку позже.</string>
-    <string name="bt_descriptor_hipercard">Hipercard</string>
 </resources>

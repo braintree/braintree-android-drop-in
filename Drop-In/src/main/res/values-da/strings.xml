@@ -12,6 +12,7 @@
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
     <string name="bt_descriptor_hiper">Hiper</string>
+    <string name="bt_descriptor_hipercard">Hipercard</string>
     <string name="bt_descriptor_unknown">Betalingskort</string>
 
     <string name="bt_recent">Seneste</string>
@@ -41,5 +42,4 @@
     <string name="bt_delete_confirmation_description">Du vil ikke længere kunne bruge denne betalingsmetode i denne app.</string>
     <string name="bt_done">Udført</string>
     <string name="bt_vault_manager_delete_failure">Vi kunne ikke slette din betalingsmetode lige nu. Prøv igen senere.</string>
-    <string name="bt_descriptor_hipercard">Hipercard</string>
 </resources>
