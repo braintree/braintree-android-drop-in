@@ -11,6 +11,7 @@
     <string name="bt_descriptor_pay_with_venmo">Venmo</string>
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_hiper">Hiper</string>
     <string name="bt_descriptor_unknown">信用卡或扣帳卡</string>
 
     <string name="bt_recent">最近使用</string>
@@ -40,4 +41,5 @@
     <string name="bt_delete_confirmation_description">你將無法再於這個應用程式使用此付款方式。</string>
     <string name="bt_done">完成</string>
     <string name="bt_vault_manager_delete_failure">暫時無法刪除付款方式，請稍後再試。</string>
+    <string name="bt_descriptor_hipercard">Hipercard</string>
 </resources>

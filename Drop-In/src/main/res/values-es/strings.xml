@@ -11,6 +11,7 @@
     <string name="bt_descriptor_pay_with_venmo">Venmo</string>
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_hiper">Hiper</string>
     <string name="bt_descriptor_unknown">Tarjeta de débito o crédito</string>
 
     <string name="bt_recent">Reciente(s)</string>
@@ -40,4 +41,5 @@
     <string name="bt_delete_confirmation_description">Ya no podrá utilizar esta forma de pago en la aplicación.</string>
     <string name="bt_done">Hecho</string>
     <string name="bt_vault_manager_delete_failure">No hemos podido eliminar la forma de pago en este momento. Inténtelo de nuevo más tarde.</string>
+    <string name="bt_descriptor_hipercard">Hipercard</string>
 </resources>
