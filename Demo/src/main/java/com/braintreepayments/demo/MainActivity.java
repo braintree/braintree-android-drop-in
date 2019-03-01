@@ -121,6 +121,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .googlePaymentRequest(getGooglePaymentRequest())
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
+                .billingAddressRequired(true)
                 .vaultManager(Settings.isVaultManagerEnabled(this))
                 .cardholderNameStatus(Settings.getCardholderNameStatus(this));
 

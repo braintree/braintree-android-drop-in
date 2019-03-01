@@ -110,6 +110,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
         mAddCardView.getCardForm().maskCardNumber(mDropInRequest.shouldMaskCardNumber());
         mEditCardView.getCardForm().maskCardNumber(mDropInRequest.shouldMaskCardNumber());
         mEditCardView.getCardForm().maskCvv(mDropInRequest.shouldMaskSecurityCode());
+        mEditCardView.getCardForm().billingAddressRequired(mDropInRequest.isBillingAddressRequired());
 
         enterState(LOADING);
 
@@ -283,6 +284,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
                     .extendedAddress(cardForm.getExtendedAddress())
                     .locality(cardForm.getLocality())
                     .region(cardForm.getRegion())
+                    .countryCode(cardForm.getCountryCodeAlpha2())
                     .validate(mClientTokenPresent);
 
             if (shouldRequestThreeDSecureVerification()) {

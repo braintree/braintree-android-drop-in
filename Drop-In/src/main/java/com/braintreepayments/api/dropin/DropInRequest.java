@@ -38,6 +38,7 @@ public class DropInRequest implements Parcelable {
     private boolean mPayPalEnabled = true;
     private boolean mVenmoEnabled = true;
     private int mCardholderNameStatus = CardForm.FIELD_DISABLED;
+    private boolean mBillingAddressRequired = false;
 
     public DropInRequest() {}
 
@@ -186,6 +187,15 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * @param billingAddressRequired {@code true} to require all billing address fields. Defaults to {@code false}.
+     */
+    public DropInRequest billingAddressRequired(boolean billingAddressRequired) {
+        mBillingAddressRequired = billingAddressRequired;
+        return this;
+    }
+
+
+    /**
      * Get an {@link Intent} that can be used in {@link androidx.appcompat.app.AppCompatActivity#startActivityForResult(Intent, int)}
      * to launch {@link DropInActivity} and the Drop-in UI.
      *
@@ -245,6 +255,8 @@ public class DropInRequest implements Parcelable {
         return mCardholderNameStatus;
     }
 
+    boolean isBillingAddressRequired() { return mBillingAddressRequired; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -265,6 +277,8 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(mMaskSecurityCode ? (byte) 1 : (byte) 0);
         dest.writeByte(mVaultManagerEnabled ? (byte) 1 : (byte) 0);
         dest.writeInt(mCardholderNameStatus);
+        dest.writeByte(mBillingAddressRequired ? (byte) 1 : (byte) 0);
+
     }
 
     protected DropInRequest(Parcel in) {
@@ -281,6 +295,7 @@ public class DropInRequest implements Parcelable {
         mMaskSecurityCode = in.readByte() != 0;
         mVaultManagerEnabled = in.readByte() != 0;
         mCardholderNameStatus = in.readInt();
+        mBillingAddressRequired = in.readByte() != 0;
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {
