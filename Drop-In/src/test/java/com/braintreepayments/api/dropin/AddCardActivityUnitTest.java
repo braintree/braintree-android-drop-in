@@ -403,6 +403,8 @@ public class AddCardActivityUnitTest {
         assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
     }
 
+    // TODO: When billing address required, check if billing address params tokenize
+
     @Test
     public void cardNumberValidationErrorsAreShownToTheUser() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()

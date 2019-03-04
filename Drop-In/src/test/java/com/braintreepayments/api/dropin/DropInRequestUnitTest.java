@@ -58,6 +58,7 @@ public class DropInRequestUnitTest {
                 .maskSecurityCode(true)
                 .vaultManager(true)
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
+                .billingAddressRequired(true)
                 .getIntent(RuntimeEnvironment.application);
 
         DropInRequest dropInRequest = intent.getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
@@ -79,6 +80,7 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.shouldMaskCardNumber());
         assertTrue(dropInRequest.shouldMaskSecurityCode());
         assertTrue(dropInRequest.isVaultManagerEnabled());
+        assertTrue(dropInRequest.isBillingAddressRequired());
         assertEquals(CardForm.FIELD_OPTIONAL, dropInRequest.getCardholderNameStatus());
     }
 
@@ -101,6 +103,7 @@ public class DropInRequestUnitTest {
         assertFalse(dropInRequest.shouldMaskCardNumber());
         assertFalse(dropInRequest.shouldMaskSecurityCode());
         assertFalse(dropInRequest.isVaultManagerEnabled());
+        assertFalse(dropInRequest.isBillingAddressRequired());
         assertEquals(CardForm.FIELD_DISABLED, dropInRequest.getCardholderNameStatus());
     }
 
@@ -133,7 +136,8 @@ public class DropInRequestUnitTest {
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
                 .vaultManager(true)
-                .cardholderNameStatus(CardForm.FIELD_OPTIONAL);
+                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
+                .billingAddressRequired(true);
 
         Parcel parcel = Parcel.obtain();
         dropInRequest.writeToParcel(parcel, 0);
@@ -156,6 +160,7 @@ public class DropInRequestUnitTest {
         assertTrue(parceledDropInRequest.shouldMaskCardNumber());
         assertTrue(parceledDropInRequest.shouldMaskSecurityCode());
         assertTrue(parceledDropInRequest.isVaultManagerEnabled());
+        assertTrue(dropInRequest.isBillingAddressRequired());
         assertEquals(CardForm.FIELD_OPTIONAL, parceledDropInRequest.getCardholderNameStatus());
     }
 
