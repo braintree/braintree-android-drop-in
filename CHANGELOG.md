@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## Unreleased
+
+* Add Hiper and Hipercard detection and assets
+
 ## 4.0.0
 
 * Bump minSdkVersion to 21
