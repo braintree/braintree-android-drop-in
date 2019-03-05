@@ -34,6 +34,8 @@ public class PaymentMethodTypeUnitTest {
         assertEquals(PaymentMethodType.PAYPAL, PaymentMethodType.forType("PayPal"));
         assertEquals(PaymentMethodType.UNKNOWN, PaymentMethodType.forType("unknown"));
         assertEquals(PaymentMethodType.PAY_WITH_VENMO, PaymentMethodType.forType("Venmo"));
+        assertEquals(PaymentMethodType.HIPER, PaymentMethodType.forType("Hiper"));
+        assertEquals(PaymentMethodType.HIPERCARD, PaymentMethodType.forType("Hipercard"));
 
         assertEquals(PaymentMethodType.VISA, PaymentMethodType.forType(
                 CardNonce.fromJson(stringFromFixture("responses/visa_credit_card_response.json"))));
@@ -66,10 +68,12 @@ public class PaymentMethodTypeUnitTest {
         supportedCardTypes.add(PaymentMethodType.PAYPAL.getCanonicalName());
         supportedCardTypes.add(PaymentMethodType.UNKNOWN.getCanonicalName());
         supportedCardTypes.add(PaymentMethodType.PAY_WITH_VENMO.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.HIPER.getCanonicalName());
+        supportedCardTypes.add(PaymentMethodType.HIPERCARD.getCanonicalName());
 
         CardType[] cardTypes = PaymentMethodType.getCardsTypes(supportedCardTypes);
 
-        assertEquals(8, cardTypes.length);
+        assertEquals(10, cardTypes.length);
         assertEquals(CardType.VISA, cardTypes[0]);
         assertEquals(CardType.MASTERCARD, cardTypes[1]);
         assertEquals(CardType.DISCOVER, cardTypes[2]);
@@ -78,6 +82,8 @@ public class PaymentMethodTypeUnitTest {
         assertEquals(CardType.DINERS_CLUB, cardTypes[5]);
         assertEquals(CardType.MAESTRO, cardTypes[6]);
         assertEquals(CardType.UNIONPAY, cardTypes[7]);
+        assertEquals(CardType.HIPER, cardTypes[8]);
+        assertEquals(CardType.HIPERCARD, cardTypes[9]);
     }
 
     @Test
@@ -93,6 +99,8 @@ public class PaymentMethodTypeUnitTest {
         assertEquals(R.drawable.bt_ic_paypal, PaymentMethodType.PAYPAL.getDrawable());
         assertEquals(R.drawable.bt_ic_unknown, PaymentMethodType.UNKNOWN.getDrawable());
         assertEquals(R.drawable.bt_ic_venmo, PaymentMethodType.PAY_WITH_VENMO.getDrawable());
+        assertEquals(R.drawable.bt_ic_hiper, PaymentMethodType.HIPER.getDrawable());
+        assertEquals(R.drawable.bt_ic_hipercard, PaymentMethodType.HIPERCARD.getDrawable());
     }
 
     @Test
@@ -108,6 +116,8 @@ public class PaymentMethodTypeUnitTest {
         assertEquals(R.drawable.bt_ic_vaulted_paypal, PaymentMethodType.PAYPAL.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_unknown, PaymentMethodType.UNKNOWN.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_venmo, PaymentMethodType.PAY_WITH_VENMO.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_hiper, PaymentMethodType.HIPER.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_hipercard, PaymentMethodType.HIPERCARD.getVaultedDrawable());
     }
 
     @Test
@@ -123,6 +133,8 @@ public class PaymentMethodTypeUnitTest {
         assertEquals(R.string.bt_descriptor_paypal, PaymentMethodType.PAYPAL.getLocalizedName());
         assertEquals(R.string.bt_descriptor_unknown, PaymentMethodType.UNKNOWN.getLocalizedName());
         assertEquals(R.string.bt_descriptor_pay_with_venmo, PaymentMethodType.PAY_WITH_VENMO.getLocalizedName());
+        assertEquals(R.string.bt_descriptor_hiper, PaymentMethodType.HIPER.getLocalizedName());
+        assertEquals(R.string.bt_descriptor_hipercard, PaymentMethodType.HIPERCARD.getLocalizedName());
     }
 
     @Test
@@ -138,10 +150,12 @@ public class PaymentMethodTypeUnitTest {
         assertEquals("PayPal", PaymentMethodType.PAYPAL.getCanonicalName());
         assertEquals("Unknown", PaymentMethodType.UNKNOWN.getCanonicalName());
         assertEquals("Venmo", PaymentMethodType.PAY_WITH_VENMO.getCanonicalName());
+        assertEquals("Hiper", PaymentMethodType.HIPER.getCanonicalName());
+        assertEquals("Hipercard", PaymentMethodType.HIPERCARD.getCanonicalName());
     }
 
     @Test
     public void containsOnlyKnownPaymentMethodTypes() {
-        assertEquals(12, PaymentMethodType.values().length);
+        assertEquals(14, PaymentMethodType.values().length);
     }
 }

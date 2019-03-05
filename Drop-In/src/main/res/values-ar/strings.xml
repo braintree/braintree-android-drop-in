@@ -11,6 +11,8 @@
     <string name="bt_descriptor_pay_with_venmo">Venmo</string>
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_hiper">Hiper</string>
+    <string name="bt_descriptor_hipercard">Hipercard</string>
     <string name="bt_descriptor_unknown">بطاقة ائتمان أو سحب</string>
 
     <string name="bt_recent">الأحدث</string>
