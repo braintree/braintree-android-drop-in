@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Add Hiper and Hipercard detection and assets
+  * Bump card-form to 4.1.0
 
 ## 4.0.0
 
