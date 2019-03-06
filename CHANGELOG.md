@@ -1,7 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## Unreleased
-
+## 4.1.0
 * Add Hiper and Hipercard detection and assets
   * Bump card-form to 4.1.0
 
