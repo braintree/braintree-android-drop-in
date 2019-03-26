@@ -40,6 +40,12 @@ public class DropInRequest implements Parcelable {
     private boolean mCardEnabled = true;
     private int mCardholderNameStatus = CardForm.FIELD_DISABLED;
 
+    // STEP 2: Default the value to never vaulting cards. This value should be an enum.
+    // Option 0: card vaulting never enabled
+    // Option 1: card vaulting always enabled
+    // Option 2: customer can decide if they want to vault
+    private int mCardVaultingSetting = 0;
+
     public DropInRequest() {}
 
     /**
@@ -182,6 +188,15 @@ public class DropInRequest implements Parcelable {
         return this;
     }
 
+    // TODO: Update this method description with approprite enum names used in CardForm.
+    /**
+     * Sets the Card Vault setting status, which is how it will behave in {@link CardForm}.
+     */
+    public DropInRequest cardVaultingSetting(int cardVaultStatus) {
+        mCardVaultingSetting = cardVaultStatus;
+        return this;
+    }
+
     /**
      * Sets the Cardholder Name field status, which is how it will behave in {@link CardForm}.
      * Default is {@link CardForm#FIELD_DISABLED}.
@@ -258,6 +273,10 @@ public class DropInRequest implements Parcelable {
         return mCardholderNameStatus;
     }
 
+    public int getCardVaultingSetting() {
+        return mCardVaultingSetting;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -279,6 +298,7 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(mMaskSecurityCode ? (byte) 1 : (byte) 0);
         dest.writeByte(mVaultManagerEnabled ? (byte) 1 : (byte) 0);
         dest.writeInt(mCardholderNameStatus);
+        dest.writeInt(mCardVaultingSetting);
     }
 
     protected DropInRequest(Parcel in) {
@@ -296,6 +316,7 @@ public class DropInRequest implements Parcelable {
         mMaskSecurityCode = in.readByte() != 0;
         mVaultManagerEnabled = in.readByte() != 0;
         mCardholderNameStatus = in.readInt();
+        mCardVaultingSetting = in.readInt();
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {
