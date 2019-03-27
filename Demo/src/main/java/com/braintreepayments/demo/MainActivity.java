@@ -122,24 +122,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .googlePaymentRequest(getGooglePaymentRequest())
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
-
-                // STEP 1: What is most understandable from a merchant's perspective regarding
-                // card vaulting? I think we have one field that they set on the DropInRequest object
-                // with multiple options (use an ENUM). This seems more clear to me than having
-                // multiple fields potentially doing the same things.
-
-                // Option 0: card vaulting never enabled
-                // Option 1: card vaulting always enabled
-                // Option 2: customer can decide if they want to vault
-
-                // TODO: Make an enum within CardForm similar to this, instead of just integers.
-                // .cardVaultSetting(CardForm.ALWAYS_VAULT)
-                // .cardVaultSetting(CardForm.NEVER_VAULT)
-                // .cardVaultSetting(CardForm.CUSTOMER_DECIDES_VAULT)
-
-                .cardVaultingSetting(0)
-
-                .cardholderNameStatus(1)
+                .showCheckBoxToAllowVaultOverride(true)
+                .defaultVaultSetting(true)
                 .vaultManager(Settings.isVaultManagerEnabled(this))
                 .cardholderNameStatus(Settings.getCardholderNameStatus(this));
 

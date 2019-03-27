@@ -111,8 +111,10 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
         mEditCardView.getCardForm().maskCardNumber(mDropInRequest.shouldMaskCardNumber());
         mEditCardView.getCardForm().maskCvv(mDropInRequest.shouldMaskSecurityCode());
 
-        // Communicate cardVault settings with android-card-form
-        mAddCardView.getCardForm().cardVaultingSetting(mDropInRequest.getCardVaultingSetting());
+        mAddCardView.getCardForm().saveCardCheckBoxVisible(mDropInRequest.isSaveCardCheckBoxShown());
+        if (mDropInRequest.isSaveCardCheckBoxShown()) {
+            mAddCardView.getCardForm().saveCardCheckBoxChecked(mDropInRequest.getDefaultVaultSetting());
+        }
 
         enterState(LOADING);
 
@@ -282,7 +284,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
                     .expirationYear(cardForm.getExpirationYear())
                     .cvv(cardForm.getCvv())
                     .postalCode(cardForm.getPostalCode())
-                    .validate(mClientTokenPresent);
+                    .validate(shouldVault(cardForm));
 
             if (shouldRequestThreeDSecureVerification()) {
                 ThreeDSecure.performVerification(mBraintreeFragment, cardBuilder,
@@ -291,6 +293,17 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
                 Card.tokenize(mBraintreeFragment, cardBuilder);
             }
         }
+    }
+
+    public boolean shouldVault(CardForm cardForm) {
+        if (mClientTokenPresent) {
+            if (!mDropInRequest.isSaveCardCheckBoxShown()) {
+                return mDropInRequest.getDefaultVaultSetting();
+            } else {
+                return cardForm.getSaveCardCheckBoxValue();
+            }
+        }
+        return false;
     }
 
     @Override
