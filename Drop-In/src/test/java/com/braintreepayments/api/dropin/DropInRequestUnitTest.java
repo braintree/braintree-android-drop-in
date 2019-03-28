@@ -58,6 +58,8 @@ public class DropInRequestUnitTest {
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
                 .vaultManager(true)
+                .showCheckBoxToAllowVaultOverride(true)
+                .defaultVaultSetting(true)
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
                 .getIntent(RuntimeEnvironment.application);
 
@@ -81,6 +83,8 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.shouldMaskCardNumber());
         assertTrue(dropInRequest.shouldMaskSecurityCode());
         assertTrue(dropInRequest.isVaultManagerEnabled());
+        assertTrue(dropInRequest.getDefaultVaultSetting());
+        assertTrue(dropInRequest.isSaveCardCheckBoxShown());
         assertEquals(CardForm.FIELD_OPTIONAL, dropInRequest.getCardholderNameStatus());
     }
 
@@ -104,6 +108,8 @@ public class DropInRequestUnitTest {
         assertFalse(dropInRequest.shouldMaskCardNumber());
         assertFalse(dropInRequest.shouldMaskSecurityCode());
         assertFalse(dropInRequest.isVaultManagerEnabled());
+        assertFalse(dropInRequest.isSaveCardCheckBoxShown());
+        assertFalse(dropInRequest.getDefaultVaultSetting());
         assertEquals(CardForm.FIELD_DISABLED, dropInRequest.getCardholderNameStatus());
     }
 
@@ -137,6 +143,8 @@ public class DropInRequestUnitTest {
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
                 .vaultManager(true)
+                .defaultVaultSetting(true)
+                .showCheckBoxToAllowVaultOverride(true)
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL);
 
         Parcel parcel = Parcel.obtain();
@@ -161,6 +169,8 @@ public class DropInRequestUnitTest {
         assertTrue(parceledDropInRequest.shouldMaskCardNumber());
         assertTrue(parceledDropInRequest.shouldMaskSecurityCode());
         assertTrue(parceledDropInRequest.isVaultManagerEnabled());
+        assertTrue(parceledDropInRequest.getDefaultVaultSetting());
+        assertTrue(parceledDropInRequest.isSaveCardCheckBoxShown());
         assertEquals(CardForm.FIELD_OPTIONAL, parceledDropInRequest.getCardholderNameStatus());
     }
 
