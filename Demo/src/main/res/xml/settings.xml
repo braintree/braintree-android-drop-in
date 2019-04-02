@@ -103,6 +103,17 @@
             android:entries="@array/cardholder_name_status"
             android:entryValues="@array/cardholder_name_status_values" />
 
+        <CheckBoxPreference
+            android:key="save_card_checkbox_visible"
+            android:title="Save Card Checkbox Visible"
+            android:summary="Ask the customer if they would like to save their card for future use"
+            android:defaultValue="true"/>
+
+        <CheckBoxPreference
+            android:key="default_vault_settings"
+            android:title="Save Card Checkbox Default Value"
+            android:summary="The initial value of the Save Card Checkbox. If the Checkbox is not visible, this value determines if we save the card" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
