@@ -122,8 +122,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .googlePaymentRequest(getGooglePaymentRequest())
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
-                .showCheckBoxToAllowVaultOverride(true)
-                .defaultVaultSetting(true)
+                .showCheckBoxToAllowVaultOverride(Settings.isSaveCardCheckBoxVisible(this))
+                .defaultVaultSetting(Settings.defaultVaultSetting(this))
                 .vaultManager(Settings.isVaultManagerEnabled(this))
                 .cardholderNameStatus(Settings.getCardholderNameStatus(this));
 

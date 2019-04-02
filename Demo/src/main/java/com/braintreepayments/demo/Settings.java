@@ -140,4 +140,12 @@ public class Settings {
                 return CardForm.FIELD_DISABLED;
         }
     }
+
+    public static boolean isSaveCardCheckBoxVisible(Context context) {
+        return getPreferences(context).getBoolean("save_card_checkbox_visible", false);
+    }
+
+    public static boolean defaultVaultSetting(Context context) {
+        return getPreferences(context).getBoolean("default_vault_settings", false);
+    }
 }

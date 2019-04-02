@@ -170,6 +170,18 @@ public class TestHelper {
         SystemClock.sleep(2000);
     }
 
+    public void setSaveCardCheckBoxVisibilityAndDefault(boolean isVisible, boolean defaultValue) {
+        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+                .edit()
+                .putBoolean("save_card_checkbox_visible", isVisible)
+                .commit();
+
+        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+                .edit()
+                .putBoolean("default_vault_setting", defaultValue)
+                .commit();
+    }
+
     private void clearPreference(String preference) {
         getTargetContext().getSharedPreferences(preference, Context.MODE_PRIVATE)
                 .edit()
