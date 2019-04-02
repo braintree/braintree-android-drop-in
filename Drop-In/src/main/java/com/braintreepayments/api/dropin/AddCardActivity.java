@@ -111,9 +111,9 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
         mEditCardView.getCardForm().maskCardNumber(mDropInRequest.shouldMaskCardNumber());
         mEditCardView.getCardForm().maskCvv(mDropInRequest.shouldMaskSecurityCode());
 
-        mAddCardView.getCardForm().saveCardCheckBoxVisible(mDropInRequest.isSaveCardCheckBoxShown());
+        mEditCardView.getCardForm().saveCardCheckBoxVisible(mDropInRequest.isSaveCardCheckBoxShown());
         if (mDropInRequest.isSaveCardCheckBoxShown()) {
-            mAddCardView.getCardForm().saveCardCheckBoxChecked(mDropInRequest.getDefaultVaultSetting());
+            mEditCardView.getCardForm().saveCardCheckBoxChecked(mDropInRequest.getDefaultVaultSetting());
         }
 
         enterState(LOADING);
