@@ -11,7 +11,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import androidx.test.filters.RequiresDevice;
-import androidx.test.filters.SdkSuppress;
 import androidx.test.runner.AndroidJUnit4;
 
 import static androidx.test.InstrumentationRegistry.getTargetContext;
@@ -31,6 +30,7 @@ import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextStartingWith;
 import static junit.framework.Assert.assertFalse;
+import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.StringEndsWith.endsWith;
@@ -70,6 +70,18 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Purchase")).perform(click());
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
+
+    @Test(timeout = 60000)
+    public void tokenizesACard_whenClientTokenWithCustomerId_vaults() {
+        setUniqueCustomerId();
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+
+        tokenizeCard(VISA);
+
+        onDevice(withText("Visa")).waitForExists().perform(click());
+        assertTrue(onDevice(withText("Recent")).waitForExists().exists());
+    }
+
 
     @Test(timeout = 60000)
     public void performsThreeDSecureVerification() {
