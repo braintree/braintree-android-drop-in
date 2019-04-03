@@ -15,8 +15,10 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -91,6 +93,19 @@ public class SupportedPaymentMethodAdapterUnitTest {
 
         assertEquals(1, adapter.getCount());
         assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(0));
+    }
+
+    @Test
+    public void cardsNotAvailableIfDisableInDropInRequest() {
+        Configuration configuration = getConfiguration(false, false, true, false);
+        DropInRequest dropInRequest = new DropInRequest()
+                .disableCard();
+
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
+                RuntimeEnvironment.application, null);
+        adapter.setup(configuration, dropInRequest, false, false);
+
+        assertEquals(0, adapter.getCount());
     }
 
     @Test
