@@ -37,6 +37,7 @@ public class DropInRequest implements Parcelable {
     private boolean mVaultManagerEnabled = false;
     private boolean mPayPalEnabled = true;
     private boolean mVenmoEnabled = true;
+    private boolean mCardEnabled = true;
     private int mCardholderNameStatus = CardForm.FIELD_DISABLED;
 
     public DropInRequest() {}
@@ -134,6 +135,14 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * Disables Card in Drop-in.
+     */
+    public DropInRequest disableCard() {
+        mCardEnabled = false;
+        return this;
+    }
+
+    /**
      * If 3D Secure has been enabled in the control panel and an amount is specified in
      * {@link DropInRequest#amount(String)}, Drop-In will request a 3D Secure verification for
      * any new cards added by the user.
@@ -219,6 +228,10 @@ public class DropInRequest implements Parcelable {
         return mVenmoEnabled;
     }
 
+    public boolean isCardEnabled() {
+        return mCardEnabled;
+    }
+
     public GooglePaymentRequest getGooglePaymentRequest() {
         return mGooglePaymentRequest;
     }
@@ -260,6 +273,7 @@ public class DropInRequest implements Parcelable {
         dest.writeParcelable(mPayPalRequest, 0);
         dest.writeByte(mPayPalEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mVenmoEnabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(mCardEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mRequestThreeDSecureVerification ? (byte) 1 : (byte) 0);
         dest.writeByte(mMaskCardNumber ? (byte) 1 : (byte) 0);
         dest.writeByte(mMaskSecurityCode ? (byte) 1 : (byte) 0);
@@ -276,6 +290,7 @@ public class DropInRequest implements Parcelable {
         mPayPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());
         mPayPalEnabled = in.readByte() != 0;
         mVenmoEnabled = in.readByte() != 0;
+        mCardEnabled = in.readByte() != 0;
         mRequestThreeDSecureVerification = in.readByte() != 0;
         mMaskCardNumber = in.readByte() != 0;
         mMaskSecurityCode = in.readByte() != 0;

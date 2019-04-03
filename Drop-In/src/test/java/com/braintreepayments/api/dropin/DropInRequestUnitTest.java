@@ -53,6 +53,7 @@ public class DropInRequestUnitTest {
                 .paypalRequest(paypalRequest)
                 .disablePayPal()
                 .disableVenmo()
+                .disableCard()
                 .requestThreeDSecureVerification(true)
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
@@ -75,6 +76,7 @@ public class DropInRequestUnitTest {
         assertEquals("USD", dropInRequest.getPayPalRequest().getCurrencyCode());
         assertFalse(dropInRequest.isPayPalEnabled());
         assertFalse(dropInRequest.isVenmoEnabled());
+        assertFalse(dropInRequest.isCardEnabled());
         assertTrue(dropInRequest.shouldRequestThreeDSecureVerification());
         assertTrue(dropInRequest.shouldMaskCardNumber());
         assertTrue(dropInRequest.shouldMaskSecurityCode());
@@ -97,6 +99,7 @@ public class DropInRequestUnitTest {
         assertNull(dropInRequest.getPayPalRequest());
         assertTrue(dropInRequest.isPayPalEnabled());
         assertTrue(dropInRequest.isVenmoEnabled());
+        assertTrue(dropInRequest.isCardEnabled());
         assertFalse(dropInRequest.shouldRequestThreeDSecureVerification());
         assertFalse(dropInRequest.shouldMaskCardNumber());
         assertFalse(dropInRequest.shouldMaskSecurityCode());
@@ -129,6 +132,7 @@ public class DropInRequestUnitTest {
                 .paypalRequest(paypalRequest)
                 .disablePayPal()
                 .disableVenmo()
+                .disableCard()
                 .requestThreeDSecureVerification(true)
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
@@ -152,6 +156,7 @@ public class DropInRequestUnitTest {
         assertFalse(dropInRequest.isGooglePaymentEnabled());
         assertFalse(parceledDropInRequest.isPayPalEnabled());
         assertFalse(parceledDropInRequest.isVenmoEnabled());
+        assertFalse(parceledDropInRequest.isCardEnabled());
         assertTrue(parceledDropInRequest.shouldRequestThreeDSecureVerification());
         assertTrue(parceledDropInRequest.shouldMaskCardNumber());
         assertTrue(parceledDropInRequest.shouldMaskSecurityCode());

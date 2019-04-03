@@ -41,13 +41,15 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
             mAvailablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
         }
 
-        Set<String> supportedCardTypes =
-                new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
-        if (!unionpaySupported) {
-            supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
-        }
-        if (supportedCardTypes.size() > 0) {
-            mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
+        if (dropInRequest.isCardEnabled()) {
+            Set<String> supportedCardTypes =
+                    new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
+            if (!unionpaySupported) {
+                supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
+            }
+            if (supportedCardTypes.size() > 0) {
+                mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
+            }
         }
 
         if (googlePayEnabled) {
