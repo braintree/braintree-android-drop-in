@@ -3,6 +3,7 @@ package com.braintreepayments.api.dropin.view;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.DropInRequest;
@@ -106,6 +107,60 @@ public class EditCardViewUnitTest {
         mView.getCardForm().getCardholderNameEditText().setText("Brian Tree");
 
         assertTrue(mView.getCardForm().isValid());
+    }
+
+    @Test
+    public void setup_withDropInRequestShowingSaveCardCheckBox_showsSaveCardCheckbox() {
+        Configuration configuration = new TestConfigurationBuilder()
+                .buildConfiguration();
+        DropInRequest dropInRequest = new DropInRequest()
+                .showCheckBoxToAllowVaultOverride(true);
+
+        mView.setup(mActivity, configuration, dropInRequest);
+
+        assertThat(mView.findViewById(R.id.bt_card_form_save_card_checkbox)).isVisible();
+    }
+
+    @Test
+    public void setup_withDropInRequestHidingSaveCardCheckBox_hidesSaveCardCheckbox() {
+        Configuration configuration = new TestConfigurationBuilder()
+                .buildConfiguration();
+        DropInRequest dropInRequest = new DropInRequest()
+                .showCheckBoxToAllowVaultOverride(false);
+
+        mView.setup(mActivity, configuration, dropInRequest);
+
+        assertThat(mView.findViewById(R.id.bt_card_form_save_card_checkbox)).isNotVisible();
+    }
+
+    @Test
+    public void setup_withDropInRequestShowingSaveCardCheckBoxAndPreChecked_showsSaveCardCheckboxChecked() {
+        Configuration configuration = new TestConfigurationBuilder()
+                .buildConfiguration();
+        DropInRequest dropInRequest = new DropInRequest()
+                .showCheckBoxToAllowVaultOverride(true)
+                .defaultVaultSetting(true);
+
+        mView.setup(mActivity, configuration, dropInRequest);
+
+        CheckBox checkBox = mView.findViewById(R.id.bt_card_form_save_card_checkbox);
+        assertThat(checkBox).isVisible();
+        assertThat(checkBox).isChecked();
+    }
+
+    @Test
+    public void setup_withDropInRequestShowingSaveCardCheckBoxAndNotPreChecked_showsSaveCardCheckboxNotChecked() {
+                Configuration configuration = new TestConfigurationBuilder()
+                .buildConfiguration();
+        DropInRequest dropInRequest = new DropInRequest()
+                .showCheckBoxToAllowVaultOverride(true)
+                .defaultVaultSetting(false);
+
+        mView.setup(mActivity, configuration, dropInRequest);
+
+        CheckBox checkBox = mView.findViewById(R.id.bt_card_form_save_card_checkbox);
+        assertThat(checkBox).isVisible();
+        assertThat(checkBox).isNotChecked();
     }
 
     @Test

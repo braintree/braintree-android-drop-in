@@ -281,9 +281,9 @@ public class DropInRequest implements Parcelable {
         return mCardholderNameStatus;
     }
 
-    boolean getDefaultVaultSetting() { return mDefaultVaultSetting; }
+    public boolean getDefaultVaultSetting() { return mDefaultVaultSetting; }
 
-    boolean isSaveCardCheckBoxShown() { return mShowCheckBoxToAllowVaultOverride; }
+    public boolean isSaveCardCheckBoxShown() { return mShowCheckBoxToAllowVaultOverride; }
 
 
     @Override
