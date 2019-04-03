@@ -38,7 +38,7 @@ public class DropInRequest implements Parcelable {
     private boolean mPayPalEnabled = true;
     private boolean mVenmoEnabled = true;
     private boolean mCardEnabled = true;
-    private boolean mDefaultVaultSetting = false;
+    private boolean mDefaultVaultSetting = true;
     private boolean mShowCheckBoxToAllowVaultOverride = false;
     private int mCardholderNameStatus = CardForm.FIELD_DISABLED;
 
@@ -190,6 +190,8 @@ public class DropInRequest implements Parcelable {
      * If Save Card CheckBox is shown and default vault value is false, CheckBox will appear un-checked.
      * If Save Card CheckBox is not shown and default vault value is false, card never vaults.
      * If Save Card CheckBox is not shown and default vault value is true, card always vaults.
+     *
+     * This value is {@code true} by default.
      */
     public DropInRequest defaultVaultSetting(boolean defaultVaultValue) {
         mDefaultVaultSetting = defaultVaultValue;

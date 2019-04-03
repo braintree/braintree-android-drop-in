@@ -110,6 +110,19 @@ public class EditCardViewUnitTest {
     }
 
     @Test
+    public void setup_withoutSaveCardCheckBoxProperties_saveCardCheckboxCheckedAndGone() {
+        Configuration configuration = new TestConfigurationBuilder()
+                .buildConfiguration();
+        DropInRequest dropInRequest = new DropInRequest();
+
+        mView.setup(mActivity, configuration, dropInRequest);
+
+        CheckBox checkBox = mView.findViewById(R.id.bt_card_form_save_card_checkbox);
+        assertThat(checkBox).isNotVisible();
+        assertThat(checkBox).isChecked();
+    }
+
+    @Test
     public void setup_withDropInRequestShowingSaveCardCheckBox_showsSaveCardCheckbox() {
         Configuration configuration = new TestConfigurationBuilder()
                 .buildConfiguration();

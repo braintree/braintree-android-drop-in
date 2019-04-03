@@ -109,7 +109,7 @@ public class DropInRequestUnitTest {
         assertFalse(dropInRequest.shouldMaskSecurityCode());
         assertFalse(dropInRequest.isVaultManagerEnabled());
         assertFalse(dropInRequest.isSaveCardCheckBoxShown());
-        assertFalse(dropInRequest.getDefaultVaultSetting());
+        assertTrue(dropInRequest.getDefaultVaultSetting());
         assertEquals(CardForm.FIELD_DISABLED, dropInRequest.getCardholderNameStatus());
     }
 
