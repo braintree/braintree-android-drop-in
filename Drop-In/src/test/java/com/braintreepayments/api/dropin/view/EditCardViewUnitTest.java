@@ -110,7 +110,7 @@ public class EditCardViewUnitTest {
     }
 
     @Test
-    public void setup_withoutSaveCardCheckBoxProperties_saveCardCheckboxCheckedAndGone() {
+    public void setup_withoutSaveCardCheckBoxProperties_saveCardCheckboxCheckedAndHidden() {
         Configuration configuration = new TestConfigurationBuilder()
                 .buildConfiguration();
         DropInRequest dropInRequest = new DropInRequest();
