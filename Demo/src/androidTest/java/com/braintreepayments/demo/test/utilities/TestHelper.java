@@ -111,6 +111,14 @@ public class TestHelper {
         SystemClock.sleep(2000);
     }
 
+    /**
+     * Sets the customer ID to a value that should be randomized.
+     * There should not be any saved payment methods for this customer.
+     */
+    public void setUniqueCustomerId() {
+        setCustomerId(""+System.currentTimeMillis());
+    }
+
     public void setMerchantAccountId(String merchantAccountId) {
         PreferenceManager.getDefaultSharedPreferences(getTargetContext())
                 .edit()
@@ -170,16 +178,15 @@ public class TestHelper {
         SystemClock.sleep(2000);
     }
 
-    public void setSaveCardCheckBoxVisibilityAndDefault(boolean isVisible, boolean defaultValue) {
+    public void setSaveCardCheckBox(boolean visible, boolean defaultValue) {
         PreferenceManager.getDefaultSharedPreferences(getTargetContext())
                 .edit()
-                .putBoolean("save_card_checkbox_visible", isVisible)
+                .putBoolean("save_card_checkbox_visible", visible)
+                .putBoolean("save_checkbox_default_value", defaultValue)
                 .commit();
 
-        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
-                .edit()
-                .putBoolean("default_vault_setting", defaultValue)
-                .commit();
+        onDevice(withText("Reset")).perform(click());
+        SystemClock.sleep(2000);
     }
 
     private void clearPreference(String preference) {

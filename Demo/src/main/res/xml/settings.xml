@@ -110,7 +110,7 @@
             android:defaultValue="true"/>
 
         <CheckBoxPreference
-            android:key="default_vault_settings"
+            android:key="save_checkbox_default_value"
             android:title="Save Card Checkbox Default Value"
             android:summary="The initial value of the Save Card Checkbox. If the Checkbox is not visible, this value determines if we save the card" />
 

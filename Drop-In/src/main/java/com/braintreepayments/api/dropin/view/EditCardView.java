@@ -82,6 +82,8 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
                 .cvvRequired(configuration.isCvvChallengePresent())
                 .postalCodeRequired(configuration.isPostalCodeChallengePresent())
                 .cardholderName(dropInRequest.getCardholderNameStatus())
+                .saveCardCheckBoxVisible(dropInRequest.isSaveCardCheckBoxShown())
+                .saveCardCheckBoxChecked(dropInRequest.getDefaultVaultSetting())
                 .setup(activity);
         mCardForm.setOnCardFormSubmitListener(this);
 

@@ -10,7 +10,9 @@ import static com.lukekorth.deviceautomator.AutomatorAction.click;
 import static com.lukekorth.deviceautomator.AutomatorAction.setText;
 import static com.lukekorth.deviceautomator.DeviceAutomator.onDevice;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
-import static junit.framework.Assert.fail;
+import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 public class OptionalVaultingDropInTest extends TestHelper {
 
@@ -20,58 +22,80 @@ public class OptionalVaultingDropInTest extends TestHelper {
     }
 
     @Test(timeout = 60000)
-    public void saveCardCheckBox_isVisible() {
-        setSaveCardCheckBoxVisibilityAndDefault(true, true);
+    public void saveCardCheckBox_whenVisibleAndChecked_vaults() {
+        setSaveCardCheckBox(true, true);
+        setUniqueCustomerId();
+
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+        tokenizeCard(VISA);
+
+        onDevice(withText("Visa")).waitForExists().perform(click());
+        boolean hasSavedPaymentMethods = onDevice(withText("Recent")).waitForExists().exists();
+
+        assertTrue(hasSavedPaymentMethods);
+    }
+
+    @Test(timeout = 60000)
+    public void saveCardCheckBox_whenVisibleAndCustomerChecks_vaults() {
+        setSaveCardCheckBox(true, false);
+        setUniqueCustomerId();
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withText("Card Number")).perform(setText(VISA));
         performCardDetailsEntry();
+        onDevice(withText("Save card")).perform(click());
+        onDevice(withTextContaining("Add Card")).perform(click());
 
-        onDevice(withText("Card Details")).waitForExists();
+        onDevice(withText("Visa")).waitForExists().perform(click());
+        boolean hasSavedPaymentMethods = onDevice(withText("Recent")).waitForExists().exists();
 
-        if (onDevice(withText("Save card")).exists()) {
-            // TODO: Assert a test pass
-        } else {
-            fail("A save card CheckBox was supposed to appear when it's visibility was set to true");
-        }
+        assertTrue(hasSavedPaymentMethods);
     }
 
     @Test(timeout = 60000)
-    public void saveCardCheckBox_isHidden() {
-        setSaveCardCheckBoxVisibilityAndDefault(false, true);
+    public void saveCardCheckBox_whenVisibleAndCustomerUnchecks_doesNotVault() {
+        setSaveCardCheckBox(true, true);
+        setUniqueCustomerId();
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withText("Card Number")).perform(setText(VISA));
         performCardDetailsEntry();
+        onDevice(withText("Save card")).perform(click());
+        onDevice(withTextContaining("Add Card")).perform(click());
 
-        onDevice(withText("Card Details")).waitForExists();
+        onDevice(withText("Visa")).waitForExists().perform(click());
+        boolean hasSavedPaymentMethods = onDevice(withText("Recent")).waitForExists().exists();
 
-        if (onDevice(withText("Save card")).exists()) {
-            fail("A save card CheckBox was not supposed to appear when it's visibility was set to false");
-        } else {
-            // TODO: Assert a test pass
-        }
+        assertFalse(hasSavedPaymentMethods);
     }
 
     @Test(timeout = 60000)
-    public void saveCardCheckBox_vaults_whenChecked() {
+    public void saveCardCheckBox_whenGoneAndChecked_vaults() {
+        setSaveCardCheckBox(false, true);
+        setUniqueCustomerId();
 
-        // TODO:
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+        tokenizeCard(VISA);
 
-        // Get access to BTCardForm
+        onDevice(withText("Visa")).waitForExists().perform(click());
+        boolean hasSavedPaymentMethods = onDevice(withText("Recent")).waitForExists().exists();
 
-        // Access cardForm.getSaveCardCheckBoxValue() method
-
-        // Confirm box is checked
-
-        // Test the shouldVault() method in AddCardActivity.java
+        assertTrue(hasSavedPaymentMethods);
     }
 
     @Test(timeout = 60000)
-    public void saveCardCheckBox_doesNotVault_whenNotChecked() {
-        //
-    }
+    public void saveCardCheckBox_whenGoneAndUnchecked_doesNotVault() {
+        setSaveCardCheckBox(false, false);
+        setUniqueCustomerId();
 
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+        tokenizeCard(VISA);
+
+        onDevice(withText("Visa")).waitForExists().perform(click());
+        boolean hasSavedPaymentMethods = onDevice(withText("Recent")).waitForExists().exists();
+
+        assertFalse(hasSavedPaymentMethods);
+    }
 }
