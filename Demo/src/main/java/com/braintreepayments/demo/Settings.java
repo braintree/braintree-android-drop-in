@@ -146,6 +146,6 @@ public class Settings {
     }
 
     static boolean defaultVaultSetting(Context context) {
-        return getPreferences(context).getBoolean("save_checkbox_default_value", false);
+        return getPreferences(context).getBoolean("save_card_checkbox_default_value", false);
     }
 }

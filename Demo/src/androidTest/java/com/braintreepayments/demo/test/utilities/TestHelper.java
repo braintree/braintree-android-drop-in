@@ -182,7 +182,7 @@ public class TestHelper {
         PreferenceManager.getDefaultSharedPreferences(getTargetContext())
                 .edit()
                 .putBoolean("save_card_checkbox_visible", visible)
-                .putBoolean("save_checkbox_default_value", defaultValue)
+                .putBoolean("save_card_checkbox_default_value", defaultValue)
                 .commit();
 
         onDevice(withText("Reset")).perform(click());
