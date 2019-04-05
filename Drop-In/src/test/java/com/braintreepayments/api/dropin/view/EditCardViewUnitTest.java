@@ -127,7 +127,7 @@ public class EditCardViewUnitTest {
         Configuration configuration = new TestConfigurationBuilder()
                 .buildConfiguration();
         DropInRequest dropInRequest = new DropInRequest()
-                .showCheckBoxToAllowVaultOverride(true);
+                .allowVaultCardOverride(true);
 
         mView.setup(mActivity, configuration, dropInRequest);
 
@@ -139,7 +139,7 @@ public class EditCardViewUnitTest {
         Configuration configuration = new TestConfigurationBuilder()
                 .buildConfiguration();
         DropInRequest dropInRequest = new DropInRequest()
-                .showCheckBoxToAllowVaultOverride(false);
+                .allowVaultCardOverride(false);
 
         mView.setup(mActivity, configuration, dropInRequest);
 
@@ -151,8 +151,8 @@ public class EditCardViewUnitTest {
         Configuration configuration = new TestConfigurationBuilder()
                 .buildConfiguration();
         DropInRequest dropInRequest = new DropInRequest()
-                .showCheckBoxToAllowVaultOverride(true)
-                .defaultVaultSetting(true);
+                .allowVaultCardOverride(true)
+                .vaultCard(true);
 
         mView.setup(mActivity, configuration, dropInRequest);
 
@@ -166,8 +166,8 @@ public class EditCardViewUnitTest {
                 Configuration configuration = new TestConfigurationBuilder()
                 .buildConfiguration();
         DropInRequest dropInRequest = new DropInRequest()
-                .showCheckBoxToAllowVaultOverride(true)
-                .defaultVaultSetting(false);
+                .allowVaultCardOverride(true)
+                .vaultCard(false);
 
         mView.setup(mActivity, configuration, dropInRequest);
 

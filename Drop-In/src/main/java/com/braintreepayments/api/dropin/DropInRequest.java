@@ -6,15 +6,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.braintreepayments.api.DataCollector;
-import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.cardform.view.CardForm;
-import com.google.android.gms.identity.intents.model.CountrySpecification;
-import com.google.android.gms.wallet.Cart;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Used to start {@link DropInActivity} with specified options.
@@ -38,7 +32,7 @@ public class DropInRequest implements Parcelable {
     private boolean mPayPalEnabled = true;
     private boolean mVenmoEnabled = true;
     private boolean mCardEnabled = true;
-    private boolean mDefaultVaultSetting = true;
+    private boolean mDefaultVaultValue = true;
     private boolean mShowCheckBoxToAllowVaultOverride = false;
     private int mCardholderNameStatus = CardForm.FIELD_DISABLED;
 
@@ -185,25 +179,25 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
-     * @param defaultVaultValue {@code true} defaults to vaulting card info. {@code false} defaults to not vaulting card info.
-     * If Save Card CheckBox is shown and default vault value is true, CheckBox will appear pre-checked.
-     * If Save Card CheckBox is shown and default vault value is false, CheckBox will appear un-checked.
-     * If Save Card CheckBox is not shown and default vault value is false, card never vaults.
-     * If Save Card CheckBox is not shown and default vault value is true, card always vaults.
+     * @param defaultValue the default value used to determine if Drop-in should vault the customer's card. This setting can be overwritten by the customer if the save card checkbox is visible using {@link #allowVaultCardOverride(boolean)}
+     * If the save card CheckBox is shown, and default vault value is true: the save card CheckBox will appear pre-checked.
+     * If the save card CheckBox is shown, and default vault value is false: the save card Checkbox will appear un-checked.
+     * If the save card CheckBox is not shown, and default vault value is true: card always vaults.
+     * If the save card CheckBox is not shown, and default vault value is false: card never vaults.
      *
      * This value is {@code true} by default.
      */
-    public DropInRequest defaultVaultSetting(boolean defaultVaultValue) {
-        mDefaultVaultSetting = defaultVaultValue;
+    public DropInRequest vaultCard(boolean defaultValue) {
+        mDefaultVaultValue = defaultValue;
         return this;
     }
 
     /**
-     * @param showCheckBox {@code true} shows Save Card CheckBox to allow user to choose whether or not to save/vault their card info.
+     * @param customerCheckBoxEnabled {@code true} shows save card CheckBox to allow user to choose whether or not to vault their card.
      * {@code false} does not show Save Card CheckBox.
      */
-    public DropInRequest showCheckBoxToAllowVaultOverride(boolean showCheckBox) {
-        mShowCheckBoxToAllowVaultOverride = showCheckBox;
+    public DropInRequest allowVaultCardOverride(boolean customerCheckBoxEnabled) {
+        mShowCheckBoxToAllowVaultOverride = customerCheckBoxEnabled;
         return this;
     }
 
@@ -277,15 +271,21 @@ public class DropInRequest implements Parcelable {
         return mMaskSecurityCode;
     }
 
-    boolean isVaultManagerEnabled() { return mVaultManagerEnabled; }
+    boolean isVaultManagerEnabled() {
+        return mVaultManagerEnabled;
+    }
 
     public int getCardholderNameStatus() {
         return mCardholderNameStatus;
     }
 
-    public boolean getDefaultVaultSetting() { return mDefaultVaultSetting; }
+    public boolean getDefaultVaultSetting() {
+        return mDefaultVaultValue;
+    }
 
-    public boolean isSaveCardCheckBoxShown() { return mShowCheckBoxToAllowVaultOverride; }
+    public boolean isSaveCardCheckBoxShown() {
+        return mShowCheckBoxToAllowVaultOverride;
+    }
 
 
     @Override
@@ -309,7 +309,7 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(mMaskSecurityCode ? (byte) 1 : (byte) 0);
         dest.writeByte(mVaultManagerEnabled ? (byte) 1 : (byte) 0);
         dest.writeInt(mCardholderNameStatus);
-        dest.writeByte(mDefaultVaultSetting ? (byte) 1 : (byte) 0);
+        dest.writeByte(mDefaultVaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(mShowCheckBoxToAllowVaultOverride ? (byte) 1 : (byte) 0);
     }
 
@@ -328,7 +328,7 @@ public class DropInRequest implements Parcelable {
         mMaskSecurityCode = in.readByte() != 0;
         mVaultManagerEnabled = in.readByte() != 0;
         mCardholderNameStatus = in.readInt();
-        mDefaultVaultSetting = in.readByte() != 0;
+        mDefaultVaultValue = in.readByte() != 0;
         mShowCheckBoxToAllowVaultOverride = in.readByte() != 0;
     }
 

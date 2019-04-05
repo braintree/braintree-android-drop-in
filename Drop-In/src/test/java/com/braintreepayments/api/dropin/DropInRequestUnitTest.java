@@ -3,7 +3,6 @@ package com.braintreepayments.api.dropin;
 import android.content.Intent;
 import android.os.Parcel;
 
-import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.cardform.view.CardForm;
@@ -15,8 +14,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-
-import java.util.Collections;
 
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
@@ -58,8 +55,8 @@ public class DropInRequestUnitTest {
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
                 .vaultManager(true)
-                .showCheckBoxToAllowVaultOverride(true)
-                .defaultVaultSetting(true)
+                .allowVaultCardOverride(true)
+                .vaultCard(true)
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
                 .getIntent(RuntimeEnvironment.application);
 
@@ -143,8 +140,8 @@ public class DropInRequestUnitTest {
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
                 .vaultManager(true)
-                .defaultVaultSetting(true)
-                .showCheckBoxToAllowVaultOverride(true)
+                .vaultCard(true)
+                .allowVaultCardOverride(true)
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL);
 
         Parcel parcel = Parcel.obtain();
