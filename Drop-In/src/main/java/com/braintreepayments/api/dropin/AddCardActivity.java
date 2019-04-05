@@ -291,7 +291,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     }
 
     public boolean shouldVault(CardForm cardForm) {
-        return mClientTokenPresent && cardForm.getSaveCardCheckBoxValue();
+        return mClientTokenPresent && cardForm.isSaveCardCheckBoxChecked();
     }
 
     @Override
