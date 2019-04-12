@@ -6,6 +6,8 @@ Thanks for considering contributing to this project. Ways you can help:
 * [Add an issue](https://github.com/braintree/braintree-android-drop-in/issues)
 * [Contact us](README.md#feedback) with feedback
 
+__Note on Translations:__ We cannot accept language translation requests. We only support language translations provided to us via PayPal.
+
 ## Development
 
 Clone this repo and open it with Android Studio.
