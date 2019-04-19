@@ -28,6 +28,8 @@ import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assume.assumeFalse;
+import static org.junit.Assume.assumeTrue;
 
 public class TestHelper {
 
@@ -73,7 +75,8 @@ public class TestHelper {
                 lock.await(90, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {}
 
-            assertTrue(isAppInstalled(PAYPAL_WALLET_PACKAGE_NAME));
+            assumeTrue("The PayPal app needs to be installed before running this test",
+                    isAppInstalled(PAYPAL_WALLET_PACKAGE_NAME));
         }
     }
 
@@ -97,7 +100,8 @@ public class TestHelper {
                 lock.await(30, TimeUnit.SECONDS);
             } catch (InterruptedException ignored) {}
 
-            assertFalse(isAppInstalled(PAYPAL_WALLET_PACKAGE_NAME));
+            assumeFalse("The PayPal app needs to be uninstalled before running this test",
+                    isAppInstalled(PAYPAL_WALLET_PACKAGE_NAME));
         }
     }
 

@@ -292,10 +292,6 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
         }
     }
 
-    public boolean shouldVault(CardForm cardForm) {
-        return mClientTokenPresent && cardForm.isSaveCardCheckBoxChecked();
-    }
-
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
         mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");

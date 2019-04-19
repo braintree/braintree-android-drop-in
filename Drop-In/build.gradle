@@ -58,7 +58,7 @@ android.buildTypes.debug { type ->
 
 dependencies {
     api 'com.braintreepayments.api:braintree:3.0.0'
-    api 'com.braintreepayments:card-form:4.1.0'
+    api 'com.braintreepayments:card-form:4.1.1-SNAPSHOT'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.gms:play-services-wallet:16.0.0'
 
