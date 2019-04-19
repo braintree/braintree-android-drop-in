@@ -123,6 +123,20 @@ public class EditCardViewUnitTest {
     }
 
     @Test
+    public void setup_withSaveCardCheckboxVisibleAndTokenizationKey_hidesSaveCardCheckbox() {
+        Configuration configuration = new TestConfigurationBuilder()
+                .buildConfiguration();
+        DropInRequest dropInRequest = new DropInRequest()
+                .allowVaultCardOverride(true)
+                .tokenizationKey("some_tokenization_key");
+
+        mView.setup(mActivity, configuration, dropInRequest);
+
+        CheckBox checkBox = mView.findViewById(R.id.bt_card_form_save_card_checkbox);
+        assertThat(checkBox).isNotVisible();
+    }
+
+    @Test
     public void setup_withDropInRequestShowingSaveCardCheckBox_showsSaveCardCheckbox() {
         Configuration configuration = new TestConfigurationBuilder()
                 .buildConfiguration();

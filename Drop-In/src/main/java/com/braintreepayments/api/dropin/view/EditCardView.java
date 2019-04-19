@@ -15,6 +15,7 @@ import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.exceptions.BraintreeError;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
+import com.braintreepayments.api.models.Authorization;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.cardform.OnCardFormFieldFocusedListener;
 import com.braintreepayments.cardform.OnCardFormSubmitListener;
@@ -77,12 +78,15 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
     public void setup(AppCompatActivity activity, Configuration configuration, DropInRequest dropInRequest) {
         mConfiguration = configuration;
 
+        boolean showCardCheckbox = !Authorization.isTokenizationKey(dropInRequest.getAuthorization())
+                && dropInRequest.isSaveCardCheckBoxShown();
+
         mCardForm.cardRequired(true)
                 .expirationRequired(true)
                 .cvvRequired(configuration.isCvvChallengePresent())
                 .postalCodeRequired(configuration.isPostalCodeChallengePresent())
                 .cardholderName(dropInRequest.getCardholderNameStatus())
-                .saveCardCheckBoxVisible(dropInRequest.isSaveCardCheckBoxShown())
+                .saveCardCheckBoxVisible(showCardCheckbox)
                 .saveCardCheckBoxChecked(dropInRequest.getDefaultVaultSetting())
                 .setup(activity);
         mCardForm.setOnCardFormSubmitListener(this);

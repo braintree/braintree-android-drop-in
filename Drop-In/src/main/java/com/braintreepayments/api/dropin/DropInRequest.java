@@ -225,7 +225,7 @@ public class DropInRequest implements Parcelable {
                 .putExtra(EXTRA_CHECKOUT_REQUEST, this);
     }
 
-    String getAuthorization() {
+    public String getAuthorization() {
         return mAuthorization;
     }
 
