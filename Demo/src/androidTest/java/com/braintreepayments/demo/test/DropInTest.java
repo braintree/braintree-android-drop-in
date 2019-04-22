@@ -10,9 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.RequiresDevice;
-import androidx.test.filters.SdkSuppress;
-import androidx.test.runner.AndroidJUnit4;
 
 import static androidx.test.InstrumentationRegistry.getTargetContext;
 import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
