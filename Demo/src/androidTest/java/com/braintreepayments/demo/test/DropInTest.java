@@ -242,10 +242,7 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void deletesPaymentMethod() {
-        assumeTrue("braintree-api.com SSL connection does not support API < 21 (Lollipop)",
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
-
-        setCustomerId("delete-payment-method-uitest");
+        setUniqueCustomerId();
         enableVaultManager();
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
