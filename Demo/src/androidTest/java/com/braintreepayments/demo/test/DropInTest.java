@@ -6,11 +6,12 @@ import com.braintreepayments.demo.Settings;
 import com.braintreepayments.demo.test.utilities.TestHelper;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.RequiresDevice;
-import androidx.test.runner.AndroidJUnit4;
 
 import static androidx.test.InstrumentationRegistry.getTargetContext;
 import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
@@ -104,6 +105,11 @@ public class DropInTest extends TestHelper {
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
+    @Ignore("There is an issue with our merchant account not tokenizing UnionPay. " +
+            "Our merchant account can process capabilities and enrollment but " +
+            "when tokenizing we get a 422 that the merchant account is not setup for credit card " +
+            "processing. " +
+            "Disabling UnionPay tests that involve tokenizing until the issue has been resolved.")
     @Test
     public void tokenizesUnionPay() {
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
@@ -128,6 +134,11 @@ public class DropInTest extends TestHelper {
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
+    @Ignore("There is an issue with our merchant account not tokenizing UnionPay. " +
+            "Our merchant account can process capabilities and enrollment but " +
+            "when tokenizing we get a 422 that the merchant account is not setup for credit card " +
+            "processing. " +
+            "Disabling UnionPay tests that involve tokenizing until the issue has been resolved.")
     @Test
     public void tokenizesUnionPayWhenEnrollmentIsNotRequired() {
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
@@ -150,6 +161,11 @@ public class DropInTest extends TestHelper {
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
+    @Ignore("There is an issue with our merchant account not tokenizing UnionPay. " +
+            "Our merchant account can process capabilities and enrollment but " +
+            "when tokenizing we get a 422 that the merchant account is not setup for credit card " +
+            "processing. " +
+            "Disabling UnionPay tests that involve tokenizing until the issue has been resolved.")
     @Test
     public void tokenizesUnionPayWhenFirstSMSCodeIsInvalid() {
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
