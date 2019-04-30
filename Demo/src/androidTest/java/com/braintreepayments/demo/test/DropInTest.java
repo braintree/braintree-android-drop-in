@@ -81,7 +81,6 @@ public class DropInTest extends TestHelper {
         assertTrue(onDevice(withText("Recent")).waitForExists().exists());
     }
 
-
     @Test(timeout = 60000)
     public void performsThreeDSecureVerification() {
         enableThreeDSecure();
