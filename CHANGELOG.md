@@ -1,5 +1,10 @@
 # Braintree Android Drop-In Release Notes
 
+## 4.1.1
+
+* Add `DropInRequest#disableCard` to disable Card payment method
+* Fix Google Payment issue where Google Pay does not communicate back to BraintreeFragment
+
 ## 4.1.0
 * Add Hiper and Hipercard detection and assets
   * Bump card-form to 4.1.0
