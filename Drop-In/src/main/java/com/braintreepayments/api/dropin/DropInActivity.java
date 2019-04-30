@@ -39,6 +39,7 @@ import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
+import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PayPalRequest;
@@ -294,6 +295,28 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     @Override
     protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
+        /*
+         * TODO this a temporary work around to fix the Google Payment flow.
+         *
+         * BraintreeFragment starts the GooglePaymentActivity for result to tokenize
+         * Google Payment. GooglePaymentActivity#onActivityResult is called from Google Payment
+         * and a result is set, then the activity finishes.
+         *
+         * What should happen is BraintreeFragment#onActivityResult should be called.
+         *
+         * There seems to be a bug that BraintreeFragment#onActivityResult is bypassed and
+         * DropInActivity#onActivityResult is called, with a random requestCode (79129).
+         * DropInActivity doesn't understand this requestCode so it noops.
+         *
+         * The temporary fix is to forward the data back to BraintreeFragment when we detect
+         * the 79129 requestCode.
+         */
+        if (requestCode == 79129) {
+            mBraintreeFragment.onActivityResult(BraintreeRequestCodes.GOOGLE_PAYMENT,
+                    resultCode, data);
+            return;
+        }
+
         mLoadingViewSwitcher.setDisplayedChild(0);
         if (resultCode == RESULT_CANCELED) {
             if (requestCode == ADD_CARD_REQUEST_CODE) {
