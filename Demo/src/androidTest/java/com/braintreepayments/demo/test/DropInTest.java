@@ -253,7 +253,7 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void deletesPaymentMethod() {
-        setCustomerId("delete-payment-method-uitest");
+        setUniqueCustomerId();
         enableVaultManager();
         setSaveCardCheckBox(true, true);
 
