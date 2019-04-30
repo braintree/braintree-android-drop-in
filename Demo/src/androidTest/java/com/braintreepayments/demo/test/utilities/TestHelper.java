@@ -111,6 +111,14 @@ public class TestHelper {
         SystemClock.sleep(2000);
     }
 
+    /**
+     * Sets the customer ID to a value that should be randomized.
+     * There should not be any saved payment methods for this customer.
+     */
+    public void setUniqueCustomerId() {
+        setCustomerId(""+System.currentTimeMillis());
+    }
+
     public void setMerchantAccountId(String merchantAccountId) {
         PreferenceManager.getDefaultSharedPreferences(getTargetContext())
                 .edit()
