@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.braintreepayments.api.Card;
 import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.PayPal;
@@ -274,12 +275,28 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         if (paymentMethodNonces.size() > 0) {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
             mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
-            mVaultedPaymentMethodsView.setAdapter(new VaultedPaymentMethodsAdapter(this,
-                    paymentMethodNonces));
+            mVaultedPaymentMethodsView.setAdapter(new VaultedPaymentMethodsAdapter(new PaymentMethodNonceCreatedListener() {
+                @Override
+                public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
+                    if (paymentMethodNonce instanceof CardNonce) {
+                        mBraintreeFragment.sendAnalyticsEvent("vaulted-card.select");
+                    }
+
+                    DropInActivity.this.onPaymentMethodNonceCreated(paymentMethodNonce);
+                }
+            }, paymentMethodNonces));
 
             if (mDropInRequest.isVaultManagerEnabled()) {
                 mVaultManagerButton.setVisibility(View.VISIBLE);
             }
+
+            for (PaymentMethodNonce nonce : paymentMethodNonces) {
+                if (nonce instanceof CardNonce) {
+                    mBraintreeFragment.sendAnalyticsEvent("vaulted-card.appear");
+                    break;
+                }
+            }
+
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
             mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
