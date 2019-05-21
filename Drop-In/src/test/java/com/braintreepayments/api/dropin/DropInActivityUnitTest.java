@@ -63,6 +63,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -496,6 +497,44 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void clickingVaultedPaymentMethod_whenCard_sendsAnalyticEvent() {
+        PaymentMethodNonce nonce = mock(CardNonce.class);
+        ArrayList<PaymentMethodNonce> nonces = new ArrayList<>();
+        nonces.add(nonce);
+
+        BraintreeFragment fragment = mock(BraintreeFragment.class);
+
+        setup(fragment);
+
+        mActivity.onPaymentMethodNoncesUpdated(nonces);
+        RecyclerView recyclerView = mActivity.findViewById(R.id.bt_vaulted_payment_methods);
+        recyclerView.measure(0, 0);
+        recyclerView.layout(0, 0, 100, 10000);
+        recyclerView.findViewHolderForAdapterPosition(0).itemView.callOnClick();
+
+        verify(fragment).sendAnalyticsEvent("vaulted-card.select");
+    }
+
+    @Test
+    public void clickingVaultedPaymentMethod_whenPayPal_doesNotSendAnalyticEvent() {
+        PaymentMethodNonce nonce = mock(PayPalAccountNonce.class);
+        ArrayList<PaymentMethodNonce> nonces = new ArrayList<>();
+        nonces.add(nonce);
+
+        BraintreeFragment fragment = mock(BraintreeFragment.class);
+
+        setup(fragment);
+
+        mActivity.onPaymentMethodNoncesUpdated(nonces);
+        RecyclerView recyclerView = mActivity.findViewById(R.id.bt_vaulted_payment_methods);
+        recyclerView.measure(0, 0);
+        recyclerView.layout(0, 0, 100, 10000);
+        recyclerView.findViewHolderForAdapterPosition(0).itemView.callOnClick();
+
+        verify(fragment, never()).sendAnalyticsEvent("vaulted-card.select");
+    }
+
+    @Test
     public void onPaymentMethodNoncesUpdated_showsVaultedPaymentMethods() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
@@ -521,6 +560,31 @@ public class DropInActivityUnitTest {
         assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods)).isShown();
         assertEquals(2, ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter().getItemCount());
         assertThat((TextView) mActivity.findViewById(R.id.bt_supported_payment_methods_header)).hasText(R.string.bt_other);
+    }
+
+    @Test
+    public void onPaymentMethodNoncesUpdated_withACard_sendsAnalyticEvent() throws JSONException {
+        setup(mock(BraintreeFragment.class));
+
+        List<PaymentMethodNonce> nonceList = new ArrayList<>();
+
+        nonceList.add(CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json")));
+
+        mActivity.onPaymentMethodNoncesUpdated(nonceList);
+
+        verify(mActivity.braintreeFragment).sendAnalyticsEvent("vaulted-card.appear");
+    }
+
+    @Test
+    public void onPaymentMethodNoncesUpdated_withNoCards_doesNotSendAnalyticEvent() throws JSONException {
+        setup(mock(BraintreeFragment.class));
+
+        List<PaymentMethodNonce> nonceList = new ArrayList<>();
+
+        mActivity.onPaymentMethodNoncesUpdated(nonceList);
+
+        verify(mActivity.braintreeFragment, never()).sendAnalyticsEvent("vaulted-card.appear");
     }
 
     @Test
@@ -597,6 +661,37 @@ public class DropInActivityUnitTest {
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertEquals(result.getPaymentMethodType(), response.getPaymentMethodType());
         assertEquals(result.getPaymentMethodNonce(), response.getPaymentMethodNonce());
+    }
+
+    @Test
+    public void onActivityResult_withPayPal_doesNotSendCardAnalyticEvent() {
+        setup(mock(BraintreeFragment.class));
+
+        PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
+        when(paypalNonce.getDescription()).thenReturn("paypal-nonce");
+
+        ArrayList<Parcelable> paymentMethodNonces = new ArrayList<Parcelable>();
+        paymentMethodNonces.add(paypalNonce);
+
+        mActivity.onActivityResult(2, RESULT_OK, new Intent()
+                .putExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES", paymentMethodNonces));
+
+        verify(mActivity.braintreeFragment, never()).sendAnalyticsEvent("vaulted-card.appear");
+    }
+
+    @Test
+    public void onActivityResult_nonceFromAddCardActivity_doesNotSendVaultAnalyticEvent() throws JSONException {
+        setup(mock(BraintreeFragment.class));
+
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(CardNonce.fromJson(
+                        stringFromFixture("responses/visa_credit_card_response.json")));
+        Intent data = new Intent()
+                .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+
+        mActivity.onActivityResult(1, RESULT_OK, data);
+
+        verify(mActivity.braintreeFragment, never()).sendAnalyticsEvent("vaulted-card.appear");
     }
 
     @Test
@@ -802,13 +897,13 @@ public class DropInActivityUnitTest {
 
     @Test
     public void vaultEditButton_whenVaultManagerEnabled_isVisible() {
+        setup(mock(BraintreeFragment.class));
+
         List<PaymentMethodNonce> nonceList = new ArrayList<>();
         nonceList.add(mock(CardNonce.class));
 
         mActivity.setDropInRequest(new DropInRequest()
-               .vaultManager(true));
-
-        mActivityController.setup();
+                .vaultManager(true));
 
         mActivity.onPaymentMethodNoncesUpdated(nonceList);
 
@@ -817,12 +912,12 @@ public class DropInActivityUnitTest {
 
     @Test
     public void vaultEditButton_whenVaultManagerUnspecified_isInvisible() {
+        setup(mock(BraintreeFragment.class));
+
         List<PaymentMethodNonce> nonceList = new ArrayList<>();
         nonceList.add(mock(CardNonce.class));
 
         mActivity.setDropInRequest(new DropInRequest());
-
-        mActivityController.setup();
 
         mActivity.onPaymentMethodNoncesUpdated(nonceList);
 
@@ -831,13 +926,13 @@ public class DropInActivityUnitTest {
 
     @Test
     public void vaultEditButton_whenVaultManagerDisabled_isInvisible() {
+        setup(mock(BraintreeFragment.class));
+
         List<PaymentMethodNonce> nonceList = new ArrayList<>();
         nonceList.add(mock(CardNonce.class));
 
         mActivity.setDropInRequest(new DropInRequest()
                 .vaultManager(false));
-
-        mActivityController.setup();
 
         mActivity.onPaymentMethodNoncesUpdated(nonceList);
 
