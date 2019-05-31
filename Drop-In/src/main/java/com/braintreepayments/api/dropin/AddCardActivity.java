@@ -272,6 +272,8 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
 
             UnionPay.tokenize(mBraintreeFragment, unionPayCardBuilder);
         } else {
+            boolean shouldVault = mClientTokenPresent && cardForm.isSaveCardCheckBoxChecked();
+
             CardBuilder cardBuilder = new CardBuilder()
                     .cardholderName(cardForm.getCardholderName())
                     .cardNumber(cardForm.getCardNumber())
@@ -279,7 +281,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
                     .expirationYear(cardForm.getExpirationYear())
                     .cvv(cardForm.getCvv())
                     .postalCode(cardForm.getPostalCode())
-                    .validate(mClientTokenPresent);
+                    .validate(shouldVault);
 
             if (shouldRequestThreeDSecureVerification()) {
                 ThreeDSecure.performVerification(mBraintreeFragment, cardBuilder,

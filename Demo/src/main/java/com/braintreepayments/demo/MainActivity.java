@@ -26,8 +26,6 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.PostalAddress;
 import com.braintreepayments.api.models.VenmoAccountNonce;
 import com.google.android.gms.identity.intents.model.UserAddress;
-import com.google.android.gms.wallet.Cart;
-import com.google.android.gms.wallet.LineItem;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
 
@@ -121,6 +119,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .googlePaymentRequest(getGooglePaymentRequest())
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
+                .allowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this))
+                .vaultCard(Settings.defaultVaultSetting(this))
                 .vaultManager(Settings.isVaultManagerEnabled(this))
                 .cardholderNameStatus(Settings.getCardholderNameStatus(this));
 
