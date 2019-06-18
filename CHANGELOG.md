@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## 4.2.0
+
+* Add ability for merchant and/or customer to opt in/out of client side vaulting (card).
+
 ## 4.1.1
 
 * Add `DropInRequest#disableCard` to disable Card payment method
