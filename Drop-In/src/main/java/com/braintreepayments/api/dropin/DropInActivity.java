@@ -328,6 +328,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
          * The temporary fix is to forward the data back to BraintreeFragment when we detect
          * the 79129 requestCode.
          */
+        super.onActivityResult(requestCode, resultCode, data);
+
         if (requestCode == 79129) {
             mBraintreeFragment.onActivityResult(BraintreeRequestCodes.GOOGLE_PAYMENT,
                     resultCode, data);
