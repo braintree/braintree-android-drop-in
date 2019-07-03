@@ -795,34 +795,6 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    /*
-     * TODO this a temporary test for the work around to fix the Google Payment flow.
-     *
-     * BraintreeFragment starts the GooglePaymentActivity for result to tokenize
-     * Google Payment. GooglePaymentActivity#onActivityResult is called from Google Payment
-     * and a result is set, then the activity finishes.
-     *
-     * What should happen is BraintreeFragment#onActivityResult should be called.
-     *
-     * There seems to be a bug that BraintreeFragment#onActivityResult is bypassed and
-     * DropInActivity#onActivityResult is called, with a random requestCode (79129).
-     * DropInActivity doesn't understand this requestCode so it noops.
-     *
-     * The temporary fix is to forward the data back to BraintreeFragment when we detect
-     * the 79129 requestCode.
-     */
-    public void onActivityResult_withRequestCode79129_callsBraintreeFragmentOnActivityResult() {
-        Intent data = new Intent();
-
-        setup(mock(BraintreeFragment.class));
-
-        mActivity.onActivityResult(79129, RESULT_OK, data);
-
-        verify(mActivity.braintreeFragment).onActivityResult(
-                eq(BraintreeRequestCodes.GOOGLE_PAYMENT), eq(RESULT_OK), eq(data));
-    }
-
-    @Test
     public void configurationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
