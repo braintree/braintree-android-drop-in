@@ -314,9 +314,10 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        mLoadingViewSwitcher.setDisplayedChild(0);
         if (resultCode == RESULT_CANCELED) {
             if (requestCode == ADD_CARD_REQUEST_CODE) {
+                mLoadingViewSwitcher.setDisplayedChild(0);
+
                 fetchPaymentMethodNonces(true);
             }
 
@@ -324,6 +325,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
             final Intent response;
             if (resultCode == RESULT_OK) {
+                mLoadingViewSwitcher.setDisplayedChild(0);
+
                 DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
                 DropInResult.setLastUsedPaymentMethodType(this, result.getPaymentMethodNonce());
 
@@ -343,6 +346,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             });
         } else if (requestCode == DELETE_PAYMENT_METHOD_NONCE_CODE) {
             if (resultCode == RESULT_OK) {
+                mLoadingViewSwitcher.setDisplayedChild(0);
 
                 if (data != null) {
                     ArrayList<PaymentMethodNonce> paymentMethodNonces = data
