@@ -15,7 +15,8 @@ import androidx.test.filters.RequiresDevice;
 
 import static androidx.test.InstrumentationRegistry.getTargetContext;
 import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_CHALLENGE_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON;
 import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
 import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
@@ -106,11 +107,26 @@ public class DropInTest extends TestHelper {
     }
 
     @Test(timeout = 60000)
-    public void performsThreeDSecure2Verification() {
+    public void performsThreeDSecure2FrictionlessVerification() {
         enableThreeDSecure();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
-        tokenizeCard(THREE_D_SECURE_2_VERIFICATON);
+        tokenizeCard(THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON);
+
+        getNonceDetails().check(text(containsString("Card Last Two: 00")));
+        getNonceDetails().check(text(containsString("3DS isLiabilityShifted: true")));
+        getNonceDetails().check(text(containsString("3DS isLiabilityShiftPossible: true")));
+
+        onDevice(withText("Purchase")).perform(click());
+        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
+    }
+
+    @Test(timeout = 60000)
+    public void performsThreeDSecure2ChallengeVerification() {
+        enableThreeDSecure();
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+
+        tokenizeCard(THREE_D_SECURE_2_CHALLENGE_VERIFICATON);
 
         onDevice(withText("Purchase Authentication")).waitForExists();
         onDevice(withText("Code")).perform(setText("1234"));
