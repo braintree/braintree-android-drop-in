@@ -5,6 +5,9 @@ import android.os.Parcel;
 
 import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalRequest;
+import com.braintreepayments.api.models.ThreeDSecureAdditionalInformation;
+import com.braintreepayments.api.models.ThreeDSecurePostalAddress;
+import com.braintreepayments.api.models.ThreeDSecureRequest;
 import com.braintreepayments.cardform.view.CardForm;
 import com.google.android.gms.wallet.Cart;
 import com.google.android.gms.wallet.TransactionInfo;
@@ -41,6 +44,29 @@ public class DropInRequestUnitTest {
         PayPalRequest paypalRequest = new PayPalRequest("10")
                 .currencyCode("USD");
 
+
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
+                .nonce("abc-123")
+                .versionRequested(ThreeDSecureRequest.VERSION_2)
+                .amount("10.00")
+                .email("tester@example.com")
+                .mobilePhoneNumber("3125551234")
+                .billingAddress(new ThreeDSecurePostalAddress()
+                        .givenName("Given")
+                        .surname("Surname")
+                        .streetAddress("555 Smith St.")
+                        .extendedAddress("#5")
+                        .locality("Chicago")
+                        .region("IL")
+                        .postalCode("54321")
+                        .countryCodeAlpha2("US")
+                        .phoneNumber("3125557890")
+                )
+                .additionalInformation(new ThreeDSecureAdditionalInformation()
+                        .shippingMethodIndicator("GEN")
+                );
+
+
         Intent intent = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
@@ -52,6 +78,7 @@ public class DropInRequestUnitTest {
                 .disableVenmo()
                 .disableCard()
                 .requestThreeDSecureVerification(true)
+                .threeDSecureRequest(threeDSecureRequest)
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
                 .vaultManager(true)
@@ -77,6 +104,21 @@ public class DropInRequestUnitTest {
         assertFalse(dropInRequest.isVenmoEnabled());
         assertFalse(dropInRequest.isCardEnabled());
         assertTrue(dropInRequest.shouldRequestThreeDSecureVerification());
+        assertEquals("abc-123", dropInRequest.getThreeDSecureRequest().getNonce());
+        assertEquals("2", dropInRequest.getThreeDSecureRequest().getVersionRequested());
+        assertEquals("10.00", dropInRequest.getThreeDSecureRequest().getAmount());
+        assertEquals("tester@example.com", dropInRequest.getThreeDSecureRequest().getEmail());
+        assertEquals("3125551234", dropInRequest.getThreeDSecureRequest().getMobilePhoneNumber());
+        assertEquals("Given", dropInRequest.getThreeDSecureRequest().getBillingAddress().getGivenName());
+        assertEquals("Surname", dropInRequest.getThreeDSecureRequest().getBillingAddress().getSurname());
+        assertEquals("555 Smith St.", dropInRequest.getThreeDSecureRequest().getBillingAddress().getStreetAddress());
+        assertEquals("#5", dropInRequest.getThreeDSecureRequest().getBillingAddress().getExtendedAddress());
+        assertEquals("Chicago", dropInRequest.getThreeDSecureRequest().getBillingAddress().getLocality());
+        assertEquals("IL", dropInRequest.getThreeDSecureRequest().getBillingAddress().getRegion());
+        assertEquals("54321", dropInRequest.getThreeDSecureRequest().getBillingAddress().getPostalCode());
+        assertEquals("US", dropInRequest.getThreeDSecureRequest().getBillingAddress().getCountryCodeAlpha2());
+        assertEquals("3125557890", dropInRequest.getThreeDSecureRequest().getBillingAddress().getPhoneNumber());
+        assertEquals("GEN", dropInRequest.getThreeDSecureRequest().getAdditionalInformation().getShippingMethodIndicator());
         assertTrue(dropInRequest.shouldMaskCardNumber());
         assertTrue(dropInRequest.shouldMaskSecurityCode());
         assertTrue(dropInRequest.isVaultManagerEnabled());
@@ -102,6 +144,7 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.isVenmoEnabled());
         assertTrue(dropInRequest.isCardEnabled());
         assertFalse(dropInRequest.shouldRequestThreeDSecureVerification());
+        assertNull(dropInRequest.getThreeDSecureRequest());
         assertFalse(dropInRequest.shouldMaskCardNumber());
         assertFalse(dropInRequest.shouldMaskSecurityCode());
         assertFalse(dropInRequest.isVaultManagerEnabled());
@@ -126,6 +169,27 @@ public class DropInRequestUnitTest {
         PayPalRequest paypalRequest = new PayPalRequest("10")
                 .currencyCode("USD");
 
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
+                .nonce("abc-123")
+                .versionRequested(ThreeDSecureRequest.VERSION_2)
+                .amount("10.00")
+                .email("tester@example.com")
+                .mobilePhoneNumber("3125551234")
+                .billingAddress(new ThreeDSecurePostalAddress()
+                        .givenName("Given")
+                        .surname("Surname")
+                        .streetAddress("555 Smith St.")
+                        .extendedAddress("#5")
+                        .locality("Chicago")
+                        .region("IL")
+                        .postalCode("54321")
+                        .countryCodeAlpha2("US")
+                        .phoneNumber("3125557890")
+                )
+                .additionalInformation(new ThreeDSecureAdditionalInformation()
+                        .shippingMethodIndicator("GEN")
+                );
+
         DropInRequest dropInRequest = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
@@ -137,6 +201,7 @@ public class DropInRequestUnitTest {
                 .disableVenmo()
                 .disableCard()
                 .requestThreeDSecureVerification(true)
+                .threeDSecureRequest(threeDSecureRequest)
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
                 .vaultManager(true)
@@ -163,6 +228,21 @@ public class DropInRequestUnitTest {
         assertFalse(parceledDropInRequest.isVenmoEnabled());
         assertFalse(parceledDropInRequest.isCardEnabled());
         assertTrue(parceledDropInRequest.shouldRequestThreeDSecureVerification());
+        assertEquals("abc-123", dropInRequest.getThreeDSecureRequest().getNonce());
+        assertEquals("2", dropInRequest.getThreeDSecureRequest().getVersionRequested());
+        assertEquals("10.00", dropInRequest.getThreeDSecureRequest().getAmount());
+        assertEquals("tester@example.com", dropInRequest.getThreeDSecureRequest().getEmail());
+        assertEquals("3125551234", dropInRequest.getThreeDSecureRequest().getMobilePhoneNumber());
+        assertEquals("Given", dropInRequest.getThreeDSecureRequest().getBillingAddress().getGivenName());
+        assertEquals("Surname", dropInRequest.getThreeDSecureRequest().getBillingAddress().getSurname());
+        assertEquals("555 Smith St.", dropInRequest.getThreeDSecureRequest().getBillingAddress().getStreetAddress());
+        assertEquals("#5", dropInRequest.getThreeDSecureRequest().getBillingAddress().getExtendedAddress());
+        assertEquals("Chicago", dropInRequest.getThreeDSecureRequest().getBillingAddress().getLocality());
+        assertEquals("IL", dropInRequest.getThreeDSecureRequest().getBillingAddress().getRegion());
+        assertEquals("54321", dropInRequest.getThreeDSecureRequest().getBillingAddress().getPostalCode());
+        assertEquals("US", dropInRequest.getThreeDSecureRequest().getBillingAddress().getCountryCodeAlpha2());
+        assertEquals("3125557890", dropInRequest.getThreeDSecureRequest().getBillingAddress().getPhoneNumber());
+        assertEquals("GEN", dropInRequest.getThreeDSecureRequest().getAdditionalInformation().getShippingMethodIndicator());
         assertTrue(parceledDropInRequest.shouldMaskCardNumber());
         assertTrue(parceledDropInRequest.shouldMaskSecurityCode());
         assertTrue(parceledDropInRequest.isVaultManagerEnabled());

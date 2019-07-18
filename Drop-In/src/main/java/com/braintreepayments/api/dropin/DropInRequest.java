@@ -8,6 +8,8 @@ import android.os.Parcelable;
 import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalRequest;
+import com.braintreepayments.api.models.ThreeDSecurePostalAddress;
+import com.braintreepayments.api.models.ThreeDSecureRequest;
 import com.braintreepayments.cardform.view.CardForm;
 
 /**
@@ -22,6 +24,7 @@ public class DropInRequest implements Parcelable {
     private String mAmount;
     private boolean mCollectDeviceData;
     private boolean mRequestThreeDSecureVerification;
+    private ThreeDSecureRequest mThreeDSecureRequest;
 
     private GooglePaymentRequest mGooglePaymentRequest;
     private PayPalRequest mPayPalRequest;
@@ -152,6 +155,19 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * This method is optional.
+     *
+     * @param threeDSecureRequest {@link ThreeDSecureRequest} to specify options and additional for 3D Secure.
+     * To encourage 3DS 2.0 flows, set {@link ThreeDSecureRequest#billingAddress(ThreeDSecurePostalAddress)},
+     * {@link ThreeDSecureRequest#email(String)}, and {@link ThreeDSecureRequest#mobilePhoneNumber(String)} for best results.
+     * If no amount is set, the {@link DropInRequest#amount(String)} will be used.
+     */
+    public DropInRequest threeDSecureRequest(ThreeDSecureRequest threeDSecureRequest) {
+        mThreeDSecureRequest = threeDSecureRequest;
+        return this;
+    }
+
+    /**
      * @param maskCardNumber {@code true} to mask the card number when the field is not focused.
      * See {@link com.braintreepayments.cardform.view.CardEditText} for more details. Defaults to
      * {@code false}.
@@ -263,6 +279,8 @@ public class DropInRequest implements Parcelable {
         return mRequestThreeDSecureVerification;
     }
 
+    public ThreeDSecureRequest getThreeDSecureRequest() { return mThreeDSecureRequest; }
+
     boolean shouldMaskCardNumber() {
         return mMaskCardNumber;
     }
@@ -305,6 +323,7 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(mVenmoEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mCardEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mRequestThreeDSecureVerification ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(mThreeDSecureRequest, 0);
         dest.writeByte(mMaskCardNumber ? (byte) 1 : (byte) 0);
         dest.writeByte(mMaskSecurityCode ? (byte) 1 : (byte) 0);
         dest.writeByte(mVaultManagerEnabled ? (byte) 1 : (byte) 0);
@@ -324,6 +343,7 @@ public class DropInRequest implements Parcelable {
         mVenmoEnabled = in.readByte() != 0;
         mCardEnabled = in.readByte() != 0;
         mRequestThreeDSecureVerification = in.readByte() != 0;
+        mThreeDSecureRequest = in.readParcelable(ThreeDSecureRequest.class.getClassLoader());
         mMaskCardNumber = in.readByte() != 0;
         mMaskSecurityCode = in.readByte() != 0;
         mVaultManagerEnabled = in.readByte() != 0;
