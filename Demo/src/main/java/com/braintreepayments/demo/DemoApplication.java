@@ -28,7 +28,6 @@ public class DemoApplication extends Application {
                     .detectLeakedRegistrationObjects()
                     .detectLeakedSqlLiteObjects()
                     .penaltyLog()
-                    .penaltyDeath()
                     .build());
         }
 

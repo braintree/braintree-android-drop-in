@@ -59,6 +59,7 @@ android.buildTypes.debug { type ->
 dependencies {
     api 'com.braintreepayments.api:braintree:3.3.0'
     api 'com.braintreepayments:card-form:4.2.0'
+    api 'com.braintreepayments.api:three-d-secure:3.3.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.gms:play-services-wallet:16.0.0'
 
@@ -71,6 +72,18 @@ dependencies {
     testImplementation 'com.squareup.assertj:assertj-android:1.1.1'
 
     androidTestImplementation 'androidx.test.ext:junit:1.0.0-beta02'
+}
+
+rootProject.allprojects {
+    repositories {
+        maven {
+            url  "https://cardinalcommerce.bintray.com/android"
+            credentials {
+                username 'braintree-team-sdk@cardinalcommerce'
+                password '220cc9476025679c4e5c843666c27d97cfb0f951'
+            }
+        }
+    }
 }
 
 /* maven deploy + signing */

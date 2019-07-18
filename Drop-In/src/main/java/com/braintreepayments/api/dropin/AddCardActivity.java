@@ -28,11 +28,15 @@ import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
+import com.braintreepayments.api.interfaces.ThreeDSecureLookupListener;
 import com.braintreepayments.api.interfaces.UnionPayListener;
 import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardBuilder;
+import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.models.ThreeDSecureLookup;
+import com.braintreepayments.api.models.ThreeDSecureRequest;
 import com.braintreepayments.api.models.UnionPayCapabilities;
 import com.braintreepayments.api.models.UnionPayCardBuilder;
 import com.braintreepayments.cardform.view.CardForm;
@@ -75,6 +79,8 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
 
     private boolean mUnionPayCard;
     private boolean mUnionPayDebitCard;
+
+    private boolean mRequestedThreeDSecure;
 
     private String mEnrollmentId;
 
@@ -283,19 +289,31 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
                     .postalCode(cardForm.getPostalCode())
                     .validate(shouldVault);
 
-            if (shouldRequestThreeDSecureVerification()) {
-                ThreeDSecure.performVerification(mBraintreeFragment, cardBuilder,
-                        mDropInRequest.getAmount());
-            } else {
-                Card.tokenize(mBraintreeFragment, cardBuilder);
+            if (shouldRequestThreeDSecureVerification() && mDropInRequest.getThreeDSecureRequest() == null) {
+                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
+                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
             }
+
+            Card.tokenize(mBraintreeFragment, cardBuilder);
         }
     }
 
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
-        mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
-        finish(paymentMethod, null);
+        if (!mRequestedThreeDSecure && shouldRequestThreeDSecureVerification()) {
+            mRequestedThreeDSecure = true;
+
+            mDropInRequest.getThreeDSecureRequest().nonce(paymentMethod.getNonce());
+            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest(), new ThreeDSecureLookupListener() {
+                @Override
+                public void onLookupComplete(ThreeDSecureRequest request, ThreeDSecureLookup lookup) {
+                    ThreeDSecure.continuePerformVerification(mBraintreeFragment, request, lookup);
+                }
+            });
+        } else {
+                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
+                finish(paymentMethod, null);
+            }
     }
 
     @Override
