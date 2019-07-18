@@ -342,12 +342,15 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     @Override
     public void onCancel(int requestCode) {
         if (requestCode == BraintreeRequestCodes.THREE_D_SECURE) {
+            mRequestedThreeDSecure = false;
             mEditCardView.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onError(Exception error) {
+        mRequestedThreeDSecure = false;
+
         if (error instanceof ErrorWithResponse) {
             ErrorWithResponse errorResponse = (ErrorWithResponse) error;
 

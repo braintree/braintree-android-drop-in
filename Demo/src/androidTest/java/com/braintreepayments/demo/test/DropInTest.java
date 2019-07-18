@@ -141,6 +141,18 @@ public class DropInTest extends TestHelper {
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
+    @Test(timeout = 60000)
+    public void cancelsThreeDSecure2ChallengeVerification() {
+        enableThreeDSecure();
+        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
+
+        tokenizeCard(THREE_D_SECURE_2_CHALLENGE_VERIFICATON);
+
+        onDevice(withText("Cancel")).waitForExists().waitForEnabled().perform(click());
+
+        onDevice(withTextContaining("Add Card")).waitForExists();
+    }
+
     @Ignore("There is an issue with our merchant account not tokenizing UnionPay. " +
             "Our merchant account can process capabilities and enrollment but " +
             "when tokenizing we get a 422 that the merchant account is not setup for credit card " +
