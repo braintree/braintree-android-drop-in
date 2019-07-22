@@ -303,9 +303,9 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
             mDropInRequest.getThreeDSecureRequest().nonce(paymentMethod.getNonce());
             ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
         } else {
-                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
-                finish(paymentMethod, null);
-            }
+            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
+            finish(paymentMethod, null);
+        }
     }
 
     @Override
