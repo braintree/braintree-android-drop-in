@@ -28,14 +28,11 @@ import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.interfaces.ThreeDSecureLookupListener;
 import com.braintreepayments.api.interfaces.UnionPayListener;
 import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardBuilder;
-import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.models.ThreeDSecureLookup;
 import com.braintreepayments.api.models.ThreeDSecureRequest;
 import com.braintreepayments.api.models.UnionPayCapabilities;
 import com.braintreepayments.api.models.UnionPayCardBuilder;
@@ -304,12 +301,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
             mRequestedThreeDSecure = true;
 
             mDropInRequest.getThreeDSecureRequest().nonce(paymentMethod.getNonce());
-            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest(), new ThreeDSecureLookupListener() {
-                @Override
-                public void onLookupComplete(ThreeDSecureRequest request, ThreeDSecureLookup lookup) {
-                    ThreeDSecure.continuePerformVerification(mBraintreeFragment, request, lookup);
-                }
-            });
+            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
         } else {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
                 finish(paymentMethod, null);
