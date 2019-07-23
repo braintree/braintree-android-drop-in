@@ -286,17 +286,17 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
                     .postalCode(cardForm.getPostalCode())
                     .validate(shouldVault);
 
-            if (shouldRequestThreeDSecureVerification() && mDropInRequest.getThreeDSecureRequest() == null) {
-                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
-                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
-            }
-
             Card.tokenize(mBraintreeFragment, cardBuilder);
         }
     }
 
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
+        if (shouldRequestThreeDSecureVerification() && mDropInRequest.getThreeDSecureRequest() == null) {
+            ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
+            mDropInRequest.threeDSecureRequest(threeDSecureRequest);
+        }
+
         if (!mRequestedThreeDSecure && shouldRequestThreeDSecureVerification()) {
             mRequestedThreeDSecure = true;
 
