@@ -40,6 +40,7 @@ android {
         warning 'GradleCompatible'
         textReport true
         textOutput 'stdout'
+        disable 'InvalidPackage' // The Cardinal SDK is referencing the `javax.naming` package but it is unavailable
     }
 
     sourceSets {
