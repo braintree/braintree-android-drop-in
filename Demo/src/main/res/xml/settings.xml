@@ -85,6 +85,13 @@
             android:summary="@string/require_three_d_secure_summary"
             android:defaultValue="true" />
 
+        <ListPreference
+            android:key="three_d_secure_version"
+            android:title="3D Secure Version"
+            android:summary="Determines the version of 3D Secure to use"
+            android:entries="@array/three_d_secure_version"
+            android:entryValues="@array/three_d_secure_version_values" />
+
     </PreferenceCategory>
 
     <PreferenceCategory

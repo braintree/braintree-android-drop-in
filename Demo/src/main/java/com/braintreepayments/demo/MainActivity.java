@@ -118,7 +118,6 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .clientToken(mAuthorization)
                 .amount("1.00")
                 .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))
-                .threeDSecureRequest(demoThreeDSecureRequest())
                 .collectDeviceData(Settings.shouldCollectDeviceData(this))
                 .googlePaymentRequest(getGooglePaymentRequest())
                 .maskCardNumber(true)
@@ -127,6 +126,9 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .vaultCard(Settings.defaultVaultSetting(this))
                 .vaultManager(Settings.isVaultManagerEnabled(this))
                 .cardholderNameStatus(Settings.getCardholderNameStatus(this));
+        if (Settings.isThreeDSecureEnabled(this)) {
+            dropInRequest.threeDSecureRequest(demoThreeDSecureRequest());
+        }
 
         startActivityForResult(dropInRequest.getIntent(this), DROP_IN_REQUEST);
     }
@@ -148,7 +150,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
                 .amount("1.00")
-                .versionRequested(ThreeDSecureRequest.VERSION_2)
+                .versionRequested(Settings.getThreeDSecureVersion(this))
                 .email("test@email.com")
                 .mobilePhoneNumber("3125551234")
                 .billingAddress(billingAddress)

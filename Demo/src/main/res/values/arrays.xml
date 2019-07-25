@@ -28,4 +28,14 @@
         <item name="optional">@string/cardholder_name_optional</item>
         <item name="required">@string/cardholder_name_required</item>
     </string-array>
+
+    <string-array name="three_d_secure_version">
+        <item name="v1">@string/three_d_secure_v1</item>
+        <item name="v2">@string/three_d_secure_v2</item>
+    </string-array>
+
+    <string-array name="three_d_secure_version_values">
+        <item name="v1">@string/three_d_secure_v1_value</item>
+        <item name="v2">@string/three_d_secure_v2_value</item>
+    </string-array>
 </resources>
