@@ -77,7 +77,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     private boolean mUnionPayCard;
     private boolean mUnionPayDebitCard;
 
-    private boolean mRequestedThreeDSecure;
+    private boolean mPerformedThreeDSecureVerification;
 
     private String mEnrollmentId;
 
@@ -292,13 +292,17 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
 
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
-        if (shouldRequestThreeDSecureVerification() && mDropInRequest.getThreeDSecureRequest() == null) {
-            ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
-            mDropInRequest.threeDSecureRequest(threeDSecureRequest);
-        }
+        if (!mPerformedThreeDSecureVerification && shouldRequestThreeDSecureVerification()) {
+            mPerformedThreeDSecureVerification = true;
 
-        if (!mRequestedThreeDSecure && shouldRequestThreeDSecureVerification()) {
-            mRequestedThreeDSecure = true;
+            if (mDropInRequest.getThreeDSecureRequest() == null) {
+                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
+                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
+            }
+
+            if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
+                mDropInRequest.getThreeDSecureRequest().amount(mDropInRequest.getAmount());
+            }
 
             mDropInRequest.getThreeDSecureRequest().nonce(paymentMethod.getNonce());
             ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
@@ -334,14 +338,14 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     @Override
     public void onCancel(int requestCode) {
         if (requestCode == BraintreeRequestCodes.THREE_D_SECURE) {
-            mRequestedThreeDSecure = false;
+            mPerformedThreeDSecureVerification = false;
             mEditCardView.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onError(Exception error) {
-        mRequestedThreeDSecure = false;
+        mPerformedThreeDSecureVerification = false;
 
         if (error instanceof ErrorWithResponse) {
             ErrorWithResponse errorResponse = (ErrorWithResponse) error;
