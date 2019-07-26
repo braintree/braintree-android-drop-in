@@ -1,9 +1,5 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
-
-* Add support for 3DS 2.0
-
 ## 4.2.0
 
 * Add ability for merchant and/or customer to opt in/out of client side vaulting (card).
