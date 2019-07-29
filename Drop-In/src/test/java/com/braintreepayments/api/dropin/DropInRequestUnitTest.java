@@ -30,9 +30,6 @@ public class DropInRequestUnitTest {
 
     @Test
     public void includesAllOptions() {
-        Cart cart = Cart.newBuilder()
-                .setTotalPrice("5.00")
-                .build();
         GooglePaymentRequest googlePaymentRequest = new GooglePaymentRequest()
                 .transactionInfo(TransactionInfo.newBuilder()
                         .setTotalPrice("10")
@@ -43,7 +40,6 @@ public class DropInRequestUnitTest {
 
         PayPalRequest paypalRequest = new PayPalRequest("10")
                 .currencyCode("USD");
-
 
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
                 .nonce("abc-123")

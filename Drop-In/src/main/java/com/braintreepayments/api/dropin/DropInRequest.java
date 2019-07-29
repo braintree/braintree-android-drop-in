@@ -157,7 +157,7 @@ public class DropInRequest implements Parcelable {
     /**
      * This method is optional.
      *
-     * @param threeDSecureRequest {@link ThreeDSecureRequest} to specify options and additional for 3D Secure.
+     * @param threeDSecureRequest {@link ThreeDSecureRequest} to specify options and additional information for 3D Secure.
      * To encourage 3DS 2.0 flows, set {@link ThreeDSecureRequest#billingAddress(ThreeDSecurePostalAddress)},
      * {@link ThreeDSecureRequest#email(String)}, and {@link ThreeDSecureRequest#mobilePhoneNumber(String)} for best results.
      * If no amount is set, the {@link DropInRequest#amount(String)} will be used.
