@@ -207,8 +207,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             mRequestedThreeDSecure = true;
             mLoadingViewSwitcher.setDisplayedChild(0);
 
-//            ThreeDSecure.performVerification(mBraintreeFragment, paymentMethodNonce.getNonce(),
-//                    mDropInRequest.getAmount());
             if (mDropInRequest.getThreeDSecureRequest() == null) {
                 ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
                 mDropInRequest.threeDSecureRequest(threeDSecureRequest);
