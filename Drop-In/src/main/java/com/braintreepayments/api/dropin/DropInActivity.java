@@ -45,6 +45,7 @@ import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.models.ThreeDSecureRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -206,8 +207,19 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             mRequestedThreeDSecure = true;
             mLoadingViewSwitcher.setDisplayedChild(0);
 
-            ThreeDSecure.performVerification(mBraintreeFragment, paymentMethodNonce.getNonce(),
-                    mDropInRequest.getAmount());
+//            ThreeDSecure.performVerification(mBraintreeFragment, paymentMethodNonce.getNonce(),
+//                    mDropInRequest.getAmount());
+            if (mDropInRequest.getThreeDSecureRequest() == null) {
+                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
+                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
+            }
+
+            if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
+                mDropInRequest.getThreeDSecureRequest().amount(mDropInRequest.getAmount());
+            }
+
+            mDropInRequest.getThreeDSecureRequest().nonce(paymentMethodNonce.getNonce());
+            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
             return;
         }
 
