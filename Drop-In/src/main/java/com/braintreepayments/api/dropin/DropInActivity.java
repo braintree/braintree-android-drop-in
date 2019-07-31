@@ -69,8 +69,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
      */
     public static final String EXTRA_ERROR = "com.braintreepayments.api.dropin.EXTRA_ERROR";
 
-    private static final int ADD_CARD_REQUEST_CODE = 1;
-    private static final int DELETE_PAYMENT_METHOD_NONCE_CODE = 2;
+    public static final int ADD_CARD_REQUEST_CODE = 1;
+    public static final int DELETE_PAYMENT_METHOD_NONCE_CODE = 2;
     private static final String EXTRA_SHEET_SLIDE_UP_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_SLIDE_UP_PERFORMED";
     private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
     static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";

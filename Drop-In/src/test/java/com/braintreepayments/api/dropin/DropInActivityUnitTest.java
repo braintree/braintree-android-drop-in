@@ -46,6 +46,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
+import static com.braintreepayments.api.dropin.DropInActivity.ADD_CARD_REQUEST_CODE;
+import static com.braintreepayments.api.dropin.DropInActivity.DELETE_PAYMENT_METHOD_NONCE_CODE;
 import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerSupportsThreeDSecure;
@@ -606,6 +608,40 @@ public class DropInActivityUnitTest {
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
 
         mActivity.onActivityResult(1, RESULT_CANCELED, null);
+
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void onActivityResult_successfulAddCardReturnsToApp() throws JSONException {
+        setup(new BraintreeUnitTestHttpClient());
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(CardNonce.fromJson(
+                        stringFromFixture("responses/visa_credit_card_response.json")));
+        Intent data = new Intent()
+                .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+
+        mActivity.onActivityResult(1, RESULT_OK, data);
+
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void onActivityResult_vaultedPaymentEditedReturnsToDropIn() {
+        setup(mock(BraintreeFragment.class));
+
+        PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
+        when(paypalNonce.getDescription()).thenReturn("paypal-nonce");
+
+        ArrayList<Parcelable> paymentMethodNonces = new ArrayList<Parcelable>();
+        paymentMethodNonces.add(paypalNonce);
+
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+
+        mActivity.onActivityResult(DELETE_PAYMENT_METHOD_NONCE_CODE, RESULT_OK, new Intent()
+                .putExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES", paymentMethodNonces));
 
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
