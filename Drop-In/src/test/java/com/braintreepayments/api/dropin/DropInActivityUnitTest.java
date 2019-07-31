@@ -623,7 +623,7 @@ public class DropInActivityUnitTest {
         Intent data = new Intent()
                 .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
 
-        mActivity.onActivityResult(1, RESULT_OK, data);
+        mActivity.onActivityResult(ADD_CARD_REQUEST_CODE, RESULT_OK, data);
 
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
