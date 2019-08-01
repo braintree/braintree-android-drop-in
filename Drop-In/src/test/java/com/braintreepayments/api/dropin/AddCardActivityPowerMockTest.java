@@ -2,13 +2,13 @@ package com.braintreepayments.api.dropin;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.Card;
-import com.braintreepayments.api.PayPal;
-import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.dropin.view.EditCardView;
 import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.ThreeDSecureRequest;
+import com.braintreepayments.api.PayPal;
+import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.cardform.view.CardForm;
 
 import org.json.JSONException;
