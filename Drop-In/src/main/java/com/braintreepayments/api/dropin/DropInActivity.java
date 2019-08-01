@@ -39,7 +39,6 @@ import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
-import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PayPalRequest;
@@ -68,9 +67,9 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
      * {@link #RESULT_CANCELED}.
      */
     public static final String EXTRA_ERROR = "com.braintreepayments.api.dropin.EXTRA_ERROR";
+    public static final int ADD_CARD_REQUEST_CODE = 1;
+    public static final int DELETE_PAYMENT_METHOD_NONCE_CODE = 2;
 
-    private static final int ADD_CARD_REQUEST_CODE = 1;
-    private static final int DELETE_PAYMENT_METHOD_NONCE_CODE = 2;
     private static final String EXTRA_SHEET_SLIDE_UP_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_SLIDE_UP_PERFORMED";
     private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
     static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";
@@ -321,31 +320,12 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     @Override
     protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
-        /*
-         * TODO this a temporary work around to fix the Google Payment flow.
-         *
-         * BraintreeFragment starts the GooglePaymentActivity for result to tokenize
-         * Google Payment. GooglePaymentActivity#onActivityResult is called from Google Payment
-         * and a result is set, then the activity finishes.
-         *
-         * What should happen is BraintreeFragment#onActivityResult should be called.
-         *
-         * There seems to be a bug that BraintreeFragment#onActivityResult is bypassed and
-         * DropInActivity#onActivityResult is called, with a random requestCode (79129).
-         * DropInActivity doesn't understand this requestCode so it noops.
-         *
-         * The temporary fix is to forward the data back to BraintreeFragment when we detect
-         * the 79129 requestCode.
-         */
-        if (requestCode == 79129) {
-            mBraintreeFragment.onActivityResult(BraintreeRequestCodes.GOOGLE_PAYMENT,
-                    resultCode, data);
-            return;
-        }
+        super.onActivityResult(requestCode, resultCode, data);
 
-        mLoadingViewSwitcher.setDisplayedChild(0);
         if (resultCode == RESULT_CANCELED) {
             if (requestCode == ADD_CARD_REQUEST_CODE) {
+                mLoadingViewSwitcher.setDisplayedChild(0);
+
                 fetchPaymentMethodNonces(true);
             }
 
@@ -353,6 +333,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
             final Intent response;
             if (resultCode == RESULT_OK) {
+                mLoadingViewSwitcher.setDisplayedChild(0);
+
                 DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
                 DropInResult.setLastUsedPaymentMethodType(this, result.getPaymentMethodNonce());
 
@@ -372,6 +354,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             });
         } else if (requestCode == DELETE_PAYMENT_METHOD_NONCE_CODE) {
             if (resultCode == RESULT_OK) {
+                mLoadingViewSwitcher.setDisplayedChild(0);
 
                 if (data != null) {
                     ArrayList<PaymentMethodNonce> paymentMethodNonces = data

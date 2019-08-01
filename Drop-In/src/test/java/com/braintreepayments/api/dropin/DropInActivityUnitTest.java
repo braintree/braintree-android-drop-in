@@ -46,6 +46,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
+import static com.braintreepayments.api.dropin.DropInActivity.ADD_CARD_REQUEST_CODE;
+import static com.braintreepayments.api.dropin.DropInActivity.DELETE_PAYMENT_METHOD_NONCE_CODE;
 import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerSupportsThreeDSecure;
@@ -611,6 +613,40 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void onActivityResult_successfulAddCardReturnsToApp() throws JSONException {
+        setup(new BraintreeUnitTestHttpClient());
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(CardNonce.fromJson(
+                        stringFromFixture("responses/visa_credit_card_response.json")));
+        Intent data = new Intent()
+                .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+
+        mActivity.onActivityResult(ADD_CARD_REQUEST_CODE, RESULT_OK, data);
+
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void onActivityResult_vaultedPaymentEditedReturnsToDropIn() {
+        setup(mock(BraintreeFragment.class));
+
+        PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
+        when(paypalNonce.getDescription()).thenReturn("paypal-nonce");
+
+        ArrayList<Parcelable> paymentMethodNonces = new ArrayList<Parcelable>();
+        paymentMethodNonces.add(paypalNonce);
+
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+
+        mActivity.onActivityResult(DELETE_PAYMENT_METHOD_NONCE_CODE, RESULT_OK, new Intent()
+                .putExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES", paymentMethodNonces));
+
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
     public void onActivityResult_addCardCancelRefreshesVaultedPaymentMethods() {
         mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
         BraintreeUnitTestHttpClient httpClient = spy(new BraintreeUnitTestHttpClient()
@@ -792,34 +828,6 @@ public class DropInActivityUnitTest {
         mActivity.onActivityResult(2, RESULT_FIRST_USER, null);
 
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
-    }
-
-    @Test
-    /*
-     * TODO this a temporary test for the work around to fix the Google Payment flow.
-     *
-     * BraintreeFragment starts the GooglePaymentActivity for result to tokenize
-     * Google Payment. GooglePaymentActivity#onActivityResult is called from Google Payment
-     * and a result is set, then the activity finishes.
-     *
-     * What should happen is BraintreeFragment#onActivityResult should be called.
-     *
-     * There seems to be a bug that BraintreeFragment#onActivityResult is bypassed and
-     * DropInActivity#onActivityResult is called, with a random requestCode (79129).
-     * DropInActivity doesn't understand this requestCode so it noops.
-     *
-     * The temporary fix is to forward the data back to BraintreeFragment when we detect
-     * the 79129 requestCode.
-     */
-    public void onActivityResult_withRequestCode79129_callsBraintreeFragmentOnActivityResult() {
-        Intent data = new Intent();
-
-        setup(mock(BraintreeFragment.class));
-
-        mActivity.onActivityResult(79129, RESULT_OK, data);
-
-        verify(mActivity.braintreeFragment).onActivityResult(
-                eq(BraintreeRequestCodes.GOOGLE_PAYMENT), eq(RESULT_OK), eq(data));
     }
 
     @Test
