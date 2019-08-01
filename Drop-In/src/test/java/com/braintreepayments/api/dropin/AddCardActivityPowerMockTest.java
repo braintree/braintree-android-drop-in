@@ -2,12 +2,16 @@ package com.braintreepayments.api.dropin;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.Card;
-import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.dropin.view.EditCardView;
 import com.braintreepayments.api.models.CardBuilder;
+import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
+import com.braintreepayments.api.models.ThreeDSecureRequest;
+import com.braintreepayments.api.PayPal;
+import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.cardform.view.CardForm;
 
+import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -19,10 +23,12 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import static com.braintreepayments.api.test.ReflectionHelper.setField;
+import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
+import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.verifyStatic;
@@ -52,62 +58,57 @@ public class AddCardActivityPowerMockTest {
         setField(AddCardActivity.class, mActivity, "mEditCardView", editCardView);
 
         mockStatic(ThreeDSecure.class);
-        ThreeDSecure.performVerification(any(BraintreeFragment.class), any(CardBuilder.class),
-                anyString());
-        mockStatic(Card.class);
-        Card.tokenize(any(BraintreeFragment.class), any(CardBuilder.class));
+        doNothing().when(ThreeDSecure.class);
+        ThreeDSecure.performVerification(any(BraintreeFragment.class), any(ThreeDSecureRequest.class));
     }
 
     @Test
-    public void skipsThreeDSecureWhenNotRequested() throws NoSuchFieldException,
-            IllegalAccessException {
+    public void skipsThreeDSecureWhenNotRequested()
+            throws NoSuchFieldException, IllegalAccessException, JSONException {
         setConfiguration(new DropInRequest(), mock(Configuration.class));
 
-        mActivity.createCard();
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json")));
 
         verifyStatic(never());
-        ThreeDSecure.performVerification(eq(mFragment), any(CardBuilder.class), anyString());
-        verifyStatic();
-        Card.tokenize(eq(mFragment), any(CardBuilder.class));
+        ThreeDSecure.performVerification(any(BraintreeFragment.class), any(ThreeDSecureRequest.class));
     }
 
     @Test
     public void skipsThreeDSecureWhenRequestedButNotEnabled()
-            throws NoSuchFieldException, IllegalAccessException {
+            throws NoSuchFieldException, IllegalAccessException, JSONException {
         DropInRequest dropInRequest = new DropInRequest()
                 .amount("1.00")
                 .requestThreeDSecureVerification(true);
         Configuration configuration = mock(Configuration.class);
         setConfiguration(dropInRequest, configuration);
 
-        mActivity.createCard();
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json")));
 
         verifyStatic(never());
-        ThreeDSecure.performVerification(eq(mFragment), any(CardBuilder.class), anyString());
-        verifyStatic();
-        Card.tokenize(eq(mFragment), any(CardBuilder.class));
+        ThreeDSecure.performVerification(any(BraintreeFragment.class), any(ThreeDSecureRequest.class));
     }
 
     @Test
-    public void skipsThreeDSecureWhenAmountMissing() throws NoSuchFieldException,
-            IllegalAccessException {
+    public void skipsThreeDSecureWhenAmountMissing()
+            throws NoSuchFieldException, IllegalAccessException, JSONException {
         DropInRequest dropInRequest = new DropInRequest()
                 .requestThreeDSecureVerification(true);
         Configuration configuration = mock(Configuration.class);
         when(configuration.isThreeDSecureEnabled()).thenReturn(true);
         setConfiguration(dropInRequest, configuration);
 
-        mActivity.createCard();
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json")));
 
         verifyStatic(never());
-        ThreeDSecure.performVerification(eq(mFragment), any(CardBuilder.class), anyString());
-        verifyStatic();
-        Card.tokenize(eq(mFragment), any(CardBuilder.class));
+        ThreeDSecure.performVerification(any(BraintreeFragment.class), any(ThreeDSecureRequest.class));
     }
 
     @Test
     public void performsThreeDSecureVerificationWhenRequestedEnableAndAmountPresent()
-            throws NoSuchFieldException, IllegalAccessException {
+            throws NoSuchFieldException, IllegalAccessException, JSONException {
         DropInRequest dropInRequest = new DropInRequest()
                 .amount("1.00")
                 .requestThreeDSecureVerification(true);
@@ -115,12 +116,11 @@ public class AddCardActivityPowerMockTest {
         when(configuration.isThreeDSecureEnabled()).thenReturn(true);
         setConfiguration(dropInRequest, configuration);
 
-        mActivity.createCard();
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
+                stringFromFixture("responses/visa_credit_card_response.json")));
 
         verifyStatic();
-        ThreeDSecure.performVerification(eq(mFragment), any(CardBuilder.class), anyString());
-        verifyStatic(never());
-        Card.tokenize(eq(mFragment), any(CardBuilder.class));
+        ThreeDSecure.performVerification(any(BraintreeFragment.class), any(ThreeDSecureRequest.class));
     }
 
     private void setConfiguration(DropInRequest dropInRequest, Configuration configuration)

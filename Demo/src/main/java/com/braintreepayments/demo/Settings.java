@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import com.braintreepayments.api.models.ThreeDSecureRequest;
 import com.braintreepayments.cardform.view.CardForm;
 
 public class Settings {
@@ -121,6 +122,10 @@ public class Settings {
 
     public static boolean isThreeDSecureRequired(Context context) {
         return getPreferences(context).getBoolean("require_three_d_secure", true);
+    }
+
+    public static String getThreeDSecureVersion(Context context) {
+        return getPreferences(context).getString("three_d_secure_version", ThreeDSecureRequest.VERSION_2);
     }
 
     public static boolean isVaultManagerEnabled(Context context) {

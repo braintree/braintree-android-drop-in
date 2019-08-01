@@ -24,6 +24,9 @@ import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.PostalAddress;
+import com.braintreepayments.api.models.ThreeDSecureAdditionalInformation;
+import com.braintreepayments.api.models.ThreeDSecurePostalAddress;
+import com.braintreepayments.api.models.ThreeDSecureRequest;
 import com.braintreepayments.api.models.VenmoAccountNonce;
 import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.wallet.TransactionInfo;
@@ -123,8 +126,37 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .vaultCard(Settings.defaultVaultSetting(this))
                 .vaultManager(Settings.isVaultManagerEnabled(this))
                 .cardholderNameStatus(Settings.getCardholderNameStatus(this));
+        if (Settings.isThreeDSecureEnabled(this)) {
+            dropInRequest.threeDSecureRequest(demoThreeDSecureRequest());
+        }
 
         startActivityForResult(dropInRequest.getIntent(this), DROP_IN_REQUEST);
+    }
+
+    private ThreeDSecureRequest demoThreeDSecureRequest() {
+        ThreeDSecurePostalAddress billingAddress = new ThreeDSecurePostalAddress()
+                .givenName("Jill")
+                .surname("Doe")
+                .phoneNumber("5551234567")
+                .streetAddress("555 Smith St")
+                .extendedAddress("#2")
+                .locality("Chicago")
+                .region("IL")
+                .postalCode("12345")
+                .countryCodeAlpha2("US");
+
+        ThreeDSecureAdditionalInformation additionalInformation = new ThreeDSecureAdditionalInformation()
+                .accountId("account-id");
+
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
+                .amount("1.00")
+                .versionRequested(Settings.getThreeDSecureVersion(this))
+                .email("test@email.com")
+                .mobilePhoneNumber("3125551234")
+                .billingAddress(billingAddress)
+                .additionalInformation(additionalInformation);
+
+        return threeDSecureRequest;
     }
 
     public void purchase(View v) {

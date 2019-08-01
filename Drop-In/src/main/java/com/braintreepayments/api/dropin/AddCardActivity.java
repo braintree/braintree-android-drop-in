@@ -33,6 +33,7 @@ import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.models.ThreeDSecureRequest;
 import com.braintreepayments.api.models.UnionPayCapabilities;
 import com.braintreepayments.api.models.UnionPayCardBuilder;
 import com.braintreepayments.cardform.view.CardForm;
@@ -75,6 +76,8 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
 
     private boolean mUnionPayCard;
     private boolean mUnionPayDebitCard;
+
+    private boolean mPerformedThreeDSecureVerification;
 
     private String mEnrollmentId;
 
@@ -283,19 +286,30 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
                     .postalCode(cardForm.getPostalCode())
                     .validate(shouldVault);
 
-            if (shouldRequestThreeDSecureVerification()) {
-                ThreeDSecure.performVerification(mBraintreeFragment, cardBuilder,
-                        mDropInRequest.getAmount());
-            } else {
-                Card.tokenize(mBraintreeFragment, cardBuilder);
-            }
+            Card.tokenize(mBraintreeFragment, cardBuilder);
         }
     }
 
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
-        mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
-        finish(paymentMethod, null);
+        if (!mPerformedThreeDSecureVerification && shouldRequestThreeDSecureVerification()) {
+            mPerformedThreeDSecureVerification = true;
+
+            if (mDropInRequest.getThreeDSecureRequest() == null) {
+                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
+                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
+            }
+
+            if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
+                mDropInRequest.getThreeDSecureRequest().amount(mDropInRequest.getAmount());
+            }
+
+            mDropInRequest.getThreeDSecureRequest().nonce(paymentMethod.getNonce());
+            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
+        } else {
+            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
+            finish(paymentMethod, null);
+        }
     }
 
     @Override
@@ -324,12 +338,15 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     @Override
     public void onCancel(int requestCode) {
         if (requestCode == BraintreeRequestCodes.THREE_D_SECURE) {
+            mPerformedThreeDSecureVerification = false;
             mEditCardView.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onError(Exception error) {
+        mPerformedThreeDSecureVerification = false;
+
         if (error instanceof ErrorWithResponse) {
             ErrorWithResponse errorResponse = (ErrorWithResponse) error;
 

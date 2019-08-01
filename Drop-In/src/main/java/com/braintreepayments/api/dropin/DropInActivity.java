@@ -13,7 +13,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.braintreepayments.api.Card;
 import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.PayPal;
@@ -44,6 +43,7 @@ import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.models.ThreeDSecureRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,7 +87,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     private boolean mSheetSlideUpPerformed;
     private boolean mSheetSlideDownPerformed;
-    private boolean mRequestedThreeDSecure;
+    private boolean mPerformedThreeDSecureVerification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,8 +155,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     }
 
     private void handleThreeDSecureFailure() {
-        if (mRequestedThreeDSecure) {
-            mRequestedThreeDSecure = false;
+        if (mPerformedThreeDSecureVerification) {
+            mPerformedThreeDSecureVerification = false;
             fetchPaymentMethodNonces(true);
         }
     }
@@ -200,13 +200,22 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     @Override
     public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethodNonce) {
-        if (!mRequestedThreeDSecure && paymentMethodNonce instanceof CardNonce &&
+        if (!mPerformedThreeDSecureVerification && paymentMethodNonce instanceof CardNonce &&
                 shouldRequestThreeDSecureVerification()) {
-            mRequestedThreeDSecure = true;
+            mPerformedThreeDSecureVerification = true;
             mLoadingViewSwitcher.setDisplayedChild(0);
 
-            ThreeDSecure.performVerification(mBraintreeFragment, paymentMethodNonce.getNonce(),
-                    mDropInRequest.getAmount());
+            if (mDropInRequest.getThreeDSecureRequest() == null) {
+                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
+                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
+            }
+
+            if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
+                mDropInRequest.getThreeDSecureRequest().amount(mDropInRequest.getAmount());
+            }
+
+            mDropInRequest.getThreeDSecureRequest().nonce(paymentMethodNonce.getNonce());
+            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
             return;
         }
 
