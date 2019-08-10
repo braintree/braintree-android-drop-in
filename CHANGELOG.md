@@ -1,5 +1,11 @@
 # Braintree Android Drop-In Release Notes
 
+## 4.3.0
+
+* Bump braintree-android version to 3.4.1
+* Add Support for 3DS 2.0
+* Fix a bug with DropInActivity#onActivityResult (Thanks @xX7!)
+
 ## 4.2.0
 
 * Add ability for merchant and/or customer to opt in/out of client side vaulting (card).
