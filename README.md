@@ -64,6 +64,43 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 ```
 
+### 3D Secure + Drop-in
+
+The new Drop-In supports 3D-Secure verification. If you have enabled 3D-Secure in the control panel, enable it with `DropInRequest.requestThreeDSecureVerification(true)` and set an amount. Then, create a ThreeDSecureRequest() object, setting as many fields on it as possible; the more fields that are set, the less likely it is that a user will be be presented with a challenge. Make sure to attach this object to the BTDropInRequest before use.
+
+```java
+ThreeDSecurePostalAddress billingAddress = new ThreeDSecurePostalAddress()
+    .givenName("Jill")
+    .surname("Doe")
+    .phoneNumber("5551234567")
+    .streetAddress("555 Smith St")
+    .extendedAddress("#2")
+    .locality("Chicago")
+    .region("IL")
+    .postalCode("12345")
+    .countryCodeAlpha2("US");
+
+ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
+    .amount("1.00")
+    .versionRequested(Settings.getThreeDSecureVersion(this))
+    .email("test@email.com")
+    .mobilePhoneNumber("3125551234")
+    .billingAddress(billingAddress)
+    .additionalInformation(additionalInformation);
+
+
+// Optional additional information.
+// For best results, provide as many of these elements as possible.
+ThreeDSecureAdditionalInformation additionalInformation = new ThreeDSecureAdditionalInformation()
+    .accountId("account-id");
+
+DropInRequest dropInRequest = new DropInRequest()
+    .clientToken(mAuthorization)
+    .amount("1.00")
+    .requestThreeDSecureVerification(true)
+    .threeDSecureRequest(threedSecureRequest);
+```
+
 ### Fetch last used payment method
 
 If your user already has an existing payment method, you may not need to show Drop-In. You can check if they have an existing payment method using `DropInResult#fetchDropInResult`. Note that a payment method will only be returned when using a client token created with a `customer_id`.
