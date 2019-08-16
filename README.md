@@ -66,7 +66,7 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 ### 3D Secure + Drop-in
 
-The new Drop-In supports 3D-Secure verification. If you have enabled 3D-Secure in the control panel, enable it with `DropInRequest.requestThreeDSecureVerification(true)` and set an amount. Then, create a ThreeDSecureRequest() object, setting as many fields on it as possible; the more fields that are set, the less likely it is that a user will be be presented with a challenge. Make sure to attach this object to the BTDropInRequest before use.
+The new Drop-In supports 3D-Secure verification. Assuming you have [3D-Secure configured](https://developers.braintreepayments.com/guides/3d-secure/configuration) for your account, enable it in your client with `DropInRequest.requestThreeDSecureVerification(true)` and set an amount. Then, create a ThreeDSecureRequest() object, setting `ThreeDSecurePostalAddress` and `ThreeDSecureAdditionalInformation` fields where possible; the more fields that are set, the less likely a user will be presented with a challenge. For more information, check our [3D Secure Migration Guide](https://developers.braintreepayments.com/guides/3d-secure/migration/android/v3#getting-ready-for-3ds-2). Make sure to attach this object to the `BTDropInRequest` before use.
 
 ```java
 ThreeDSecurePostalAddress billingAddress = new ThreeDSecurePostalAddress()
