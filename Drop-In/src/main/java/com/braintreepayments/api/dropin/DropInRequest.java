@@ -66,10 +66,13 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * Deprecated. Use {@link ThreeDSecureRequest#amount(String)}
+     *
      * This method is optional. Amount is only used for 3D Secure verifications.
      *
      * @param amount Amount of the transaction.
      */
+    @Deprecated
     public DropInRequest amount(String amount) {
         mAmount = amount;
         return this;
