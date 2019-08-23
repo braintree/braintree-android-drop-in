@@ -82,7 +82,7 @@ ThreeDSecurePostalAddress billingAddress = new ThreeDSecurePostalAddress()
 
 ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
     .amount("1.00")
-    .versionRequested(Settings.getThreeDSecureVersion(this))
+    .versionRequested(ThreeDSecureRequest.VERSION_2)
     .email("test@email.com")
     .mobilePhoneNumber("3125551234")
     .billingAddress(billingAddress)
