@@ -55,14 +55,13 @@ end
 
 task :assumptions do
     puts "Release Assumptions"
-    puts "* [ ] You have pulled and reconciled origin (internal GitHub Enterprise) vs public (github.com)."
     puts "* [ ] You are on the branch and commit you want to release."
     puts "* [ ] You have already merged hotfixes and pulled changes."
     puts "* [ ] You have already reviewed the diff between the current release and the last tag, noting breaking changes in the semver and CHANGELOG."
     puts "* [ ] Tests (rake integration_tests) are passing, manual verifications complete."
     puts "* [ ] Email is composed and ready to send to braintree-sdk-announce@googlegroups.com"
 
-    puts "Ready to release? "
+    puts "Ready to release? Press any key to continue. "
     $stdin.gets
 end
 
