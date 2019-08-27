@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
+import com.braintreepayments.api.models.ThreeDSecureRequest;
 import com.braintreepayments.api.test.ReflectionHelper;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 
@@ -149,7 +150,7 @@ public class BaseActivityUnitTest {
     }
 
     @Test
-    public void shouldRequestThreeDSecureVerification_returnsTrueWhenConditionsAreMet() {
+    public void shouldRequestThreeDSecureVerification_returnsTrueWhenEnabled_andRequested_andAmountIsPresentOnDropInRequest() {
         setup(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .amount("1.00")
@@ -163,7 +164,21 @@ public class BaseActivityUnitTest {
     }
 
     @Test
-    public void shouldRequestThreeDSecureVerification_returnsFalseWhenNotEnabledInDropInRequest() {
+    public void shouldRequestThreeDSecureVerification_returnsTrueWhenEnabled_andRequested_andAmountIsPresentOnThreeDSecureRequest() {
+        setup(new DropInRequest()
+                .tokenizationKey(TOKENIZATION_KEY)
+                .requestThreeDSecureVerification(true)
+                .threeDSecureRequest(new ThreeDSecureRequest().amount("2.00"))
+                .getIntent(RuntimeEnvironment.application));
+        mActivity.mConfiguration = new TestConfigurationBuilder()
+                .threeDSecureEnabled(true)
+                .buildConfiguration();
+
+        assertTrue(mActivity.shouldRequestThreeDSecureVerification());
+    }
+
+    @Test
+    public void shouldRequestThreeDSecureVerification_returnsFalseWhenNotRequested() {
         setup(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .amount("1.00")
@@ -177,7 +192,21 @@ public class BaseActivityUnitTest {
     }
 
     @Test
-    public void shouldRequestThreeDSecureVerification_returnsFalseWhenNoAmountSpecified() {
+    public void shouldRequestThreeDSecureVerification_returnsFalseWhenNoAmountSpecified_andThreeDSecureRequestIsPresent() {
+        setup(new DropInRequest()
+                .tokenizationKey(TOKENIZATION_KEY)
+                .requestThreeDSecureVerification(true)
+                .threeDSecureRequest(new ThreeDSecureRequest())
+                .getIntent(RuntimeEnvironment.application));
+        mActivity.mConfiguration = new TestConfigurationBuilder()
+                .threeDSecureEnabled(true)
+                .buildConfiguration();
+
+        assertFalse(mActivity.shouldRequestThreeDSecureVerification());
+    }
+
+    @Test
+    public void shouldRequestThreeDSecureVerification_returnsFalseWhenNoAmountSpecified_andThreeDSecureRequestIsNotPresent() {
         setup(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .requestThreeDSecureVerification(true)

@@ -66,10 +66,13 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * Deprecated. Use {@link ThreeDSecureRequest#amount(String)}
+     *
      * This method is optional. Amount is only used for 3D Secure verifications.
      *
      * @param amount Amount of the transaction.
      */
+    @Deprecated
     public DropInRequest amount(String amount) {
         mAmount = amount;
         return this;
@@ -143,8 +146,8 @@ public class DropInRequest implements Parcelable {
 
     /**
      * If 3D Secure has been enabled in the control panel and an amount is specified in
-     * {@link DropInRequest#amount(String)}, Drop-In will request a 3D Secure verification for
-     * any new cards added by the user.
+     * {@link DropInRequest#amount(String)} or a {@link ThreeDSecureRequest} is provided,
+     * Drop-In will request a 3D Secure verification for any new cards added by the user.
      *
      * @param requestThreeDSecure {@code true} to request a 3D Secure verification as part of Drop-In,
      * {@code false} to not request a 3D Secure verification. Defaults to {@code false}.
@@ -304,7 +307,6 @@ public class DropInRequest implements Parcelable {
     public boolean isSaveCardCheckBoxShown() {
         return mShowCheckBoxToAllowVaultOverride;
     }
-
 
     @Override
     public int describeContents() {

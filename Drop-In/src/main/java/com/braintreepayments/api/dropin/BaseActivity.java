@@ -63,9 +63,12 @@ public class BaseActivity extends AppCompatActivity {
     }
 
     protected boolean shouldRequestThreeDSecureVerification() {
+        boolean hasAmount = !TextUtils.isEmpty(mDropInRequest.getAmount()) ||
+                (mDropInRequest.getThreeDSecureRequest() != null && !TextUtils.isEmpty(mDropInRequest.getThreeDSecureRequest().getAmount()));
+
         return mDropInRequest.shouldRequestThreeDSecureVerification() &&
-                !TextUtils.isEmpty(mDropInRequest.getAmount()) &&
-                mConfiguration.isThreeDSecureEnabled();
+                mConfiguration.isThreeDSecureEnabled() &&
+                hasAmount;
     }
 
     protected void finish(PaymentMethodNonce paymentMethod, String deviceData) {
