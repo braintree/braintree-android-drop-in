@@ -70,6 +70,9 @@ public class DropInRequest implements Parcelable {
      *
      * This method is optional. Amount is only used for 3D Secure verifications.
      *
+     * Amount must be a non-negative number, may optionally contain exactly 2 decimal places
+     * separated by '.', optional thousands separator ',', limited to 7 digits before the decimal point.
+     *
      * @param amount Amount of the transaction.
      */
     @Deprecated
