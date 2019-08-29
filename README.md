@@ -96,7 +96,6 @@ ThreeDSecureAdditionalInformation additionalInformation = new ThreeDSecureAdditi
 
 DropInRequest dropInRequest = new DropInRequest()
     .clientToken(mAuthorization)
-    .amount("1.00")
     .requestThreeDSecureVerification(true)
     .threeDSecureRequest(threedSecureRequest);
 ```
