@@ -71,7 +71,7 @@ public class DropInRequest implements Parcelable {
      * This method is optional. Amount is only used for 3D Secure verifications.
      *
      * This value must be a non-negative number and must match the currency format of the merchant account.
-     * It can only contain numbers and can optionally include one decimal point with exactly 2 decimal place precision (ex: x.xx).
+     * It can only contain numbers and optionally one decimal point with exactly 2 decimal place precision (e.g., x.xx).
      *
      * @param amount Amount of the transaction.
      */
