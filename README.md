@@ -64,6 +64,42 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 ```
 
+### 3D Secure + Drop-in
+
+The new Drop-In supports 3D-Secure verification. Assuming you have [3D-Secure configured](https://developers.braintreepayments.com/guides/3d-secure/configuration) for your account, enable it in your client with `DropInRequest.requestThreeDSecureVerification(true)` and set an amount. Then, create a ThreeDSecureRequest() object, setting `ThreeDSecurePostalAddress` and `ThreeDSecureAdditionalInformation` fields where possible; the more fields that are set, the less likely a user will be presented with a challenge. For more information, check our [3D Secure Migration Guide](https://developers.braintreepayments.com/guides/3d-secure/migration/android/v3#getting-ready-for-3ds-2). Make sure to attach this object to the `BTDropInRequest` before use.
+
+```java
+ThreeDSecurePostalAddress billingAddress = new ThreeDSecurePostalAddress()
+    .givenName("Jill")
+    .surname("Doe")
+    .phoneNumber("5551234567")
+    .streetAddress("555 Smith St")
+    .extendedAddress("#2")
+    .locality("Chicago")
+    .region("IL")
+    .postalCode("12345")
+    .countryCodeAlpha2("US");
+
+ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
+    .amount("1.00")
+    .versionRequested(ThreeDSecureRequest.VERSION_2)
+    .email("test@email.com")
+    .mobilePhoneNumber("3125551234")
+    .billingAddress(billingAddress)
+    .additionalInformation(additionalInformation);
+
+
+// Optional additional information.
+// For best results, provide as many of these elements as possible.
+ThreeDSecureAdditionalInformation additionalInformation = new ThreeDSecureAdditionalInformation()
+    .accountId("account-id");
+
+DropInRequest dropInRequest = new DropInRequest()
+    .clientToken(mAuthorization)
+    .requestThreeDSecureVerification(true)
+    .threeDSecureRequest(threedSecureRequest);
+```
+
 ### Fetch last used payment method
 
 If your user already has an existing payment method, you may not need to show Drop-In. You can check if they have an existing payment method using `DropInResult#fetchDropInResult`. Note that a payment method will only be returned when using a client token created with a `customer_id`.
