@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 4.3.1
 
 * Deprecate `amount` property on `DropInRequest`
 
