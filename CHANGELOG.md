@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## 4.4.0
+
+* Bump braintree_android version to 3.6.0
+
 ## 4.3.1
 
 * Deprecate `amount` property on `DropInRequest`
