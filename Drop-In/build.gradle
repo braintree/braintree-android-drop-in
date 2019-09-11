@@ -7,7 +7,7 @@ def LOCALHOST_IP = System.properties['LOCALHOST_IP'] ?: '"10.0.2.2"';
 def GATEWAY_IP = System.properties['GATEWAY_IP'] ?: '"10.0.2.2"';
 def GATEWAY_PORT = System.properties['GATEWAY_PORT'] ?: '"3000"';
 
-version '4.3.2-SNAPSHOT'
+version '4.4.0'
 
 android {
     compileSdkVersion 28
