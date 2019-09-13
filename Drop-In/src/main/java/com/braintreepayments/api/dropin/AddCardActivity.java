@@ -374,9 +374,8 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
             } else if (error instanceof DownForMaintenanceException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
             }
-
-            finish(error);
         }
+        finish(error);
     }
 
     @Override
