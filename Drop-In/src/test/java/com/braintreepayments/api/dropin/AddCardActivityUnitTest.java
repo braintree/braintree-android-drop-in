@@ -18,6 +18,7 @@ import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
 import com.braintreepayments.api.exceptions.ConfigurationException;
 import com.braintreepayments.api.exceptions.DownForMaintenanceException;
+import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.ServerException;
 import com.braintreepayments.api.exceptions.UnexpectedException;
@@ -547,6 +548,21 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
+    public void nonFormFieldError_callsFinishWithError() {
+        setup(mock(BraintreeFragment.class));
+
+        ErrorWithResponse error = new ErrorWithResponse(422, stringFromFixture("responses/three_d_secure/authentication_response_with_error.json"));
+        mActivity.onError(error);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
+        assertEquals(error.getClass(), actualException.getClass());
+        assertEquals("Failed to authenticate, please try a different form of payment", actualException.getMessage());
+    }
+
+    @Test
     public void configurationExceptionExitsActivityWithError() {
         setup(mock(BraintreeFragment.class));
 
@@ -954,7 +970,7 @@ public class AddCardActivityUnitTest {
 
         Intent nextStartedActivity = shadowOf(mActivity).peekNextStartedActivity();
         assertEquals(Intent.ACTION_VIEW, nextStartedActivity.getAction());
-        assertTrue(nextStartedActivity.getDataString().contains("com.braintreepayments.api.dropin.braintre"));
+        assertTrue(nextStartedActivity.getDataString().contains("com.braintreepayments.api.dropin.braintree"));
 
         assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
         assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();

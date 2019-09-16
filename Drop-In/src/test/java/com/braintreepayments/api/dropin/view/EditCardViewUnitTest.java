@@ -15,6 +15,7 @@ import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.api.test.UnitTestActivity;
 import com.braintreepayments.cardform.view.CardForm;
 
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -351,6 +352,26 @@ public class EditCardViewUnitTest {
         mView.setVisibility(View.VISIBLE);
 
         assertThat(mView.getCardForm().getCvvEditText()).isFocused();
+    }
+
+    @Test
+    public void isEditCardError_returnsTrue_whenUnionPayError() {
+        ErrorWithResponse error = new ErrorWithResponse(422, stringFromFixture("responses/unionpay_enrollment_error_response.json"));
+
+        assertTrue(mView.isEditCardError(error));
+    }
+
+    @Test
+    public void isEditCardError_returnsTrue_whenCreditCardError() {
+        ErrorWithResponse error = new ErrorWithResponse(422, stringFromFixture("responses/credit_card_error_response.json"));
+
+        assertTrue(mView.isEditCardError(error));
+    }
+
+    @Test
+    public void isEditCardError_returnsFalse_whenErrorIsNotCreditCardOrUnionPay() {
+        ErrorWithResponse error = new ErrorWithResponse(403, new JSONObject().toString());
+        assertFalse(mView.isEditCardError(error));
     }
 
     @Test
