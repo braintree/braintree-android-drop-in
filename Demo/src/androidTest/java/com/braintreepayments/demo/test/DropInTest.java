@@ -121,6 +121,9 @@ public class DropInTest extends TestHelper {
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
+    @Ignore("Test fails due to Cardinal Activity changes that resulted in the authorization code " +
+            "input being untargetable with this current test.  Need to find the input element to " +
+            "target to continue with the authorization.")
     @Test(timeout = 60000)
     public void performsThreeDSecure2ChallengeVerification() {
         enableThreeDSecure();
@@ -141,6 +144,9 @@ public class DropInTest extends TestHelper {
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
+    @Ignore("Test fails due to Cardinal Activity changes that resulted in the cancel button being " +
+            "untargetable with this current test.  Need to find the correct button element to" +
+            "target to cancel the authorization.")
     @Test(timeout = 60000)
     public void cancelsThreeDSecure2ChallengeVerification() {
         enableThreeDSecure();
