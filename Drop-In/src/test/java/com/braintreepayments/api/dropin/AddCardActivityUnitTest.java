@@ -32,6 +32,7 @@ import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -551,7 +552,12 @@ public class AddCardActivityUnitTest {
     public void nonFormFieldError_callsFinishWithError() {
         setup(mock(BraintreeFragment.class));
 
-        ErrorWithResponse error = new ErrorWithResponse(422, stringFromFixture("responses/three_d_secure/authentication_response_with_error.json"));
+        ErrorWithResponse error = new ErrorWithResponse(422, "{\n" +
+                "  \"error\": {\n" +
+                "    \"message\": \"Error message\"\n" +
+                "  }\n" +
+                "}");
+
         mActivity.onError(error);
 
         assertTrue(mActivity.isFinishing());
@@ -559,7 +565,7 @@ public class AddCardActivityUnitTest {
         Exception actualException = (Exception) mShadowActivity.getResultIntent()
                 .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertEquals(error.getClass(), actualException.getClass());
-        assertEquals("Failed to authenticate, please try a different form of payment", actualException.getMessage());
+        assertEquals("Error message", actualException.getMessage());
     }
 
     @Test
