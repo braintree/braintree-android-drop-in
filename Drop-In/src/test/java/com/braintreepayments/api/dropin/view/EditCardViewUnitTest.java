@@ -371,6 +371,7 @@ public class EditCardViewUnitTest {
     @Test
     public void isEditCardError_returnsFalse_whenErrorIsNotCreditCardOrUnionPay() {
         ErrorWithResponse error = new ErrorWithResponse(403, new JSONObject().toString());
+
         assertFalse(mView.isEditCardError(error));
     }
 
