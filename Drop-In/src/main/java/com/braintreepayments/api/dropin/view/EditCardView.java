@@ -114,6 +114,11 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
         mCardForm.maskCvv(mask);
     }
 
+    public boolean isEditCardError(ErrorWithResponse errors) {
+        return errors.errorFor("unionPayEnrollment") != null ||
+                errors.errorFor("creditCard") != null;
+    }
+
     public void setErrors(ErrorWithResponse errors) {
         BraintreeError formErrors = errors.errorFor("unionPayEnrollment");
         if (formErrors == null) {

@@ -352,16 +352,16 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
 
             if (mEnrollmentCardView.isEnrollmentError(errorResponse)) {
                 setState(mState, ENROLLMENT_ENTRY);
-                mEnrollmentCardView.setErrors((ErrorWithResponse) error);
+                mEnrollmentCardView.setErrors(errorResponse);
+            } else if (mAddCardView.isCardNumberError(errorResponse)) {
+                mAddCardView.setErrors(errorResponse);
+                mEditCardView.setErrors(errorResponse);
+                setState(mState, CARD_ENTRY);
+            } else if (mEditCardView.isEditCardError(errorResponse)) {
+                mEditCardView.setErrors(errorResponse);
+                setState(mState, DETAILS_ENTRY);
             } else {
-                mEditCardView.setErrors((ErrorWithResponse) error);
-
-                if (mAddCardView.isCardNumberError(errorResponse)) {
-                    mAddCardView.setErrors((ErrorWithResponse) error);
-                    setState(mState, CARD_ENTRY);
-                } else {
-                    setState(mState, DETAILS_ENTRY);
-                }
+                finish(error);
             }
         } else {
             if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
@@ -374,7 +374,6 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
             } else if (error instanceof DownForMaintenanceException) {
                 mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
             }
-
             finish(error);
         }
     }
