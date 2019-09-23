@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## Unreleased
+## 4.4.1 
 * Fix bug in `AddCardActivity#onError` that prevented passing error cases up to the appropriate listeners.
 
 ## 4.4.0
