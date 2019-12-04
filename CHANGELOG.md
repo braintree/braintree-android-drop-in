@@ -6,7 +6,7 @@
 ## 4.5.0
 * Bump braintree_android version to 3.7.2
 
-## 4.4.1 
+## 4.4.1
 * Fix bug in `AddCardActivity#onError` that prevented passing error cases up to the appropriate listeners.
 
 ## 4.4.0
