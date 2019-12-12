@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 4.5.0
 * Bump braintree_android version to 3.7.2
 
 ## 4.4.1 
@@ -16,7 +16,7 @@
 
 ## 4.3.0
 
-* Bump braintree-android version to 3.4.1
+* Bump braintree_android version to 3.4.1
 * Add Support for 3DS 2.0
 * Fix a bug with DropInActivity#onActivityResult (Thanks @xX7!)
 
