@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<resources>
+    <string name="bt_descriptor_visa">Visa</string>
+    <string name="bt_descriptor_mastercard">MasterCard</string>
+    <string name="bt_descriptor_amex">Amex</string>
+    <string name="bt_descriptor_jcb">JCB</string>
+    <string name="bt_descriptor_discover">Discover</string>
+    <string name="bt_descriptor_diners">Diners</string>
+    <string name="bt_descriptor_maestro">Maestro</string>
+    <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_google_pay">Google Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_hiper">Hiper</string>
+    <string name="bt_descriptor_hipercard">Hipercard</string>
+    <string name="bt_descriptor_unknown">Maksājumu karte</string>
+
+    <string name="bt_recent">Pēdējie</string>
+    <string name="bt_other">Cits</string>
+    <string name="bt_select_payment_method">Izvēlies apmaksas veidu</string>
+    <string name="bt_add_card">Pievienot karti</string>
+    <string name="bt_next">Tālāk</string>
+    <string name="bt_confirm">Apstiprināt</string>
+    <string name="bt_scan_with_card_io">Skenēt ar card.io</string>
+    <string name="bt_sms_code">SMS kods</string>
+    <string name="bt_sms_code_required">Nepieciešams SMS kods</string>
+    <string name="bt_use_a_different_phone_number">Izmantot citu telefona numuru</string>
+    <string name="bt_sms_code_sent_to">Ievadi uz %s nosūtīto SMS kodu</string>
+    <string name="bt_card_details">Kartes info</string>
+    <string name="bt_confirm_enrollment">Apstiprināt uzņemšanu</string>
+    <string name="bt_postal_code_invalid">Nederīgs pasta indekss</string>
+    <string name="bt_country_code_invalid">Nederīgs valsts kods</string>
+    <string name="bt_mobile_number_invalid">Nederīgs telefona numurs</string>
+    <string name="bt_card_not_accepted">Karte nav pieņemta</string>
+    <string name="bt_unionpay_sms_code_invalid">Nederīgs SMS kods</string>
+    <string name="bt_unionpay_mobile_number_explanation">Šai kartei nepieciešama uzņemšana. Uz šo numuru tiks nosūtīta SMS ar aktivizācijas kodu.</string>
+    <string name="bt_edit">Labot</string>
+    <string name="bt_delete">Dzēst</string>
+    <string name="bt_cancel">@android:string/cancel</string>
+    <string name="bt_vault_manager_title">Labot</string>
+    <string name="bt_delete_confirmation_title">Izdēst maksājuma metodi</string>
+    <string name="bt_delete_confirmation_description">Jūs vairs nevarēsiet izmantot šo maksājumu veidu.</string>
+    <string name="bt_done">Gatavs</string>
+    <string name="bt_vault_manager_delete_failure">Mēs šobrīd nevaram izdzēst šo maksājumu metodi. Mēginiet vēlreiz vēlāk.</string>
+</resources>
