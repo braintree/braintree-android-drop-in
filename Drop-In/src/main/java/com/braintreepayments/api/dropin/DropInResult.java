@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 
 import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.GooglePayment;
+//import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
@@ -205,7 +205,7 @@ public class DropInResult implements Parcelable {
                     AndroidPay.isReadyToPay(fragment, isReadyToPayCallback);
                     break;
                 case GOOGLE_PAYMENT:
-                    GooglePayment.isReadyToPay(fragment, isReadyToPayCallback);
+//                    GooglePayment.isReadyToPay(fragment, isReadyToPayCallback);
                     break;
             }
         } else {

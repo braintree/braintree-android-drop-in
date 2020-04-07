@@ -7,8 +7,8 @@ import android.os.Parcelable;
 
 import com.braintreepayments.api.DataCollector;
 import com.braintreepayments.api.PayPal;
+//import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalRequest;
-import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.google.android.gms.identity.intents.model.CountrySpecification;
 import com.google.android.gms.wallet.Cart;
 
@@ -29,7 +29,7 @@ public class DropInRequest implements Parcelable {
     private boolean mRequestThreeDSecureVerification;
 
     private Cart mAndroidPayCart;
-    private GooglePaymentRequest mGooglePaymentRequest;
+//    private GooglePaymentRequest mGooglePaymentRequest;
     private PayPalRequest mPayPalRequest;
     private boolean mAndroidPayShippingAddressRequired;
     private boolean mAndroidPayPhoneNumberRequired;
@@ -92,15 +92,15 @@ public class DropInRequest implements Parcelable {
         return this;
     }
 
-    /**
-     * This method is optional.
-     *
-     * @param request The Google Payment Request {@link GooglePaymentRequest} for the transaction.
-     */
-    public DropInRequest googlePaymentRequest(GooglePaymentRequest request) {
-        mGooglePaymentRequest = request;
-        return this;
-    }
+//    /**
+//     * This method is optional.
+//     *
+//     * @param request The Google Payment Request {@link GooglePaymentRequest} for the transaction.
+//     */
+//    public DropInRequest googlePaymentRequest(GooglePaymentRequest request) {
+//        mGooglePaymentRequest = request;
+//        return this;
+//    }
 
     /**
      * This method is optional.
@@ -313,9 +313,9 @@ public class DropInRequest implements Parcelable {
         return mVenmoEnabled;
     }
 
-    public GooglePaymentRequest getGooglePaymentRequest() {
-        return mGooglePaymentRequest;
-    }
+//    public GooglePaymentRequest getGooglePaymentRequest() {
+//        return mGooglePaymentRequest;
+//    }
 
     public boolean isGooglePaymentEnabled() {
         return mGooglePaymentEnabled;
@@ -352,7 +352,7 @@ public class DropInRequest implements Parcelable {
             dest.writeTypedList(mAndroidAllowedCountriesForShipping);
         } catch (NoClassDefFoundError ignored) {}
 
-        dest.writeParcelable(mGooglePaymentRequest, 0);
+//        dest.writeParcelable(mGooglePaymentRequest, 0);
         dest.writeByte(mGooglePaymentEnabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mAndroidPayEnabled ? (byte) 1 : (byte) 0);
         dest.writeParcelable(mPayPalRequest, 0);
@@ -376,7 +376,7 @@ public class DropInRequest implements Parcelable {
             in.readTypedList(mAndroidAllowedCountriesForShipping, CountrySpecification.CREATOR);
         } catch (NoClassDefFoundError ignored) {}
 
-        mGooglePaymentRequest = in.readParcelable(GooglePaymentRequest.class.getClassLoader());
+//        mGooglePaymentRequest = in.readParcelable(GooglePaymentRequest.class.getClassLoader());
         mGooglePaymentEnabled = in.readByte() != 0;
         mAndroidPayEnabled = in.readByte() != 0;
         mPayPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());

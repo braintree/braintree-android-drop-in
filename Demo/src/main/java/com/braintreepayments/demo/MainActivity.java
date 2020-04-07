@@ -23,8 +23,8 @@ import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.AndroidPayCardNonce;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.ClientToken;
-import com.braintreepayments.api.models.GooglePaymentCardNonce;
-import com.braintreepayments.api.models.GooglePaymentRequest;
+//import com.braintreepayments.api.models.GooglePaymentCardNonce;
+//import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.PostalAddress;
@@ -124,7 +124,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 .amount("1.00")
                 .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))
                 .collectDeviceData(Settings.shouldCollectDeviceData(this))
-                .googlePaymentRequest(getGooglePaymentRequest())
+//                .googlePaymentRequest(getGooglePaymentRequest())
                 .maskCardNumber(true)
                 .maskSecurityCode(true)
                 .androidPayCart(getAndroidPayCart())
@@ -294,14 +294,15 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
             VenmoAccountNonce venmoAccountNonce = (VenmoAccountNonce) mNonce;
 
             details = "Username: " + venmoAccountNonce.getUsername();
-        } else if (mNonce instanceof GooglePaymentCardNonce) {
-            GooglePaymentCardNonce googlePaymentCardNonce = (GooglePaymentCardNonce) mNonce;
-
-            details = "Underlying Card Last Two: " + googlePaymentCardNonce.getLastTwo() + "\n";
-            details += "Email: " + googlePaymentCardNonce.getEmail() + "\n";
-            details += "Billing address: " + formatAddress(googlePaymentCardNonce.getBillingAddress()) + "\n";
-            details += "Shipping address: " + formatAddress(googlePaymentCardNonce.getShippingAddress());
         }
+//        } else if (mNonce instanceof GooglePaymentCardNonce) {
+//            GooglePaymentCardNonce googlePaymentCardNonce = (GooglePaymentCardNonce) mNonce;
+//
+//            details = "Underlying Card Last Two: " + googlePaymentCardNonce.getLastTwo() + "\n";
+//            details += "Email: " + googlePaymentCardNonce.getEmail() + "\n";
+//            details += "Billing address: " + formatAddress(googlePaymentCardNonce.getBillingAddress()) + "\n";
+//            details += "Shipping address: " + formatAddress(googlePaymentCardNonce.getShippingAddress());
+//        }
 
         mNonceDetails.setText(details);
         mNonceDetails.setVisibility(VISIBLE);
@@ -337,15 +338,15 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 address.getSortingCode() + " " + address.getCountryCode();
     }
 
-    private GooglePaymentRequest getGooglePaymentRequest() {
-        return new GooglePaymentRequest()
-                .transactionInfo(TransactionInfo.newBuilder()
-                        .setTotalPrice("1.00")
-                        .setCurrencyCode("USD")
-                        .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
-                        .build())
-                .emailRequired(true);
-    }
+//    private GooglePaymentRequest getGooglePaymentRequest() {
+//        return new GooglePaymentRequest()
+//                .transactionInfo(TransactionInfo.newBuilder()
+//                        .setTotalPrice("1.00")
+//                        .setCurrencyCode("USD")
+//                        .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
+//                        .build())
+//                .emailRequired(true);
+//    }
 
     private Cart getAndroidPayCart() {
         return Cart.newBuilder()

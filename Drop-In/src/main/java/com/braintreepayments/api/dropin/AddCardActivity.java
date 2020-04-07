@@ -33,7 +33,7 @@ import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.UnionPayListener;
-import com.braintreepayments.api.models.BraintreeRequestCodes;
+//import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
@@ -316,9 +316,9 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
 
     @Override
     public void onCancel(int requestCode) {
-        if (requestCode == BraintreeRequestCodes.THREE_D_SECURE) {
-            mEditCardView.setVisibility(View.VISIBLE);
-        }
+//        if (requestCode == BraintreeRequestCodes.THREE_D_SECURE) {
+//            mEditCardView.setVisibility(View.VISIBLE);
+//        }
     }
 
     @Override

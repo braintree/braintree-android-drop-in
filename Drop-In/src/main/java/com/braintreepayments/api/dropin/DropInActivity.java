@@ -18,7 +18,7 @@ import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.AndroidPay;
 import com.braintreepayments.api.DataCollector;
-import com.braintreepayments.api.GooglePayment;
+//import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.ThreeDSecure;
@@ -127,12 +127,12 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
 
         if (mDropInRequest.isGooglePaymentEnabled()) {
-            GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
-                @Override
-                public void onResponse(Boolean isReadyToPay) {
-                    showSupportedPaymentMethods(isReadyToPay);
-                }
-            });
+//            GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
+//                @Override
+//                public void onResponse(Boolean isReadyToPay) {
+//                    showSupportedPaymentMethods(isReadyToPay);
+//                }
+//            });
         } else if (mDropInRequest.isAndroidPayEnabled()) {
             AndroidPay.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
                 @Override
@@ -244,7 +244,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                         mDropInRequest.getAndroidPayAllowedCountriesForShipping());
                 break;
             case GOOGLE_PAYMENT:
-                GooglePayment.requestPayment(mBraintreeFragment, mDropInRequest.getGooglePaymentRequest());
+//                GooglePayment.requestPayment(mBraintreeFragment, mDropInRequest.getGooglePaymentRequest());
                 break;
             case PAY_WITH_VENMO:
                 Venmo.authorizeAccount(mBraintreeFragment);
