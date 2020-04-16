@@ -1,5 +1,8 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+* Update `bt_add_card` string resource for french locales.
+
 ## 4.5.0
 * Bump braintree_android version to 3.7.2
 
