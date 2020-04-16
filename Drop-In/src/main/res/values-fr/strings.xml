@@ -18,7 +18,7 @@
     <string name="bt_recent">Récent</string>
     <string name="bt_other">Autre</string>
     <string name="bt_select_payment_method">Sélectionner un mode de paiement</string>
-    <string name="bt_add_card">Enregistrer une carte</string>
+    <string name="bt_add_card">Ajouter la carte</string>
     <string name="bt_next">Suivant</string>
     <string name="bt_confirm">Confirmer</string>
     <string name="bt_scan_with_card_io">Scanner avec card.io</string>
