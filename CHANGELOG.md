@@ -1,6 +1,7 @@
 # Braintree Android Drop-In Release Notes
 
 ## unreleased
+* Bump card-form version to 4.3.0 (Updates payment option icons)
 * Update `bt_add_card` string resource for french locales.
 
 ## 4.5.0
