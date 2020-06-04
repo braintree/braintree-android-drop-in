@@ -11,7 +11,7 @@ import java.util.Set;
 import androidx.annotation.Nullable;
 
 public enum PaymentMethodType {
-
+    // `getFrontResource` is pulling icons from android-card-form, `R.drawable` icons are drop-in internal
     AMEX(CardType.AMEX.getFrontResource(), R.drawable.bt_ic_vaulted_amex, R.string.bt_descriptor_amex, "American Express", CardType.AMEX),
     GOOGLE_PAYMENT(R.drawable.bt_ic_google_pay, 0, R.string.bt_descriptor_google_pay, "Google Pay", null),
     DINERS(CardType.DINERS_CLUB.getFrontResource(), R.drawable.bt_ic_vaulted_diners_club, R.string.bt_descriptor_diners, "Diners", CardType.DINERS_CLUB),
