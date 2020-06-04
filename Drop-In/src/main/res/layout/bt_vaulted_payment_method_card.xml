@@ -16,6 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="8dp"
         android:orientation="vertical">
 
         <ImageView
@@ -24,11 +25,15 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            tools:src="@drawable/bt_ic_vaulted_unknown"
             tools:ignore="ContentDescription" />
 
         <TextView
             style="@style/bt_vaulted_payment_method_title"
-            android:id="@+id/bt_payment_method_title"/>
+            android:id="@+id/bt_payment_method_title"
+            android:layout_weight="0"
+            tools:text="Visa" />
 
         <TextView
             tools:targetApi="jelly_bean_mr1"
@@ -42,6 +47,8 @@
             android:textSize="12sp"
             android:textColor="@color/bt_black_54"
             android:maxLines="1"
+            tools:text="••• ••88"
+            android:layout_weight="0"
             android:ellipsize="end"/>
 
     </LinearLayout>
