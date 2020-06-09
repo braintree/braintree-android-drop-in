@@ -432,7 +432,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForNonNetworkTokenizedGooglePay()
+    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForNonNetworkTokenizedGooglePayWhenEnabled()
             throws Exception {
         PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
         Context context = spy(RuntimeEnvironment.application);
