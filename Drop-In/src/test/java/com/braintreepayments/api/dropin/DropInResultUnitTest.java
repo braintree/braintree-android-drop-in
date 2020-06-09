@@ -129,7 +129,7 @@ public class DropInResultUnitTest {
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
             @Override
             public void onError(Exception exception) {
-                assertEquals("Client token was invalid", exception.getMessage());
+                assertEquals("Authorization provided is invalid: not a client token", exception.getMessage());
                 mCountDownLatch.countDown();
             }
 
