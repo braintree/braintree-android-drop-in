@@ -30,6 +30,6 @@ public class UnitTestFixturesHelper {
     }
 
     public static String base64EncodedClientTokenFromFixture(String filename) {
-                return Base64.getEncoder().encodeToString(stringFromFixture(filename).getBytes());
+        return Base64.getEncoder().encodeToString(stringFromFixture(filename).getBytes());
     }
 }
