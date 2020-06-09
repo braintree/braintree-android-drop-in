@@ -78,7 +78,7 @@ public class VaultManagerActivityUnitTest {
         mPaymentMethodNonces.add(payPalNonce);
 
         DropInRequest dropInRequest = new DropInRequest()
-                .clientToken(UnitTestFixturesHelper.stringFromFixture("client_token.json"));
+                .clientToken(UnitTestFixturesHelper.base64EncodedClientTokenFromFixture("client_token.json"));
 
         Bundle in = new Bundle();
         in.putParcelableArrayList(EXTRA_PAYMENT_METHOD_NONCES, (ArrayList<? extends Parcelable>) mPaymentMethodNonces);

@@ -22,6 +22,7 @@ import org.robolectric.shadows.ShadowActivity;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.test.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -130,7 +131,7 @@ public class BaseActivityUnitTest {
     @Test
     public void getBraintreeFragment_setsClientTokenPresentWhenAClientTokenIsPresent() throws InvalidArgumentException {
         setup(new DropInRequest()
-                .clientToken(stringFromFixture("client_token.json"))
+                .clientToken(base64EncodedClientTokenFromFixture("client_token.json"))
                 .getIntent(RuntimeEnvironment.application));
 
         mActivity.getBraintreeFragment();
