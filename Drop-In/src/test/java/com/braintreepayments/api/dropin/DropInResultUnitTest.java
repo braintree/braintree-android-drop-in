@@ -38,6 +38,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
+import static com.braintreepayments.api.test.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -128,7 +129,7 @@ public class DropInResultUnitTest {
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
             @Override
             public void onError(Exception exception) {
-                assertEquals("Client token was invalid", exception.getMessage());
+                assertEquals("Authorization provided is invalid: not a client token", exception.getMessage());
                 mCountDownLatch.countDown();
             }
 
@@ -166,7 +167,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
 
         mCountDownLatch.await();
     }
@@ -236,7 +237,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
 
         mCountDownLatch.await();
         List<BraintreeListener> listeners = fragment.getListeners();
@@ -269,7 +270,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
 
         mCountDownLatch.await();
         List<BraintreeListener> listeners = fragment.getListeners();
@@ -296,7 +297,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
 
         mCountDownLatch.await();
     }
@@ -321,7 +322,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
 
         mCountDownLatch.await();
     }
@@ -356,7 +357,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
 
         mCountDownLatch.await();
         List<BraintreeListener> listeners = fragment.getListeners();
@@ -385,7 +386,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
 
         mCountDownLatch.await();
         assertEquals(0, fragment.getListeners().size());
@@ -412,7 +413,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
 
         mCountDownLatch.await();
     }
@@ -438,7 +439,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
 
         mCountDownLatch.await();
     }
@@ -473,7 +474,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
 
         mCountDownLatch.await();
         List<BraintreeListener> listeners = fragment.getListeners();
@@ -502,7 +503,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
 
         mCountDownLatch.await();
         List<BraintreeListener> listeners = fragment.getListeners();
@@ -511,7 +512,7 @@ public class DropInResultUnitTest {
 
     private BraintreeFragment setupFragment(BraintreeHttpClient httpClient) throws InvalidArgumentException {
         BraintreeFragment fragment = BraintreeFragment.newInstance(mActivity,
-                stringFromFixture("client_token.json"));
+                base64EncodedClientTokenFromFixture("client_token.json"));
         setHttpClient(fragment, httpClient);
         ConfigurationManagerTestUtils.setFetchingConfiguration(false);
 

@@ -1,7 +1,9 @@
 package com.braintreepayments.api.test;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Base64;
 
 import static com.braintreepayments.api.test.StringUtils.getStringFromStream;
 
@@ -25,5 +27,9 @@ public class UnitTestFixturesHelper {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String base64EncodedClientTokenFromFixture(String filename) {
+        return Base64.getEncoder().encodeToString(stringFromFixture(filename).getBytes());
     }
 }
