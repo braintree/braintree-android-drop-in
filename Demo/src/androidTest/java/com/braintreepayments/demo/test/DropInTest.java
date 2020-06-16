@@ -3,6 +3,7 @@ package com.braintreepayments.demo.test;
 import android.widget.Button;
 
 import com.braintreepayments.demo.Settings;
+import com.braintreepayments.demo.test.utilities.ExpirationDate;
 import com.braintreepayments.demo.test.utilities.TestHelper;
 
 import org.junit.Before;
@@ -172,7 +173,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withText("Card Number")).perform(setText(UNIONPAY_CREDIT));
         onDevice(withText("12")).perform(click());
-        onDevice(withText("2019")).perform(click());
+        onDevice(withText(ExpirationDate.VALID_EXPIRATION_YEAR)).perform(click());
         onDevice().pressBack();
         onDevice(withText("CVN")).perform(setText("123"));
         onDevice(withText("Postal Code")).perform(setText("12345"));
@@ -201,7 +202,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withText("Card Number")).perform(setText(UNIONPAY_SMS_NOT_REQUIRED));
         onDevice(withText("12")).perform(click());
-        onDevice(withText("2019")).perform(click());
+        onDevice(withText(ExpirationDate.VALID_EXPIRATION_YEAR)).perform(click());
         onDevice().pressBack();
         onDevice(withText("CVN")).perform(setText("123"));
         onDevice(withText("Postal Code")).perform(setText("12345"));
@@ -228,7 +229,7 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withText("Card Number")).perform(setText(UNIONPAY_CREDIT));
         onDevice(withText("12")).perform(click());
-        onDevice(withText("2019")).perform(click());
+        onDevice(withText(ExpirationDate.VALID_EXPIRATION_YEAR)).perform(click());
         onDevice().pressBack();
         onDevice(withText("CVN")).perform(setText("123"));
         onDevice(withText("Postal Code")).perform(setText("12345"));
