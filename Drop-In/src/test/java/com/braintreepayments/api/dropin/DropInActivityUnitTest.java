@@ -24,6 +24,7 @@ import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeSharedPreferences;
 import com.braintreepayments.api.models.BraintreeRequestCodes;
 import com.braintreepayments.api.models.CardNonce;
+import com.braintreepayments.api.models.GooglePaymentCardNonce;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
@@ -63,7 +64,6 @@ import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -407,7 +407,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationWhenEnabled()
+    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForCardWhenEnabled()
             throws Exception {
         PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
         Context context = spy(RuntimeEnvironment.application);
@@ -429,6 +429,57 @@ public class DropInActivityUnitTest {
 
         verify(mActivity.httpClient).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP),
                 anyString(), any(HttpResponseCallback.class));
+    }
+
+    @Test
+    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForNonNetworkTokenizedGooglePayWhenEnabled()
+            throws Exception {
+        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
+        Context context = spy(RuntimeEnvironment.application);
+        when(context.getPackageManager()).thenReturn(packageManager);
+        mActivity.context = context;
+        mActivity.setDropInRequest(new DropInRequest()
+                .tokenizationKey(TOKENIZATION_KEY)
+                .amount("1.00")
+                .requestThreeDSecureVerification(true));
+        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .threeDSecureEnabled(true)
+                        .build()));
+        mActivityController.setup();
+
+        GooglePaymentCardNonce googlePaymentCardNonce = GooglePaymentCardNonce.fromJson(
+                stringFromFixture("responses/google_pay_non_network_tokenized_response.json"));
+
+        mActivity.onPaymentMethodNonceCreated(googlePaymentCardNonce);
+
+        verify(mActivity.httpClient).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP),
+                anyString(), any(HttpResponseCallback.class));
+    }
+
+    @Test
+    public void onPaymentMethodNonceCreated_skipsThreeDSecureVerificationForNetworkTokenizedGooglePay()
+            throws Exception {
+        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
+        Context context = spy(RuntimeEnvironment.application);
+        when(context.getPackageManager()).thenReturn(packageManager);
+        mActivity.context = context;
+        mActivity.setDropInRequest(new DropInRequest()
+                .tokenizationKey(TOKENIZATION_KEY)
+                .amount("1.00")
+                .requestThreeDSecureVerification(true));
+        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
+                .configuration(new TestConfigurationBuilder()
+                        .threeDSecureEnabled(true)
+                        .build()));
+        mActivityController.setup();
+
+        GooglePaymentCardNonce googlePaymentCardNonce = GooglePaymentCardNonce.fromJson(
+                stringFromFixture("responses/google_pay_network_tokenized_response.json"));
+
+        mActivity.onPaymentMethodNonceCreated(googlePaymentCardNonce);
+
+        verify(mActivity.httpClient, never()).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP), anyString(), any(HttpResponseCallback.class));
     }
 
     @Test
