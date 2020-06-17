@@ -2,6 +2,9 @@ package com.braintreepayments.demo.test;
 
 import android.widget.Button;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.RequiresDevice;
+
 import com.braintreepayments.demo.Settings;
 import com.braintreepayments.demo.test.utilities.ExpirationDate;
 import com.braintreepayments.demo.test.utilities.TestHelper;
@@ -11,13 +14,12 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.RequiresDevice;
+import java.io.IOException;
 
 import static androidx.test.InstrumentationRegistry.getTargetContext;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
 import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_CHALLENGE_VERIFICATON;
 import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
 import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
 import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
@@ -122,19 +124,18 @@ public class DropInTest extends TestHelper {
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
-    @Ignore("Test fails due to Cardinal Activity changes that resulted in the authorization code " +
-            "input being untargetable with this current test.  Need to find the input element to " +
-            "target to continue with the authorization.")
     @Test(timeout = 60000)
-    public void performsThreeDSecure2ChallengeVerification() {
+    public void performsThreeDSecure2ChallengeVerification() throws IOException {
         enableThreeDSecure();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(THREE_D_SECURE_2_CHALLENGE_VERIFICATON);
 
         onDevice(withText("Purchase Authentication")).waitForExists();
-        onDevice(withText("Code")).perform(setText("1234"));
+        onDevice(withResourceId("com.braintreepayments.demo:id/codeEditTextField")).perform(click());
 
+        onDevice().typeText("1234");
+        onDevice().pressEnter();
         onDevice(withText("Submit")).waitForExists().waitForEnabled().perform(click());
 
         getNonceDetails().check(text(containsString("Card Last Two: 91")));
@@ -145,9 +146,6 @@ public class DropInTest extends TestHelper {
         onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
-    @Ignore("Test fails due to Cardinal Activity changes that resulted in the cancel button being " +
-            "untargetable with this current test.  Need to find the correct button element to" +
-            "target to cancel the authorization.")
     @Test(timeout = 60000)
     public void cancelsThreeDSecure2ChallengeVerification() {
         enableThreeDSecure();
