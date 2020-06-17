@@ -222,7 +222,7 @@ public class TestHelper {
 
     protected void performCardDetailsEntry() {
         onDevice(withText("12")).perform(click());
-        onDevice(withText("2019")).perform(click());
+        onDevice(withText(ExpirationDate.VALID_EXPIRATION_YEAR)).perform(click());
         onDevice().pressBack();
         onDevice(withText("CVV")).perform(setText("123"));
         onDevice(withText("Postal Code")).perform(setText("12345"));
