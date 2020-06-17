@@ -1,7 +1,7 @@
 # Braintree Android Drop-In Release Notes
 
 ## unreleased
-* Bump braintree_android version to 3.11.0
+* Bump braintree_android version to 3.11.1
 * Bump card-form version to 4.3.0 (Updates Card icons)
 * Update payment method icons (fixes issue where Google Pay icon did not meet new [brand guidelines](https://developers.google.com/pay/api/web/guides/brand-guidelines))
 * Update `bt_add_card` string resource for french locales.
