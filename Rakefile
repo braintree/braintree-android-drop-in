@@ -89,7 +89,6 @@ def post_release(version)
 
   sh "git push origin master #{version}"
 
-  puts "\nUpdate the releases tab on GitHub and send a release notification email to braintree-sdk-announce@googlegroups.com. Press ENTER when done."
   $stdin.gets
 end
 
