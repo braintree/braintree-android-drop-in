@@ -94,8 +94,8 @@ end
 
 def get_current_version
   current_version = nil
-  File.foreach("Drop-In/build.gradle") do |line|
-    if match = line.match(/versionName '(\d+\.\d+\.\d+(-SNAPSHOT)?)'/)
+  File.foreach("build.gradle") do |line|
+    if match = line.match(/version '(\d+\.\d+\.\d+(-SNAPSHOT)?)'/)
       current_version = match.captures
     end
   end
@@ -105,20 +105,20 @@ end
 
 def increment_version_code
   new_build_file = ""
-  File.foreach("Drop-In/build.gradle") do |line|
+  File.foreach("build.gradle") do |line|
     if line.match(/versionCode (\d+)/)
       new_build_file += line.gsub(/versionCode \d+/, "versionCode #{$1.to_i + 1}")
     else
       new_build_file += line
     end
   end
-  IO.write('Drop-In/build.gradle', new_build_file)
+  IO.write('build.gradle', new_build_file)
 end
 
 def update_version(version)
-  IO.write("Drop-In/build.gradle",
-    File.open("Drop-In/build.gradle") do |file|
-      file.read.gsub(/version '\d+\.\d+\.\d+(-SNAPSHOT)?'/, "version '#{version}'")
+  IO.write("build.gradle",
+    File.open("build.gradle") do |file|
+      file.read.gsub(/^version '\d+\.\d+\.\d+(-SNAPSHOT)?'/, "version '#{version}'")
     end
   )
 end
