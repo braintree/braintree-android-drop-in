@@ -107,7 +107,7 @@ def increment_version_code
   new_build_file = ""
   File.foreach("build.gradle") do |line|
     if line.match(/versionCode (\d+)/)
-      new_build_file += line.gsub(/versionCode \d+/, "versionCode #{$1.to_i + 1}")
+      new_build_file += line.gsub(/versionCode = \d+/, "versionCode = #{$1.to_i + 1}")
     else
       new_build_file += line
     end
