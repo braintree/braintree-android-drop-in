@@ -48,12 +48,12 @@ android {
             java.srcDir sharedTestDir
         }
     }
-}
 
-android.buildTypes.debug { type ->
-    type.buildConfigField 'String', 'LOCALHOST_IP', LOCALHOST_IP
-    type.buildConfigField 'String', 'GATEWAY_IP', GATEWAY_IP
-    type.buildConfigField 'String', 'GATEWAY_PORT', GATEWAY_PORT
+    buildTypes.debug { type ->
+        type.buildConfigField 'String', 'LOCALHOST_IP', LOCALHOST_IP
+        type.buildConfigField 'String', 'GATEWAY_IP', GATEWAY_IP
+        type.buildConfigField 'String', 'GATEWAY_PORT', GATEWAY_PORT
+    }
 }
 
 dependencies {
@@ -73,18 +73,6 @@ dependencies {
     testImplementation 'org.skyscreamer:jsonassert:1.4.0'
 
     androidTestImplementation 'androidx.test.ext:junit:1.0.0-beta02'
-}
-
-rootProject.allprojects {
-    repositories {
-        maven {
-            url  "https://cardinalcommerce.bintray.com/android"
-            credentials {
-                username 'braintree-team-sdk@cardinalcommerce'
-                password '220cc9476025679c4e5c843666c27d97cfb0f951'
-            }
-        }
-    }
 }
 
 // region signing and publishing
