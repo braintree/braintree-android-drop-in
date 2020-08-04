@@ -230,7 +230,7 @@ public class TestHelper {
 
     protected void tokenizeCard(String cardNumber) {
         onDevice(withText("Credit or Debit Card")).perform(click());
-        onDevice(withText("Card Number")).perform(setText(cardNumber));
+        onDevice(withText("Card Number")).waitForExists().perform(setText(cardNumber));
         performCardDetailsEntry();
         onDevice(withTextContaining("Add Card")).perform(click());
     }
