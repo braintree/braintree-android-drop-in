@@ -58,7 +58,7 @@ android {
 
 dependencies {
     api 'com.braintreepayments.api:braintree:3.11.1'
-    api 'com.braintreepayments:card-form:4.3.0'
+    api 'com.braintreepayments:card-form:5.0.0'
     api 'com.braintreepayments.api:three-d-secure:3.11.1'
 
     implementation 'androidx.cardview:cardview:1.0.0'
