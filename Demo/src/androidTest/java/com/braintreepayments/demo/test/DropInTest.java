@@ -266,7 +266,7 @@ public class DropInTest extends TestHelper {
         useTokenizationKey();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
-        onDevice(withText("PayPal")).perform(click());
+        onDevice(withText("PayPal")).waitForExists().perform(click());
         clickWebViewText("Proceed with Sandbox Purchase", 5000);
 
         getNonceDetails().check(text(containsString("Email: bt_buyer_us@paypal.com")));

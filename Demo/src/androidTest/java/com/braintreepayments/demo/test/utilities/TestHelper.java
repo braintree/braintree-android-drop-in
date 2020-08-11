@@ -112,8 +112,10 @@ public class TestHelper {
                 .putBoolean("tokenization_key", true)
                 .commit();
 
+        // additional sleep here makes tests more consistent for some reason
         SystemClock.sleep(2000);
         onDevice(withText("Reset")).perform(click());
+        SystemClock.sleep(2000);
     }
 
     public void enableThreeDSecure() {
@@ -201,7 +203,7 @@ public class TestHelper {
     }
 
     protected void tokenizeCard(String cardNumber) {
-        onDevice(withText("Credit or Debit Card")).perform(click());
+        onDevice(withText("Credit or Debit Card")).waitForExists().perform(click());
         onDevice(withText("Card Number")).waitForExists().perform(setText(cardNumber));
         performCardDetailsEntry();
         onDevice(withTextContaining("Add Card")).perform(click());
