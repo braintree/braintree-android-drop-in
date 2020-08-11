@@ -1,5 +1,8 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+* Bump card-form version to 5.0.0
+
 ## 4.6.0
 * Bump braintree_android version to 3.11.1
 * Bump card-form version to 4.3.0 (Updates Card icons)
