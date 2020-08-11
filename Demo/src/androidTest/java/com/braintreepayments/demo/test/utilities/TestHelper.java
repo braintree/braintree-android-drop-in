@@ -177,6 +177,7 @@ public class TestHelper {
                 .commit();
 
         onDevice(withText("Reset")).perform(click());
+        SystemClock.sleep(2000);
     }
 
     public void setSaveCardCheckBox(boolean visible, boolean defaultValue) {
@@ -187,6 +188,7 @@ public class TestHelper {
                 .commit();
 
         onDevice(withText("Reset")).perform(click());
+        SystemClock.sleep(2000);
     }
 
     private void clearPreference(String preference) {
