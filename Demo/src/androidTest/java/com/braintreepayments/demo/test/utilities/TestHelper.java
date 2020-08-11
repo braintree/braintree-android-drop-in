@@ -84,8 +84,8 @@ public class TestHelper {
                 .putString("customer", customerId)
                 .commit();
 
-        onDevice(withText("Reset")).perform(click());
         SystemClock.sleep(2000);
+        onDevice(withText("Reset")).perform(click());
     }
 
     /**
@@ -102,8 +102,8 @@ public class TestHelper {
                 .putString("merchant_account", merchantAccountId)
                 .commit();
 
-        onDevice(withText("Reset")).perform(click());
         SystemClock.sleep(2000);
+        onDevice(withText("Reset")).perform(click());
     }
 
     public void useTokenizationKey() {
@@ -112,8 +112,8 @@ public class TestHelper {
                 .putBoolean("tokenization_key", true)
                 .commit();
 
-        onDevice(withText("Reset")).perform(click());
         SystemClock.sleep(2000);
+        onDevice(withText("Reset")).perform(click());
     }
 
     public void enableThreeDSecure() {
@@ -151,8 +151,8 @@ public class TestHelper {
                 .putString("cardholder_name_status", status)
                 .commit();
 
-        onDevice(withText("Reset")).perform(click());
         SystemClock.sleep(2000);
+        onDevice(withText("Reset")).perform(click());
     }
 
     public void setSaveCardCheckBox(boolean visible, boolean defaultValue) {
@@ -162,8 +162,8 @@ public class TestHelper {
                 .putBoolean("save_card_checkbox_default_value", defaultValue)
                 .commit();
 
-        onDevice(withText("Reset")).perform(click());
         SystemClock.sleep(2000);
+        onDevice(withText("Reset")).perform(click());
     }
 
     private void clearPreference(String preference) {
