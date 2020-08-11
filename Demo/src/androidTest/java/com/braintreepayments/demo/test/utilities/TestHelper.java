@@ -53,31 +53,6 @@ public class TestHelper {
         return onDevice(withResourceId("com.braintreepayments.demo:id/nonce_details"));
     }
 
-    public static void installPayPalWallet() {
-        if (!isAppInstalled(PAYPAL_WALLET_PACKAGE_NAME)) {
-            Log.d("request_command", "install paypal wallet");
-
-            final CountDownLatch lock = new CountDownLatch(1);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while(true) {
-                        if(isAppInstalled(PAYPAL_WALLET_PACKAGE_NAME)) {
-                            lock.countDown();
-                            break;
-                        }
-                    }
-                }
-            });
-            try {
-                lock.await(90, TimeUnit.SECONDS);
-            } catch (InterruptedException ignored) {}
-
-            assumeTrue("The PayPal app needs to be installed before running this test",
-                    isAppInstalled(PAYPAL_WALLET_PACKAGE_NAME));
-        }
-    }
-
     public static void uninstallPayPalWallet() {
         if (isAppInstalled(PAYPAL_WALLET_PACKAGE_NAME)) {
             Log.d("request_command", "uninstall paypal wallet");
