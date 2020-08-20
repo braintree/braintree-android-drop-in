@@ -15,9 +15,11 @@
 * Add 3DS support for non-network tokenized Google Pay cards
 
 ## 4.5.0
+
 * Bump braintree_android version to 3.7.2
 
 ## 4.4.1
+
 * Fix bug in `AddCardActivity#onError` that prevented passing error cases up to the appropriate listeners.
 
 ## 4.4.0
@@ -44,6 +46,7 @@
 * Fix Google Payment issue where Google Pay does not communicate back to BraintreeFragment
 
 ## 4.1.0
+
 * Add Hiper and Hipercard detection and assets
   * Bump card-form to 4.1.0
 
@@ -104,6 +107,7 @@
 * Restore the configuration after activity resumed (fixes [#181](https://github.com/braintree/braintree_android/issues/181))
 
 ## 3.2.0
+
 * Add Google Pay support
 * Update vaulted Maestro logos
 * Update vaulted Mastercard logos
