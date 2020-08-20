@@ -1,10 +1,13 @@
 # Braintree Android Drop-In Release Notes
 
 ## unreleased
+
+* Add `vaultVenmo` option to `DropInRequest`
 * Breaking Changes
   * Bump card-form version to 5.0.0 (removes support for CardIO, a no longer maintained framework)
 
 ## 4.6.0
+
 * Bump braintree_android version to 3.11.1
 * Bump card-form version to 4.3.0 (Updates Card icons)
 * Update payment method icons (fixes issue where Google Pay icon did not meet new [brand guidelines](https://developers.google.com/pay/api/web/guides/brand-guidelines))
