@@ -81,6 +81,7 @@ public class DropInRequestUnitTest {
                 .allowVaultCardOverride(true)
                 .vaultCard(true)
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
+                .vaultVenmo(true)
                 .getIntent(RuntimeEnvironment.application);
 
         DropInRequest dropInRequest = intent.getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
@@ -121,6 +122,7 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.getDefaultVaultSetting());
         assertTrue(dropInRequest.isSaveCardCheckBoxShown());
         assertEquals(CardForm.FIELD_OPTIONAL, dropInRequest.getCardholderNameStatus());
+        assertTrue(dropInRequest.shouldVaultVenmo());
     }
 
     @Test
@@ -146,6 +148,7 @@ public class DropInRequestUnitTest {
         assertFalse(dropInRequest.isVaultManagerEnabled());
         assertFalse(dropInRequest.isSaveCardCheckBoxShown());
         assertTrue(dropInRequest.getDefaultVaultSetting());
+        assertFalse(dropInRequest.shouldVaultVenmo());
         assertEquals(CardForm.FIELD_DISABLED, dropInRequest.getCardholderNameStatus());
     }
 
@@ -203,7 +206,8 @@ public class DropInRequestUnitTest {
                 .vaultManager(true)
                 .vaultCard(true)
                 .allowVaultCardOverride(true)
-                .cardholderNameStatus(CardForm.FIELD_OPTIONAL);
+                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
+                .vaultVenmo(true);
 
         Parcel parcel = Parcel.obtain();
         dropInRequest.writeToParcel(parcel, 0);
@@ -245,6 +249,7 @@ public class DropInRequestUnitTest {
         assertTrue(parceledDropInRequest.getDefaultVaultSetting());
         assertTrue(parceledDropInRequest.isSaveCardCheckBoxShown());
         assertEquals(CardForm.FIELD_OPTIONAL, parceledDropInRequest.getCardholderNameStatus());
+        assertTrue(parceledDropInRequest.shouldVaultVenmo());
     }
 
     @Test

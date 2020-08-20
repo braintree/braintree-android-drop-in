@@ -28,6 +28,7 @@ public class DropInRequest implements Parcelable {
 
     private GooglePaymentRequest mGooglePaymentRequest;
     private PayPalRequest mPayPalRequest;
+
     private boolean mGooglePaymentEnabled = true;
     private boolean mMaskCardNumber = false;
     private boolean mMaskSecurityCode = false;
@@ -37,6 +38,8 @@ public class DropInRequest implements Parcelable {
     private boolean mCardEnabled = true;
     private boolean mDefaultVaultValue = true;
     private boolean mShowCheckBoxToAllowVaultOverride = false;
+    private boolean mVaultVenmo = false;
+
     private int mCardholderNameStatus = CardForm.FIELD_DISABLED;
 
     public DropInRequest() {}
@@ -215,6 +218,15 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * @param defaultValue the default value used to determine if Drop-in should vault the customer's venmo payment method. Must be set to `false` when using a client token without a `customerId`.
+     *
+     * This value is {@code false} by default.
+     */
+    public DropInRequest vaultVenmo(boolean defaultValue) {
+        return this;
+    };
+
+    /**
      * @param customerCheckBoxEnabled {@code true} shows save card CheckBox to allow user to choose whether or not to vault their card.
      * {@code false} does not show Save Card CheckBox.
      */
@@ -294,6 +306,8 @@ public class DropInRequest implements Parcelable {
     boolean shouldMaskSecurityCode() {
         return mMaskSecurityCode;
     }
+
+    boolean shouldVaultVenmo() { return mVaultVenmo; }
 
     boolean isVaultManagerEnabled() {
         return mVaultManagerEnabled;
