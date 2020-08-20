@@ -223,6 +223,7 @@ public class DropInRequest implements Parcelable {
      * This value is {@code false} by default.
      */
     public DropInRequest vaultVenmo(boolean defaultValue) {
+        mVaultVenmo = defaultValue;
         return this;
     };
 
@@ -349,6 +350,7 @@ public class DropInRequest implements Parcelable {
         dest.writeInt(mCardholderNameStatus);
         dest.writeByte(mDefaultVaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(mShowCheckBoxToAllowVaultOverride ? (byte) 1 : (byte) 0);
+        dest.writeByte(mVaultVenmo ? (byte) 1 : (byte) 0);
     }
 
     protected DropInRequest(Parcel in) {
@@ -369,6 +371,7 @@ public class DropInRequest implements Parcelable {
         mCardholderNameStatus = in.readInt();
         mDefaultVaultValue = in.readByte() != 0;
         mShowCheckBoxToAllowVaultOverride = in.readByte() != 0;
+        mVaultVenmo = in.readByte() != 0;
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {
