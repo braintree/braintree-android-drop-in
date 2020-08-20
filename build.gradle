@@ -2,27 +2,54 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url = "https://plugins.gradle.org/m2/"
+        }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0'
-
-        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.5.3'
+        classpath 'com.android.tools.build:gradle:4.0.1'
+        classpath 'de.marcphilipp.gradle:nexus-publish-plugin:0.4.0'
+        classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2'
     }
+}
+
+plugins {
+    id 'io.codearte.nexus-staging' version '0.21.2'
+}
+
+version '4.6.1-SNAPSHOT'
+ext {
+    compileSdkVersion = 28
+    minSdkVersion = 21
+    targetSdkVersion = 28
+    versionCode = 85
+    versionName = version
 }
 
 allprojects {
     repositories {
         google()
         jcenter()
+    }
+}
+
+subprojects {
+    repositories {
         maven {
-            url 'https://oss.sonatype.org/content/repositories/releases/'
-        }
-        maven {
-            url 'https://oss.sonatype.org/content/repositories/snapshots/'
-        }
-        maven {
-            url 'file:///tmp/maven/'
+            url  "https://cardinalcommerce.bintray.com/android"
+            credentials {
+                username 'braintree-team-sdk@cardinalcommerce'
+                password '220cc9476025679c4e5c843666c27d97cfb0f951'
+            }
         }
     }
+}
+
+nexusStaging {
+    packageGroup = "com.braintreepayments"
+    // give nexus sonatype more time to close the staging repository
+    delayBetweenRetriesInMillis = 20000
+    username = System.env['SONATYPE_USERNAME']
+    password = System.env['SONATYPE_PASSWORD']
 }

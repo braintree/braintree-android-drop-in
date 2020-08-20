@@ -39,11 +39,11 @@ public class PackageManagerUtils {
 
         PackageManager packageManager = spy(RuntimeEnvironment.application.getPackageManager());
         doReturn(packageInfo).when(packageManager)
-                .getPackageInfo("com.braintreepayments.api.dropin", PackageManager.GET_ACTIVITIES);
+                .getPackageInfo("com.braintreepayments.api.dropin.test", PackageManager.GET_ACTIVITIES);
         doAnswer(new Answer() {
             @Override
             public List<ResolveInfo> answer(InvocationOnMock invocation) throws Throwable {
-                String browserSwitchUri = "com.braintreepayments.api.dropin.braintree";
+                String browserSwitchUri = "com.braintreepayments.api.dropin.test.braintree";
                 String data = ((Intent) invocation.getArguments()[0]).getDataString();
                 if (data == null) {
                     data = "";
