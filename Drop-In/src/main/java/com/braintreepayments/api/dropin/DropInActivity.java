@@ -265,7 +265,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 GooglePayment.requestPayment(mBraintreeFragment, mDropInRequest.getGooglePaymentRequest());
                 break;
             case PAY_WITH_VENMO:
-                Venmo.authorizeAccount(mBraintreeFragment);
+                Venmo.authorizeAccount(mBraintreeFragment, mDropInRequest.shouldVaultVenmo());
                 break;
             case UNKNOWN:
                 Intent intent = new Intent(this, AddCardActivity.class)
