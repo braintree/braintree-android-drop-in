@@ -1,10 +1,13 @@
 # Braintree Android Drop-In Release Notes
 
 ## unreleased
+
+* Add `vaultVenmo` option to `DropInRequest`
 * Breaking Changes
   * Bump card-form version to 5.0.0 (removes support for CardIO, a no longer maintained framework)
 
 ## 4.6.0
+
 * Bump braintree_android version to 3.11.1
 * Bump card-form version to 4.3.0 (Updates Card icons)
 * Update payment method icons (fixes issue where Google Pay icon did not meet new [brand guidelines](https://developers.google.com/pay/api/web/guides/brand-guidelines))
@@ -12,9 +15,11 @@
 * Add 3DS support for non-network tokenized Google Pay cards
 
 ## 4.5.0
+
 * Bump braintree_android version to 3.7.2
 
 ## 4.4.1
+
 * Fix bug in `AddCardActivity#onError` that prevented passing error cases up to the appropriate listeners.
 
 ## 4.4.0
@@ -41,6 +46,7 @@
 * Fix Google Payment issue where Google Pay does not communicate back to BraintreeFragment
 
 ## 4.1.0
+
 * Add Hiper and Hipercard detection and assets
   * Bump card-form to 4.1.0
 
@@ -101,6 +107,7 @@
 * Restore the configuration after activity resumed (fixes [#181](https://github.com/braintree/braintree_android/issues/181))
 
 ## 3.2.0
+
 * Add Google Pay support
 * Update vaulted Maestro logos
 * Update vaulted Mastercard logos
