@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+* Breaking Changes
+  * Bump card-form version to 5.0.0 (removes support for CardIO, a no longer maintained framework)
+
 ## 4.6.0
 * Bump braintree_android version to 3.11.1
 * Bump card-form version to 4.3.0 (Updates Card icons)

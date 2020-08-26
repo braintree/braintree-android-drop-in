@@ -1,12 +1,8 @@
 language: android
 jdk: oraclejdk8
-notifications:
-  email:
-    - external-ci-notifications+braintree-android-drop-in@getbraintree.com
 sudo: true
 android:
   components:
-    - tools
     - tools
     - platform-tools
     - build-tools-29.0.3
@@ -14,5 +10,5 @@ android:
     - extra-google-m2repository
 before_install:
   - yes | sdkmanager "platforms;android-28"
-script: ./gradlew --stacktrace clean lint test
-after_success: ./script/deploy_snapshot.sh
+script: ./gradlew --stacktrace clean lintRelease testRelease
+

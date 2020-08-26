@@ -379,22 +379,8 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        super.onCreateOptionsMenu(menu);
-
-        if (mAddCardView.getCardForm().isCardScanningAvailable()) {
-            getMenuInflater().inflate(R.menu.bt_card_io, menu);
-        }
-
-        return true;
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.bt_card_io_button) {
-            mAddCardView.getCardForm().scanCard(this);
-            return true;
-        } else if (item.getItemId() == android.R.id.home) {
+       if (item.getItemId() == android.R.id.home) {
             setResult(RESULT_CANCELED);
             finish();
             return true;

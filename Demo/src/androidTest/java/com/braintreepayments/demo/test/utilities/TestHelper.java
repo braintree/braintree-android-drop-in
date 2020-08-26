@@ -8,15 +8,15 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Spinner;
 
+import androidx.annotation.CallSuper;
+import androidx.test.core.app.ApplicationProvider;
+
 import com.braintreepayments.cardform.view.CardForm;
 import com.lukekorth.deviceautomator.DeviceAutomator;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-import androidx.annotation.CallSuper;
-
-import static androidx.test.InstrumentationRegistry.getTargetContext;
 import static com.lukekorth.deviceautomator.AutomatorAction.click;
 import static com.lukekorth.deviceautomator.AutomatorAction.setText;
 import static com.lukekorth.deviceautomator.AutomatorAssertion.text;
@@ -25,8 +25,6 @@ import static com.lukekorth.deviceautomator.UiObjectMatcher.withClass;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withResourceId;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
 import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
@@ -40,7 +38,7 @@ public class TestHelper {
         clearPreference("BraintreeApi");
         clearPreference("PayPalOTC");
 
-        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
                 .edit()
                 .clear()
                 .putBoolean("paypal_use_hardcoded_configuration", true)
@@ -53,31 +51,6 @@ public class TestHelper {
 
     public DeviceAutomator getNonceDetails() {
         return onDevice(withResourceId("com.braintreepayments.demo:id/nonce_details"));
-    }
-
-    public static void installPayPalWallet() {
-        if (!isAppInstalled(PAYPAL_WALLET_PACKAGE_NAME)) {
-            Log.d("request_command", "install paypal wallet");
-
-            final CountDownLatch lock = new CountDownLatch(1);
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while(true) {
-                        if(isAppInstalled(PAYPAL_WALLET_PACKAGE_NAME)) {
-                            lock.countDown();
-                            break;
-                        }
-                    }
-                }
-            });
-            try {
-                lock.await(90, TimeUnit.SECONDS);
-            } catch (InterruptedException ignored) {}
-
-            assumeTrue("The PayPal app needs to be installed before running this test",
-                    isAppInstalled(PAYPAL_WALLET_PACKAGE_NAME));
-        }
     }
 
     public static void uninstallPayPalWallet() {
@@ -106,13 +79,13 @@ public class TestHelper {
     }
 
     public void setCustomerId(String customerId) {
-        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
                 .edit()
                 .putString("customer", customerId)
                 .commit();
 
-        onDevice(withText("Reset")).perform(click());
         SystemClock.sleep(2000);
+        onDevice(withText("Reset")).perform(click());
     }
 
     /**
@@ -124,34 +97,36 @@ public class TestHelper {
     }
 
     public void setMerchantAccountId(String merchantAccountId) {
-        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
                 .edit()
                 .putString("merchant_account", merchantAccountId)
                 .commit();
 
-        onDevice(withText("Reset")).perform(click());
         SystemClock.sleep(2000);
+        onDevice(withText("Reset")).perform(click());
     }
 
     public void useTokenizationKey() {
-        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
                 .edit()
                 .putBoolean("tokenization_key", true)
                 .commit();
 
+        // additional sleep here makes tests more consistent for some reason
+        SystemClock.sleep(2000);
         onDevice(withText("Reset")).perform(click());
         SystemClock.sleep(2000);
     }
 
     public void enableThreeDSecure() {
-        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
                 .edit()
                 .putBoolean("enable_three_d_secure", true)
                 .commit();
     }
 
     public void enableVaultManager() {
-        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
                 .edit()
                 .putBoolean("enable_vault_manager", true)
                 .commit();
@@ -173,28 +148,28 @@ public class TestHelper {
                 break;
         }
 
-        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
                 .edit()
                 .putString("cardholder_name_status", status)
                 .commit();
 
-        onDevice(withText("Reset")).perform(click());
         SystemClock.sleep(2000);
+        onDevice(withText("Reset")).perform(click());
     }
 
     public void setSaveCardCheckBox(boolean visible, boolean defaultValue) {
-        PreferenceManager.getDefaultSharedPreferences(getTargetContext())
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
                 .edit()
                 .putBoolean("save_card_checkbox_visible", visible)
                 .putBoolean("save_card_checkbox_default_value", defaultValue)
                 .commit();
 
-        onDevice(withText("Reset")).perform(click());
         SystemClock.sleep(2000);
+        onDevice(withText("Reset")).perform(click());
     }
 
     private void clearPreference(String preference) {
-        getTargetContext().getSharedPreferences(preference, Context.MODE_PRIVATE)
+        ApplicationProvider.getApplicationContext().getSharedPreferences(preference, Context.MODE_PRIVATE)
                 .edit()
                 .clear()
                 .commit();
@@ -211,7 +186,7 @@ public class TestHelper {
     }
 
     private static boolean isAppInstalled(String packageName) {
-        PackageManager pm = getTargetContext().getPackageManager();
+        PackageManager pm = ApplicationProvider.getApplicationContext().getPackageManager();
         try {
             pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
             return true;
@@ -221,15 +196,14 @@ public class TestHelper {
     }
 
     protected void performCardDetailsEntry() {
-        onDevice(withText("12")).perform(click());
-        onDevice(withText(ExpirationDate.VALID_EXPIRATION_YEAR)).perform(click());
+        onDevice(withText("Expiration Date")).perform(setText("12" + ExpirationDate.VALID_EXPIRATION_YEAR));
         onDevice().pressBack();
         onDevice(withText("CVV")).perform(setText("123"));
         onDevice(withText("Postal Code")).perform(setText("12345"));
     }
 
     protected void tokenizeCard(String cardNumber) {
-        onDevice(withText("Credit or Debit Card")).perform(click());
+        onDevice(withText("Credit or Debit Card")).waitForExists().perform(click());
         onDevice(withText("Card Number")).waitForExists().perform(setText(cardNumber));
         performCardDetailsEntry();
         onDevice(withTextContaining("Add Card")).perform(click());
