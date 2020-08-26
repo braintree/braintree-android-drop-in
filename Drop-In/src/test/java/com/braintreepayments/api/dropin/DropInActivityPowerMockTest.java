@@ -160,6 +160,10 @@ public class DropInActivityPowerMockTest {
 
     @Test
     public void onPaymentMethodSelected_startsVenmo() {
+        DropInRequest dropInRequest = new DropInRequest()
+                .vaultVenmo(true);
+        mActivity.setDropInRequest(dropInRequest);
+
         mockStatic(Venmo.class);
         doNothing().when(Venmo.class);
         Venmo.authorizeAccount(any(BraintreeFragment.class));
@@ -167,7 +171,7 @@ public class DropInActivityPowerMockTest {
         mActivity.onPaymentMethodSelected(PaymentMethodType.PAY_WITH_VENMO);
 
         verifyStatic();
-        Venmo.authorizeAccount(mActivity.braintreeFragment);
+        Venmo.authorizeAccount(mActivity.braintreeFragment, true);
     }
 
     @Test
