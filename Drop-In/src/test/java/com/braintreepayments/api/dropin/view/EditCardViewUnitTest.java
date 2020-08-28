@@ -254,6 +254,18 @@ public class EditCardViewUnitTest {
     }
 
     @Test
+    public void setVisibility_toVisibleFocusesCardHolderName() {
+        DropInRequest mDropInRequest = mock(DropInRequest.class);
+        when(mDropInRequest.getCardholderNameStatus()).thenReturn(1);
+        mView.setup(mActivity, mock(Configuration.class), mDropInRequest);
+        assertThat(mView.getCardForm().getCardholderNameEditText()).isNotFocused();
+
+        mView.setVisibility(View.VISIBLE);
+
+        assertThat(mView.getCardForm().getCardholderNameEditText()).isFocused();
+    }
+
+    @Test
     public void setVisibility_toVisibleFocusesExpiration() {
         mView.setup(mActivity, mock(Configuration.class));
         assertThat(mView.getCardForm().getExpirationDateEditText()).isNotFocused();

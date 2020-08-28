@@ -206,7 +206,11 @@ public class EditCardView extends LinearLayout implements OnCardFormFieldFocused
         mAnimatedButtonView.showButton();
 
         if (visibility == VISIBLE) {
-            if (!mCardForm.getExpirationDateEditText().isValid() ||
+            if (mCardForm.getCardholderNameEditText().getVisibility() == VISIBLE &&
+                    (!mCardForm.getCardholderNameEditText().isValid() ||
+                    TextUtils.isEmpty(mCardForm.getCardholderNameEditText().getText()))) {
+                mCardForm.getCardholderNameEditText().requestFocus();
+            } else if (!mCardForm.getExpirationDateEditText().isValid() ||
                     TextUtils.isEmpty(mCardForm.getExpirationDateEditText().getText())) {
                 mCardForm.getExpirationDateEditText().requestFocus();
             } else if (mCardForm.getCvvEditText().getVisibility() == VISIBLE &&
