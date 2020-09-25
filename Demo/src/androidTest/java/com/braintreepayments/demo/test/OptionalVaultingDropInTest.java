@@ -6,11 +6,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
-import static com.lukekorth.deviceautomator.AutomatorAction.click;
-import static com.lukekorth.deviceautomator.AutomatorAction.setText;
-import static com.lukekorth.deviceautomator.DeviceAutomator.onDevice;
-import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
-import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
+import static com.braintreepayments.AutomatorAction.click;
+import static com.braintreepayments.AutomatorAction.setText;
+import static com.braintreepayments.DeviceAutomator.onDevice;
+import static com.braintreepayments.UiObjectMatcher.withText;
+import static com.braintreepayments.UiObjectMatcher.withTextContaining;
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertFalse;
 
