@@ -44,11 +44,8 @@ task :release => :unit_tests do
 
   prompt_for_sonatype_username_and_password
 
-  sh "./gradlew clean :Drop-In:uploadArchives"
-  sh "./gradlew :Drop-In:closeRepository"
-  puts "Sleeping for one minute to allow Drop-In modules to close"
-  sleep 60
-  sh "./gradlew :Drop-In:promoteRepository"
+  sh "./gradlew clean :Drop-In:publishToSonatype"
+  sh "./gradlew closeAndReleaseRepository"
 
   post_release(version)
 end
@@ -88,8 +85,6 @@ def post_release(version)
   $stdin.gets
 
   sh "git push origin master #{version}"
-
-  $stdin.gets
 end
 
 def get_current_version
