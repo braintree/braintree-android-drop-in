@@ -10,7 +10,7 @@ def GATEWAY_PORT = System.properties['GATEWAY_PORT'] ?: '"3000"';
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion '29.0.3'
+    buildToolsVersion '30.0.2'
 
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
@@ -57,9 +57,9 @@ android {
 }
 
 dependencies {
-    api 'com.braintreepayments.api:braintree:3.11.1'
+    api 'com.braintreepayments.api:braintree:3.14.1'
     api 'com.braintreepayments:card-form:5.0.0'
-    api 'com.braintreepayments.api:three-d-secure:3.11.1'
+    api 'com.braintreepayments.api:three-d-secure:3.14.1'
 
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.gms:play-services-wallet:16.0.0'

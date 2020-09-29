@@ -3,6 +3,8 @@
 ## unreleased
 
 * Add `vaultVenmo` option to `DropInRequest`
+* Bump braintree_android version to 3.14.1
+* Bump `compileSdkVersion` and `targetSdkVersion` to API level 30
 * Breaking Changes
   * Bump card-form version to 5.0.0 (removes support for CardIO, a no longer maintained framework)
 

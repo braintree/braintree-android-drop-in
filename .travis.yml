@@ -5,10 +5,10 @@ android:
   components:
     - tools
     - platform-tools
-    - build-tools-29.0.3
-    - android-28
+    - build-tools-30.0.2
+    - android-30
     - extra-google-m2repository
 before_install:
-  - yes | sdkmanager "platforms;android-28"
+  - yes | sdkmanager "platforms;android-30"
 script: ./gradlew --stacktrace clean lintRelease testRelease
 
