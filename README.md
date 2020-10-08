@@ -6,14 +6,6 @@ Braintree Android Drop-In is a readymade UI that allows you to accept card and a
 
 <img alt="Screenshot of Drop-In" src="screenshots/vaulted-payment-methods.png" width="300"/>
 
-## What's new in 3.0
-
-* All new UI and integration for Drop-In
-* Fetch a customer's saved payment method without showing UI
-* Added UnionPay support to Drop-In
-
-Please create an [issue](https://github.com/braintree/braintree-android-drop-in/issues) with any comments or concerns.
-
 ## Adding it to your project
 
 Add the dependency in your `build.gradle`:
@@ -135,18 +127,6 @@ DropInResult.fetchDropInResult(activity, clientToken, new DropInResult.DropInRes
     }
 });
 ```
-
-### card.io
-
-To offer card scanning via [card.io](https://card.io), add the dependency in your `build.gradle`:
-
-```groovy
-dependencies {
-    implementation 'io.card:android-sdk:5.+'
-}
-```
-
-Drop-In will include a menu icon to scan cards when card.io is included.
 
 ## Help
 
