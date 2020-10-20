@@ -60,9 +60,13 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
             finish(e);
         }
 
-        ArrayList<PaymentMethodNonce> nonces;
+        ArrayList<PaymentMethodNonce> nonces = null;
         if (savedInstanceState == null) {
-            nonces = getIntent().getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES);
+            Bundle dropInRequestBundle =
+                    getIntent().getBundleExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST_BUNDLE);
+            if (dropInRequestBundle != null) {
+                nonces = dropInRequestBundle.getParcelableArrayList(EXTRA_PAYMENT_METHOD_NONCES);
+            }
         } else {
             nonces = savedInstanceState.getParcelableArrayList(EXTRA_PAYMENT_METHOD_NONCES);
         }

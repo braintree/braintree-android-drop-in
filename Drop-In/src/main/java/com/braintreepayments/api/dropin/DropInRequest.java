@@ -2,6 +2,7 @@ package com.braintreepayments.api.dropin;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -17,6 +18,7 @@ import com.braintreepayments.cardform.view.CardForm;
  */
 public class DropInRequest implements Parcelable {
 
+    public static final String EXTRA_CHECKOUT_REQUEST_BUNDLE = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST_BUNDLE";
     public static final String EXTRA_CHECKOUT_REQUEST = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST";
 
     private String mAuthorization;
@@ -256,8 +258,12 @@ public class DropInRequest implements Parcelable {
      * @return {@link Intent} containing all of the options set in {@link DropInRequest}.
      */
     public Intent getIntent(Context context) {
+        // place request into bundle to fix samsung un-marshalling error
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_CHECKOUT_REQUEST, this);
+
         return new Intent(context, DropInActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST, this);
+                .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, bundle);
     }
 
     public String getAuthorization() {

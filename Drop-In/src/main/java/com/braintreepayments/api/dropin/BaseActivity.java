@@ -35,7 +35,11 @@ public class BaseActivity extends AppCompatActivity {
             } catch (JSONException ignored) {}
         }
 
-        mDropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
+        Bundle dropInRequestBundle =
+            getIntent().getBundleExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST_BUNDLE);
+        if (dropInRequestBundle != null) {
+            mDropInRequest = dropInRequestBundle.getParcelable(DropInRequest.EXTRA_CHECKOUT_REQUEST);
+        }
     }
 
     @Override

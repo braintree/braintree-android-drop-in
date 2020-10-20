@@ -56,6 +56,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
 import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
+import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST_BUNDLE;
 
 public class DropInActivity extends BaseActivity implements ConfigurationListener, BraintreeCancelListener,
         BraintreeErrorListener, PaymentMethodSelectedListener, PaymentMethodNoncesUpdatedListener,
@@ -268,8 +269,13 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 Venmo.authorizeAccount(mBraintreeFragment, mDropInRequest.shouldVaultVenmo());
                 break;
             case UNKNOWN:
+                // place request into bundle to fix samsung un-marshalling error
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(EXTRA_CHECKOUT_REQUEST, mDropInRequest);
+
                 Intent intent = new Intent(this, AddCardActivity.class)
-                        .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest);
+                        .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, bundle);
+
                 startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
                 break;
         }
@@ -371,8 +377,12 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 mLoadingViewSwitcher.setDisplayedChild(0);
 
                 if (data != null) {
-                    ArrayList<PaymentMethodNonce> paymentMethodNonces = data
-                            .getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES);
+                    ArrayList<PaymentMethodNonce> paymentMethodNonces = null;
+
+                    Bundle dropInRequestBundle = data.getBundleExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST_BUNDLE);
+                    if (dropInRequestBundle != null) {
+                         paymentMethodNonces = dropInRequestBundle.getParcelableArrayList(EXTRA_PAYMENT_METHOD_NONCES);
+                    }
 
                     if (paymentMethodNonces != null) {
                         onPaymentMethodNoncesUpdated(paymentMethodNonces);
@@ -442,9 +452,13 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     public void onVaultEditButtonClick(View view) {
         ArrayList<Parcelable> parcelableArrayList = new ArrayList<Parcelable>(mBraintreeFragment.getCachedPaymentMethodNonces());
 
+        // place request into bundle to fix samsung un-marshalling error
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(EXTRA_CHECKOUT_REQUEST, mDropInRequest);
+        bundle.putParcelableArrayList(EXTRA_PAYMENT_METHOD_NONCES, parcelableArrayList);
+
         Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest)
-                .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, parcelableArrayList);
+                .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, bundle);
         startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
 
         mBraintreeFragment.sendAnalyticsEvent("manager.appeared");
