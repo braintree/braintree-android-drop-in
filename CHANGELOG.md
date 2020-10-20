@@ -3,7 +3,7 @@
 ## unreleased
 
 * Bump braintree_android version to 3.14.2 (fixes [#197](https://github.com/braintree/braintree-android-drop-in/issues/197))
-* Upgrade gradle build tools to 4.1.0
+* Upgrade Android Gradle Plugin to version 4.1.0
 
 ## 5.0.0
 
