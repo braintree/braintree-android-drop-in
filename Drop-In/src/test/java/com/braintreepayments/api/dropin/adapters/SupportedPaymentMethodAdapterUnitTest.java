@@ -1,6 +1,7 @@
 package com.braintreepayments.api.dropin.adapters;
 
 import android.content.Context;
+import android.view.View;
 
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
@@ -34,8 +35,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
     public void noPaymentMethodsAvailableIfNotEnabled() {
         Configuration configuration = getConfiguration(false, false, false, false);
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application);
         adapter.setup(configuration, new DropInRequest(), false, false);
 
         assertEquals(0, adapter.getCount());
@@ -45,8 +45,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
     public void allPaymentMethodsAvailableIfEnabled() {
         Configuration configuration = getConfiguration(true, true, true, true);
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application);
         adapter.setup(configuration, new DropInRequest(), true, true);
 
         assertEquals(4, adapter.getCount());
@@ -60,8 +59,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
     public void cardsAvailableIfUnionPayNotSupportedAndOtherCardsPresent() {
         Configuration configuration = getConfiguration(false, false, true, false);
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application);
         adapter.setup(configuration, new DropInRequest(), false, false);
 
         assertEquals(1, adapter.getCount());
@@ -74,8 +72,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         when(configuration.getCardConfiguration().getSupportedCardTypes())
                 .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application);
         adapter.setup(configuration, new DropInRequest(), false, false);
 
         assertEquals(0, adapter.getCount());
@@ -87,8 +84,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         when(configuration.getCardConfiguration().getSupportedCardTypes())
                 .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application);
         adapter.setup(configuration, new DropInRequest(), false, true);
 
         assertEquals(1, adapter.getCount());
@@ -101,8 +97,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         DropInRequest dropInRequest = new DropInRequest()
                 .disableCard();
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application);
         adapter.setup(configuration, dropInRequest, false, false);
 
         assertEquals(0, adapter.getCount());
@@ -114,8 +109,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         DropInRequest dropInRequest = new DropInRequest()
                 .disablePayPal();
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application);
         adapter.setup(configuration, dropInRequest, false, false);
 
         assertEquals(0, adapter.getCount());
@@ -127,8 +121,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         DropInRequest dropInRequest = new DropInRequest()
                 .disableVenmo();
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application);
         adapter.setup(configuration, dropInRequest, false, false);
 
         assertEquals(0, adapter.getCount());
@@ -141,8 +134,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
                 .disableGooglePayment()
                 .disableGooglePayment();
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application);
         adapter.setup(configuration, dropInRequest, true, false);
 
         assertEquals(0, adapter.getCount());
@@ -153,8 +145,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         Configuration configuration = getConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest();
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application);
         adapter.setup(configuration, dropInRequest, true, false);
 
         assertEquals(1, adapter.getCount());
@@ -167,8 +158,7 @@ public class SupportedPaymentMethodAdapterUnitTest {
         DropInRequest dropInRequest = new DropInRequest()
                 .disableGooglePayment();
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(RuntimeEnvironment.application);
         adapter.setup(configuration, dropInRequest, true, false);
 
         assertEquals(0, adapter.getCount());

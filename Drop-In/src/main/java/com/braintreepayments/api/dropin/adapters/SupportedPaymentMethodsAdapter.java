@@ -9,6 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
@@ -24,11 +26,19 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
     private ArrayList<PaymentMethodType> mAvailablePaymentMethods;
     private PaymentMethodSelectedListener mPaymentMethodSelectedListener;
 
+    public SupportedPaymentMethodsAdapter(Context context) {
+        mContext = context;
+        mAvailablePaymentMethods = new ArrayList<>();
+    }
+
+    /**
+     * Deprecated. Use {@see #Constructor(Context)}
+     */
+    @Deprecated
     public SupportedPaymentMethodsAdapter(Context context,
                                           PaymentMethodSelectedListener paymentMethodSelectedListener) {
-        mContext = context;
+        this(context);
         mPaymentMethodSelectedListener = paymentMethodSelectedListener;
-        mAvailablePaymentMethods = new ArrayList<>();
     }
 
     public void setup(Configuration configuration, DropInRequest dropInRequest,
@@ -87,6 +97,15 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
         ((TextView) convertView.findViewById(R.id.bt_payment_method_type))
                 .setText(mContext.getString(type.getLocalizedName()));
+
+        if (mPaymentMethodSelectedListener != null) {
+            convertView.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mPaymentMethodSelectedListener.onPaymentMethodSelected(type);
+                }
+            });
+        }
 
         return convertView;
     }
