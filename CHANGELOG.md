@@ -1,5 +1,10 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Bump braintree_android version to 3.14.2 (fixes [#197](https://github.com/braintree/braintree-android-drop-in/issues/197))
+* Upgrade Android Gradle Plugin to version 4.1.0
+
 ## 5.0.0
 
 * Add `vaultVenmo` option to `DropInRequest`
