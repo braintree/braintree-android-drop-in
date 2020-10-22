@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -151,6 +153,15 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(this, this);
         adapter.setup(mConfiguration, mDropInRequest, googlePaymentEnabled, mClientTokenPresent);
         mSupportedPaymentMethodListView.setAdapter(adapter);
+
+        mSupportedPaymentMethodListView.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PaymentMethodType type = ((PaymentMethodType) parent.getItemAtPosition(position));
+                onPaymentMethodSelected(type);
+            }
+        });
+
         mLoadingViewSwitcher.setDisplayedChild(1);
         fetchPaymentMethodNonces(false);
     }

@@ -88,13 +88,6 @@ public class SupportedPaymentMethodsAdapter extends BaseAdapter {
         ((TextView) convertView.findViewById(R.id.bt_payment_method_type))
                 .setText(mContext.getString(type.getLocalizedName()));
 
-        convertView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mPaymentMethodSelectedListener.onPaymentMethodSelected(type);
-            }
-        });
-
         return convertView;
     }
 
