@@ -12,26 +12,9 @@ import retrofit.RestAdapter;
 public class DemoApplication extends Application {
 
     private static ApiClient sApiClient;
-    private static final boolean STRICT_MODE_ENABLED = false;
 
     @Override
     public void onCreate() {
-        if (STRICT_MODE_ENABLED) {
-            StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectCustomSlowCalls()
-                    .detectNetwork()
-                    .penaltyLog()
-                    .penaltyDeath()
-                    .build());
-            StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
-                    .detectActivityLeaks()
-                    .detectLeakedClosableObjects()
-                    .detectLeakedRegistrationObjects()
-                    .detectLeakedSqlLiteObjects()
-                    .penaltyLog()
-                    .build());
-        }
-
         super.onCreate();
 
         if (Settings.getVersion(this) != BuildConfig.VERSION_CODE) {
