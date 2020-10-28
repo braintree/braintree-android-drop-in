@@ -6,6 +6,7 @@
     android:layout_margin="0dp"
     android:onClick="onBackgroundClicked"
     android:background="@android:color/transparent"
+    android:focusable="false"
     tools:context=".DropInActivity">
 
     <LinearLayout
@@ -105,13 +106,12 @@
                     android:paddingTop="@dimen/bt_choose_new_payment_label_padding_top"
                     android:paddingBottom="@dimen/bt_payment_label_padding_bottom"/>
 
-                <ListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/bt_supported_payment_methods"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:divider="@drawable/bt_list_view_divider"
                     android:dividerHeight="1dp"
-                    android:listSelector="@drawable/bt_payment_method_list_item_bg"
                     />
 
             </LinearLayout>

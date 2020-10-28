@@ -21,6 +21,7 @@ import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.Venmo;
+import com.braintreepayments.api.dropin.adapters.PaymentMethodsAdapter;
 import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter;
 import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
 import com.braintreepayments.api.dropin.adapters.VaultedPaymentMethodsAdapter;
@@ -49,7 +50,9 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.ThreeDSecureRequest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -83,7 +86,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     private ViewSwitcher mLoadingViewSwitcher;
     private TextView mSupportedPaymentMethodsHeader;
     @VisibleForTesting
-    protected ListView mSupportedPaymentMethodListView;
+    protected RecyclerView mSupportedPaymentMethodListView;
     private View mVaultedPaymentMethodsContainer;
     private RecyclerView mVaultedPaymentMethodsView;
     private Button mVaultManagerButton;
@@ -108,6 +111,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
+        mSupportedPaymentMethodListView.setLayoutManager(new LinearLayoutManager(this,
+                LinearLayoutManager.VERTICAL, false));
         try {
             mBraintreeFragment = getBraintreeFragment();
         } catch (InvalidArgumentException e) {
@@ -150,17 +155,34 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     }
 
     private void showSupportedPaymentMethods(boolean googlePaymentEnabled) {
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(this);
-        adapter.setup(mConfiguration, mDropInRequest, googlePaymentEnabled, mClientTokenPresent);
-        mSupportedPaymentMethodListView.setAdapter(adapter);
+        // TODO: unit test
+        List<PaymentMethodType> availablePaymentMethods = new ArrayList<>();
+        if (mDropInRequest.isPayPalEnabled() && mConfiguration.isPayPalEnabled()) {
+            availablePaymentMethods.add(PaymentMethodType.PAYPAL);
+        }
 
-        mSupportedPaymentMethodListView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PaymentMethodType type = ((PaymentMethodType) parent.getItemAtPosition(position));
-                onPaymentMethodSelected(type);
+        if (mDropInRequest.isVenmoEnabled() && mConfiguration.getPayWithVenmo().isEnabled(this)) {
+            availablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
+        }
+
+        if (mDropInRequest.isCardEnabled()) {
+            Set<String> supportedCardTypes =
+                    new HashSet<>(mConfiguration.getCardConfiguration().getSupportedCardTypes());
+            if (!mClientTokenPresent) {
+                supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
             }
-        });
+            if (supportedCardTypes.size() > 0) {
+                availablePaymentMethods.add(PaymentMethodType.UNKNOWN);
+            }
+        }
+
+        if (googlePaymentEnabled) {
+            if (mDropInRequest.isGooglePaymentEnabled()) {
+                availablePaymentMethods.add(PaymentMethodType.GOOGLE_PAYMENT);
+            }
+        }
+        PaymentMethodsAdapter adapter = new PaymentMethodsAdapter(availablePaymentMethods, this, this);
+        mSupportedPaymentMethodListView.setAdapter(adapter);
 
         mLoadingViewSwitcher.setDisplayedChild(1);
         fetchPaymentMethodNonces(false);

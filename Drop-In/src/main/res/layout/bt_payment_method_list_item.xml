@@ -6,6 +6,7 @@
     android:paddingTop="12dp"
     android:paddingBottom="12dp"
     android:paddingStart="16dp"
+    android:background="@drawable/bt_payment_method_list_item_bg"
     android:paddingLeft="16dp">
 
     <ImageView
