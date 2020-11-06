@@ -5,49 +5,49 @@ object Fixtures {
     // language=JSON
     const val CLIENT_TOKEN = """
         {
-            "configUrl": "client_api_configuration_url",
-            "authorizationFingerprint": "authorization_fingerprint",
-            "merchantId": "integration_merchant_id"
+          "configUrl": "client_api_configuration_url",
+          "authorizationFingerprint": "authorization_fingerprint",
+          "merchantId": "integration_merchant_id"
         }
     """
 
     // language=JSON
     const val CREDIT_CARD_ERROR_RESPONSE = """
         {
-            "error": {
-                "message": "Credit card is invalid"
-            },
-            "fieldErrors": [
+          "error": {
+            "message": "Credit card is invalid"
+          },
+          "fieldErrors": [
+            {
+              "field": "creditCard",
+              "fieldErrors": [
                 {
-                    "field": "creditCard",
-                    "fieldErrors": [
-                        {
-                            "field": "billingAddress",
-                            "message": "Postal code is invalid"
-                        },
-                        {
-                            "field": "cvv",
-                            "message": "CVV is invalid"
-                        },
-                        {
-                            "field": "expirationMonth",
-                            "message": "Expiration month is invalid"
-                        },
-                        {
-                            "field": "expirationYear",
-                            "message": "Expiration year is invalid"
-                        },
-                        {
-                            "field": "number",
-                            "message": "Credit card number is required"
-                        },
-                        {
-                            "field": "base",
-                            "message": "Credit card must include number, payment_method_nonce, or venmo_sdk_payment_method_code"
-                        }
-                    ]
+                  "field": "billingAddress",
+                  "message": "Postal code is invalid"
+                },
+                {
+                  "field": "cvv",
+                  "message": "CVV is invalid"
+                },
+                {
+                  "field": "expirationMonth",
+                  "message": "Expiration month is invalid"
+                },
+                {
+                  "field": "expirationYear",
+                  "message": "Expiration year is invalid"
+                },
+                {
+                  "field": "number",
+                  "message": "Credit card number is required"
+                },
+                {
+                  "field": "base",
+                  "message": "Credit card must include number, payment_method_nonce, or venmo_sdk_payment_method_code"
                 }
-            ]
+              ]
+            }
+          ]
         }
     """
 
