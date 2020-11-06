@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.Fixtures;
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.VaultManagerUnitTestActivity;
 import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
 import com.braintreepayments.api.dropin.view.PaymentMethodItemView;

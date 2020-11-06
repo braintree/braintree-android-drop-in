@@ -2,7 +2,7 @@ package com.braintreepayments.api.dropin;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.Card;
-import com.braintreepayments.api.Fixtures;
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.dropin.view.EditCardView;
 import com.braintreepayments.api.models.CardNonce;

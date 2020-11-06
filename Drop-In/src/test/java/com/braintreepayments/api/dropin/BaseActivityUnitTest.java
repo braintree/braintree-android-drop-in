@@ -3,7 +3,7 @@ package com.braintreepayments.api.dropin;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.braintreepayments.api.Fixtures;
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
