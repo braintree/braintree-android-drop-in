@@ -2,6 +2,7 @@ package com.braintreepayments.api.test
 
 object Fixtures {
 
+    // region Client Tokens
     // language=JSON
     const val CLIENT_TOKEN = """
         {
@@ -10,7 +11,47 @@ object Fixtures {
           "merchantId": "integration_merchant_id"
         }
     """
+    // endregion
 
+    // region Payment Methods
+    // language=JSON
+    const val PAYMENT_METHODS_UNIONPAY_CREDIT_CARD = """
+        {
+          "type": "CreditCard",
+          "nonce": "12345678-1234-1234-1234-123456789012",
+          "description": "ending in ••85",
+          "default": false,
+          "isLocked": false,
+          "securityQuestions": [],
+          "details":
+          {
+            "cardType": "UnionPay",
+            "lastTwo": "85",
+            "lastFour": "0085"
+          }
+        }
+    """
+
+    // language=JSON
+    const val PAYMENT_METHODS_VISA_CREDIT_CARD = """
+        {
+          "type": "CreditCard",
+          "nonce": "12345678-1234-1234-1234-123456789012",
+          "description": "ending in ••11",
+          "default": false,
+          "isLocked": false,
+          "securityQuestions": [],
+          "details":
+          {
+            "cardType": "Visa",
+            "lastTwo": "11",
+            "lastFour": "1111"
+          }
+        }
+    """
+    // endregion
+
+    // region Responses
     // language=JSON
     const val CREDIT_CARD_ERROR_RESPONSE = """
         {
@@ -295,42 +336,6 @@ object Fixtures {
     """
 
     // language=JSON
-    const val PAYMENT_METHODS_UNIONPAY_CREDIT_CARD = """
-        {
-          "type": "CreditCard",
-          "nonce": "12345678-1234-1234-1234-123456789012",
-          "description": "ending in ••85",
-          "default": false,
-          "isLocked": false,
-          "securityQuestions": [],
-          "details":
-          {
-            "cardType": "UnionPay",
-            "lastTwo": "85",
-            "lastFour": "0085"
-          }
-        }
-    """
-
-    // language=JSON
-    const val PAYMENT_METHODS_VISA_CREDIT_CARD = """
-        {
-          "type": "CreditCard",
-          "nonce": "12345678-1234-1234-1234-123456789012",
-          "description": "ending in ••11",
-          "default": false,
-          "isLocked": false,
-          "securityQuestions": [],
-          "details":
-          {
-            "cardType": "Visa",
-            "lastTwo": "11",
-            "lastFour": "1111"
-          }
-        }
-    """
-
-    // language=JSON
     const val THREE_D_SECURE_LOOKUP_RESPONSE = """
         {
           "lookup": {
@@ -502,5 +507,5 @@ object Fixtures {
           ]
         }
     """
-
+    // endregion
 }
