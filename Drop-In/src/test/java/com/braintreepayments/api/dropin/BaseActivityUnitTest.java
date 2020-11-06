@@ -131,7 +131,7 @@ public class BaseActivityUnitTest {
     @Test
     public void getBraintreeFragment_setsClientTokenPresentWhenAClientTokenIsPresent() throws InvalidArgumentException {
         setup(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json"))
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN))
                 .getIntent(RuntimeEnvironment.application));
 
         mActivity.getBraintreeFragment();
