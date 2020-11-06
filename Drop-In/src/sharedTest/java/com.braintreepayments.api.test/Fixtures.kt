@@ -364,7 +364,7 @@ object Fixtures {
     """
 
     // language=JSON
-    const val UNIONPAY_CAPABILITIES_NOT_SUCCEEDED_RESPONSE = """
+    const val UNIONPAY_CAPABILITIES_NOT_SUPPORTED_RESPONSE = """
         {
           "isUnionPay": true,
           "isDebit": false,

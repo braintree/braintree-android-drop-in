@@ -825,7 +825,7 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_NOT_SUCCEEDED_RESPONSE);
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_NOT_SUPPORTED_RESPONSE);
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_DEBIT);
