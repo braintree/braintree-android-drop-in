@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.Fixtures;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
@@ -56,7 +57,6 @@ import static com.braintreepayments.api.test.ReflectionHelper.getField;
 import static com.braintreepayments.api.test.ReflectionHelper.setField;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
@@ -214,11 +214,9 @@ public class DropInActivityUnitTest {
                 .configuration(new TestConfigurationBuilder()
                         .threeDSecureEnabled(true)
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
         mActivityController.setup();
-        CardNonce cardNonce = CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json"));
+        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
 
         mActivity.onPaymentMethodNonceCreated(cardNonce);
         mActivity.onCancel(BraintreeRequestCodes.THREE_D_SECURE);
@@ -242,11 +240,9 @@ public class DropInActivityUnitTest {
                 .configuration(new TestConfigurationBuilder()
                         .threeDSecureEnabled(true)
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
         mActivityController.setup();
-        CardNonce cardNonce = CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json"));
+        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
 
         mActivity.onPaymentMethodNonceCreated(cardNonce);
         mActivity.onError(new Exception());
@@ -299,8 +295,7 @@ public class DropInActivityUnitTest {
         mActivity.setDropInRequest(dropInRequest);
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(configuration)
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE);
         setup(httpClient);
         assertEquals(2, ((ListView) mActivity.findViewById(R.id.bt_supported_payment_methods)).getAdapter().getCount());
         assertEquals(2, ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter().getItemCount());
@@ -393,8 +388,7 @@ public class DropInActivityUnitTest {
     @Test
     public void onPaymentMethodNonceCreated_returnsANonce() throws JSONException {
         mActivityController.setup();
-        CardNonce cardNonce = CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json"));
+        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
 
         mActivity.onPaymentMethodNonceCreated(cardNonce);
 
@@ -422,8 +416,7 @@ public class DropInActivityUnitTest {
                         .threeDSecureEnabled(true)
                         .build()));
         mActivityController.setup();
-        CardNonce cardNonce = CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json"));
+        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
 
         mActivity.onPaymentMethodNonceCreated(cardNonce);
 
@@ -448,8 +441,7 @@ public class DropInActivityUnitTest {
                         .build()));
         mActivityController.setup();
 
-        GooglePaymentCardNonce googlePaymentCardNonce = GooglePaymentCardNonce.fromJson(
-                stringFromFixture("responses/google_pay_non_network_tokenized_response.json"));
+        GooglePaymentCardNonce googlePaymentCardNonce = GooglePaymentCardNonce.fromJson(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE);
 
         mActivity.onPaymentMethodNonceCreated(googlePaymentCardNonce);
 
@@ -474,8 +466,7 @@ public class DropInActivityUnitTest {
                         .build()));
         mActivityController.setup();
 
-        GooglePaymentCardNonce googlePaymentCardNonce = GooglePaymentCardNonce.fromJson(
-                stringFromFixture("responses/google_pay_network_tokenized_response.json"));
+        GooglePaymentCardNonce googlePaymentCardNonce = GooglePaymentCardNonce.fromJson(Fixtures.GOOGLE_PAY_NETWORK_TOKENIZED_RESPONSE);
 
         mActivity.onPaymentMethodNonceCreated(googlePaymentCardNonce);
 
@@ -486,8 +477,7 @@ public class DropInActivityUnitTest {
     public void onPaymentMethodNonceCreated_sendsAnAnalyticsEvent() throws JSONException {
         setup(mock(BraintreeFragment.class));
 
-        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json")));
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit.success");
     }
@@ -498,8 +488,7 @@ public class DropInActivityUnitTest {
         assertNull(BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
 
-        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json")));
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         assertEquals(PaymentMethodType.VISA.getCanonicalName(),
                 BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -514,8 +503,7 @@ public class DropInActivityUnitTest {
         mActivity.httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build());
         mActivityController.setup();
-        CardNonce cardNonce = CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json"));
+        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
 
         mActivity.onPaymentMethodNonceCreated(cardNonce);
 
@@ -530,8 +518,7 @@ public class DropInActivityUnitTest {
     public void selectingAVaultedPaymentMethod_returnsANonce() throws JSONException {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_RESPONSE);
         mActivity.setDropInRequest(new DropInRequest().clientToken(
                 base64EncodedClientTokenFromFixture("client_token.json")));
         setup(httpClient);
@@ -541,8 +528,7 @@ public class DropInActivityUnitTest {
         recyclerView.layout(0, 0, 100, 10000);
         recyclerView.findViewHolderForAdapterPosition(0).itemView.callOnClick();
 
-        PaymentMethodNonce paymentMethodNonce = PaymentMethodNonce.parsePaymentMethodNonces(
-                stringFromFixture("responses/get_payment_methods_response.json")).get(0);
+        PaymentMethodNonce paymentMethodNonce = PaymentMethodNonce.parsePaymentMethodNonces(Fixtures.GET_PAYMENT_METHODS_RESPONSE).get(0);
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_OK, mShadowActivity.getResultCode());
         assertEquals(paymentMethodNonce.getNonce(),
@@ -594,8 +580,7 @@ public class DropInActivityUnitTest {
     public void onPaymentMethodNoncesUpdated_showsVaultedPaymentMethods() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                       stringFromFixture("responses/get_payment_methods_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_RESPONSE);
         mActivity.setDropInRequest(new DropInRequest().clientToken(
                 base64EncodedClientTokenFromFixture("client_token.json")));
         setup(httpClient);
@@ -609,8 +594,7 @@ public class DropInActivityUnitTest {
     public void onPaymentMethodNoncesUpdated_doesNotIncludeVaultedGooglePaymentCardNonces() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_google_pay_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_GOOGLE_PAY_RESPONSE);
         mActivity.setDropInRequest(new DropInRequest().clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
         setup(httpClient);
 
@@ -625,8 +609,7 @@ public class DropInActivityUnitTest {
 
         List<PaymentMethodNonce> nonceList = new ArrayList<>();
 
-        nonceList.add(CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json")));
+        nonceList.add(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         mActivity.onPaymentMethodNoncesUpdated(nonceList);
 
@@ -648,9 +631,8 @@ public class DropInActivityUnitTest {
     public void onPaymentMethodNoncesUpdated_showsNothingIfNoVaultedPaymentMethods() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_empty_response.json"));
-        mActivity.setDropInRequest(new DropInRequest().clientToken(stringFromFixture("client_token.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_EMPTY_RESPONSE);
+        mActivity.setDropInRequest(new DropInRequest().clientToken(Fixtures.CLIENT_TOKEN));
         setup(httpClient);
 
         assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods)).isNotShown();
@@ -673,8 +655,7 @@ public class DropInActivityUnitTest {
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
 
         DropInResult result = new DropInResult()
-                .paymentMethodNonce(CardNonce.fromJson(
-                        stringFromFixture("responses/visa_credit_card_response.json")));
+                .paymentMethodNonce(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         Intent data = new Intent()
                 .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
 
@@ -707,8 +688,7 @@ public class DropInActivityUnitTest {
                 base64EncodedClientTokenFromFixture("client_token.json")));
         BraintreeUnitTestHttpClient httpClient = spy(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build()))
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE);
         setup(httpClient);
         verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
                 any(HttpResponseCallback.class));
@@ -725,8 +705,7 @@ public class DropInActivityUnitTest {
                 base64EncodedClientTokenFromFixture("client_token.json")));
         BraintreeUnitTestHttpClient httpClient = spy(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build()))
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE);
         setup(httpClient);
         verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
                 any(HttpResponseCallback.class));
@@ -740,8 +719,7 @@ public class DropInActivityUnitTest {
     @Test
     public void onActivityResult_returnsNonceFromAddCardActivity() throws JSONException {
         DropInResult result = new DropInResult()
-                .paymentMethodNonce(CardNonce.fromJson(
-                        stringFromFixture("responses/visa_credit_card_response.json")));
+                .paymentMethodNonce(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         Intent data = new Intent()
                 .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
         mActivityController.setup();
@@ -777,8 +755,7 @@ public class DropInActivityUnitTest {
         setup(mock(BraintreeFragment.class));
 
         DropInResult result = new DropInResult()
-                .paymentMethodNonce(CardNonce.fromJson(
-                        stringFromFixture("responses/visa_credit_card_response.json")));
+                .paymentMethodNonce(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         Intent data = new Intent()
                 .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
 
@@ -796,8 +773,7 @@ public class DropInActivityUnitTest {
                 .configuration(new TestConfigurationBuilder().build());
         mActivityController.setup();
         DropInResult result = new DropInResult()
-                .paymentMethodNonce(CardNonce.fromJson(
-                        stringFromFixture("responses/visa_credit_card_response.json")));
+                .paymentMethodNonce(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         Intent data = new Intent()
                 .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
@@ -827,8 +803,7 @@ public class DropInActivityUnitTest {
     public void onActivityResult_storesPaymentMethodType() throws JSONException {
         mActivityController.setup();
         DropInResult result = new DropInResult()
-                .paymentMethodNonce(CardNonce.fromJson(
-                        stringFromFixture("responses/visa_credit_card_response.json")));
+                .paymentMethodNonce(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         Intent data = new Intent()
                 .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
         assertNull(BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -848,8 +823,7 @@ public class DropInActivityUnitTest {
 
         BraintreeUnitTestHttpClient httpClient = spy(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build()))
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE);
         setup(httpClient);
         verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
                 any(HttpResponseCallback.class));

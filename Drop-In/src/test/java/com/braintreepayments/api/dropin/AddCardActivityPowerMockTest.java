@@ -2,13 +2,12 @@ package com.braintreepayments.api.dropin;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.Card;
+import com.braintreepayments.api.Fixtures;
+import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.dropin.view.EditCardView;
-import com.braintreepayments.api.models.CardBuilder;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.ThreeDSecureRequest;
-import com.braintreepayments.api.PayPal;
-import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.cardform.view.CardForm;
 
 import org.json.JSONException;
@@ -23,10 +22,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 
 import static com.braintreepayments.api.test.ReflectionHelper.setField;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.never;
 import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.mock;
@@ -67,8 +63,7 @@ public class AddCardActivityPowerMockTest {
             throws NoSuchFieldException, IllegalAccessException, JSONException {
         setConfiguration(new DropInRequest(), mock(Configuration.class));
 
-        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json")));
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         verifyStatic(never());
         ThreeDSecure.performVerification(any(BraintreeFragment.class), any(ThreeDSecureRequest.class));
@@ -83,8 +78,7 @@ public class AddCardActivityPowerMockTest {
         Configuration configuration = mock(Configuration.class);
         setConfiguration(dropInRequest, configuration);
 
-        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json")));
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         verifyStatic(never());
         ThreeDSecure.performVerification(any(BraintreeFragment.class), any(ThreeDSecureRequest.class));
@@ -99,8 +93,7 @@ public class AddCardActivityPowerMockTest {
         when(configuration.isThreeDSecureEnabled()).thenReturn(true);
         setConfiguration(dropInRequest, configuration);
 
-        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json")));
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         verifyStatic(never());
         ThreeDSecure.performVerification(any(BraintreeFragment.class), any(ThreeDSecureRequest.class));
@@ -116,8 +109,7 @@ public class AddCardActivityPowerMockTest {
         when(configuration.isThreeDSecureEnabled()).thenReturn(true);
         setConfiguration(dropInRequest, configuration);
 
-        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json")));
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         verifyStatic();
         ThreeDSecure.performVerification(any(BraintreeFragment.class), any(ThreeDSecureRequest.class));

@@ -6,6 +6,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.braintreepayments.api.Fixtures;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
@@ -29,7 +30,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import static com.braintreepayments.api.test.CardNumber.VISA;
 import static com.braintreepayments.api.test.ExpirationDate.VALID_EXPIRATION;
 import static com.braintreepayments.api.test.TestConfigurationBuilder.basicConfig;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -356,14 +356,14 @@ public class EditCardViewUnitTest {
 
     @Test
     public void isEditCardError_returnsTrue_whenUnionPayError() {
-        ErrorWithResponse error = new ErrorWithResponse(422, stringFromFixture("responses/unionpay_enrollment_error_response.json"));
+        ErrorWithResponse error = new ErrorWithResponse(422, Fixtures.UNIONPAY_ENROLLMENT_ERROR_RESPONSE);
 
         assertTrue(mView.isEditCardError(error));
     }
 
     @Test
     public void isEditCardError_returnsTrue_whenCreditCardError() {
-        ErrorWithResponse error = new ErrorWithResponse(422, stringFromFixture("responses/credit_card_error_response.json"));
+        ErrorWithResponse error = new ErrorWithResponse(422, Fixtures.CREDIT_CARD_ERROR_RESPONSE);
 
         assertTrue(mView.isEditCardError(error));
     }
@@ -383,7 +383,7 @@ public class EditCardViewUnitTest {
         mView.setup(mActivity, configuration);
         ((AnimatedButtonView) mView.findViewById(R.id.bt_animated_button_view)).showLoading();
 
-        mView.setErrors(new ErrorWithResponse(422, stringFromFixture("responses/credit_card_error_response.json")));
+        mView.setErrors(new ErrorWithResponse(422, Fixtures.CREDIT_CARD_ERROR_RESPONSE));
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
                 mView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
@@ -403,7 +403,7 @@ public class EditCardViewUnitTest {
         mView.useUnionPay(mActivity, true, false);
         ((AnimatedButtonView) mView.findViewById(R.id.bt_animated_button_view)).showLoading();
 
-        mView.setErrors(new ErrorWithResponse(422, stringFromFixture("responses/unionpay_enrollment_error_response.json")));
+        mView.setErrors(new ErrorWithResponse(422, Fixtures.UNIONPAY_ENROLLMENT_ERROR_RESPONSE));
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
                 mView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());

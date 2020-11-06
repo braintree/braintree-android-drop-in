@@ -4,6 +4,7 @@ import android.os.Parcel;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.ConfigurationManagerTestUtils;
+import com.braintreepayments.api.Fixtures;
 import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
@@ -22,6 +23,7 @@ import org.json.JSONException;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import org.junit.runner.FilterFactory;
 import org.junit.runner.RunWith;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
@@ -39,7 +41,6 @@ import androidx.fragment.app.FragmentManager;
 
 import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
@@ -71,8 +72,7 @@ public class DropInResultUnitTest {
 
     @Test
     public void paymentMethodNonce_setsPaymentMethodTypeAndNonce() throws JSONException {
-        CardNonce cardNonce = CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json"));
+        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(cardNonce);
 
@@ -107,8 +107,7 @@ public class DropInResultUnitTest {
 
     @Test
     public void isParcelable() throws JSONException {
-        CardNonce cardNonce = CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json"));
+        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(cardNonce)
                 .deviceData("device_data");
@@ -182,8 +181,7 @@ public class DropInResultUnitTest {
         googlePaymentReadyToPay(false);
         setupFragment(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
             @Override
             public void onError(Exception exception) {
@@ -198,7 +196,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, Fixtures.CLIENT_TOKEN, listener);
 
         mCountDownLatch.await();
     }
@@ -397,8 +395,7 @@ public class DropInResultUnitTest {
             throws InvalidArgumentException, InterruptedException {
         setupFragment(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
             @Override
             public void onError(Exception exception) {
@@ -423,8 +420,7 @@ public class DropInResultUnitTest {
             throws InvalidArgumentException, InterruptedException {
         setupFragment(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_empty_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_EMPTY_RESPONSE));
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
             @Override
             public void onError(Exception exception) {
@@ -449,8 +445,7 @@ public class DropInResultUnitTest {
             throws InvalidArgumentException, InterruptedException {
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
         BraintreeErrorListener errorListener = new BraintreeErrorListener() {
             @Override
             public void onError(Exception error) {}
@@ -488,8 +483,7 @@ public class DropInResultUnitTest {
             throws InvalidArgumentException, InterruptedException {
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
             @Override
             public void onError(Exception exception) {
