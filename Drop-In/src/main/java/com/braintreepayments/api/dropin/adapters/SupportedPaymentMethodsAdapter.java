@@ -21,42 +21,20 @@ import java.util.Set;
 public class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
     private Context mContext;
-    private ArrayList<PaymentMethodType> mAvailablePaymentMethods;
+    private AvailablePaymentMethodList mAvailablePaymentMethods;
     private PaymentMethodSelectedListener mPaymentMethodSelectedListener;
 
     public SupportedPaymentMethodsAdapter(Context context,
                                           PaymentMethodSelectedListener paymentMethodSelectedListener) {
         mContext = context;
         mPaymentMethodSelectedListener = paymentMethodSelectedListener;
-        mAvailablePaymentMethods = new ArrayList<>();
+        mAvailablePaymentMethods = null;
     }
 
     public void setup(Configuration configuration, DropInRequest dropInRequest,
                       boolean googlePayEnabled, boolean unionpaySupported) {
-        if (dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled()) {
-            mAvailablePaymentMethods.add(PaymentMethodType.PAYPAL);
-        }
-
-        if (dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(mContext)) {
-            mAvailablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
-        }
-
-        if (dropInRequest.isCardEnabled()) {
-            Set<String> supportedCardTypes =
-                    new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
-            if (!unionpaySupported) {
-                supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
-            }
-            if (supportedCardTypes.size() > 0) {
-                mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
-            }
-        }
-
-        if (googlePayEnabled) {
-            if (dropInRequest.isGooglePaymentEnabled()) {
-                mAvailablePaymentMethods.add(PaymentMethodType.GOOGLE_PAYMENT);
-            }
-        }
+        mAvailablePaymentMethods = new AvailablePaymentMethodList(
+                mContext, configuration, dropInRequest, googlePayEnabled, unionpaySupported);
     }
 
     @Override

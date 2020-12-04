@@ -51,10 +51,10 @@ public class AvailablePaymentMethodListUnitTest {
                 context, configuration, new DropInRequest(), true, true);
 
         assertEquals(4, sut.size());
-        assertEquals(PaymentMethodType.PAYPAL, sut.getItem(0));
-        assertEquals(PaymentMethodType.PAY_WITH_VENMO, sut.getItem(1));
-        assertEquals(PaymentMethodType.UNKNOWN, sut.getItem(2));
-        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, sut.getItem(3));
+        assertEquals(PaymentMethodType.PAYPAL, sut.get(0));
+        assertEquals(PaymentMethodType.PAY_WITH_VENMO, sut.get(1));
+        assertEquals(PaymentMethodType.UNKNOWN, sut.get(2));
+        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, sut.get(3));
     }
 
     @Test
@@ -65,7 +65,7 @@ public class AvailablePaymentMethodListUnitTest {
                 context, configuration, new DropInRequest(), false, false);
 
         assertEquals(1, sut.size());
-        assertEquals(PaymentMethodType.UNKNOWN, sut.getItem(0));
+        assertEquals(PaymentMethodType.UNKNOWN, sut.get(0));
     }
 
     @Test
@@ -90,7 +90,7 @@ public class AvailablePaymentMethodListUnitTest {
                 context, configuration, new DropInRequest(), false, true);
 
         assertEquals(1, sut.size());
-        assertEquals(PaymentMethodType.UNKNOWN, sut.getItem(0));
+        assertEquals(PaymentMethodType.UNKNOWN, sut.get(0));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class AvailablePaymentMethodListUnitTest {
                 context, configuration, dropInRequest, true, false);
 
         assertEquals(1, sut.size());
-        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, sut.getItem(0));
+        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, sut.get(0));
     }
 
     @Test

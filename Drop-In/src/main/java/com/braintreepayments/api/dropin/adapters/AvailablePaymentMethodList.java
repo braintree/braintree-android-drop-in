@@ -48,7 +48,7 @@ class AvailablePaymentMethodList {
         return items.size();
     }
 
-    PaymentMethodType getItem(int index) {
+    PaymentMethodType get(int index) {
         return items.get(index);
     }
 }
