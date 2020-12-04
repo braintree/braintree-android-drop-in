@@ -28,7 +28,7 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-public class SupportedPaymentMethodAdapterUnitTest {
+public class SupportedPaymentMethodsAdapterUnitTest {
 
     @Test
     public void noPaymentMethodsAvailableIfNotEnabled() {
