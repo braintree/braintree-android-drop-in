@@ -5,9 +5,9 @@ import android.content.Context;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
-import com.braintreepayments.api.models.GooglePaymentConfiguration;
 import com.braintreepayments.api.models.CardConfiguration;
 import com.braintreepayments.api.models.Configuration;
+import com.braintreepayments.api.models.GooglePaymentConfiguration;
 import com.braintreepayments.api.models.VenmoConfiguration;
 
 import org.junit.Test;
@@ -15,10 +15,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
