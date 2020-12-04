@@ -5,8 +5,13 @@ import android.content.Context;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.models.CardConfiguration;
+import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
+import com.braintreepayments.api.models.GooglePaymentCardNonce;
 import com.braintreepayments.api.models.GooglePaymentConfiguration;
+import com.braintreepayments.api.models.PayPalAccountNonce;
+import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.models.VenmoAccountNonce;
 import com.braintreepayments.api.models.VenmoConfiguration;
 
 import org.junit.Before;
@@ -16,7 +21,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -24,21 +31,33 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
-public class AvailablePaymentMethodListUnitTest {
+public class AvailablePaymentMethodNonceListUnitTest {
 
     private Context context;
+
+    private PayPalAccountNonce payPalAccountNonce;
+    private VenmoAccountNonce venmoAccountNonce;
+    private CardNonce cardNonce;
+    private GooglePaymentCardNonce googlePaymentCardNonce;
 
     @Before
     public void beforeEach() {
         context = RuntimeEnvironment.application;
+        payPalAccountNonce = mock(PayPalAccountNonce.class);
+        venmoAccountNonce = mock(VenmoAccountNonce.class);
+        cardNonce = mock(CardNonce.class);
+        googlePaymentCardNonce = mock(GooglePaymentCardNonce.class);
     }
 
     @Test
     public void noPaymentMethodsAvailableIfNotEnabled() {
         Configuration configuration = getConfiguration(false, false, false, false);
 
-        AvailablePaymentMethodList sut = new AvailablePaymentMethodList(
-                context, configuration, new DropInRequest(), false, false);
+        List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(
+                payPalAccountNonce, venmoAccountNonce, cardNonce, googlePaymentCardNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, new DropInRequest(), false, false);
 
         assertEquals(0, sut.size());
     }
@@ -47,25 +66,30 @@ public class AvailablePaymentMethodListUnitTest {
     public void allPaymentMethodsAvailableIfEnabled() {
         Configuration configuration = getConfiguration(true, true, true, true);
 
-        AvailablePaymentMethodList sut = new AvailablePaymentMethodList(
-                context, configuration, new DropInRequest(), true, true);
+        List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(
+                payPalAccountNonce, venmoAccountNonce, cardNonce, googlePaymentCardNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, new DropInRequest(), true, true);
 
         assertEquals(4, sut.size());
-        assertEquals(PaymentMethodType.PAYPAL, sut.get(0));
-        assertEquals(PaymentMethodType.PAY_WITH_VENMO, sut.get(1));
-        assertEquals(PaymentMethodType.UNKNOWN, sut.get(2));
-        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, sut.get(3));
+        assertEquals(payPalAccountNonce, sut.get(0));
+        assertEquals(venmoAccountNonce, sut.get(1));
+        assertEquals(cardNonce, sut.get(2));
+        assertEquals(googlePaymentCardNonce, sut.get(3));
     }
 
     @Test
     public void cardsAvailableIfUnionPayNotSupportedAndOtherCardsPresent() {
         Configuration configuration = getConfiguration(false, false, true, false);
 
-        AvailablePaymentMethodList sut = new AvailablePaymentMethodList(
-                context, configuration, new DropInRequest(), false, false);
+        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) cardNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, new DropInRequest(), false, false);
 
         assertEquals(1, sut.size());
-        assertEquals(PaymentMethodType.UNKNOWN, sut.get(0));
+        assertEquals(cardNonce, sut.get(0));
     }
 
     @Test
@@ -74,8 +98,10 @@ public class AvailablePaymentMethodListUnitTest {
         when(configuration.getCardConfiguration().getSupportedCardTypes())
                 .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
 
-        AvailablePaymentMethodList sut = new AvailablePaymentMethodList(
-                context, configuration, new DropInRequest(), false, false);
+        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) cardNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, new DropInRequest(), false, false);
 
         assertEquals(0, sut.size());
     }
@@ -86,11 +112,13 @@ public class AvailablePaymentMethodListUnitTest {
         when(configuration.getCardConfiguration().getSupportedCardTypes())
                 .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
 
-        AvailablePaymentMethodList sut = new AvailablePaymentMethodList(
-                context, configuration, new DropInRequest(), false, true);
+        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) cardNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, new DropInRequest(), false, true);
 
         assertEquals(1, sut.size());
-        assertEquals(PaymentMethodType.UNKNOWN, sut.get(0));
+        assertEquals(cardNonce, sut.get(0));
     }
 
     @Test
@@ -99,8 +127,10 @@ public class AvailablePaymentMethodListUnitTest {
         DropInRequest dropInRequest = new DropInRequest()
                 .disableCard();
 
-        AvailablePaymentMethodList sut = new AvailablePaymentMethodList(
-                context, configuration, dropInRequest, false, false);
+        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) cardNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, dropInRequest, false, false);
 
         assertEquals(0, sut.size());
     }
@@ -111,8 +141,10 @@ public class AvailablePaymentMethodListUnitTest {
         DropInRequest dropInRequest = new DropInRequest()
                 .disablePayPal();
 
-        AvailablePaymentMethodList sut = new AvailablePaymentMethodList(
-                context, configuration, dropInRequest, false, false);
+        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) payPalAccountNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, dropInRequest, false, false);
 
         assertEquals(0, sut.size());
     }
@@ -123,8 +155,10 @@ public class AvailablePaymentMethodListUnitTest {
         DropInRequest dropInRequest = new DropInRequest()
                 .disableVenmo();
 
-        AvailablePaymentMethodList sut = new AvailablePaymentMethodList(
-                context, configuration, dropInRequest, false, false);
+        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) venmoAccountNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, dropInRequest, false, false);
 
         assertEquals(0, sut.size());
     }
@@ -133,11 +167,12 @@ public class AvailablePaymentMethodListUnitTest {
     public void googlePaymentNotAvailableIfDisabledInDropInRequest() {
         Configuration configuration = getConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest()
-                .disableGooglePayment()
                 .disableGooglePayment();
 
-        AvailablePaymentMethodList sut = new AvailablePaymentMethodList(
-                context, configuration, dropInRequest, true, false);
+        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, dropInRequest, true, false);
 
         assertEquals(0, sut.size());
     }
@@ -147,11 +182,13 @@ public class AvailablePaymentMethodListUnitTest {
         Configuration configuration = getConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest();
 
-        AvailablePaymentMethodList sut = new AvailablePaymentMethodList(
-                context, configuration, dropInRequest, true, false);
+        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, dropInRequest, true, false);
 
         assertEquals(1, sut.size());
-        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, sut.get(0));
+        assertEquals(googlePaymentCardNonce, sut.get(0));
     }
 
     @Test
@@ -160,8 +197,10 @@ public class AvailablePaymentMethodListUnitTest {
         DropInRequest dropInRequest = new DropInRequest()
                 .disableGooglePayment();
 
-        AvailablePaymentMethodList sut = new AvailablePaymentMethodList(
-                context, configuration, dropInRequest, true, false);
+        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, dropInRequest, true, false);
 
         assertEquals(0, sut.size());
     }

@@ -1,5 +1,6 @@
 package com.braintreepayments.api.dropin.adapters;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -7,10 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.CardNonce;
+import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.List;
@@ -20,12 +23,16 @@ import androidx.recyclerview.widget.RecyclerView;
 public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMethodsAdapter.ViewHolder> {
 
     private PaymentMethodNonceCreatedListener mSelectedListener;
-    private List<PaymentMethodNonce> mPaymentMethodNonces;
+    private AvailablePaymentMethodNonceList mPaymentMethodNonces;
 
     public VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener,
                                         List<PaymentMethodNonce> paymentMethodNonces) {
         mSelectedListener = listener;
-        mPaymentMethodNonces = paymentMethodNonces;
+    }
+
+    public void setup(Context context, Configuration configuration, List<PaymentMethodNonce> paymentMethodNonces, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
+        mPaymentMethodNonces = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, dropInRequest, googlePayEnabled, unionpaySupported);
     }
 
     @Override
