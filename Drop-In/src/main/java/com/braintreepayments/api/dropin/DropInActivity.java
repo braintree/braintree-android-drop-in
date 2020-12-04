@@ -297,7 +297,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         if (paymentMethodNonces.size() > 0) {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
             mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
-            mVaultedPaymentMethodsView.setAdapter(new VaultedPaymentMethodsAdapter(new PaymentMethodNonceCreatedListener() {
+
+            VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter = new VaultedPaymentMethodsAdapter(new PaymentMethodNonceCreatedListener() {
                 @Override
                 public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
                     if (paymentMethodNonce instanceof CardNonce) {
@@ -306,7 +307,12 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
                     DropInActivity.this.onPaymentMethodNonceCreated(paymentMethodNonce);
                 }
-            }, paymentMethodNonces));
+            });
+
+            // TODO: check if google pay is enabled
+            vaultedPaymentMethodsAdapter.setup(
+                    this, mConfiguration, paymentMethodNonces, mDropInRequest, false, mClientTokenPresent);
+            mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
 
             if (mDropInRequest.isVaultManagerEnabled()) {
                 mVaultManagerButton.setVisibility(View.VISIBLE);

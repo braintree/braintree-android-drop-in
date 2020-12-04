@@ -25,8 +25,7 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
     private PaymentMethodNonceCreatedListener mSelectedListener;
     private AvailablePaymentMethodNonceList mPaymentMethodNonces;
 
-    public VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener,
-                                        List<PaymentMethodNonce> paymentMethodNonces) {
+    public VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener) {
         mSelectedListener = listener;
     }
 
