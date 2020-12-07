@@ -3,6 +3,7 @@ plugins {
     id 'de.marcphilipp.nexus-publish'
     id 'signing'
 }
+apply plugin: 'kotlin-android'
 
 def LOCALHOST_IP = System.properties['LOCALHOST_IP'] ?: '"10.0.2.2"';
 def GATEWAY_IP = System.properties['GATEWAY_IP'] ?: '"10.0.2.2"';
@@ -75,6 +76,8 @@ dependencies {
     testImplementation 'org.skyscreamer:jsonassert:1.4.0'
 
     androidTestImplementation 'androidx.test.ext:junit:1.0.0-beta02'
+    testImplementation "androidx.core:core-ktx:+"
+    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 
 // region signing and publishing
@@ -155,6 +158,9 @@ afterEvaluate {
             }
         }
     }
+}
+repositories {
+    mavenCentral()
 }
 
 // endregion

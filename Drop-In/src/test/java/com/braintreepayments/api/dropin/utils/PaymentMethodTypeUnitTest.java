@@ -1,5 +1,6 @@
 package com.braintreepayments.api.dropin.utils;
 
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PayPalAccountNonce;
@@ -15,7 +16,6 @@ import org.robolectric.RobolectricTestRunner;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
@@ -38,7 +38,7 @@ public class PaymentMethodTypeUnitTest {
         assertEquals(PaymentMethodType.HIPERCARD, PaymentMethodType.forType("Hipercard"));
 
         assertEquals(PaymentMethodType.VISA, PaymentMethodType.forType(
-                CardNonce.fromJson(stringFromFixture("responses/visa_credit_card_response.json"))));
+                CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
         assertEquals(PaymentMethodType.PAYPAL, PaymentMethodType.forType(new PayPalAccountNonce()));
         assertEquals(PaymentMethodType.UNKNOWN, PaymentMethodType.forType(new PaymentMethodNonce() {
             @Override

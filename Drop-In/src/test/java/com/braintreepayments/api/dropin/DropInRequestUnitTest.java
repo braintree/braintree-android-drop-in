@@ -3,6 +3,7 @@ package com.braintreepayments.api.dropin;
 import android.content.Intent;
 import android.os.Parcel;
 
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.ThreeDSecureAdditionalInformation;
@@ -19,7 +20,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
@@ -255,9 +255,9 @@ public class DropInRequestUnitTest {
     @Test
     public void getIntent_includesClientToken() {
         DropInRequest dropInRequest = new DropInRequest()
-                .clientToken(stringFromFixture("client_token.json"));
+                .clientToken(Fixtures.CLIENT_TOKEN);
 
-        assertEquals(stringFromFixture("client_token.json") , dropInRequest.getAuthorization());
+        assertEquals(Fixtures.CLIENT_TOKEN, dropInRequest.getAuthorization());
     }
 
     @Test

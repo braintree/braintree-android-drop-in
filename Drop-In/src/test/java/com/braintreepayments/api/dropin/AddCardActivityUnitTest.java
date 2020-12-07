@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.dropin.view.AddCardView;
 import com.braintreepayments.api.dropin.view.EditCardView;
@@ -32,7 +33,6 @@ import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,7 +54,6 @@ import static com.braintreepayments.api.test.CardNumber.VISA;
 import static com.braintreepayments.api.test.PackageManagerUtils.mockPackageManagerSupportsThreeDSecure;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
@@ -254,10 +253,9 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE);
         mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -300,8 +298,7 @@ public class AddCardActivityUnitTest {
                 .configuration(new TestConfigurationBuilder()
                         .creditCards(getSupportedCardConfiguration())
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-                        stringFromFixture("payment_methods/visa_credit_card.json"));
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD);
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
@@ -325,12 +322,11 @@ public class AddCardActivityUnitTest {
                         .build())
                 .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
                         "^(?!cardholderName).*$")
-                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-                        stringFromFixture("payment_methods/visa_credit_card.json"));
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD);
 
         mActivity.setDropInRequest(new DropInRequest()
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
@@ -354,12 +350,11 @@ public class AddCardActivityUnitTest {
                         .build())
                 .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
                         "cardholderName\":\"Brian Tree\"")
-                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-                        stringFromFixture("payment_methods/visa_credit_card.json"));
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD);
 
         mActivity.setDropInRequest(new DropInRequest()
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
@@ -384,12 +379,11 @@ public class AddCardActivityUnitTest {
                         .build())
                 .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
                         "cardholderName\":\"Brian Tree\"")
-                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-                        stringFromFixture("payment_methods/visa_credit_card.json"));
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD);
 
         mActivity.setDropInRequest(new DropInRequest()
                 .cardholderNameStatus(CardForm.FIELD_REQUIRED)
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
@@ -413,10 +407,9 @@ public class AddCardActivityUnitTest {
                         .creditCards(getSupportedCardConfiguration())
                         .challenges("cvv", "postal_code")
                         .build())
-                .errorResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, 422,
-                        stringFromFixture("responses/credit_card_error_response.json"));
+                .errorResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, 422, Fixtures.CREDIT_CARD_ERROR_RESPONSE);
         mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
@@ -449,10 +442,9 @@ public class AddCardActivityUnitTest {
                         .creditCards(getSupportedCardConfiguration())
                         .challenges("cvv", "postal_code")
                         .build())
-                .errorResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, 422,
-                        stringFromFixture("responses/credit_card_non_number_error_response.json"));
+                .errorResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, 422, Fixtures.CREDIT_CARD_NON_NUMBER_ERROR_RESPONSE);
         mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
@@ -485,12 +477,10 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
-                .errorResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, 422,
-                        stringFromFixture("responses/unionpay_enrollment_error_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
+                .errorResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, 422, Fixtures.UNIONPAY_ENROLLMENT_ERROR_RESPONSE);
         mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -517,12 +507,9 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
-                        stringFromFixture("responses/unionpay_enrollment_sms_required.json"))
-                .errorResponse("", 422,
-                        stringFromFixture("responses/unionpay_sms_code_error_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_REQUIRED)
+                .errorResponse("", 422, Fixtures.UNIONPAY_SMS_CODE_ERROR_RESPONSE);
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -543,8 +530,7 @@ public class AddCardActivityUnitTest {
     public void onPaymentMethodNonceCreated_sendsAnalyticsEvent() throws JSONException {
         setup(mock(BraintreeFragment.class));
 
-        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json")));
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit.success");
     }
@@ -628,12 +614,10 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
-                        stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_REQUIRED);
         mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -659,10 +643,9 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE);
         mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -681,12 +664,10 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
-                        stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_REQUIRED);
         mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -710,14 +691,11 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
-                        stringFromFixture("responses/unionpay_enrollment_sms_not_required.json"))
-                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-                        stringFromFixture("payment_methods/unionpay_credit_card.json"));
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_NOT_REQUIRED)
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD);
         mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
@@ -744,17 +722,14 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
-                        stringFromFixture("responses/unionpay_enrollment_sms_not_required.json"))
-                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-                        stringFromFixture("payment_methods/unionpay_credit_card.json"))
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_NOT_REQUIRED)
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD)
                 .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
                         "^(?!cardholderName).*$");
         mActivity.setDropInRequest(new DropInRequest()
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
@@ -781,17 +756,14 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
-                        stringFromFixture("responses/unionpay_enrollment_sms_not_required.json"))
-                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-                        stringFromFixture("payment_methods/unionpay_credit_card.json"))
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_NOT_REQUIRED)
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD)
                 .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
                         "cardholderName\":\"Brian Tree\"");
         mActivity.setDropInRequest(new DropInRequest()
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
@@ -819,17 +791,14 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
-                        stringFromFixture("responses/unionpay_enrollment_sms_not_required.json"))
-                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-                        stringFromFixture("payment_methods/unionpay_credit_card.json"))
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_NOT_REQUIRED)
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD)
                 .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
                         "cardholderName\":\"Brian Tree\"");
         mActivity.setDropInRequest(new DropInRequest()
                 .cardholderNameStatus(CardForm.FIELD_REQUIRED)
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
@@ -856,8 +825,7 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_not_supported_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_NOT_SUPPORTED_RESPONSE);
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_DEBIT);
@@ -875,12 +843,10 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
-                        stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_REQUIRED);
         mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -908,12 +874,10 @@ public class AddCardActivityUnitTest {
                         .unionPay(new TestUnionPayConfigurationBuilder()
                                 .enabled(true))
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH,
-                        stringFromFixture("responses/unionpay_capabilities_success_response.json"))
-                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH,
-                        stringFromFixture("responses/unionpay_enrollment_sms_required.json"));
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
+                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_REQUIRED);
         mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json")));
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -963,10 +927,8 @@ public class AddCardActivityUnitTest {
                         .creditCards(getSupportedCardConfiguration())
                         .threeDSecureEnabled(true)
                         .build())
-                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-                        stringFromFixture("payment_methods/visa_credit_card.json"))
-                .successResponse(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP,
-                        stringFromFixture("responses/three_d_secure_lookup_response.json"));
+                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD)
+                .successResponse(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP, Fixtures.THREE_D_SECURE_LOOKUP_RESPONSE);
 
         setup(httpClient);
 

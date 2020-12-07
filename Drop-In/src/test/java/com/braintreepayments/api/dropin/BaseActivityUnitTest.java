@@ -3,6 +3,7 @@ package com.braintreepayments.api.dropin;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
@@ -23,7 +24,6 @@ import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
@@ -131,7 +131,7 @@ public class BaseActivityUnitTest {
     @Test
     public void getBraintreeFragment_setsClientTokenPresentWhenAClientTokenIsPresent() throws InvalidArgumentException {
         setup(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture("client_token.json"))
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN))
                 .getIntent(RuntimeEnvironment.application));
 
         mActivity.getBraintreeFragment();
@@ -236,8 +236,7 @@ public class BaseActivityUnitTest {
     @Test
     public void finish_finishesWithPaymentMethodNonceAndDeviceDataInDropInResult()
             throws JSONException {
-        CardNonce cardNonce = CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json"));
+        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
         setup(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application));

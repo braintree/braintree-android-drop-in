@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.VaultManagerUnitTestActivity;
 import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
 import com.braintreepayments.api.dropin.view.PaymentMethodItemView;
@@ -78,7 +79,7 @@ public class VaultManagerActivityUnitTest {
         mPaymentMethodNonces.add(payPalNonce);
 
         DropInRequest dropInRequest = new DropInRequest()
-                .clientToken(UnitTestFixturesHelper.base64EncodedClientTokenFromFixture("client_token.json"));
+                .clientToken(UnitTestFixturesHelper.base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN));
 
         Bundle in = new Bundle();
         in.putParcelableArrayList(EXTRA_PAYMENT_METHOD_NONCES, (ArrayList<? extends Parcelable>) mPaymentMethodNonces);

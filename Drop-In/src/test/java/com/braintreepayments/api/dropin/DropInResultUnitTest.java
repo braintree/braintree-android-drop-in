@@ -2,8 +2,12 @@ package com.braintreepayments.api.dropin;
 
 import android.os.Parcel;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.ConfigurationManagerTestUtils;
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
@@ -34,12 +38,8 @@ import org.robolectric.RobolectricTestRunner;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-
 import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
 import static com.braintreepayments.api.test.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
@@ -71,8 +71,7 @@ public class DropInResultUnitTest {
 
     @Test
     public void paymentMethodNonce_setsPaymentMethodTypeAndNonce() throws JSONException {
-        CardNonce cardNonce = CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json"));
+        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(cardNonce);
 
@@ -107,8 +106,7 @@ public class DropInResultUnitTest {
 
     @Test
     public void isParcelable() throws JSONException {
-        CardNonce cardNonce = CardNonce.fromJson(
-                stringFromFixture("responses/visa_credit_card_response.json"));
+        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(cardNonce)
                 .deviceData("device_data");
@@ -167,7 +165,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
 
         mCountDownLatch.await();
     }
@@ -182,8 +180,7 @@ public class DropInResultUnitTest {
         googlePaymentReadyToPay(false);
         setupFragment(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
             @Override
             public void onError(Exception exception) {
@@ -198,7 +195,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, stringFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, Fixtures.CLIENT_TOKEN, listener);
 
         mCountDownLatch.await();
     }
@@ -237,7 +234,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
 
         mCountDownLatch.await();
         List<BraintreeListener> listeners = fragment.getListeners();
@@ -270,7 +267,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
 
         mCountDownLatch.await();
         List<BraintreeListener> listeners = fragment.getListeners();
@@ -297,7 +294,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
 
         mCountDownLatch.await();
     }
@@ -322,7 +319,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
 
         mCountDownLatch.await();
     }
@@ -357,7 +354,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
 
         mCountDownLatch.await();
         List<BraintreeListener> listeners = fragment.getListeners();
@@ -386,7 +383,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
 
         mCountDownLatch.await();
         assertEquals(0, fragment.getListeners().size());
@@ -397,8 +394,7 @@ public class DropInResultUnitTest {
             throws InvalidArgumentException, InterruptedException {
         setupFragment(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
             @Override
             public void onError(Exception exception) {
@@ -413,7 +409,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
 
         mCountDownLatch.await();
     }
@@ -423,8 +419,7 @@ public class DropInResultUnitTest {
             throws InvalidArgumentException, InterruptedException {
         setupFragment(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_empty_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_EMPTY_RESPONSE));
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
             @Override
             public void onError(Exception exception) {
@@ -439,7 +434,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
 
         mCountDownLatch.await();
     }
@@ -449,8 +444,7 @@ public class DropInResultUnitTest {
             throws InvalidArgumentException, InterruptedException {
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
         BraintreeErrorListener errorListener = new BraintreeErrorListener() {
             @Override
             public void onError(Exception error) {}
@@ -474,7 +468,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
 
         mCountDownLatch.await();
         List<BraintreeListener> listeners = fragment.getListeners();
@@ -488,8 +482,7 @@ public class DropInResultUnitTest {
             throws InvalidArgumentException, InterruptedException {
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS,
-                        stringFromFixture("responses/get_payment_methods_two_cards_response.json")));
+                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
             @Override
             public void onError(Exception exception) {
@@ -503,7 +496,7 @@ public class DropInResultUnitTest {
             }
         };
 
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture("client_token.json"), listener);
+        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
 
         mCountDownLatch.await();
         List<BraintreeListener> listeners = fragment.getListeners();
@@ -512,7 +505,7 @@ public class DropInResultUnitTest {
 
     private BraintreeFragment setupFragment(BraintreeHttpClient httpClient) throws InvalidArgumentException {
         BraintreeFragment fragment = BraintreeFragment.newInstance(mActivity,
-                base64EncodedClientTokenFromFixture("client_token.json"));
+                base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN));
         setHttpClient(fragment, httpClient);
         ConfigurationManagerTestUtils.setFetchingConfiguration(false);
 

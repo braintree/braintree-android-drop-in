@@ -5,6 +5,7 @@ import android.text.SpannableString;
 import android.view.View;
 import android.widget.Button;
 
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
@@ -36,7 +37,6 @@ import static com.braintreepayments.api.test.CardNumber.AMEX;
 import static com.braintreepayments.api.test.CardNumber.VISA;
 import static com.braintreepayments.api.test.ReflectionHelper.getField;
 import static com.braintreepayments.api.test.TestConfigurationBuilder.basicConfig;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
@@ -209,24 +209,21 @@ public class AddCardViewUnitTest {
 
     @Test
     public void isCardNumberError_returnsFalseForNonCardNumberError() throws JSONException {
-        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(
-                stringFromFixture("responses/credit_card_expiration_error_response.json"));
+        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_EXPIRATION_ERROR_RESPONSE);
 
         assertFalse(mView.isCardNumberError(errorWithResponse));
     }
 
     @Test
     public void isCardNumberError_returnsTrueForCardNumberError() throws JSONException {
-        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(
-                stringFromFixture("responses/credit_card_error_response.json"));
+        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE);
 
         assertTrue(mView.isCardNumberError(errorWithResponse));
     }
 
     @Test
     public void setErrors_doesNothingForNonCardNumberError() throws JSONException {
-        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(
-                stringFromFixture("responses/credit_card_expiration_error_response.json"));
+        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_EXPIRATION_ERROR_RESPONSE);
 
         mView.getCardForm().getCardEditText().setText(VISA);
         mView.findViewById(R.id.bt_button).performClick();
@@ -242,8 +239,7 @@ public class AddCardViewUnitTest {
 
     @Test
     public void setErrors_displaysError() throws JSONException {
-        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(
-                stringFromFixture("responses/credit_card_error_response.json"));
+        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE);
 
         mView.getCardForm().getCardEditText().setText(VISA);
         mView.findViewById(R.id.bt_button).performClick();

@@ -6,6 +6,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
@@ -25,7 +26,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.braintreepayments.api.test.ColorTestUtils.setupActivity;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.stringFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
@@ -86,8 +86,7 @@ public class EnrollmentCardViewUnitTest {
     @Test
     public void isEnrollmentError_returnsTrueForEnrollmentError() {
         mView.setup(mActivity);
-        ErrorWithResponse error = new ErrorWithResponse(422,
-                stringFromFixture("responses/unionpay_sms_code_error_response.json"));
+        ErrorWithResponse error = new ErrorWithResponse(422, Fixtures.UNIONPAY_SMS_CODE_ERROR_RESPONSE);
 
         assertTrue(mView.isEnrollmentError(error));
     }
@@ -95,8 +94,7 @@ public class EnrollmentCardViewUnitTest {
     @Test
     public void isEnrollmentError_returnsFalseForNonEnrollmentError() {
         mView.setup(mActivity);
-        ErrorWithResponse error = new ErrorWithResponse(422,
-                stringFromFixture("responses/unionpay_enrollment_mobile_number_error_response.json"));
+        ErrorWithResponse error = new ErrorWithResponse(422, Fixtures.UNIONPAY_ENROLLMENT_MOBILE_NUMBER_ERROR_RESPONSE);
 
         assertFalse(mView.isEnrollmentError(error));
     }
@@ -106,8 +104,7 @@ public class EnrollmentCardViewUnitTest {
         mView.setup(mActivity);
         ((AnimatedButtonView) mView.findViewById(R.id.bt_animated_button_view)).showLoading();
 
-        mView.setErrors(new ErrorWithResponse(422,
-                stringFromFixture("responses/unionpay_sms_code_error_response.json")));
+        mView.setErrors(new ErrorWithResponse(422, Fixtures.UNIONPAY_SMS_CODE_ERROR_RESPONSE));
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_unionpay_sms_code_invalid),
                 ((ErrorEditText) mView.findViewById(R.id.bt_sms_code)).getTextInputLayoutParent().getError());
@@ -120,8 +117,7 @@ public class EnrollmentCardViewUnitTest {
         mView.setup(mActivity);
         assertFalse(mView.hasFailedEnrollment());
 
-        mView.setErrors(new ErrorWithResponse(422,
-                stringFromFixture("responses/unionpay_sms_code_error_response.json")));
+        mView.setErrors(new ErrorWithResponse(422, Fixtures.UNIONPAY_SMS_CODE_ERROR_RESPONSE));
 
         assertTrue(mView.hasFailedEnrollment());
     }
@@ -185,15 +181,13 @@ public class EnrollmentCardViewUnitTest {
     @Test
     public void setVisibility_marksEnrollmentAsNotFailed() {
         mView.setup(mActivity);
-        mView.setErrors(new ErrorWithResponse(422,
-                stringFromFixture("responses/unionpay_sms_code_error_response.json")));
+        mView.setErrors(new ErrorWithResponse(422, Fixtures.UNIONPAY_SMS_CODE_ERROR_RESPONSE));
         assertTrue(mView.hasFailedEnrollment());
 
         mView.setVisibility(GONE);
         assertFalse(mView.hasFailedEnrollment());
 
-        mView.setErrors(new ErrorWithResponse(422,
-                stringFromFixture("responses/unionpay_sms_code_error_response.json")));
+        mView.setErrors(new ErrorWithResponse(422, Fixtures.UNIONPAY_SMS_CODE_ERROR_RESPONSE));
         assertTrue(mView.hasFailedEnrollment());
 
         mView.setVisibility(VISIBLE);
