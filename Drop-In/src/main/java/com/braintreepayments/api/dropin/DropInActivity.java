@@ -311,37 +311,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
     }
 
-    private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces, boolean googlePayEnabled) {
-        mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
-        mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
-
-        VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter = new VaultedPaymentMethodsAdapter(new PaymentMethodNonceCreatedListener() {
-            @Override
-            public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-                if (paymentMethodNonce instanceof CardNonce) {
-                    mBraintreeFragment.sendAnalyticsEvent("vaulted-card.select");
-                }
-
-                DropInActivity.this.onPaymentMethodNonceCreated(paymentMethodNonce);
-            }
-        });
-
-        vaultedPaymentMethodsAdapter.setup(
-                this, mConfiguration, paymentMethodNonces, mDropInRequest, googlePayEnabled, mClientTokenPresent);
-        mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
-
-        if (mDropInRequest.isVaultManagerEnabled()) {
-            mVaultManagerButton.setVisibility(View.VISIBLE);
-        }
-
-        for (PaymentMethodNonce nonce : paymentMethodNonces) {
-            if (nonce instanceof CardNonce) {
-                mBraintreeFragment.sendAnalyticsEvent("vaulted-card.appear");
-                break;
-            }
-        }
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -465,5 +434,36 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
 
         mBraintreeFragment.sendAnalyticsEvent("manager.appeared");
+    }
+
+    private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces, boolean googlePayEnabled) {
+        mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
+        mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
+
+        VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter = new VaultedPaymentMethodsAdapter(new PaymentMethodNonceCreatedListener() {
+            @Override
+            public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
+                if (paymentMethodNonce instanceof CardNonce) {
+                    mBraintreeFragment.sendAnalyticsEvent("vaulted-card.select");
+                }
+
+                DropInActivity.this.onPaymentMethodNonceCreated(paymentMethodNonce);
+            }
+        });
+
+        vaultedPaymentMethodsAdapter.setup(
+                this, mConfiguration, paymentMethodNonces, mDropInRequest, googlePayEnabled, mClientTokenPresent);
+        mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
+
+        if (mDropInRequest.isVaultManagerEnabled()) {
+            mVaultManagerButton.setVisibility(View.VISIBLE);
+        }
+
+        for (PaymentMethodNonce nonce : paymentMethodNonces) {
+            if (nonce instanceof CardNonce) {
+                mBraintreeFragment.sendAnalyticsEvent("vaulted-card.appear");
+                break;
+            }
+        }
     }
 }
