@@ -564,17 +564,18 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void clickingVaultedPaymentMethod_whenPayPal_doesNotSendAnalyticEvent() throws InvalidArgumentException {
+    public void clickingVaultedPaymentMethod_whenPayPal_doesNotSendAnalyticEvent() {
         PaymentMethodNonce nonce = mock(PayPalAccountNonce.class);
         ArrayList<PaymentMethodNonce> nonces = new ArrayList<>();
         nonces.add(nonce);
 
-        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder()
-                        .paypal(new TestConfigurationBuilder.TestPayPalConfigurationBuilder(true))
-                        .build());
-        setup(httpClient);
-        BraintreeFragment fragment = spy(mActivity.getBraintreeFragment());
+        BraintreeFragment fragment = mock(BraintreeFragment.class);
+
+        setup(fragment);
+        mActivity.mDropInRequest.disableGooglePayment();
+        mActivity.mConfiguration = new TestConfigurationBuilder()
+                .paypal(new TestConfigurationBuilder.TestPayPalConfigurationBuilder(true))
+                .buildConfiguration();
 
         mActivity.onPaymentMethodNoncesUpdated(nonces);
         RecyclerView recyclerView = mActivity.findViewById(R.id.bt_vaulted_payment_methods);
@@ -856,11 +857,11 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_whenVaultManagerResultOk_setsVaultedPaymentMethodsFromVaultManager() {
-        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder()
-                        .paypal(new TestConfigurationBuilder.TestPayPalConfigurationBuilder(true))
-                        .build());
-        setup(httpClient);
+        mActivityController.setup();
+        mActivity.mDropInRequest.disableGooglePayment();
+        mActivity.mConfiguration = new TestConfigurationBuilder()
+                .paypal(new TestConfigurationBuilder.TestPayPalConfigurationBuilder(true))
+                .buildConfiguration();
 
         PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
         when(paypalNonce.getDescription()).thenReturn("paypal-nonce");
