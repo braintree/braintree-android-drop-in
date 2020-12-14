@@ -2,7 +2,7 @@
 
 ## unreleased
 
-* Filter Vaulted Payment Methods based on `DropInRequest` (fixes [#205](https://github.com/braintree/braintree-android-drop-in/issues/205))
+* Filter Vaulted Payment Methods based on `DropInRequest` (fixes #205)
 
 ## 5.0.1
 
