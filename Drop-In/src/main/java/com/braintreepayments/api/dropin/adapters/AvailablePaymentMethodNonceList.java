@@ -28,13 +28,9 @@ class AvailablePaymentMethodNonceList {
 
             if (paymentMethodNonce instanceof PayPalAccountNonce && dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled()) {
                 shouldAddPaymentMethod = true;
-            }
-
-            if (paymentMethodNonce instanceof VenmoAccountNonce && dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(context)) {
+            } else if (paymentMethodNonce instanceof VenmoAccountNonce && dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(context)) {
                 shouldAddPaymentMethod = true;
-            }
-
-            if (paymentMethodNonce instanceof CardNonce && dropInRequest.isCardEnabled()) {
+            } else if (paymentMethodNonce instanceof CardNonce && dropInRequest.isCardEnabled()) {
                 Set<String> supportedCardTypes =
                         new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
                 if (!unionpaySupported) {
@@ -43,12 +39,8 @@ class AvailablePaymentMethodNonceList {
                 if (supportedCardTypes.size() > 0) {
                     shouldAddPaymentMethod = true;
                 }
-            }
-
-            if (paymentMethodNonce instanceof GooglePaymentCardNonce && googlePayEnabled) {
-                if (dropInRequest.isGooglePaymentEnabled()) {
-                    shouldAddPaymentMethod = true;
-                }
+            } else if (paymentMethodNonce instanceof GooglePaymentCardNonce && googlePayEnabled && dropInRequest.isGooglePaymentEnabled()) {
+                shouldAddPaymentMethod = true;
             }
 
             if (shouldAddPaymentMethod) {
