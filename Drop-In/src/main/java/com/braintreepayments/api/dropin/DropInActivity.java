@@ -453,7 +453,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }, paymentMethodNonces);
 
         vaultedPaymentMethodsAdapter.setup(
-                this, mConfiguration, paymentMethodNonces, mDropInRequest, googlePayEnabled, mClientTokenPresent);
+                this, mConfiguration, mDropInRequest, googlePayEnabled, mClientTokenPresent);
         mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
 
         if (mDropInRequest.isVaultManagerEnabled()) {
