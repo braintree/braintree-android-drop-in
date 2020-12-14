@@ -20,18 +20,22 @@ import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+// NEXT MAJOR VERSION make this class package private
 public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMethodsAdapter.ViewHolder> {
 
-    private PaymentMethodNonceCreatedListener mSelectedListener;
-    private AvailablePaymentMethodNonceList mPaymentMethodNonces;
+    private final PaymentMethodNonceCreatedListener mSelectedListener;
 
-    public VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener) {
+    private final List<PaymentMethodNonce> mPaymentMethodNonces;
+    private AvailablePaymentMethodNonceList mAvailablePaymentMethodNonces;
+
+    public VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener, List<PaymentMethodNonce> paymentMethodNonces) {
         mSelectedListener = listener;
+        mPaymentMethodNonces = paymentMethodNonces;
     }
 
-    public void setup(Context context, Configuration configuration, List<PaymentMethodNonce> paymentMethodNonces, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
-        mPaymentMethodNonces = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, dropInRequest, googlePayEnabled, unionpaySupported);
+    public void setup(Context context, Configuration configuration, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
+        mAvailablePaymentMethodNonces = new AvailablePaymentMethodNonceList(
+                context, configuration, mPaymentMethodNonces, dropInRequest, googlePayEnabled, unionpaySupported);
     }
 
     @Override
@@ -42,7 +46,7 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final PaymentMethodNonce paymentMethodNonce = mPaymentMethodNonces.get(position);
+        final PaymentMethodNonce paymentMethodNonce = mAvailablePaymentMethodNonces.get(position);
         PaymentMethodType paymentMethodType = PaymentMethodType.forType(paymentMethodNonce);
 
         holder.icon.setImageResource(paymentMethodType.getVaultedDrawable());
@@ -64,7 +68,7 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
 
     @Override
     public int getItemCount() {
-        return mPaymentMethodNonces.size();
+        return mAvailablePaymentMethodNonces.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

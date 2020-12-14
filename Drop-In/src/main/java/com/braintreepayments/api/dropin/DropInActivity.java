@@ -293,13 +293,14 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     }
 
     @Override
-    public void onPaymentMethodNoncesUpdated(final List<PaymentMethodNonce> paymentMethodNonces) {
+    public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {
+        final List<PaymentMethodNonce> noncesRef = paymentMethodNonces;
         if (paymentMethodNonces.size() > 0) {
             if (mDropInRequest.isGooglePaymentEnabled()) {
                 GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
                     @Override
                     public void onResponse(Boolean isReadyToPay) {
-                        showVaultedPaymentMethods(paymentMethodNonces, isReadyToPay);
+                        showVaultedPaymentMethods(noncesRef, isReadyToPay);
                     }
                 });
             } else {
@@ -449,7 +450,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
                 DropInActivity.this.onPaymentMethodNonceCreated(paymentMethodNonce);
             }
-        });
+        }, paymentMethodNonces);
 
         vaultedPaymentMethodsAdapter.setup(
                 this, mConfiguration, paymentMethodNonces, mDropInRequest, googlePayEnabled, mClientTokenPresent);
