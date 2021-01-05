@@ -36,9 +36,7 @@ class AvailablePaymentMethodNonceList {
                 if (!unionpaySupported) {
                     supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
                 }
-                if (supportedCardTypes.size() > 0) {
-                    shouldAddPaymentMethod = true;
-                }
+                shouldAddPaymentMethod = !supportedCardTypes.isEmpty();
             } else if (paymentMethodNonce instanceof GooglePaymentCardNonce && googlePayEnabled && dropInRequest.isGooglePaymentEnabled()) {
                 shouldAddPaymentMethod = true;
             }
