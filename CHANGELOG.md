@@ -2,7 +2,7 @@
 
 ## unreleased
 
-* Filter Vaulted Payment Methods based on `DropInRequest` (fixes #205)
+* Fix issue where payment methods disabled on `DropInRequest` were displayed if previously vaulted (fixes #205)
 
 ## 5.0.1
 
