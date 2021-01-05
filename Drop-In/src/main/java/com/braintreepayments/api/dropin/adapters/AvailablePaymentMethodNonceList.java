@@ -26,10 +26,10 @@ class AvailablePaymentMethodNonceList {
         for (PaymentMethodNonce paymentMethodNonce: paymentMethodNonces) {
             boolean shouldAddPaymentMethod = false;
 
-            if (paymentMethodNonce instanceof PayPalAccountNonce && dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled()) {
-                shouldAddPaymentMethod = true;
-            } else if (paymentMethodNonce instanceof VenmoAccountNonce && dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(context)) {
-                shouldAddPaymentMethod = true;
+            if (paymentMethodNonce instanceof PayPalAccountNonce) {
+                shouldAddPaymentMethod = dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled();
+            } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
+                shouldAddPaymentMethod = dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(context);
             } else if (paymentMethodNonce instanceof CardNonce && dropInRequest.isCardEnabled()) {
                 Set<String> supportedCardTypes =
                         new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
@@ -37,8 +37,8 @@ class AvailablePaymentMethodNonceList {
                     supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
                 }
                 shouldAddPaymentMethod = !supportedCardTypes.isEmpty();
-            } else if (paymentMethodNonce instanceof GooglePaymentCardNonce && googlePayEnabled && dropInRequest.isGooglePaymentEnabled()) {
-                shouldAddPaymentMethod = true;
+            } else if (paymentMethodNonce instanceof GooglePaymentCardNonce) {
+                shouldAddPaymentMethod = googlePayEnabled && dropInRequest.isGooglePaymentEnabled();
             }
 
             if (shouldAddPaymentMethod) {
