@@ -51,7 +51,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
 
     @Test
     public void noPaymentMethodsAvailableIfNotEnabled() {
-        Configuration configuration = getConfiguration(false, false, false, false);
+        Configuration configuration = getMockConfiguration(false, false, false, false);
 
         List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(
                 payPalAccountNonce, venmoAccountNonce, cardNonce, googlePaymentCardNonce);
@@ -64,7 +64,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
 
     @Test
     public void allPaymentMethodsAvailableIfEnabled() {
-        Configuration configuration = getConfiguration(true, true, true, true);
+        Configuration configuration = getMockConfiguration(true, true, true, true);
 
         List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(
                 payPalAccountNonce, venmoAccountNonce, cardNonce, googlePaymentCardNonce);
@@ -80,42 +80,13 @@ public class AvailablePaymentMethodNonceListUnitTest {
     }
 
     @Test
-    public void cardsAvailableIfUnionPayNotSupportedAndOtherCardsPresent() {
-        Configuration configuration = getConfiguration(false, false, true, false);
+    public void cardsAvailableIfEnabledAndSupportedCardTypesPresent() {
+        Configuration configuration = getMockConfiguration(false, false, true, false);
 
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) cardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
                 context, configuration, paymentMethodNonces, new DropInRequest(), false, false);
-
-        assertEquals(1, sut.size());
-        assertEquals(cardNonce, sut.get(0));
-    }
-
-    @Test
-    public void cardsNotAvailableIfOnlyUnionPayPresentAndNotSupported() {
-        Configuration configuration = getConfiguration(false, false, false, false);
-        when(configuration.getCardConfiguration().getSupportedCardTypes())
-                .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
-
-        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) cardNonce);
-
-        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, new DropInRequest(), false, false);
-
-        assertEquals(0, sut.size());
-    }
-
-    @Test
-    public void cardsAvailableIfOnlyUnionPayPresentAndSupported() {
-        Configuration configuration = getConfiguration(false, false, false, false);
-        when(configuration.getCardConfiguration().getSupportedCardTypes())
-                .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
-
-        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) cardNonce);
-
-        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, new DropInRequest(), false, true);
 
         assertEquals(1, sut.size());
         assertEquals(cardNonce, sut.get(0));
@@ -123,7 +94,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
 
     @Test
     public void cardsNotAvailableIfDisableInDropInRequest() {
-        Configuration configuration = getConfiguration(false, false, true, false);
+        Configuration configuration = getMockConfiguration(false, false, true, false);
         DropInRequest dropInRequest = new DropInRequest()
                 .disableCard();
 
@@ -137,7 +108,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
 
     @Test
     public void paypalNotAvailableIfDisabledInDropInRequest() {
-        Configuration configuration = getConfiguration(true, false, false, false);
+        Configuration configuration = getMockConfiguration(true, false, false, false);
         DropInRequest dropInRequest = new DropInRequest()
                 .disablePayPal();
 
@@ -151,7 +122,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
 
     @Test
     public void venmoNotAvailableIfDisabledInDropInRequest() {
-        Configuration configuration = getConfiguration(false, true, false, false);
+        Configuration configuration = getMockConfiguration(false, true, false, false);
         DropInRequest dropInRequest = new DropInRequest()
                 .disableVenmo();
 
@@ -165,7 +136,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
 
     @Test
     public void googlePaymentNotAvailableIfDisabledInDropInRequest() {
-        Configuration configuration = getConfiguration(false, false, false, true);
+        Configuration configuration = getMockConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest()
                 .disableGooglePayment();
 
@@ -179,7 +150,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
 
     @Test
     public void prefersGooglePayOverGooglePaymentIfBothEnabled() {
-        Configuration configuration = getConfiguration(false, false, false, true);
+        Configuration configuration = getMockConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest();
 
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
@@ -193,7 +164,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
 
     @Test
     public void googlePayNotAvailableIfDisabledInDropInRequest() {
-        Configuration configuration = getConfiguration(false, false, false, true);
+        Configuration configuration = getMockConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest()
                 .disableGooglePayment();
 
@@ -205,7 +176,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         assertEquals(0, sut.size());
     }
 
-    private Configuration getConfiguration(boolean paypalEnabled, boolean venmoEnabled, boolean cardEnabled, boolean googlePaymentEnabled) {
+    private Configuration getMockConfiguration(boolean paypalEnabled, boolean venmoEnabled, boolean cardEnabled, boolean googlePaymentEnabled) {
         Configuration configuration = mock(Configuration.class);
 
         if (paypalEnabled) {

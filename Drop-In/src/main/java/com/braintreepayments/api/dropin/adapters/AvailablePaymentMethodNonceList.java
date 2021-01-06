@@ -31,7 +31,7 @@ class AvailablePaymentMethodNonceList {
             } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
                 shouldAddPaymentMethod = dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(context);
             } else if (paymentMethodNonce instanceof CardNonce) {
-                shouldAddPaymentMethod = dropInRequest.isCardEnabled();
+                shouldAddPaymentMethod = dropInRequest.isCardEnabled() && !configuration.getCardConfiguration().getSupportedCardTypes().isEmpty();
             } else if (paymentMethodNonce instanceof GooglePaymentCardNonce) {
                 shouldAddPaymentMethod = googlePayEnabled && dropInRequest.isGooglePaymentEnabled();
             }
