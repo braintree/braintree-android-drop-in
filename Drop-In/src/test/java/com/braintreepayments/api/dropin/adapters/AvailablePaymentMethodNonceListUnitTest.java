@@ -26,6 +26,8 @@ import java.util.HashSet;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -57,7 +59,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
                 payPalAccountNonce, venmoAccountNonce, cardNonce, googlePaymentCardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, new DropInRequest(), false, false);
+                context, configuration, paymentMethodNonces, new DropInRequest(), false);
 
         assertEquals(0, sut.size());
     }
@@ -70,7 +72,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
                 payPalAccountNonce, venmoAccountNonce, cardNonce, googlePaymentCardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, new DropInRequest(), true, true);
+                context, configuration, paymentMethodNonces, new DropInRequest(), true);
 
         assertEquals(4, sut.size());
         assertEquals(payPalAccountNonce, sut.get(0));
@@ -86,7 +88,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) cardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, new DropInRequest(), false, false);
+                context, configuration, paymentMethodNonces, new DropInRequest(), false);
 
         assertEquals(1, sut.size());
         assertEquals(cardNonce, sut.get(0));
@@ -101,7 +103,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) cardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, dropInRequest, false, false);
+                context, configuration, paymentMethodNonces, dropInRequest, false);
 
         assertEquals(0, sut.size());
     }
@@ -115,7 +117,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) payPalAccountNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, dropInRequest, false, false);
+                context, configuration, paymentMethodNonces, dropInRequest, false);
 
         assertEquals(0, sut.size());
     }
@@ -129,7 +131,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) venmoAccountNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, dropInRequest, false, false);
+                context, configuration, paymentMethodNonces, dropInRequest, false);
 
         assertEquals(0, sut.size());
     }
@@ -143,7 +145,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, dropInRequest, true, false);
+                context, configuration, paymentMethodNonces, dropInRequest, true);
 
         assertEquals(0, sut.size());
     }
@@ -156,7 +158,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, dropInRequest, true, false);
+                context, configuration, paymentMethodNonces, dropInRequest, true);
 
         assertEquals(1, sut.size());
         assertEquals(googlePaymentCardNonce, sut.get(0));
@@ -171,9 +173,33 @@ public class AvailablePaymentMethodNonceListUnitTest {
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                context, configuration, paymentMethodNonces, dropInRequest, true, false);
+                context, configuration, paymentMethodNonces, dropInRequest, true);
 
         assertEquals(0, sut.size());
+    }
+
+    @Test
+    public void hasCardNonce_whenCardNonceExists_returnsTrue() {
+        Configuration configuration = getMockConfiguration(false, false, true, true);
+
+        List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(cardNonce, googlePaymentCardNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, new DropInRequest(), false);
+
+        assertTrue(sut.hasCardNonce());
+    }
+
+    @Test
+    public void hasCardNonce_whenNoCardNonceExists_returnsFalse() {
+        Configuration configuration = getMockConfiguration(false, true, true, true);
+
+        List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(venmoAccountNonce, googlePaymentCardNonce);
+
+        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
+                context, configuration, paymentMethodNonces, new DropInRequest(), false);
+
+        assertFalse(sut.hasCardNonce());
     }
 
     private Configuration getMockConfiguration(boolean paypalEnabled, boolean venmoEnabled, boolean cardEnabled, boolean googlePaymentEnabled) {

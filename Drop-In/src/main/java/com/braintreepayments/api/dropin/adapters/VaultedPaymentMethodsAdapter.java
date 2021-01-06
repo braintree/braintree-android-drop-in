@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
@@ -36,7 +37,7 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
 
     public void setup(Context context, Configuration configuration, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
         mAvailablePaymentMethodNonces = new AvailablePaymentMethodNonceList(
-                context, configuration, mPaymentMethodNonces, dropInRequest, googlePayEnabled, unionpaySupported);
+                context, configuration, mPaymentMethodNonces, dropInRequest, googlePayEnabled);
     }
 
     @Override
@@ -70,6 +71,10 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
     @Override
     public int getItemCount() {
         return mAvailablePaymentMethodNonces.size();
+    }
+
+    public boolean hasCardNonce() {
+        return mAvailablePaymentMethodNonces.hasCardNonce();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

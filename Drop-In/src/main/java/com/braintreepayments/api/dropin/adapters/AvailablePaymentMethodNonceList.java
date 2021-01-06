@@ -20,7 +20,7 @@ class AvailablePaymentMethodNonceList {
 
     final private List<PaymentMethodNonce> items;
 
-    AvailablePaymentMethodNonceList(Context context, Configuration configuration, List<PaymentMethodNonce> paymentMethodNonces, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
+    AvailablePaymentMethodNonceList(Context context, Configuration configuration, List<PaymentMethodNonce> paymentMethodNonces, DropInRequest dropInRequest, boolean googlePayEnabled) {
         items = new ArrayList<>();
 
         for (PaymentMethodNonce paymentMethodNonce: paymentMethodNonces) {
@@ -48,5 +48,14 @@ class AvailablePaymentMethodNonceList {
 
     PaymentMethodNonce get(int index) {
         return items.get(index);
+    }
+
+    public boolean hasCardNonce() {
+        for (PaymentMethodNonce nonce : items) {
+            if (nonce instanceof CardNonce) {
+                return true;
+            }
+        }
+        return false;
     }
 }

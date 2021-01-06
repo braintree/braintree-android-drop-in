@@ -460,11 +460,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             mVaultManagerButton.setVisibility(View.VISIBLE);
         }
 
-        for (PaymentMethodNonce nonce : paymentMethodNonces) {
-            if (nonce instanceof CardNonce) {
-                mBraintreeFragment.sendAnalyticsEvent("vaulted-card.appear");
-                break;
-            }
+        if (vaultedPaymentMethodsAdapter.hasCardNonce()) {
+            mBraintreeFragment.sendAnalyticsEvent("vaulted-card.appear");
         }
     }
 }
