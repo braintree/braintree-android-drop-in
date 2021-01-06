@@ -30,13 +30,8 @@ class AvailablePaymentMethodNonceList {
                 shouldAddPaymentMethod = dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled();
             } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
                 shouldAddPaymentMethod = dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(context);
-            } else if (paymentMethodNonce instanceof CardNonce && dropInRequest.isCardEnabled()) {
-                Set<String> supportedCardTypes =
-                        new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
-                if (!unionpaySupported) {
-                    supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
-                }
-                shouldAddPaymentMethod = !supportedCardTypes.isEmpty();
+            } else if (paymentMethodNonce instanceof CardNonce) {
+                shouldAddPaymentMethod = dropInRequest.isCardEnabled();
             } else if (paymentMethodNonce instanceof GooglePaymentCardNonce) {
                 shouldAddPaymentMethod = googlePayEnabled && dropInRequest.isGooglePaymentEnabled();
             }
