@@ -10,8 +10,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
@@ -28,6 +29,7 @@ import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.GooglePaymentCardNonce;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 
 import org.json.JSONException;
@@ -42,8 +44,6 @@ import org.robolectric.shadows.ShadowActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 import static androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
@@ -96,7 +96,7 @@ public class DropInActivityUnitTest {
 
         assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception exception = (Exception) mShadowActivity.getResultIntent()
-                        .getSerializableExtra(DropInActivity.EXTRA_ERROR);
+                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertTrue(exception instanceof InvalidArgumentException);
         assertEquals("Tokenization Key or client token was invalid.", exception.getMessage());
     }
@@ -164,7 +164,7 @@ public class DropInActivityUnitTest {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
                 .configuration(new TestConfigurationBuilder()
                         .googlePayment(new TestConfigurationBuilder.TestGooglePaymentConfigurationBuilder()
-                        .enabled(true))
+                                .enabled(true))
                         .build());
         mActivity.setDropInRequest(new DropInRequest()
                 .disableGooglePayment()
@@ -254,8 +254,7 @@ public class DropInActivityUnitTest {
     @Test
     public void handlesConfigurationChanges() {
         String configuration = new TestConfigurationBuilder()
-                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes("Visa"))
+                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder().supportedCardTypes("Visa"))
                 .paypalEnabled(true)
                 .build();
         DropInRequest dropInRequest = new DropInRequest()
@@ -517,11 +516,15 @@ public class DropInActivityUnitTest {
     @Test
     public void selectingAVaultedPaymentMethod_returnsANonce() throws JSONException {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder().supportedCardTypes("Visa"))
+                        .paypal(new TestConfigurationBuilder.TestPayPalConfigurationBuilder(true))
+                        .build())
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_RESPONSE);
         mActivity.setDropInRequest(new DropInRequest().clientToken(
                 base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
+        mActivity.mDropInRequest.disableGooglePayment();
 
         RecyclerView recyclerView = mActivity.findViewById(R.id.bt_vaulted_payment_methods);
         recyclerView.measure(0, 0);
@@ -545,8 +548,11 @@ public class DropInActivityUnitTest {
         nonces.add(nonce);
 
         BraintreeFragment fragment = mock(BraintreeFragment.class);
-
         setup(fragment);
+        mActivity.mDropInRequest.disableGooglePayment();
+        mActivity.mConfiguration = new TestConfigurationBuilder()
+                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder().supportedCardTypes("Visa"))
+                .buildConfiguration();
 
         mActivity.onPaymentMethodNoncesUpdated(nonces);
         RecyclerView recyclerView = mActivity.findViewById(R.id.bt_vaulted_payment_methods);
@@ -566,6 +572,10 @@ public class DropInActivityUnitTest {
         BraintreeFragment fragment = mock(BraintreeFragment.class);
 
         setup(fragment);
+        mActivity.mDropInRequest.disableGooglePayment();
+        mActivity.mConfiguration = new TestConfigurationBuilder()
+                .paypal(new TestConfigurationBuilder.TestPayPalConfigurationBuilder(true))
+                .buildConfiguration();
 
         mActivity.onPaymentMethodNoncesUpdated(nonces);
         RecyclerView recyclerView = mActivity.findViewById(R.id.bt_vaulted_payment_methods);
@@ -579,7 +589,10 @@ public class DropInActivityUnitTest {
     @Test
     public void onPaymentMethodNoncesUpdated_showsVaultedPaymentMethods() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder().supportedCardTypes("Visa"))
+                        .paypal(new TestConfigurationBuilder.TestPayPalConfigurationBuilder(true))
+                        .build())
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_RESPONSE);
         mActivity.setDropInRequest(new DropInRequest().clientToken(
                 base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
@@ -593,7 +606,11 @@ public class DropInActivityUnitTest {
     @Test
     public void onPaymentMethodNoncesUpdated_doesNotIncludeVaultedGooglePaymentCardNonces() {
         BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
+                .configuration(new TestConfigurationBuilder()
+                        .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder().supportedCardTypes("Visa"))
+                        .googlePayment(new TestConfigurationBuilder.TestGooglePaymentConfigurationBuilder().enabled(true))
+                        .paypal(new TestConfigurationBuilder.TestPayPalConfigurationBuilder(true))
+                        .build())
                 .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_GOOGLE_PAY_RESPONSE);
         mActivity.setDropInRequest(new DropInRequest().clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
@@ -606,6 +623,10 @@ public class DropInActivityUnitTest {
     @Test
     public void onPaymentMethodNoncesUpdated_withACard_sendsAnalyticEvent() throws JSONException {
         setup(mock(BraintreeFragment.class));
+        mActivity.mDropInRequest.disableGooglePayment();
+        mActivity.mConfiguration = new TestConfigurationBuilder()
+                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder().supportedCardTypes("Visa"))
+                .buildConfiguration();
 
         List<PaymentMethodNonce> nonceList = new ArrayList<>();
 
@@ -837,6 +858,10 @@ public class DropInActivityUnitTest {
     @Test
     public void onActivityResult_whenVaultManagerResultOk_setsVaultedPaymentMethodsFromVaultManager() {
         mActivityController.setup();
+        mActivity.mDropInRequest.disableGooglePayment();
+        mActivity.mConfiguration = new TestConfigurationBuilder()
+                .paypal(new TestConfigurationBuilder.TestPayPalConfigurationBuilder(true))
+                .buildConfiguration();
 
         PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
         when(paypalNonce.getDescription()).thenReturn("paypal-nonce");
@@ -938,12 +963,16 @@ public class DropInActivityUnitTest {
     @Test
     public void vaultEditButton_whenVaultManagerEnabled_isVisible() {
         setup(mock(BraintreeFragment.class));
+        mActivity.mConfiguration = new TestConfigurationBuilder()
+                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder().supportedCardTypes("Visa"))
+                .buildConfiguration();
 
         List<PaymentMethodNonce> nonceList = new ArrayList<>();
         nonceList.add(mock(CardNonce.class));
 
         mActivity.setDropInRequest(new DropInRequest()
                 .vaultManager(true));
+        mActivity.mDropInRequest.disableGooglePayment();
 
         mActivity.onPaymentMethodNoncesUpdated(nonceList);
 
