@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 5.0.2
 
 * Fix issue where payment methods disabled on `DropInRequest` were displayed if previously vaulted (fixes #205)
 * Bump braintree_android version to 3.15.0 (fixes #208)
