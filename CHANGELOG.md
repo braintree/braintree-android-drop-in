@@ -3,10 +3,11 @@
 ## unreleased
 
 * Fix issue where payment methods disabled on `DropInRequest` were displayed if previously vaulted (fixes #205)
+* Bump braintree_android version to 3.15.0 (fixes #208)
 
 ## 5.0.1
 
-* Bump braintree_android version to 3.14.2 (fixes [#197](https://github.com/braintree/braintree-android-drop-in/issues/197))
+* Bump braintree_android version to 3.14.2 (fixes #197)
 * Upgrade Android Gradle Plugin to version 4.1.0
 
 ## 5.0.0
