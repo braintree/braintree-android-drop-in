@@ -13,7 +13,7 @@ task :tests => [:unit_tests, :integration_tests]
 
 desc "Run Android unit tests"
 task :unit_tests => :lint do
-  sh "./gradlew --continue test"
+  sh "./gradlew --continue testRelease"
 end
 
 desc "Run Android tests on a device or emulator"
