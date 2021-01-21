@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Update Google Pay icon to meet updated [brand guidelines](https://developers.google.com/pay/api/android/guides/brand-guidelines#google-pay-logo-mark)
+
 ## 5.0.2
 
 * Fix issue where payment methods disabled on `DropInRequest` were displayed if previously vaulted (fixes #205)
