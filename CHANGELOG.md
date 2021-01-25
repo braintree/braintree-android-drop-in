@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 5.1.0
 
 * Update Google Pay icon to meet updated [brand guidelines](https://developers.google.com/pay/api/android/guides/brand-guidelines#google-pay-logo-mark)
 * Bump three-d-secure version to 3.15.0
