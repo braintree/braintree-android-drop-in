@@ -7,6 +7,7 @@ import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.VenmoAccountNonce;
 import com.braintreepayments.cardform.utils.CardType;
+import com.braintreepayments.cardform.view.CardForm;
 
 import org.json.JSONException;
 import org.junit.Test;
@@ -105,7 +106,7 @@ public class PaymentMethodTypeUnitTest {
 
     @Test
     public void getVaultedDrawable_returnsCorrectDrawables() {
-        assertEquals(R.drawable.bt_ic_vaulted_visa, PaymentMethodType.VISA.getVaultedDrawable());
+        assertEquals(CardType.VISA.getFrontResource(), PaymentMethodType.VISA.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_mastercard, PaymentMethodType.MASTERCARD.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_discover, PaymentMethodType.DISCOVER.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_amex, PaymentMethodType.AMEX.getVaultedDrawable());

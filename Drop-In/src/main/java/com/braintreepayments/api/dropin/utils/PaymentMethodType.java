@@ -20,7 +20,7 @@ public enum PaymentMethodType {
     MAESTRO(CardType.MAESTRO.getFrontResource(), R.drawable.bt_ic_vaulted_maestro, R.string.bt_descriptor_maestro, "Maestro", CardType.MAESTRO),
     MASTERCARD(CardType.MASTERCARD.getFrontResource(), R.drawable.bt_ic_vaulted_mastercard, R.string.bt_descriptor_mastercard, "MasterCard", CardType.MASTERCARD),
     PAYPAL(R.drawable.bt_ic_paypal, R.drawable.bt_ic_vaulted_paypal, R.string.bt_descriptor_paypal, "PayPal", null),
-    VISA(CardType.VISA.getFrontResource(), R.drawable.bt_ic_vaulted_visa, R.string.bt_descriptor_visa, "Visa", CardType.VISA),
+    VISA(CardType.VISA.getFrontResource(), CardType.VISA.getFrontResource(), R.string.bt_descriptor_visa, "Visa", CardType.VISA),
     PAY_WITH_VENMO(R.drawable.bt_ic_venmo, R.drawable.bt_ic_vaulted_venmo, R.string.bt_descriptor_pay_with_venmo, "Venmo", null),
     UNIONPAY(CardType.UNIONPAY.getFrontResource(), R.drawable.bt_ic_vaulted_unionpay, R.string.bt_descriptor_unionpay, "UnionPay", CardType.UNIONPAY),
     HIPER(CardType.HIPER.getFrontResource(), R.drawable.bt_ic_vaulted_hiper, R.string.bt_descriptor_hiper, "Hiper", CardType.HIPER),
