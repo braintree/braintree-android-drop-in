@@ -66,6 +66,11 @@ public class BaseActivity extends AppCompatActivity {
         boolean hasAmount = !TextUtils.isEmpty(mDropInRequest.getAmount()) ||
                 (mDropInRequest.getThreeDSecureRequest() != null && !TextUtils.isEmpty(mDropInRequest.getThreeDSecureRequest().getAmount()));
 
+        // TODO: NEXT_MAJOR_VERSION use BraintreeClient#getConfiguration and don't cache configuration in memory
+        if (mConfiguration == null) {
+            return false;
+        }
+
         return mDropInRequest.shouldRequestThreeDSecureVerification() &&
                 mConfiguration.isThreeDSecureEnabled() &&
                 hasAmount;
