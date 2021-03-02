@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Update android-card-form version to 5.1.0 (fixes #212)
+
 ## 5.1.0
 
 * Update Google Pay icon to meet updated [brand guidelines](https://developers.google.com/pay/api/android/guides/brand-guidelines#google-pay-logo-mark)
