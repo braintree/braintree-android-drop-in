@@ -3,6 +3,7 @@
 ## unreleased
 
 * Update android-card-form version to 5.1.0 (fixes #212)
+* Fix null pointer crash in `BaseActivity#shouldRequestThreeDSecureVerification` (fixes #207)
 
 ## 5.1.0
 

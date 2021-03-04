@@ -234,6 +234,18 @@ public class BaseActivityUnitTest {
     }
 
     @Test
+    public void shouldRequestThreeDSecureVerification_returnsFalseWhenConfigurationIsNull() {
+        setup(new DropInRequest()
+                .tokenizationKey(TOKENIZATION_KEY)
+                .requestThreeDSecureVerification(true)
+                .threeDSecureRequest(new ThreeDSecureRequest().amount("2.00"))
+                .getIntent(RuntimeEnvironment.application));
+        mActivity.mConfiguration = null;
+
+        assertFalse(mActivity.shouldRequestThreeDSecureVerification());
+    }
+
+    @Test
     public void finish_finishesWithPaymentMethodNonceAndDeviceDataInDropInResult()
             throws JSONException {
         CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
