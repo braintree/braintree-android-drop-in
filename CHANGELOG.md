@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 5.2.0
 
 * Update android-card-form version to 5.1.0 (fixes #212)
 * Fix null pointer crash in `BaseActivity#shouldRequestThreeDSecureVerification` (fixes #207)
