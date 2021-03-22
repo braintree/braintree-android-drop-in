@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin.view;
+package com.braintreepayments.api.dropin;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -10,9 +10,10 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
+import com.braintreepayments.api.dropin.AnimatedButtonView;
 import com.braintreepayments.api.dropin.DropInRequest;
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
+import com.braintreepayments.api.dropin.AddPaymentUpdateListener;
 import com.braintreepayments.api.exceptions.BraintreeError;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.models.Authorization;

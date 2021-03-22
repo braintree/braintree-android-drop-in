@@ -9,7 +9,6 @@ import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.ConfigurationManagerTestUtils;
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.GooglePayment;
-import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.BraintreeListener;

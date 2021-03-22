@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <com.braintreepayments.api.dropin.view.AnimatedButtonView
+    <com.braintreepayments.api.dropin.AnimatedButtonView
         android:id="@+id/bt_animated_button_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -13,7 +13,6 @@ import android.widget.ViewSwitcher;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
 import com.braintreepayments.api.exceptions.ConfigurationException;

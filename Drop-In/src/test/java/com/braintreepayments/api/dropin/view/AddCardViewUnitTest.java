@@ -5,10 +5,11 @@ import android.text.SpannableString;
 import android.view.View;
 import android.widget.Button;
 
+import com.braintreepayments.api.dropin.AddCardView;
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.dropin.interfaces.AddPaymentUpdateListener;
-import com.braintreepayments.api.dropin.utils.PaymentMethodType;
+import com.braintreepayments.api.dropin.AddPaymentUpdateListener;
+import com.braintreepayments.api.dropin.PaymentMethodType;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.test.TestConfigurationBuilder;

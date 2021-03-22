@@ -11,8 +11,6 @@ import android.view.WindowManager;
 import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.PaymentMethod;
-import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
-import com.braintreepayments.api.dropin.view.PaymentMethodItemView;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;

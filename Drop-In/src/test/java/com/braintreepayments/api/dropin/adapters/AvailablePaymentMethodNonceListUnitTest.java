@@ -2,8 +2,9 @@ package com.braintreepayments.api.dropin.adapters;
 
 import android.content.Context;
 
+import com.braintreepayments.api.dropin.AvailablePaymentMethodNonceList;
 import com.braintreepayments.api.dropin.DropInRequest;
-import com.braintreepayments.api.dropin.utils.PaymentMethodType;
+import com.braintreepayments.api.dropin.PaymentMethodType;
 import com.braintreepayments.api.models.CardConfiguration;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;

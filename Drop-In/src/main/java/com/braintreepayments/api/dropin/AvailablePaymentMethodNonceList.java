@@ -1,9 +1,7 @@
-package com.braintreepayments.api.dropin.adapters;
+package com.braintreepayments.api.dropin;
 
 import android.content.Context;
 
-import com.braintreepayments.api.dropin.DropInRequest;
-import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.GooglePaymentCardNonce;
@@ -12,9 +10,7 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.VenmoAccountNonce;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 class AvailablePaymentMethodNonceList {
 

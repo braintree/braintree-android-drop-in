@@ -11,10 +11,6 @@ import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.test.Fixtures;
-import com.braintreepayments.api.dropin.utils.PaymentMethodType;
-import com.braintreepayments.api.dropin.view.AddCardView;
-import com.braintreepayments.api.dropin.view.EditCardView;
-import com.braintreepayments.api.dropin.view.EnrollmentCardView;
 import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
 import com.braintreepayments.api.exceptions.ConfigurationException;

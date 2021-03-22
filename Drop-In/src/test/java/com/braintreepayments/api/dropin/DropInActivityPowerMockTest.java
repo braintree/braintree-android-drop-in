@@ -7,8 +7,6 @@ import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.PayPal;
 import com.braintreepayments.api.Venmo;
-import com.braintreepayments.api.dropin.adapters.SupportedPaymentMethodsAdapter;
-import com.braintreepayments.api.dropin.utils.PaymentMethodType;
 import com.braintreepayments.api.exceptions.GoogleApiClientException;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.models.Configuration;

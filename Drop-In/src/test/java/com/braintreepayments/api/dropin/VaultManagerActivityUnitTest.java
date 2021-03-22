@@ -9,8 +9,6 @@ import android.widget.ViewSwitcher;
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.VaultManagerUnitTestActivity;
-import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
-import com.braintreepayments.api.dropin.view.PaymentMethodItemView;
 import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeGraphQLHttpClient;

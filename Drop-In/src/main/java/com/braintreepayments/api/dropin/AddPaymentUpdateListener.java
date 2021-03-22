@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin.interfaces;
+package com.braintreepayments.api.dropin;
 
 import android.view.View;
 

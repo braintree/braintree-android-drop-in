@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin.view;
+package com.braintreepayments.api.dropin;
 
 import android.annotation.TargetApi;
 import android.content.Context;
