@@ -1,13 +1,6 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
-import com.braintreepayments.api.AddCardActivity;
-import com.braintreepayments.api.BaseActivity;
-import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.Card;
-import com.braintreepayments.api.DropInRequest;
-import com.braintreepayments.api.EditCardView;
 import com.braintreepayments.api.test.Fixtures;
-import com.braintreepayments.api.ThreeDSecure;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.ThreeDSecureRequest;

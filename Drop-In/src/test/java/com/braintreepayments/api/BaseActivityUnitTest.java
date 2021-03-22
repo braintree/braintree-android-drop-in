@@ -1,12 +1,8 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.braintreepayments.api.BaseActivity;
-import com.braintreepayments.api.DropInActivity;
-import com.braintreepayments.api.DropInRequest;
-import com.braintreepayments.api.DropInResult;
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.models.CardNonce;
@@ -27,7 +23,7 @@ import org.robolectric.shadows.ShadowActivity;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
+import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;

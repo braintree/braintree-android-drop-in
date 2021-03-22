@@ -1,14 +1,11 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 
-import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.ConfigurationManagerTestUtils;
-import com.braintreepayments.api.DropInActivity;
-import com.braintreepayments.api.DropInRequest;
+import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 
 import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;

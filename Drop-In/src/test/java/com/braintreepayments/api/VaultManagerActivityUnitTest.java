@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -6,20 +6,14 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.widget.ViewSwitcher;
 
-import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.DropInActivity;
-import com.braintreepayments.api.DropInRequest;
-import com.braintreepayments.api.PaymentMethodItemView;
-import com.braintreepayments.api.VaultManagerPaymentMethodsAdapter;
+import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.test.Fixtures;
-import com.braintreepayments.api.VaultManagerUnitTestActivity;
 import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeGraphQLHttpClient;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PayPalAccountNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.test.UnitTestFixturesHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -145,11 +139,11 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onPaymentMethodNonceDeleted_removesLoadingView() {
-        ((ViewSwitcher)mActivity.findViewById(R.id.bt_loading_view_switcher)).setDisplayedChild(1);
+        ((ViewSwitcher)mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).setDisplayedChild(1);
         mActivity.onPaymentMethodNonceDeleted(mCardNonce);
 
         assertEquals(0, ((ViewSwitcher)mActivity
-                .findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+                .findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
     @Test
@@ -179,11 +173,11 @@ public class VaultManagerActivityUnitTest {
         Exception originalException = new RuntimeException("Real Exception");
         Exception error = new PaymentMethodDeleteException(mCardNonce, originalException);
 
-        ((ViewSwitcher)mActivity.findViewById(R.id.bt_loading_view_switcher)).setDisplayedChild(1);
+        ((ViewSwitcher)mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).setDisplayedChild(1);
         mActivity.onError(error);
 
         assertEquals(0, ((ViewSwitcher)mActivity
-                .findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+                .findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
     @Test
@@ -243,7 +237,7 @@ public class VaultManagerActivityUnitTest {
 
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
 
-        assertEquals(1, ((ViewSwitcher)mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+        assertEquals(1, ((ViewSwitcher)mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
     @Test

@@ -1,20 +1,16 @@
-package com.braintreepayments.api.dropin.view;
+package com.braintreepayments.api;
 
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.view.View;
 import android.widget.Button;
 
-import com.braintreepayments.api.AddCardView;
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.AddPaymentUpdateListener;
-import com.braintreepayments.api.PaymentMethodType;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.api.test.TestConfigurationBuilder.TestUnionPayConfigurationBuilder;
-import com.braintreepayments.api.test.UnitTestActivity;
 import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.PaddedImageSpan;

@@ -1,4 +1,4 @@
-package com.braintreepayments.api.test;
+package com.braintreepayments.api;
 
 import android.graphics.drawable.ColorDrawable;
 import android.view.View;

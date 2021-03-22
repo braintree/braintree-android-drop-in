@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin.adapters;
+package com.braintreepayments.api;
 
 import android.content.Context;
 

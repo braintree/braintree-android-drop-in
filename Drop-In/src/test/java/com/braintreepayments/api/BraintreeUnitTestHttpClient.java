@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import com.braintreepayments.api.interfaces.HttpResponseCallback;
 import com.braintreepayments.api.internal.BraintreeHttpClient;

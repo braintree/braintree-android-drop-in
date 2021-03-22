@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin.view;
+package com.braintreepayments.api;
 
 import android.graphics.drawable.Drawable;
 import android.view.inputmethod.EditorInfo;
@@ -6,13 +6,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.braintreepayments.api.AnimatedButtonView;
-import com.braintreepayments.api.EnrollmentCardView;
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.AddPaymentUpdateListener;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
-import com.braintreepayments.api.test.UnitTestActivity;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
 import org.junit.Before;
@@ -27,7 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.braintreepayments.api.test.ColorTestUtils.setupActivity;
+import static com.braintreepayments.api.ColorTestUtils.setupActivity;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;

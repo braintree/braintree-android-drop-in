@@ -1,16 +1,11 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import android.os.Parcel;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
-import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.ConfigurationManagerTestUtils;
-import com.braintreepayments.api.DropInResult;
-import com.braintreepayments.api.PaymentMethodType;
 import com.braintreepayments.api.test.Fixtures;
-import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.BraintreeListener;
@@ -20,7 +15,6 @@ import com.braintreepayments.api.internal.BraintreeHttpClient;
 import com.braintreepayments.api.internal.BraintreeSharedPreferences;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.test.FragmentTestActivity;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 
 import org.json.JSONException;
@@ -40,7 +34,7 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
-import static com.braintreepayments.api.test.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
+import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;

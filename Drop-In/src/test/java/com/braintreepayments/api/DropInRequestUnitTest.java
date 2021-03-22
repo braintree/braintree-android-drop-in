@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import android.content.Intent;
 import android.os.Parcel;

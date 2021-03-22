@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin.utils;
+package com.braintreepayments.api;
 
 import com.braintreepayments.api.PaymentMethodType;
 import com.braintreepayments.api.test.Fixtures;
