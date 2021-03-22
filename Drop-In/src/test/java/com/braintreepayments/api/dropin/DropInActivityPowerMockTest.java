@@ -3,9 +3,14 @@ package com.braintreepayments.api.dropin;
 import android.widget.ListView;
 import android.widget.ViewSwitcher;
 
+import com.braintreepayments.api.AddCardActivity;
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.DropInActivity;
+import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.GooglePayment;
 import com.braintreepayments.api.PayPal;
+import com.braintreepayments.api.PaymentMethodType;
+import com.braintreepayments.api.SupportedPaymentMethodsAdapter;
 import com.braintreepayments.api.Venmo;
 import com.braintreepayments.api.exceptions.GoogleApiClientException;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;

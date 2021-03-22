@@ -40,21 +40,21 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <com.braintreepayments.api.dropin.AddCardView
+                <com.braintreepayments.api.AddCardView
                     android:id="@+id/bt_add_card_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:visibility="gone"/>
 
-                <com.braintreepayments.api.dropin.EditCardView
+                <com.braintreepayments.api.EditCardView
                     android:id="@+id/bt_edit_card_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:visibility="gone"/>
 
-                <com.braintreepayments.api.dropin.EnrollmentCardView
+                <com.braintreepayments.api.EnrollmentCardView
                     android:id="@+id/bt_enrollment_card_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"

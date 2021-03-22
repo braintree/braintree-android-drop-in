@@ -1,10 +1,9 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.models.Authorization;
 import com.braintreepayments.api.models.ClientToken;

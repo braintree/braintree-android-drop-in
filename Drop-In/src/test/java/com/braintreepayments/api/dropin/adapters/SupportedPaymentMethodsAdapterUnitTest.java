@@ -2,10 +2,10 @@ package com.braintreepayments.api.dropin.adapters;
 
 import android.content.Context;
 
-import com.braintreepayments.api.dropin.DropInRequest;
-import com.braintreepayments.api.dropin.SupportedPaymentMethodsAdapter;
-import com.braintreepayments.api.dropin.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
-import com.braintreepayments.api.dropin.PaymentMethodType;
+import com.braintreepayments.api.DropInRequest;
+import com.braintreepayments.api.SupportedPaymentMethodsAdapter;
+import com.braintreepayments.api.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
+import com.braintreepayments.api.PaymentMethodType;
 import com.braintreepayments.api.models.CardConfiguration;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.GooglePaymentConfiguration;

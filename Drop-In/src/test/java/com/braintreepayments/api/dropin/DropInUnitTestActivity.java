@@ -7,6 +7,8 @@ import android.os.Bundle;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.ConfigurationManagerTestUtils;
+import com.braintreepayments.api.DropInActivity;
+import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 
 import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;

@@ -6,11 +6,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.braintreepayments.api.dropin.AnimatedButtonView;
-import com.braintreepayments.api.dropin.EnrollmentCardView;
+import com.braintreepayments.api.AnimatedButtonView;
+import com.braintreepayments.api.EnrollmentCardView;
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.dropin.AddPaymentUpdateListener;
+import com.braintreepayments.api.AddPaymentUpdateListener;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.test.UnitTestActivity;
 import com.braintreepayments.cardform.view.ErrorEditText;

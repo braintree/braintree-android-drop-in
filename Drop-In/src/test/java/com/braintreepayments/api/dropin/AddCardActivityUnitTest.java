@@ -9,7 +9,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import com.braintreepayments.api.AddCardView;
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.DropInActivity;
+import com.braintreepayments.api.DropInRequest;
+import com.braintreepayments.api.DropInResult;
+import com.braintreepayments.api.EditCardView;
+import com.braintreepayments.api.EnrollmentCardView;
+import com.braintreepayments.api.PaymentMethodType;
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;

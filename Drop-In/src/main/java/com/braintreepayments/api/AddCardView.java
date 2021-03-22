@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
+import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.BraintreeError;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.api.models.Configuration;
@@ -68,11 +69,11 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
 
         setOrientation(VERTICAL);
 
-        LayoutInflater.from(getContext()).inflate(R.layout.bt_add_card, this, true);
+        LayoutInflater.from(getContext()).inflate(com.braintreepayments.api.dropin.R.layout.bt_add_card, this, true);
 
-        mCardForm = findViewById(R.id.bt_card_form);
-        mSupportedCardTypesView = findViewById(R.id.bt_supported_card_types);
-        mAnimatedButtonView = findViewById(R.id.bt_animated_button_view);
+        mCardForm = findViewById(com.braintreepayments.api.dropin.R.id.bt_card_form);
+        mSupportedCardTypesView = findViewById(com.braintreepayments.api.dropin.R.id.bt_supported_card_types);
+        mAnimatedButtonView = findViewById(com.braintreepayments.api.dropin.R.id.bt_animated_button_view);
     }
 
     public void setup(AppCompatActivity activity, Configuration configuration, boolean unionpaySupported) {
@@ -118,7 +119,7 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
     }
 
     public void showCardNotSupportedError() {
-        mCardForm.getCardEditText().setError(getContext().getString(R.string.bt_card_not_accepted));
+        mCardForm.getCardEditText().setError(getContext().getString(com.braintreepayments.api.dropin.R.string.bt_card_not_accepted));
         mAnimatedButtonView.showButton();
     }
 

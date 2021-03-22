@@ -7,6 +7,10 @@ import android.os.Parcelable;
 import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.DropInActivity;
+import com.braintreepayments.api.DropInRequest;
+import com.braintreepayments.api.PaymentMethodItemView;
+import com.braintreepayments.api.VaultManagerPaymentMethodsAdapter;
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.VaultManagerUnitTestActivity;
 import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
@@ -34,8 +38,8 @@ import java.util.List;
 
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
-import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
-import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
+import static com.braintreepayments.api.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
+import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;

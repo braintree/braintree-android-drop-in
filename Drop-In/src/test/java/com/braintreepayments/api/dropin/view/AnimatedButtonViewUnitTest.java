@@ -2,7 +2,7 @@ package com.braintreepayments.api.dropin.view;
 
 import android.view.View.OnClickListener;
 
-import com.braintreepayments.api.dropin.AnimatedButtonView;
+import com.braintreepayments.api.AnimatedButtonView;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.test.UnitTestActivity;
 

@@ -1,6 +1,6 @@
 package com.braintreepayments.api.dropin.utils;
 
-import com.braintreepayments.api.dropin.PaymentMethodType;
+import com.braintreepayments.api.PaymentMethodType;
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.models.CardNonce;

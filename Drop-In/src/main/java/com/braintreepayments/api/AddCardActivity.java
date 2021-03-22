@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
@@ -7,9 +7,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ViewSwitcher;
 
-import com.braintreepayments.api.Card;
-import com.braintreepayments.api.ThreeDSecure;
-import com.braintreepayments.api.UnionPay;
+import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
 import com.braintreepayments.api.exceptions.ConfigurationException;

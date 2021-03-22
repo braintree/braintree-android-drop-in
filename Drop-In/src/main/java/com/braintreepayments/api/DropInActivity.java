@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,13 +13,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import com.braintreepayments.api.DataCollector;
-import com.braintreepayments.api.GooglePayment;
-import com.braintreepayments.api.PayPal;
-import com.braintreepayments.api.PaymentMethod;
-import com.braintreepayments.api.ThreeDSecure;
-import com.braintreepayments.api.Venmo;
-import com.braintreepayments.api.dropin.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
+import com.braintreepayments.api.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
+import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
 import com.braintreepayments.api.exceptions.ConfigurationException;
@@ -51,7 +46,7 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
-import static com.braintreepayments.api.dropin.DropInRequest.EXTRA_CHECKOUT_REQUEST;
+import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 public class DropInActivity extends BaseActivity implements ConfigurationListener, BraintreeCancelListener,
         BraintreeErrorListener, PaymentMethodSelectedListener, PaymentMethodNoncesUpdatedListener,
@@ -89,15 +84,15 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bt_drop_in_activity);
+        setContentView(com.braintreepayments.api.dropin.R.layout.bt_drop_in_activity);
 
-        mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
-        mLoadingViewSwitcher = findViewById(R.id.bt_loading_view_switcher);
-        mSupportedPaymentMethodsHeader = findViewById(R.id.bt_supported_payment_methods_header);
-        mSupportedPaymentMethodListView = findViewById(R.id.bt_supported_payment_methods);
-        mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
-        mVaultedPaymentMethodsView = findViewById(R.id.bt_vaulted_payment_methods);
-        mVaultManagerButton = findViewById(R.id.bt_vault_edit_button);
+        mBottomSheet = findViewById(com.braintreepayments.api.dropin.R.id.bt_dropin_bottom_sheet);
+        mLoadingViewSwitcher = findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher);
+        mSupportedPaymentMethodsHeader = findViewById(com.braintreepayments.api.dropin.R.id.bt_supported_payment_methods_header);
+        mSupportedPaymentMethodListView = findViewById(com.braintreepayments.api.dropin.R.id.bt_supported_payment_methods);
+        mVaultedPaymentMethodsContainer = findViewById(com.braintreepayments.api.dropin.R.id.bt_vaulted_payment_methods_wrapper);
+        mVaultedPaymentMethodsView = findViewById(com.braintreepayments.api.dropin.R.id.bt_vaulted_payment_methods);
+        mVaultManagerButton = findViewById(com.braintreepayments.api.dropin.R.id.bt_vault_edit_button);
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this,
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
@@ -303,7 +298,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 showVaultedPaymentMethods(paymentMethodNonces, false);
             }
         } else {
-            mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
+            mSupportedPaymentMethodsHeader.setText(com.braintreepayments.api.dropin.R.string.bt_select_payment_method);
             mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
         }
     }
@@ -392,12 +387,12 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             mBraintreeFragment.sendAnalyticsEvent("appeared");
 
             mSheetSlideUpPerformed = true;
-            mBottomSheet.startAnimation(loadAnimation(this, R.anim.bt_slide_in_up));
+            mBottomSheet.startAnimation(loadAnimation(this, com.braintreepayments.api.dropin.R.anim.bt_slide_in_up));
         }
     }
 
     private void slideDown(final AnimationFinishedListener listener) {
-        Animation slideOutAnimation = loadAnimation(this, R.anim.bt_slide_out_down);
+        Animation slideOutAnimation = loadAnimation(this, com.braintreepayments.api.dropin.R.anim.bt_slide_out_down);
         slideOutAnimation.setFillAfter(true);
         if (listener != null) {
             slideOutAnimation.setAnimationListener(new AnimationListener() {

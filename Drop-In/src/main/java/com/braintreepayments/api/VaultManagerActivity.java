@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,7 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ViewSwitcher;
 
-import com.braintreepayments.api.PaymentMethod;
+import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
@@ -27,7 +27,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import static com.braintreepayments.api.dropin.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
+import static com.braintreepayments.api.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 
 public class VaultManagerActivity extends BaseActivity implements PaymentMethodNonceDeletedListener,
         BraintreeErrorListener, View.OnClickListener {
@@ -39,11 +39,11 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.bt_vault_management_activity);
+        setContentView(com.braintreepayments.api.dropin.R.layout.bt_vault_management_activity);
 
-        mLoadingViewSwitcher = findViewById(R.id.bt_loading_view_switcher);
-        RecyclerView vaultManagerView = findViewById(R.id.bt_vault_manager_list);
-        View closeButton = findViewById(R.id.bt_vault_manager_close);
+        mLoadingViewSwitcher = findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher);
+        RecyclerView vaultManagerView = findViewById(com.braintreepayments.api.dropin.R.id.bt_vault_manager_list);
+        View closeButton = findViewById(com.braintreepayments.api.dropin.R.id.bt_vault_manager_close);
 
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,7 +98,7 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
     @Override
     public void onError(Exception error) {
         if(error instanceof PaymentMethodDeleteException) {
-            Snackbar.make(findViewById(R.id.bt_base_view), R.string.bt_vault_manager_delete_failure,
+            Snackbar.make(findViewById(com.braintreepayments.api.dropin.R.id.bt_base_view), com.braintreepayments.api.dropin.R.string.bt_vault_manager_delete_failure,
                     Snackbar.LENGTH_LONG).show();
             mBraintreeFragment.sendAnalyticsEvent("manager.delete.failed");
 
@@ -122,11 +122,11 @@ public class VaultManagerActivity extends BaseActivity implements PaymentMethodN
             dialogView.setPaymentMethod(paymentMethodNonceToDelete, false);
 
             new AlertDialog.Builder(VaultManagerActivity.this,
-                    R.style.Theme_AppCompat_Light_Dialog_Alert)
-                    .setTitle(R.string.bt_delete_confirmation_title)
-                    .setMessage(R.string.bt_delete_confirmation_description)
+                    com.braintreepayments.api.dropin.R.style.Theme_AppCompat_Light_Dialog_Alert)
+                    .setTitle(com.braintreepayments.api.dropin.R.string.bt_delete_confirmation_title)
+                    .setMessage(com.braintreepayments.api.dropin.R.string.bt_delete_confirmation_description)
                     .setView(dialogView)
-                    .setPositiveButton(R.string.bt_delete, new DialogInterface.OnClickListener() {
+                    .setPositiveButton(com.braintreepayments.api.dropin.R.string.bt_delete, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             positiveSelected.set(true);

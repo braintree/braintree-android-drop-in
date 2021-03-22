@@ -1,4 +1,4 @@
-package com.braintreepayments.api.dropin;
+package com.braintreepayments.api;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
@@ -38,7 +39,7 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.bt_vaulted_payment_method_card,
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(com.braintreepayments.api.dropin.R.layout.bt_vaulted_payment_method_card,
                 parent, false));
     }
 
@@ -82,8 +83,8 @@ public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPa
         ViewHolder(View view) {
             super(view);
 
-            icon = view.findViewById(R.id.bt_payment_method_icon);
-            title = view.findViewById(R.id.bt_payment_method_title);
+            icon = view.findViewById(com.braintreepayments.api.dropin.R.id.bt_payment_method_icon);
+            title = view.findViewById(com.braintreepayments.api.dropin.R.id.bt_payment_method_title);
             description = view.findViewById(R.id.bt_payment_method_description);
         }
     }

@@ -3,6 +3,8 @@ package com.braintreepayments.api.dropin;
 import android.content.Intent;
 import android.os.Parcel;
 
+import com.braintreepayments.api.DropInActivity;
+import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.models.GooglePaymentRequest;
 import com.braintreepayments.api.models.PayPalRequest;
