@@ -4,6 +4,7 @@
 
 * Breaking Changes
   * Make `AddCardView` package-private
+  * Make `AddPaymentUpdateListener` package-private
 
 ## 5.2.0
 
