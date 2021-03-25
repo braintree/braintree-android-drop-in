@@ -22,7 +22,7 @@ import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 
-class EditCardView extends LinearLayout implements OnCardFormFieldFocusedListener, OnClickListener,
+public class EditCardView extends LinearLayout implements OnCardFormFieldFocusedListener, OnClickListener,
         OnCardFormSubmitListener {
 
     private CardForm mCardForm;

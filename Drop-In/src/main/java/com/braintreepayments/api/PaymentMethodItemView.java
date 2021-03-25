@@ -14,7 +14,7 @@ import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
-class PaymentMethodItemView extends LinearLayout {
+public class PaymentMethodItemView extends LinearLayout {
 
     private ImageView mIcon;
     private TextView mTitle;

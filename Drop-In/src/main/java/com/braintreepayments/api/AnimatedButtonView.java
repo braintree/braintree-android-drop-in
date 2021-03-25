@@ -15,7 +15,7 @@ import android.widget.ViewAnimator;
 
 import com.braintreepayments.api.dropin.R;
 
-class AnimatedButtonView extends RelativeLayout implements OnClickListener {
+public class AnimatedButtonView extends RelativeLayout implements OnClickListener {
 
     private ViewAnimator mViewAnimator;
     private Button mButton;
