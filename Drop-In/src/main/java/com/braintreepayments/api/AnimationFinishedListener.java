@@ -1,5 +1,5 @@
 package com.braintreepayments.api;
 
-public interface AnimationFinishedListener {
+interface AnimationFinishedListener {
     void onAnimationFinished();
 }

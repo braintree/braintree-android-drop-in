@@ -6,6 +6,7 @@
   * Make `AddCardView` package-private
   * Make `AddPaymentUpdateListener` package-private
   * Make `AnimatedButtonView` package-private
+  * Make `AnimationFinishedListener` package-private
 
 ## 5.2.0
 
