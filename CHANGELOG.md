@@ -8,6 +8,7 @@
   * Make `AnimatedButtonView` package-private
   * Make `AnimationFinishedListener` package-private
   * Make `BaseActivity` package-private
+  * Make `EditCardView` package-private
 
 ## 5.2.0
 
