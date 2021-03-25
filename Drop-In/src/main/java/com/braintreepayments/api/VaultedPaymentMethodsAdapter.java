@@ -37,7 +37,7 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(com.braintreepayments.api.dropin.R.layout.bt_vaulted_payment_method_card,
+        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.bt_vaulted_payment_method_card,
                 parent, false));
     }
 
@@ -81,8 +81,8 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
         ViewHolder(View view) {
             super(view);
 
-            icon = view.findViewById(com.braintreepayments.api.dropin.R.id.bt_payment_method_icon);
-            title = view.findViewById(com.braintreepayments.api.dropin.R.id.bt_payment_method_title);
+            icon = view.findViewById(R.id.bt_payment_method_icon);
+            title = view.findViewById(R.id.bt_payment_method_title);
             description = view.findViewById(R.id.bt_payment_method_description);
         }
     }
