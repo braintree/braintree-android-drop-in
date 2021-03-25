@@ -7,6 +7,7 @@
   * Make `AddPaymentUpdateListener` package-private
   * Make `AnimatedButtonView` package-private
   * Make `AnimationFinishedListener` package-private
+  * Make `BaseActivity` package-private
 
 ## 5.2.0
 
