@@ -24,7 +24,7 @@ import com.braintreepayments.cardform.view.ErrorEditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class EnrollmentCardView extends LinearLayout implements OnClickListener, OnEditorActionListener {
+class EnrollmentCardView extends LinearLayout implements OnClickListener, OnEditorActionListener {
 
     private ErrorEditText mSmsCode;
     private TextView mSmsSentTextView;

@@ -9,6 +9,7 @@
   * Make `AnimationFinishedListener` package-private
   * Make `BaseActivity` package-private
   * Make `EditCardView` package-private
+  * Make `EnrollmentCardView` package-private
 
 ## 5.2.0
 
