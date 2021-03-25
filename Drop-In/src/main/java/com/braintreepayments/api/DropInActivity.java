@@ -13,6 +13,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.VisibleForTesting;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.braintreepayments.api.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.AuthenticationException;
@@ -39,11 +44,6 @@ import com.braintreepayments.api.models.ThreeDSecureRequest;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.VisibleForTesting;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;

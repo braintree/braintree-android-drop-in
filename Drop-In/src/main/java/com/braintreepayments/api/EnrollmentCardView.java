@@ -16,13 +16,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.BraintreeError;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.cardform.utils.ViewUtils;
 import com.braintreepayments.cardform.view.ErrorEditText;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 class EnrollmentCardView extends LinearLayout implements OnClickListener, OnEditorActionListener {
 

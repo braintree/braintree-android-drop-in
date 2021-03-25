@@ -3,12 +3,12 @@ package com.braintreepayments.api;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<VaultManagerPaymentMethodsAdapter.ViewHolder> {
     private final List<PaymentMethodNonce> mPaymentMethodNonces = new ArrayList<>();

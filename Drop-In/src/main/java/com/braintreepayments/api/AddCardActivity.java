@@ -7,6 +7,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.IntDef;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
@@ -33,10 +37,6 @@ import com.braintreepayments.cardform.view.CardForm;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-
-import androidx.annotation.IntDef;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;

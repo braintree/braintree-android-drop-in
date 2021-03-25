@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.LinearLayout;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.BraintreeError;
 import com.braintreepayments.api.exceptions.ErrorWithResponse;
@@ -25,8 +27,6 @@ import com.braintreepayments.cardform.view.SupportedCardTypesView;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 class AddCardView extends LinearLayout implements OnCardFormSubmitListener, OnCardFormValidListener,
         OnClickListener, OnCardTypeChangedListener {
