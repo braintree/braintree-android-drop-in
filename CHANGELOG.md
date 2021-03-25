@@ -13,6 +13,7 @@
   * Make `PaymentMethodItemView` package-private
   * Make `SupportedPaymentMethodsAdapter` package-private
   * Make `VaultedPaymentMethodsAdapter` package-private
+  * Make `VaultManagerPaymentMethodsAdapter` package-private
 
 ## 5.2.0
 

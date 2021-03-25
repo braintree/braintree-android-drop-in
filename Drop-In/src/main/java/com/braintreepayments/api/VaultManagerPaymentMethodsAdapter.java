@@ -10,7 +10,7 @@ import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<VaultManagerPaymentMethodsAdapter.ViewHolder> {
+class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<VaultManagerPaymentMethodsAdapter.ViewHolder> {
     private final List<PaymentMethodNonce> mPaymentMethodNonces = new ArrayList<>();
     private View.OnClickListener mClickListener;
 
