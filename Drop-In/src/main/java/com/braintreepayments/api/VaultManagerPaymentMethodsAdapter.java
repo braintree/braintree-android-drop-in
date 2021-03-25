@@ -14,7 +14,7 @@ class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<VaultManage
     private final List<PaymentMethodNonce> mPaymentMethodNonces = new ArrayList<>();
     private View.OnClickListener mClickListener;
 
-    public VaultManagerPaymentMethodsAdapter(View.OnClickListener clickListener) {
+    VaultManagerPaymentMethodsAdapter(View.OnClickListener clickListener) {
         mClickListener = clickListener;
     }
 
@@ -39,11 +39,11 @@ class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<VaultManage
         });
     }
 
-    public PaymentMethodNonce getPaymentMethodNonce(int index) {
+    PaymentMethodNonce getPaymentMethodNonce(int index) {
         return mPaymentMethodNonces.get(index);
     }
 
-    public void paymentMethodDeleted(PaymentMethodNonce paymentMethodNonce) {
+    void paymentMethodDeleted(PaymentMethodNonce paymentMethodNonce) {
         int index = mPaymentMethodNonces.indexOf(paymentMethodNonce);
         mPaymentMethodNonces.remove(index);
         this.notifyItemRemoved(index);
@@ -54,16 +54,16 @@ class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<VaultManage
         return mPaymentMethodNonces.size();
     }
 
-    public void setPaymentMethodNonces(List<PaymentMethodNonce> paymentMethodNonces) {
+    void setPaymentMethodNonces(List<PaymentMethodNonce> paymentMethodNonces) {
         mPaymentMethodNonces.clear();
         mPaymentMethodNonces.addAll(paymentMethodNonces);
     }
 
-    public ArrayList<PaymentMethodNonce> getPaymentMethodNonces() {
+    ArrayList<PaymentMethodNonce> getPaymentMethodNonces() {
         return new ArrayList<>(mPaymentMethodNonces);
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         ViewHolder(View view) {
             super(view);
         }

@@ -46,7 +46,7 @@ class AvailablePaymentMethodNonceList {
         return items.get(index);
     }
 
-    public boolean hasCardNonce() {
+    boolean hasCardNonce() {
         for (PaymentMethodNonce nonce : items) {
             if (nonce instanceof CardNonce) {
                 return true;

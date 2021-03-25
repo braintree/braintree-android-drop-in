@@ -25,13 +25,12 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
     private final List<PaymentMethodNonce> mPaymentMethodNonces;
     private AvailablePaymentMethodNonceList mAvailablePaymentMethodNonces;
 
-    public VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener,
-                                        List<PaymentMethodNonce> paymentMethodNonces) {
+    VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener, List<PaymentMethodNonce> paymentMethodNonces) {
         mSelectedListener = listener;
         mPaymentMethodNonces = paymentMethodNonces;
     }
 
-    public void setup(Context context, Configuration configuration, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
+    void setup(Context context, Configuration configuration, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
         mAvailablePaymentMethodNonces = new AvailablePaymentMethodNonceList(
                 context, configuration, mPaymentMethodNonces, dropInRequest, googlePayEnabled);
     }
@@ -69,7 +68,7 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
         return mAvailablePaymentMethodNonces.size();
     }
 
-    public boolean hasCardNonce() {
+    boolean hasCardNonce() {
         return mAvailablePaymentMethodNonces.hasCardNonce();
     }
 

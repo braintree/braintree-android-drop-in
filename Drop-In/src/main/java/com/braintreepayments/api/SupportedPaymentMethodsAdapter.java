@@ -22,15 +22,13 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
     private ArrayList<PaymentMethodType> mAvailablePaymentMethods;
     private PaymentMethodSelectedListener mPaymentMethodSelectedListener;
 
-    public SupportedPaymentMethodsAdapter(Context context,
-                                          PaymentMethodSelectedListener paymentMethodSelectedListener) {
+    SupportedPaymentMethodsAdapter(Context context, PaymentMethodSelectedListener paymentMethodSelectedListener) {
         mContext = context;
         mPaymentMethodSelectedListener = paymentMethodSelectedListener;
         mAvailablePaymentMethods = new ArrayList<>();
     }
 
-    public void setup(Configuration configuration, DropInRequest dropInRequest,
-                      boolean googlePayEnabled, boolean unionpaySupported) {
+    void setup(Configuration configuration, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
         if (dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled()) {
             mAvailablePaymentMethods.add(PaymentMethodType.PAYPAL);
         }
@@ -96,7 +94,7 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public interface PaymentMethodSelectedListener {
+    interface PaymentMethodSelectedListener {
         void onPaymentMethodSelected(PaymentMethodType type);
     }
 }
