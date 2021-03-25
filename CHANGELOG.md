@@ -12,6 +12,7 @@
   * Make `EnrollmentCardView` package-private
   * Make `PaymentMethodItemView` package-private
   * Make `SupportedPaymentMethodsAdapter` package-private
+  * Make `VaultedPaymentMethodsAdapter` package-private
 
 ## 5.2.0
 

@@ -18,8 +18,7 @@ import java.util.List;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-// NEXT MAJOR VERSION make this class package private
-public class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMethodsAdapter.ViewHolder> {
+class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMethodsAdapter.ViewHolder> {
 
     private final PaymentMethodNonceCreatedListener mSelectedListener;
 
