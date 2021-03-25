@@ -73,12 +73,12 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(mContext).inflate(com.braintreepayments.api.dropin.R.layout.bt_payment_method_list_item, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.bt_payment_method_list_item, parent, false);
         }
 
         final PaymentMethodType type = mAvailablePaymentMethods.get(position);
 
-        ImageView icon = convertView.findViewById(com.braintreepayments.api.dropin.R.id.bt_payment_method_icon);
+        ImageView icon = convertView.findViewById(R.id.bt_payment_method_icon);
         icon.setImageResource(type.getDrawable());
 
         ((TextView) convertView.findViewById(R.id.bt_payment_method_type))
