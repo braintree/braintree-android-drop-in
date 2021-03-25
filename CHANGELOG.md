@@ -10,6 +10,7 @@
   * Make `BaseActivity` package-private
   * Make `EditCardView` package-private
   * Make `EnrollmentCardView` package-private
+  * Make `PaymentMethodItemView` package-private
 
 ## 5.2.0
 
