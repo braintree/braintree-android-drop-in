@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class SupportedPaymentMethodsAdapter extends BaseAdapter {
+class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
     private Context mContext;
     private ArrayList<PaymentMethodType> mAvailablePaymentMethods;
