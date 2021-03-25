@@ -28,7 +28,7 @@ import java.util.Set;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class AddCardView extends LinearLayout implements OnCardFormSubmitListener, OnCardFormValidListener,
+class AddCardView extends LinearLayout implements OnCardFormSubmitListener, OnCardFormValidListener,
         OnClickListener, OnCardTypeChangedListener {
 
     private static final String PARENT_STATE = "com.braintreepayments.api.dropin.view.PARENT_STATE";
