@@ -3,14 +3,9 @@
 ## unreleased
 
 * Breaking Changes
-  * Make `AddCardView` package-private
   * Make `AddPaymentUpdateListener` package-private
-  * Make `AnimatedButtonView` package-private
   * Make `AnimationFinishedListener` package-private
   * Make `BaseActivity` package-private
-  * Make `EditCardView` package-private
-  * Make `EnrollmentCardView` package-private
-  * Make `PaymentMethodItemView` package-private
   * Make `SupportedPaymentMethodsAdapter` package-private
   * Make `VaultedPaymentMethodsAdapter` package-private
   * Make `VaultManagerPaymentMethodsAdapter` package-private
