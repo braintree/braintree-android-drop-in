@@ -56,6 +56,10 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
 }
 ```
 
+### Localization
+
+Drop-In is currently localized for [23 languages](https://github.com/braintree/braintree-android-drop-in/tree/master/Drop-In/src/main/res). To view localized text for a specific locale, open its corresponding `values-<LOCALE_NAME>/strings.xml` resource file.
+
 ### 3D Secure + Drop-in
 
 The new Drop-In supports 3D-Secure verification. Assuming you have [3D-Secure configured](https://developers.braintreepayments.com/guides/3d-secure/configuration) for your account, enable it in your client with `DropInRequest.requestThreeDSecureVerification(true)` and set an amount. Then, create a ThreeDSecureRequest() object, setting `ThreeDSecurePostalAddress` and `ThreeDSecureAdditionalInformation` fields where possible; the more fields that are set, the less likely a user will be presented with a challenge. For more information, check our [3D Secure Migration Guide](https://developers.braintreepayments.com/guides/3d-secure/migration/android/v3#getting-ready-for-3ds-2). Make sure to attach this object to the `BTDropInRequest` before use.
