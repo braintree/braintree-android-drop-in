@@ -1,5 +1,15 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Breaking Changes
+  * Make `AddPaymentUpdateListener` package-private
+  * Make `AnimationFinishedListener` package-private
+  * Make `BaseActivity` package-private
+  * Make `SupportedPaymentMethodsAdapter` package-private
+  * Make `VaultedPaymentMethodsAdapter` package-private
+  * Make `VaultManagerPaymentMethodsAdapter` package-private
+
 ## 5.2.2
 
 * Bump braintree_android version to 3.17.4
