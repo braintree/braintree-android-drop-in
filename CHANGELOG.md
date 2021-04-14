@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 5.2.1
 
 * Bump card-form version to 5.1.1
 
