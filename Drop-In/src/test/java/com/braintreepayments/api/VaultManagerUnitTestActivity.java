@@ -3,10 +3,7 @@ package com.braintreepayments.api;
 import android.content.Context;
 import android.os.Bundle;
 
-import com.braintreepayments.api.dropin.BraintreeUnitTestHttpClient;
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.dropin.VaultManagerActivity;
-import com.braintreepayments.api.dropin.adapters.VaultManagerPaymentMethodsAdapter;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.internal.BraintreeGraphQLHttpClient;
 import com.braintreepayments.api.models.PaymentMethodNonce;

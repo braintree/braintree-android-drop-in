@@ -9,10 +9,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.dropin.DropInActivity;
-import com.braintreepayments.api.dropin.DropInRequest;
-import com.braintreepayments.api.dropin.DropInResult;
-import com.braintreepayments.api.dropin.utils.PaymentMethodType;
+import com.braintreepayments.api.DropInActivity;
+import com.braintreepayments.api.DropInRequest;
+import com.braintreepayments.api.DropInResult;
+import com.braintreepayments.api.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
