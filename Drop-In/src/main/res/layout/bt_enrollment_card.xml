@@ -39,7 +39,7 @@
         android:paddingStart="58dp"
         android:text="@string/bt_sms_code_sent_to" />
 
-    <com.braintreepayments.api.dropin.view.AnimatedButtonView
+    <com.braintreepayments.api.AnimatedButtonView
         android:id="@+id/bt_animated_button_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
