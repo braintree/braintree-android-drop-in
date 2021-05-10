@@ -14,9 +14,6 @@ import android.widget.LinearLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.exceptions.BraintreeError;
-import com.braintreepayments.api.exceptions.ErrorWithResponse;
-import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.OnCardFormValidListener;
 import com.braintreepayments.cardform.utils.CardType;
@@ -84,14 +81,14 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         mCardForm.setOnCardFormValidListener(this);
         mCardForm.setOnCardFormSubmitListener(this);
 
-        Set<String> cardTypes = new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
+        Set<String> cardTypes = new HashSet<>(configuration.getSupportedCardTypes());
         if (!unionpaySupported) {
             cardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
         }
         mSupportedCardTypes = PaymentMethodType.getCardsTypes(cardTypes);
         mSupportedCardTypesView.setSupportedCardTypes(mSupportedCardTypes);
 
-        mAnimatedButtonView.setVisibility(configuration.getUnionPay().isEnabled() ? VISIBLE : GONE);
+        mAnimatedButtonView.setVisibility(configuration.isUnionPayEnabled() ? VISIBLE : GONE);
         mAnimatedButtonView.setClickListener(this);
 
         if (mCardNumber != null) {

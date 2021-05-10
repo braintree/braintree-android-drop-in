@@ -47,9 +47,9 @@ public class DropInUnitTestActivity extends DropInActivity {
     }
 
     @Override
-    protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
+    protected BraintreeFragment getBraintreeClient() {
         if (braintreeFragment == null) {
-            braintreeFragment = super.getBraintreeFragment();
+            braintreeFragment = super.getBraintreeClient();
             setHttpClient(braintreeFragment, httpClient);
         }
 

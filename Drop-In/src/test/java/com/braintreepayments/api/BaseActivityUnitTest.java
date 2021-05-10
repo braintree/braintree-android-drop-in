@@ -118,14 +118,14 @@ public class BaseActivityUnitTest {
                 .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application));
 
-        assertNotNull(mActivity.getBraintreeFragment());
+        assertNotNull(mActivity.getBraintreeClient());
     }
 
     @Test(expected = InvalidArgumentException.class)
     public void getBraintreeFragment_throwsAnExceptionForEmptyAuthorization() throws InvalidArgumentException {
         setup(new DropInRequest().getIntent(RuntimeEnvironment.application));
 
-        mActivity.getBraintreeFragment();
+        mActivity.getBraintreeClient();
     }
 
     @Test
@@ -134,7 +134,7 @@ public class BaseActivityUnitTest {
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN))
                 .getIntent(RuntimeEnvironment.application));
 
-        mActivity.getBraintreeFragment();
+        mActivity.getBraintreeClient();
 
         assertTrue(mActivity.mClientTokenPresent);
     }
@@ -145,7 +145,7 @@ public class BaseActivityUnitTest {
                 .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application));
 
-        mActivity.getBraintreeFragment();
+        mActivity.getBraintreeClient();
 
         assertFalse(mActivity.mClientTokenPresent);
     }

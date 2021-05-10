@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.models.Configuration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -33,13 +32,13 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
             mAvailablePaymentMethods.add(PaymentMethodType.PAYPAL);
         }
 
-        if (dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(mContext)) {
+        if (dropInRequest.isVenmoEnabled() && configuration.isVenmoEnabled()) {
             mAvailablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
         }
 
         if (dropInRequest.isCardEnabled()) {
             Set<String> supportedCardTypes =
-                    new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
+                    new HashSet<>(configuration.getSupportedCardTypes());
             if (!unionpaySupported) {
                 supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
             }

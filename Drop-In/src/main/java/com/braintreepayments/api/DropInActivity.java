@@ -97,12 +97,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
-        try {
-            mBraintreeFragment = getBraintreeFragment();
-        } catch (InvalidArgumentException e) {
-            finish(e);
-            return;
-        }
+        mBraintreeFragment = getBraintreeClient();
 
         if (savedInstanceState != null) {
             mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED,

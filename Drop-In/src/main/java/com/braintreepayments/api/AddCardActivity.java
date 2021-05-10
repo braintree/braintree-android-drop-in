@@ -12,27 +12,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.exceptions.AuthenticationException;
-import com.braintreepayments.api.exceptions.AuthorizationException;
-import com.braintreepayments.api.exceptions.ConfigurationException;
-import com.braintreepayments.api.exceptions.DownForMaintenanceException;
-import com.braintreepayments.api.exceptions.ErrorWithResponse;
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.exceptions.ServerException;
-import com.braintreepayments.api.exceptions.UnexpectedException;
-import com.braintreepayments.api.exceptions.UpgradeRequiredException;
-import com.braintreepayments.api.interfaces.BraintreeCancelListener;
-import com.braintreepayments.api.interfaces.BraintreeErrorListener;
-import com.braintreepayments.api.interfaces.ConfigurationListener;
-import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.interfaces.UnionPayListener;
-import com.braintreepayments.api.models.BraintreeRequestCodes;
-import com.braintreepayments.api.models.CardBuilder;
-import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.models.ThreeDSecureRequest;
-import com.braintreepayments.api.models.UnionPayCapabilities;
-import com.braintreepayments.api.models.UnionPayCardBuilder;
 import com.braintreepayments.cardform.view.CardForm;
 
 import java.lang.annotation.Retention;
@@ -41,9 +20,7 @@ import java.lang.annotation.RetentionPolicy;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class AddCardActivity extends BaseActivity implements ConfigurationListener,
-        AddPaymentUpdateListener, PaymentMethodNonceCreatedListener, BraintreeErrorListener,
-        BraintreeCancelListener, UnionPayListener {
+public class AddCardActivity extends BaseActivity implements AddPaymentUpdateListener {
 
     private static final String EXTRA_STATE = "com.braintreepayments.api.EXTRA_STATE";
     private static final String EXTRA_ENROLLMENT_ID = "com.braintreepayments.api.EXTRA_ENROLLMENT_ID";
@@ -109,12 +86,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
 
         enterState(LOADING);
 
-        try {
-            mBraintreeFragment = getBraintreeFragment();
-        } catch (InvalidArgumentException e) {
-            finish(e);
-            return;
-        }
+        mBraintreeFragment = getBraintreeClient();
 
         mBraintreeFragment.sendAnalyticsEvent("card.selected");
     }

@@ -4,12 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.models.Authorization;
-import com.braintreepayments.api.models.ClientToken;
-import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-
 import org.json.JSONException;
 
 import androidx.annotation.Nullable;
@@ -20,9 +14,10 @@ class BaseActivity extends AppCompatActivity {
     static final String EXTRA_CONFIGURATION_DATA = "com.braintreepayments.api.EXTRA_CONFIGURATION_DATA";
 
     protected DropInRequest mDropInRequest;
-    protected BraintreeFragment mBraintreeFragment;
     protected Configuration mConfiguration;
     protected boolean mClientTokenPresent;
+
+    private BraintreeClient braintreeClient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,20 +40,17 @@ class BaseActivity extends AppCompatActivity {
         }
     }
 
-    protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
-        if (TextUtils.isEmpty(mDropInRequest.getAuthorization())) {
-            throw new InvalidArgumentException("A client token or tokenization key must be " +
-                    "specified in the " + DropInRequest.class.getSimpleName());
-        }
+    protected BraintreeClient getBraintreeClient() {
+        // TODO: static factory method for braintree client and rename this method and make it not throw
+//        if (TextUtils.isEmpty(mDropInRequest.getAuthorization())) {
+//            throw new InvalidArgumentException("A client token or tokenization key must be " +
+//                    "specified in the " + DropInRequest.class.getSimpleName());
+//        }
 
-        try {
-            mClientTokenPresent = Authorization.fromString(mDropInRequest.getAuthorization())
+        mClientTokenPresent = Authorization.fromString(mDropInRequest.getAuthorization())
                     instanceof ClientToken;
-        } catch (InvalidArgumentException e) {
-            mClientTokenPresent = false;
-        }
 
-        return BraintreeFragment.newInstance(this, mDropInRequest.getAuthorization());
+        return new BraintreeClient(this, mDropInRequest.getAuthorization());
     }
 
     protected boolean shouldRequestThreeDSecureVerification() {
