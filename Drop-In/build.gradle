@@ -58,9 +58,12 @@ android {
 }
 
 dependencies {
-    api 'com.braintreepayments.api:braintree:3.15.0'
+    api 'com.braintreepayments.api:braintree-core:4.0.0-beta3-SNAPSHOT'
+    api 'com.braintreepayments.api:three-d-secure:4.0.0-beta3-SNAPSHOT'
+    api 'com.braintreepayments.api:paypal:4.0.0-beta3-SNAPSHOT'
+    api 'com.braintreepayments.api:venmo:4.0.0-beta3-SNAPSHOT'
+    api 'com.braintreepayments.api:google-pay:4.0.0-beta3-SNAPSHOT'
     api 'com.braintreepayments:card-form:5.1.0'
-    api 'com.braintreepayments.api:three-d-secure:3.15.0'
 
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.gms:play-services-wallet:16.0.0'

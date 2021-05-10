@@ -14,6 +14,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
 import com.braintreepayments.api.BraintreeFragment;
+import com.braintreepayments.api.DropInClient;
 import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
@@ -42,7 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
 
     protected String mAuthorization;
     protected String mCustomerId;
-    protected BraintreeFragment mBraintreeFragment;
+    protected DropInClient dropInClient;
 
     private boolean mActionBarSetup;
 

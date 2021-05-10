@@ -10,8 +10,11 @@ import android.widget.TextView;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.DropInActivity;
+import com.braintreepayments.api.DropInClient;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
+import com.braintreepayments.api.FetchMostRecentPaymentMethodCallback;
+import com.braintreepayments.api.InvalidArgumentException;
 import com.braintreepayments.api.PaymentMethodType;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.BraintreeCancelListener;
@@ -93,15 +96,16 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
             mPurchased = false;
             clearNonce();
 
-            try {
-                if (ClientToken.fromString(mAuthorization) instanceof ClientToken) {
-                    DropInResult.fetchDropInResult(this, mAuthorization, this);
-                } else {
-                    mAddPaymentMethodButton.setVisibility(VISIBLE);
+            dropInClient.fetchMostRecentPaymentMethod(new FetchMostRecentPaymentMethodCallback() {
+                @Override
+                public void onResult(DropInResult dropInResult, Exception error) {
+                   if (dropInResult != null) {
+                       handleDropInResult(dropInResult);
+                   } else {
+                       onError(error);
+                   }
                 }
-            } catch (InvalidArgumentException e) {
-                mAddPaymentMethodButton.setVisibility(VISIBLE);
-            }
+            });
         }
     }
 
@@ -166,8 +170,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         mPurchased = true;
     }
 
-    @Override
-    public void onResult(DropInResult result) {
+    public void handleDropInResult(DropInResult result) {
         if (result.getPaymentMethodType() == null) {
             mAddPaymentMethodButton.setVisibility(VISIBLE);
         } else {
@@ -243,7 +246,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     @Override
     protected void onAuthorizationFetched() {
         try {
-            mBraintreeFragment = BraintreeFragment.newInstance(this, mAuthorization);
+            dropInClient = new DropInClient(this, mAuthorization);
 
             if (ClientToken.fromString(mAuthorization) instanceof ClientToken) {
                 DropInResult.fetchDropInResult(this, mAuthorization, this);
