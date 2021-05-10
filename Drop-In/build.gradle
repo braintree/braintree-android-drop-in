@@ -64,6 +64,7 @@ dependencies {
     api 'com.braintreepayments.api:venmo:4.0.0-beta3-SNAPSHOT'
     api 'com.braintreepayments.api:google-pay:4.0.0-beta3-SNAPSHOT'
     api 'com.braintreepayments.api:card:4.0.0-beta3-SNAPSHOT'
+    api 'com.braintreepayments.api:data-collector:4.0.0-beta3-SNAPSHOT'
     api 'com.braintreepayments:card-form:5.1.0'
 
     implementation 'androidx.cardview:cardview:1.0.0'
