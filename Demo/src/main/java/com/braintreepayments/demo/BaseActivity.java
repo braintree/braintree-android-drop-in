@@ -13,22 +13,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
-import com.braintreepayments.api.BraintreeFragment;
-import com.braintreepayments.api.DropInClient;
-import com.braintreepayments.api.PaymentMethodNonce;
-import com.braintreepayments.api.interfaces.BraintreeCancelListener;
-import com.braintreepayments.api.interfaces.BraintreeErrorListener;
-import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.internal.SignatureVerificationOverrides;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.demo.models.ClientToken;
-import com.paypal.android.sdk.onetouch.core.PayPalOneTouchCore;
-
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 import androidx.core.content.ContextCompat;
+
+import com.braintreepayments.api.DropInClient;
+import com.braintreepayments.api.PaymentMethodNonce;
+import com.braintreepayments.api.internal.SignatureVerificationOverrides;
+import com.braintreepayments.demo.models.ClientToken;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -37,7 +32,6 @@ import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 @SuppressWarnings("deprecation")
 public abstract class BaseActivity extends AppCompatActivity implements OnRequestPermissionsResultCallback,
-        PaymentMethodNonceCreatedListener, BraintreeCancelListener, BraintreeErrorListener,
         ActionBar.OnNavigationListener {
 
     private static final String KEY_AUTHORIZATION = "com.braintreepayments.demo.KEY_AUTHORIZATION";
@@ -68,7 +62,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
 
         SignatureVerificationOverrides.disableAppSwitchSignatureVerification(
                 Settings.isPayPalSignatureVerificationDisabled(this));
-        PayPalOneTouchCore.useHardcodedConfig(this, Settings.useHardcodedPayPalConfiguration(this));
 
         if (BuildConfig.DEBUG && ContextCompat.checkSelfPermission(this, WRITE_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -100,17 +93,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
         }
     }
 
-    @Override
-    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-        Log.d(getClass().getSimpleName(), "Payment Method Nonce received: " + paymentMethodNonce.getTypeLabel());
-    }
-
-    @Override
-    public void onCancel(int requestCode) {
-        Log.d(getClass().getSimpleName(), "Cancel received: " + requestCode);
-    }
-
-    @Override
     public void onError(Exception error) {
         Log.d(getClass().getSimpleName(), "Error received (" + error.getClass() + "): "  + error.getMessage());
         Log.d(getClass().getSimpleName(), error.toString());
@@ -121,22 +103,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
     private void performReset() {
         mAuthorization = null;
         mCustomerId = Settings.getCustomerId(this);
-
-        if (mBraintreeFragment == null) {
-            mBraintreeFragment = (BraintreeFragment) getSupportFragmentManager()
-                    .findFragmentByTag(BraintreeFragment.TAG);
-        }
-
-        if (mBraintreeFragment != null) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                getSupportFragmentManager().beginTransaction().remove(mBraintreeFragment).commitNow();
-            } else {
-                getSupportFragmentManager().beginTransaction().remove(mBraintreeFragment).commit();
-                getSupportFragmentManager().executePendingTransactions();
-            }
-
-            mBraintreeFragment = null;
-        }
 
         reset();
         fetchAuthorization();

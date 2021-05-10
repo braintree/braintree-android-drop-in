@@ -180,10 +180,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-        super.onPaymentMethodNonceCreated(paymentMethodNonce);
-
         displayResult(paymentMethodNonce, null);
         safelyCloseLoadingView();
 
@@ -192,10 +189,7 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    @Override
     public void onCancel(int requestCode) {
-        super.onCancel(requestCode);
-
         safelyCloseLoadingView();
 
         mShouldMakePurchase = false;
