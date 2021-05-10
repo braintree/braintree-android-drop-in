@@ -25,7 +25,7 @@ public class DropInRequest implements Parcelable {
     private boolean mRequestThreeDSecureVerification;
     private ThreeDSecureRequest mThreeDSecureRequest;
 
-    private GooglePaymentRequest mGooglePaymentRequest;
+    private GooglePayRequest mGooglePaymentRequest;
     private PayPalRequest mPayPalRequest;
 
     private boolean mGooglePaymentEnabled = true;
@@ -100,7 +100,7 @@ public class DropInRequest implements Parcelable {
      *
      * @param request The Google Payment Request {@link GooglePaymentRequest} for the transaction.
      */
-    public DropInRequest googlePaymentRequest(GooglePaymentRequest request) {
+    public DropInRequest googlePaymentRequest(GooglePayRequest request) {
         mGooglePaymentRequest = request;
         return this;
     }

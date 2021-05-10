@@ -8,40 +8,33 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.braintreepayments.api.BraintreeFragment;
+import androidx.cardview.widget.CardView;
+
+import com.braintreepayments.api.CardNonce;
 import com.braintreepayments.api.DropInActivity;
 import com.braintreepayments.api.DropInClient;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
 import com.braintreepayments.api.FetchMostRecentPaymentMethodCallback;
+import com.braintreepayments.api.GooglePayCardNonce;
+import com.braintreepayments.api.GooglePayRequest;
 import com.braintreepayments.api.InvalidArgumentException;
+import com.braintreepayments.api.PayPalAccountNonce;
+import com.braintreepayments.api.PaymentMethodNonce;
 import com.braintreepayments.api.PaymentMethodType;
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.interfaces.BraintreeCancelListener;
-import com.braintreepayments.api.interfaces.BraintreeErrorListener;
-import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.ClientToken;
-import com.braintreepayments.api.models.GooglePaymentCardNonce;
-import com.braintreepayments.api.models.GooglePaymentRequest;
-import com.braintreepayments.api.models.PayPalAccountNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.models.PostalAddress;
-import com.braintreepayments.api.models.ThreeDSecureAdditionalInformation;
-import com.braintreepayments.api.models.ThreeDSecurePostalAddress;
-import com.braintreepayments.api.models.ThreeDSecureRequest;
-import com.braintreepayments.api.models.VenmoAccountNonce;
+import com.braintreepayments.api.PostalAddress;
+import com.braintreepayments.api.ThreeDSecureAdditionalInformation;
+import com.braintreepayments.api.ThreeDSecurePostalAddress;
+import com.braintreepayments.api.ThreeDSecureRequest;
+import com.braintreepayments.api.VenmoAccountNonce;
 import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
 
-import androidx.cardview.widget.CardView;
-
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class MainActivity extends BaseActivity implements PaymentMethodNonceCreatedListener,
-        BraintreeCancelListener, BraintreeErrorListener, DropInResult.DropInResultListener {
+public class MainActivity extends BaseActivity {
 
     private static final int DROP_IN_REQUEST = 100;
 
@@ -137,27 +130,27 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {
-        ThreeDSecurePostalAddress billingAddress = new ThreeDSecurePostalAddress()
-                .givenName("Jill")
-                .surname("Doe")
-                .phoneNumber("5551234567")
-                .streetAddress("555 Smith St")
-                .extendedAddress("#2")
-                .locality("Chicago")
-                .region("IL")
-                .postalCode("12345")
-                .countryCodeAlpha2("US");
+        ThreeDSecurePostalAddress billingAddress = new ThreeDSecurePostalAddress();
+        billingAddress.setGivenName("Jill");
+        billingAddress.setSurname("Doe");
+        billingAddress.setPhoneNumber("5551234567");
+        billingAddress.setStreetAddress("555 Smith St");
+        billingAddress.setExtendedAddress("#2");
+        billingAddress.setLocality("Chicago");
+        billingAddress.setRegion("IL");
+        billingAddress.setPostalCode("12345");
+        billingAddress.setCountryCodeAlpha2("US");
 
-        ThreeDSecureAdditionalInformation additionalInformation = new ThreeDSecureAdditionalInformation()
-                .accountId("account-id");
+        ThreeDSecureAdditionalInformation additionalInformation = new ThreeDSecureAdditionalInformation();
+        additionalInformation.setAccountId("account-id");
 
-        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
-                .amount("1.00")
-                .versionRequested(Settings.getThreeDSecureVersion(this))
-                .email("test@email.com")
-                .mobilePhoneNumber("3125551234")
-                .billingAddress(billingAddress)
-                .additionalInformation(additionalInformation);
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        threeDSecureRequest.setAmount("1.00");
+        threeDSecureRequest.setVersionRequested(Settings.getThreeDSecureVersion(this));
+        threeDSecureRequest.setEmail("test@email.com");
+        threeDSecureRequest.setMobilePhoneNumber("3125551234");
+        threeDSecureRequest.setBillingAddress(billingAddress);
+        threeDSecureRequest.setAdditionalInformation(additionalInformation);
 
         return threeDSecureRequest;
     }
@@ -245,17 +238,18 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
 
     @Override
     protected void onAuthorizationFetched() {
-        try {
-            dropInClient = new DropInClient(this, mAuthorization);
+        dropInClient = new DropInClient(this, mAuthorization);
 
-            if (ClientToken.fromString(mAuthorization) instanceof ClientToken) {
-                DropInResult.fetchDropInResult(this, mAuthorization, this);
-            } else {
-                mAddPaymentMethodButton.setVisibility(VISIBLE);
+        dropInClient.fetchMostRecentPaymentMethod(new FetchMostRecentPaymentMethodCallback() {
+            @Override
+            public void onResult(DropInResult dropInResult, Exception error) {
+                if (dropInResult != null) {
+                    handleDropInResult(dropInResult);
+                } else {
+                    onError(error);
+                }
             }
-        } catch (InvalidArgumentException e) {
-            showDialog(e.getMessage());
-        }
+        });
     }
 
     private void displayResult(PaymentMethodNonce paymentMethodNonce, String deviceData) {
@@ -263,11 +257,13 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         mPaymentMethodType = PaymentMethodType.forType(mNonce);
 
         mPaymentMethodIcon.setImageResource(PaymentMethodType.forType(mNonce).getDrawable());
-        mPaymentMethodTitle.setText(paymentMethodNonce.getTypeLabel());
-        mPaymentMethodDescription.setText(paymentMethodNonce.getDescription());
+
+        // TODO: consider adding back methods for displaying types/descriptions
+//        mPaymentMethodTitle.setText(paymentMethodNonce.getTypeLabel());
+//        mPaymentMethodDescription.setText(paymentMethodNonce.getDescription());
         mPaymentMethod.setVisibility(VISIBLE);
 
-        mNonceString.setText(getString(R.string.nonce) + ": " + mNonce.getNonce());
+        mNonceString.setText(getString(R.string.nonce) + ": " + mNonce.getString());
         mNonceString.setVisibility(VISIBLE);
 
         String details = "";
@@ -292,8 +288,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
             VenmoAccountNonce venmoAccountNonce = (VenmoAccountNonce) mNonce;
 
             details = "Username: " + venmoAccountNonce.getUsername();
-        } else if (mNonce instanceof GooglePaymentCardNonce) {
-            GooglePaymentCardNonce googlePaymentCardNonce = (GooglePaymentCardNonce) mNonce;
+        } else if (mNonce instanceof GooglePayCardNonce) {
+            GooglePayCardNonce googlePaymentCardNonce = (GooglePayCardNonce) mNonce;
 
             details = "Underlying Card Last Two: " + googlePaymentCardNonce.getLastTwo() + "\n";
             details += "Email: " + googlePaymentCardNonce.getEmail() + "\n";
@@ -335,14 +331,15 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
                 address.getSortingCode() + " " + address.getCountryCode();
     }
 
-    private GooglePaymentRequest getGooglePaymentRequest() {
-        return new GooglePaymentRequest()
-                .transactionInfo(TransactionInfo.newBuilder()
-                        .setTotalPrice("1.00")
-                        .setCurrencyCode("USD")
-                        .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
-                        .build())
-                .emailRequired(true);
+    private GooglePayRequest getGooglePaymentRequest() {
+        GooglePayRequest googlePayRequest = new GooglePayRequest();
+        googlePayRequest.setTransactionInfo(TransactionInfo.newBuilder()
+                .setTotalPrice("1.00")
+                .setCurrencyCode("USD")
+                .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
+                .build());
+        googlePayRequest.setEmailRequired(true);
+        return googlePayRequest;
     }
 
     private void safelyCloseLoadingView() {
