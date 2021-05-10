@@ -1,75 +1,40 @@
 package com.braintreepayments.api;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.interfaces.BraintreeErrorListener;
-import com.braintreepayments.api.interfaces.BraintreeListener;
-import com.braintreepayments.api.interfaces.BraintreeResponseListener;
-import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
-import com.braintreepayments.api.internal.BraintreeSharedPreferences;
-import com.braintreepayments.api.models.Authorization;
-import com.braintreepayments.api.models.ClientToken;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-
-import java.util.ArrayList;
-import java.util.List;
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * Contains the result from launching {@link DropInActivity} or calling
- * {@link DropInResult#fetchDropInResult(AppCompatActivity, String, DropInResultListener)}.
+ * {@link DropInClient#fetchMostRecentPaymentMethod(FragmentActivity, FetchMostRecentPaymentMethodCallback)}.
  */
 public class DropInResult implements Parcelable {
 
     /**
-     * The key used to return {@link DropInResult} in an {@link android.content.Intent} in
-     * {@link AppCompatActivity#onActivityResult(int, int, Intent)}
+     * The key used to return {@link DropInResult} in an {@link android.content.Intent} in onActivityResult
      */
     public static final String EXTRA_DROP_IN_RESULT =
             "com.braintreepayments.api.dropin.EXTRA_DROP_IN_RESULT";
 
-    /**
-     * Listener used with {@link DropInResult#fetchDropInResult(AppCompatActivity, String, DropInResultListener)}
-     */
-    public interface DropInResultListener {
-        /**
-         * Any errors that occur during
-         * {@link DropInResult#fetchDropInResult(AppCompatActivity, String, DropInResultListener)} will be
-         * returned here.
-         *
-         * @param exception the {@link Exception} that occurred.
-         */
-        void onError(Exception exception);
-
-        /**
-         * The {@link DropInResult} from
-         * {@link DropInResult#fetchDropInResult(AppCompatActivity, String, DropInResultListener)}
-         *
-         * @param result
-         */
-        void onResult(DropInResult result);
-    }
 
     static final String LAST_USED_PAYMENT_METHOD_TYPE =
             "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
 
     private PaymentMethodType mPaymentMethodType;
+
     private PaymentMethodNonce mPaymentMethodNonce;
     private String mDeviceData;
 
     public DropInResult() {}
 
     DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
-        if (paymentMethodNonce != null) {
-            mPaymentMethodType = PaymentMethodType.forType(paymentMethodNonce.getTypeLabel());
-        }
+        // TODO: Revisit type labels
+//        if (paymentMethodNonce != null) {
+//            mPaymentMethodType = PaymentMethodType.forType(paymentMethodNonce.getTypeLabel());
+//        }
 
         mPaymentMethodNonce = paymentMethodNonce;
 
@@ -79,6 +44,10 @@ public class DropInResult implements Parcelable {
     DropInResult deviceData(@Nullable String deviceData) {
         mDeviceData = deviceData;
         return this;
+    }
+
+    void setPaymentMethodType(PaymentMethodType mPaymentMethodType) {
+        this.mPaymentMethodType = mPaymentMethodType;
     }
 
     /**
@@ -95,7 +64,7 @@ public class DropInResult implements Parcelable {
     /**
      * @return The previous {@link PaymentMethodNonce} or {@code null} if there is no previous
      * payment method or the previous payment method was
-     * {@link com.braintreepayments.api.models.GooglePaymentCardNonce}.
+     * {@link com.braintreepayments.api.GooglePayCardNonce}.
      */
     @Nullable
     public PaymentMethodNonce getPaymentMethodNonce() {
@@ -111,96 +80,6 @@ public class DropInResult implements Parcelable {
         return mDeviceData;
     }
 
-    /**
-     * Called to get a user's existing payment method, if any. If your user already has an existing
-     * payment method, you may not need to show Drop-In.
-     *
-     * Note: a client token must be used and will only return a payment method if it contains a
-     * customer id.
-     *
-     * @param activity the current {@link AppCompatActivity}
-     * @param clientToken A client token from your server. Note that this method will only return a
-     *                    result if the client token contains a customer id.
-     * @param listener The {@link DropInResultListener} to handle the error or {@link DropInResult}
-     *                 response.
-     */
-    public static void fetchDropInResult(AppCompatActivity activity, String clientToken,
-                                         @NonNull final DropInResultListener listener) {
-        try {
-            if (!(Authorization.fromString(clientToken) instanceof ClientToken)) {
-                listener.onError(new InvalidArgumentException("DropInResult#fetchDropInResult must " +
-                        "be called with a client token"));
-                return;
-            }
-        } catch (InvalidArgumentException e) {
-            listener.onError(e);
-            return;
-        }
-
-        final BraintreeFragment fragment;
-        try {
-            fragment = BraintreeFragment.newInstance(activity, clientToken);
-        } catch (InvalidArgumentException e) {
-            listener.onError(e);
-            return;
-        }
-
-        final List<BraintreeListener> previousListeners = fragment.getListeners();
-        final ListenerHolder listenerHolder = new ListenerHolder();
-
-        BraintreeErrorListener errorListener = new BraintreeErrorListener() {
-            @Override
-            public void onError(Exception error) {
-                resetListeners(fragment, listenerHolder, previousListeners);
-                listener.onError(error);
-            }
-        };
-        listenerHolder.listeners.add(errorListener);
-
-        PaymentMethodNoncesUpdatedListener paymentMethodsListener = new PaymentMethodNoncesUpdatedListener() {
-            @Override
-            public void onPaymentMethodNoncesUpdated(java.util.List<PaymentMethodNonce> paymentMethodNonces) {
-                resetListeners(fragment, listenerHolder, previousListeners);
-
-                if (paymentMethodNonces.size() > 0) {
-                    PaymentMethodNonce paymentMethod = paymentMethodNonces.get(0);
-                    listener.onResult(new DropInResult()
-                            .paymentMethodNonce(paymentMethod));
-                } else {
-                    listener.onResult(new DropInResult());
-                }
-            }
-        };
-        listenerHolder.listeners.add(paymentMethodsListener);
-
-        fragment.addListener(errorListener);
-        fragment.addListener(paymentMethodsListener);
-
-        final PaymentMethodType lastUsedPaymentMethodType = PaymentMethodType.forType(BraintreeSharedPreferences.getSharedPreferences(activity)
-                .getString(LAST_USED_PAYMENT_METHOD_TYPE, null));
-
-        if (lastUsedPaymentMethodType == PaymentMethodType.GOOGLE_PAYMENT) {
-            BraintreeResponseListener<Boolean> isReadyToPayCallback = new BraintreeResponseListener<Boolean>() {
-                @Override
-                public void onResponse(Boolean isReadyToPay) {
-                    if (isReadyToPay) {
-                        resetListeners(fragment, listenerHolder, previousListeners);
-
-                        DropInResult result = new DropInResult();
-                        result.mPaymentMethodType = lastUsedPaymentMethodType;
-
-                        listener.onResult(result);
-                    } else {
-                        PaymentMethod.getPaymentMethodNonces(fragment);
-                    }
-                }
-            };
-
-            GooglePayment.isReadyToPay(fragment, isReadyToPayCallback);
-        } else {
-            PaymentMethod.getPaymentMethodNonces(fragment);
-        }
-    }
 
     static void setLastUsedPaymentMethodType(Context context,
                                              PaymentMethodNonce paymentMethodNonce) {
@@ -209,21 +88,6 @@ public class DropInResult implements Parcelable {
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
                         PaymentMethodType.forType(paymentMethodNonce).getCanonicalName())
                 .apply();
-    }
-
-    private static void resetListeners(BraintreeFragment fragment, ListenerHolder listenerHolder,
-                                       List<BraintreeListener> listeners) {
-        for (BraintreeListener listener : listenerHolder.listeners) {
-            fragment.removeListener(listener);
-        }
-
-        for (BraintreeListener previousListener : listeners) {
-            fragment.addListener(previousListener);
-        }
-    }
-
-    private static class ListenerHolder {
-        public List<BraintreeListener> listeners = new ArrayList<>();
     }
 
     @Override
