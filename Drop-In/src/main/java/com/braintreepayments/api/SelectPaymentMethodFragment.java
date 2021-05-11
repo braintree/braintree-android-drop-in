@@ -1,66 +1,67 @@
 package com.braintreepayments.api;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
+
+import androidx.annotation.VisibleForTesting;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.LinearSnapHelper;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SelectPaymentMethodFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SelectPaymentMethodFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private View mBottomSheet;
+    private ViewSwitcher mLoadingViewSwitcher;
+    private TextView mSupportedPaymentMethodsHeader;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    @VisibleForTesting
+    protected ListView mSupportedPaymentMethodListView;
 
-    public SelectPaymentMethodFragment() {
-        // Required empty public constructor
-    }
+    private View mVaultedPaymentMethodsContainer;
+    private RecyclerView mVaultedPaymentMethodsView;
+    private Button mVaultManagerButton;
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SelectPaymentMethodFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SelectPaymentMethodFragment newInstance(String param1, String param2) {
-        SelectPaymentMethodFragment fragment = new SelectPaymentMethodFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+    public SelectPaymentMethodFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_select_payment_method, container, false);
+        View view = inflater.inflate(R.layout.fragment_select_payment_method, container, false);
+
+        mBottomSheet = view.findViewById(R.id.bt_dropin_bottom_sheet);
+        mLoadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
+        mSupportedPaymentMethodsHeader = view.findViewById(R.id.bt_supported_payment_methods_header);
+        mSupportedPaymentMethodListView = view.findViewById(R.id.bt_supported_payment_methods);
+        mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
+        mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
+        mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
+        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(getActivity(),
+                LinearLayoutManager.HORIZONTAL, false));
+        new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
+
+        return view;
+    }
+
+    private void showSupportedPaymentMethods(boolean googlePaymentEnabled) {
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(this, this);
+        adapter.setup(mConfiguration, mDropInRequest, googlePaymentEnabled, mClientTokenPresent);
+        mSupportedPaymentMethodListView.setAdapter(adapter);
+        mLoadingViewSwitcher.setDisplayedChild(1);
+        fetchPaymentMethodNonces(false);
     }
 }

@@ -68,15 +68,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     private String mDeviceData;
 
-    private View mBottomSheet;
-    private ViewSwitcher mLoadingViewSwitcher;
-    private TextView mSupportedPaymentMethodsHeader;
-    @VisibleForTesting
-    protected ListView mSupportedPaymentMethodListView;
-    private View mVaultedPaymentMethodsContainer;
-    private RecyclerView mVaultedPaymentMethodsView;
-    private Button mVaultManagerButton;
-
     private boolean mSheetSlideUpPerformed;
     private boolean mSheetSlideDownPerformed;
     private boolean mPerformedThreeDSecureVerification;
@@ -86,31 +77,20 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
 
-//        mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
-//        mLoadingViewSwitcher = findViewById(R.id.bt_loading_view_switcher);
-//        mSupportedPaymentMethodsHeader = findViewById(R.id.bt_supported_payment_methods_header);
-//        mSupportedPaymentMethodListView = findViewById(R.id.bt_supported_payment_methods);
-//        mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
-//        mVaultedPaymentMethodsView = findViewById(R.id.bt_vaulted_payment_methods);
-//        mVaultManagerButton = findViewById(R.id.bt_vault_edit_button);
-//        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this,
-//                LinearLayoutManager.HORIZONTAL, false));
-//        new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
-//
-//        try {
-//            mBraintreeFragment = getBraintreeFragment();
-//        } catch (InvalidArgumentException e) {
-//            finish(e);
-//            return;
-//        }
-//
-//        if (savedInstanceState != null) {
-//            mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED,
-//                    false);
-//            mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
-//        }
-//
-//        slideUp();
+        try {
+            mBraintreeFragment = getBraintreeFragment();
+        } catch (InvalidArgumentException e) {
+            finish(e);
+            return;
+        }
+
+        if (savedInstanceState != null) {
+            mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED,
+                    false);
+            mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
+        }
+
+        slideUp();
     }
 
     @Override
@@ -136,14 +116,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 //        } else {
 //            showSupportedPaymentMethods(false);
 //        }
-    }
-
-    private void showSupportedPaymentMethods(boolean googlePaymentEnabled) {
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(this, this);
-        adapter.setup(mConfiguration, mDropInRequest, googlePaymentEnabled, mClientTokenPresent);
-        mSupportedPaymentMethodListView.setAdapter(adapter);
-        mLoadingViewSwitcher.setDisplayedChild(1);
-        fetchPaymentMethodNonces(false);
     }
 
     private void handleThreeDSecureFailure() {
