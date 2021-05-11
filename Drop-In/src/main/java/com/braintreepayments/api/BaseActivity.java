@@ -8,6 +8,7 @@ import org.json.JSONException;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
 
 class BaseActivity extends AppCompatActivity {
 
