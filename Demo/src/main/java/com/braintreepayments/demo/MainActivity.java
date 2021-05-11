@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.braintreepayments.api.BraintreeFragment;
 import com.braintreepayments.api.DropInActivity;
+import com.braintreepayments.api.DropInClient;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
 import com.braintreepayments.api.PaymentMethodType;
@@ -129,7 +130,8 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
             dropInRequest.threeDSecureRequest(demoThreeDSecureRequest());
         }
 
-        startActivityForResult(dropInRequest.getIntent(this), DROP_IN_REQUEST);
+        DropInClient dropInClient = new DropInClient();
+        dropInClient.launchDropIn(this, dropInRequest, DROP_IN_REQUEST);
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {
