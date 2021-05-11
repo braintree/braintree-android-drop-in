@@ -86,56 +86,56 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
 
-        mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
-        mLoadingViewSwitcher = findViewById(R.id.bt_loading_view_switcher);
-        mSupportedPaymentMethodsHeader = findViewById(R.id.bt_supported_payment_methods_header);
-        mSupportedPaymentMethodListView = findViewById(R.id.bt_supported_payment_methods);
-        mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
-        mVaultedPaymentMethodsView = findViewById(R.id.bt_vaulted_payment_methods);
-        mVaultManagerButton = findViewById(R.id.bt_vault_edit_button);
-        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false));
-        new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
-
-        try {
-            mBraintreeFragment = getBraintreeFragment();
-        } catch (InvalidArgumentException e) {
-            finish(e);
-            return;
-        }
-
-        if (savedInstanceState != null) {
-            mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED,
-                    false);
-            mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
-        }
-
-        slideUp();
+//        mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
+//        mLoadingViewSwitcher = findViewById(R.id.bt_loading_view_switcher);
+//        mSupportedPaymentMethodsHeader = findViewById(R.id.bt_supported_payment_methods_header);
+//        mSupportedPaymentMethodListView = findViewById(R.id.bt_supported_payment_methods);
+//        mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
+//        mVaultedPaymentMethodsView = findViewById(R.id.bt_vaulted_payment_methods);
+//        mVaultManagerButton = findViewById(R.id.bt_vault_edit_button);
+//        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this,
+//                LinearLayoutManager.HORIZONTAL, false));
+//        new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
+//
+//        try {
+//            mBraintreeFragment = getBraintreeFragment();
+//        } catch (InvalidArgumentException e) {
+//            finish(e);
+//            return;
+//        }
+//
+//        if (savedInstanceState != null) {
+//            mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED,
+//                    false);
+//            mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
+//        }
+//
+//        slideUp();
     }
 
     @Override
     public void onConfigurationFetched(Configuration configuration) {
-        mConfiguration = configuration;
-
-        if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
-            DataCollector.collectDeviceData(mBraintreeFragment, new BraintreeResponseListener<String>() {
-                @Override
-                public void onResponse(String deviceData) {
-                    mDeviceData = deviceData;
-                }
-            });
-        }
-
-        if (mDropInRequest.isGooglePaymentEnabled()) {
-            GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
-                @Override
-                public void onResponse(Boolean isReadyToPay) {
-                    showSupportedPaymentMethods(isReadyToPay);
-                }
-            });
-        } else {
-            showSupportedPaymentMethods(false);
-        }
+//        mConfiguration = configuration;
+//
+//        if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
+//            DataCollector.collectDeviceData(mBraintreeFragment, new BraintreeResponseListener<String>() {
+//                @Override
+//                public void onResponse(String deviceData) {
+//                    mDeviceData = deviceData;
+//                }
+//            });
+//        }
+//
+//        if (mDropInRequest.isGooglePaymentEnabled()) {
+//            GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
+//                @Override
+//                public void onResponse(Boolean isReadyToPay) {
+//                    showSupportedPaymentMethods(isReadyToPay);
+//                }
+//            });
+//        } else {
+//            showSupportedPaymentMethods(false);
+//        }
     }
 
     private void showSupportedPaymentMethods(boolean googlePaymentEnabled) {
