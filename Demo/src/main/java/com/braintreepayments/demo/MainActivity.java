@@ -130,7 +130,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
             dropInRequest.threeDSecureRequest(demoThreeDSecureRequest());
         }
 
-        DropInClient dropInClient = new DropInClient();
+        DropInClient dropInClient = new DropInClient(mAuthorization);
         dropInClient.launchDropIn(this, dropInRequest, DROP_IN_REQUEST);
     }
 

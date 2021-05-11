@@ -46,6 +46,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
+import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
+import static com.braintreepayments.api.DropInClient.EXTRA_DROP_IN_REQUEST;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 public class DropInActivity extends BaseActivity implements ConfigurationListener, BraintreeCancelListener,
@@ -81,10 +83,19 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     private boolean mSheetSlideDownPerformed;
     private boolean mPerformedThreeDSecureVerification;
 
+    private DropInClient dropInClient;
+    private DropInRequest dropInRequest;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
+
+        Intent intent = getIntent();
+        dropInRequest = intent.getParcelableExtra(EXTRA_DROP_IN_REQUEST);
+
+        String authorization = intent.getStringExtra(EXTRA_AUTHORIZATION);
+        dropInClient = new DropInClient(authorization);
 
         mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
         mLoadingViewSwitcher = findViewById(R.id.bt_loading_view_switcher);

@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.robolectric.RobolectricTestRunner;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Matchers.eq;
@@ -29,7 +30,7 @@ public class DropInClientTest {
 
     @Test
     public void launchDropIn_launchesActivityForResult() {
-        DropInClient sut = new DropInClient();
+        DropInClient sut = new DropInClient("authorization");
         DropInRequest dropInRequest = new DropInRequest();
 
         sut.launchDropIn(activity, dropInRequest, 123);
@@ -40,8 +41,12 @@ public class DropInClientTest {
         Intent intent = captor.getValue();
         assertSame(DropInActivity.class.getName(), intent.getComponent().getClassName());
 
-        DropInRequest parcelableRequest =
+        DropInRequest dropInIntentExtra =
             intent.getParcelableExtra("com.braintreepayments.api.EXTRA_DROP_IN_REQUEST");
-        assertNotNull(parcelableRequest);
+        assertNotNull(dropInIntentExtra);
+
+        String authorizationIntentExtra =
+            intent.getStringExtra("com.braintreepayments.api.EXTRA_AUTHORIZATION");
+        assertEquals("authorization", authorizationIntentExtra);
     }
 }
