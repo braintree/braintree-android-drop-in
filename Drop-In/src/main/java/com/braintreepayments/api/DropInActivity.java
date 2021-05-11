@@ -13,6 +13,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
@@ -27,9 +28,7 @@ import java.util.List;
 import static android.view.animation.AnimationUtils.loadAnimation;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
-public class DropInActivity extends BaseActivity implements ConfigurationListener, BraintreeCancelListener,
-        BraintreeErrorListener, PaymentMethodSelectedListener, PaymentMethodNoncesUpdatedListener,
-        PaymentMethodNonceCreatedListener {
+public class DropInActivity extends BaseActivity implements PaymentMethodSelectedListener {
 
     /**
      * Errors are returned as the serializable value of this key in the data intent in
@@ -59,6 +58,12 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     private boolean mSheetSlideUpPerformed;
     private boolean mSheetSlideDownPerformed;
     private boolean mPerformedThreeDSecureVerification;
+    private BraintreeClient braintreeClient;
+    private PayPalClient payPalClient;
+    private GooglePayClient googlePayClient;
+    private VenmoClient venmoClient;
+    private ThreeDSecureClient threeDSecureClient;
+    private PaymentMethodClient paymentMethodClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +81,12 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
-        mBraintreeFragment = getBraintreeClient();
+        braintreeClient = getBraintreeClient();
+        payPalClient = new PayPalClient(getBraintreeClient());
+        googlePayClient = new GooglePayClient(getBraintreeClient());
+        venmoClient = new VenmoClient(getBraintreeClient());
+        threeDSecureClient = new ThreeDSecureClient(getBraintreeClient());
+        paymentMethodClient = new PaymentMethodClient(getBraintreeClient());
 
         if (savedInstanceState != null) {
             mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED,
@@ -85,28 +95,35 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
 
         slideUp();
+
+        braintreeClient.getConfiguration(new ConfigurationCallback() {
+            @Override
+            public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
+                onConfigurationFetched(configuration);
+            }
+        });
     }
 
-    @Override
     public void onConfigurationFetched(Configuration configuration) {
         mConfiguration = configuration;
 
         if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
-            DataCollector.collectDeviceData(mBraintreeFragment, new BraintreeResponseListener<String>() {
+            DataCollector dataCollector = new DataCollector(getBraintreeClient());
+            dataCollector.collectDeviceData(this, new DataCollectorCallback() {
                 @Override
-                public void onResponse(String deviceData) {
+                public void onResult(@Nullable String deviceData, @Nullable Exception error) {
                     mDeviceData = deviceData;
                 }
             });
         }
 
         if (mDropInRequest.isGooglePaymentEnabled()) {
-            GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
-                @Override
-                public void onResponse(Boolean isReadyToPay) {
-                    showSupportedPaymentMethods(isReadyToPay);
-                }
-            });
+            googlePayClient.isReadyToPay(this, new GooglePayIsReadyToPayCallback() {
+                        @Override
+                        public void onResult(Boolean isReadyToPay, Exception error) {
+                            showSupportedPaymentMethods(isReadyToPay);
+                        }
+                    });
         } else {
             showSupportedPaymentMethods(false);
         }
@@ -127,18 +144,17 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
     }
 
-    @Override
     public void onCancel(int requestCode) {
         handleThreeDSecureFailure();
 
         mLoadingViewSwitcher.setDisplayedChild(1);
     }
 
-    @Override
     public void onError(final Exception error) {
         handleThreeDSecureFailure();
 
-        if (error instanceof GoogleApiClientException) {
+        // TODO: move to isReadyToPay callback when activity is null
+        if (error instanceof IllegalArgumentException) {
             showSupportedPaymentMethods(false);
             return;
         }
@@ -148,15 +164,15 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             public void onAnimationFinished() {
                 if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                         error instanceof UpgradeRequiredException) {
-                    mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
+                    getBraintreeClient().sendAnalyticsEvent("sdk.exit.developer-error");
                 } else if (error instanceof ConfigurationException) {
-                    mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
+                    getBraintreeClient().sendAnalyticsEvent("sdk.exit.configuration-exception");
                 } else if (error instanceof ServerException || error instanceof UnexpectedException) {
-                    mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-                } else if (error instanceof DownForMaintenanceException) {
-                    mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
+                    getBraintreeClient().sendAnalyticsEvent("sdk.exit.server-error");
+                } else if (error instanceof ServiceUnavailableException) {
+                    getBraintreeClient().sendAnalyticsEvent("sdk.exit.server-unavailable");
                 } else {
-                    mBraintreeFragment.sendAnalyticsEvent("sdk.exit.sdk-error");
+                    getBraintreeClient().sendAnalyticsEvent("sdk.exit.sdk-error");
                 }
 
                 finish(error);
@@ -164,7 +180,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         });
     }
 
-    @Override
     public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethodNonce) {
         if (!mPerformedThreeDSecureVerification &&
                 paymentMethodCanPerformThreeDSecureVerification(paymentMethodNonce) &&
@@ -173,23 +188,29 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             mLoadingViewSwitcher.setDisplayedChild(0);
 
             if (mDropInRequest.getThreeDSecureRequest() == null) {
-                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
+                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+                threeDSecureRequest.setAmount(mDropInRequest.getAmount());
                 mDropInRequest.threeDSecureRequest(threeDSecureRequest);
             }
 
             if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
-                mDropInRequest.getThreeDSecureRequest().amount(mDropInRequest.getAmount());
+                mDropInRequest.getThreeDSecureRequest().setAmount(mDropInRequest.getAmount());
             }
 
-            mDropInRequest.getThreeDSecureRequest().nonce(paymentMethodNonce.getNonce());
-            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
+            mDropInRequest.getThreeDSecureRequest().setNonce(paymentMethodNonce.getString());
+            threeDSecureClient.performVerification(this, mDropInRequest.getThreeDSecureRequest(), new ThreeDSecureResultCallback() {
+                @Override
+                public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
+                    onPaymentMethodNonceCreated(threeDSecureResult.getTokenizedCard());
+                }
+            });
             return;
         }
 
         slideDown(new AnimationFinishedListener() {
             @Override
             public void onAnimationFinished() {
-                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
+                getBraintreeClient().sendAnalyticsEvent("sdk.exit.success");
 
                 DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, paymentMethodNonce);
 
@@ -203,8 +224,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             return true;
         }
 
-        if (paymentMethodNonce instanceof GooglePaymentCardNonce) {
-            return ((GooglePaymentCardNonce) paymentMethodNonce).isNetworkTokenized() == false;
+        if (paymentMethodNonce instanceof GooglePayCardNonce) {
+            return ((GooglePayCardNonce) paymentMethodNonce).isNetworkTokenized() == false;
         }
 
         return false;
@@ -218,19 +239,33 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             case PAYPAL:
                 PayPalRequest paypalRequest = mDropInRequest.getPayPalRequest();
                 if (paypalRequest == null) {
-                    paypalRequest = new PayPalRequest();
+                    paypalRequest = new PayPalVaultRequest();
                 }
-                if (paypalRequest.getAmount() != null) {
-                    PayPal.requestOneTimePayment(mBraintreeFragment, paypalRequest);
-                } else {
-                    PayPal.requestBillingAgreement(mBraintreeFragment, paypalRequest);
-                }
+
+                payPalClient.tokenizePayPalAccount(this, paypalRequest, new PayPalFlowStartedCallback() {
+                    @Override
+                    public void onResult(@Nullable Exception error) {
+                        onError(error);
+                    }
+                });
                 break;
             case GOOGLE_PAYMENT:
-                GooglePayment.requestPayment(mBraintreeFragment, mDropInRequest.getGooglePaymentRequest());
+                googlePayClient.requestPayment(this, mDropInRequest.getGooglePaymentRequest(), new GooglePayRequestPaymentCallback() {
+                    @Override
+                    public void onResult(Exception error) {
+                        onError(error);
+                    }
+                });
                 break;
             case PAY_WITH_VENMO:
-                Venmo.authorizeAccount(mBraintreeFragment, mDropInRequest.shouldVaultVenmo());
+                VenmoRequest venmoRequest = new VenmoRequest();
+                venmoRequest.setShouldVault(mDropInRequest.shouldVaultVenmo());
+                venmoClient.tokenizeVenmoAccount(this, venmoRequest, new VenmoTokenizeAccountCallback() {
+                    @Override
+                    public void onResult(@Nullable Exception error) {
+                        onError(error);
+                    }
+                });
                 break;
             case UNKNOWN:
                 Intent intent = new Intent(this, AddCardActivity.class)
@@ -246,25 +281,31 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 @Override
                 public void run() {
                     if (!DropInActivity.this.isFinishing()) {
-                        if (mBraintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
-                            onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
-                        } else {
-                            PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
-                        }
+                        // TODO: consider caching nonces
+//                        if (mBraintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
+//                            onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
+//                        } else {
+//                            paymentMethodClient.getPaymentMethodNonces(mBraintreeFragment, true);
+//                        }
+                        paymentMethodClient.getPaymentMethodNonces(new GetPaymentMethodNoncesCallback() {
+                            @Override
+                            public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
+                                onPaymentMethodNoncesUpdated(paymentMethodNonceList);
+                            }
+                        });
                     }
                 }
             }, getResources().getInteger(android.R.integer.config_shortAnimTime));
         }
     }
 
-    @Override
     public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {
         final List<PaymentMethodNonce> noncesRef = paymentMethodNonces;
         if (paymentMethodNonces.size() > 0) {
             if (mDropInRequest.isGooglePaymentEnabled()) {
-                GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
+                googlePayClient.isReadyToPay(this, new GooglePayIsReadyToPayCallback() {
                     @Override
-                    public void onResponse(Boolean isReadyToPay) {
+                    public void onResult(Boolean isReadyToPay, Exception error) {
                         showVaultedPaymentMethods(noncesRef, isReadyToPay);
                     }
                 });
@@ -345,7 +386,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     public void onBackPressed() {
         if (!mSheetSlideDownPerformed) {
             mSheetSlideDownPerformed = true;
-            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.canceled");
+            getBraintreeClient().sendAnalyticsEvent("sdk.exit.canceled");
 
             slideDown(new AnimationFinishedListener() {
                 @Override
@@ -358,7 +399,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     private void slideUp() {
         if (!mSheetSlideUpPerformed) {
-            mBraintreeFragment.sendAnalyticsEvent("appeared");
+            getBraintreeClient().sendAnalyticsEvent("appeared");
 
             mSheetSlideUpPerformed = true;
             mBottomSheet.startAnimation(loadAnimation(this, R.anim.bt_slide_in_up));
@@ -392,30 +433,32 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     }
 
     public void onVaultEditButtonClick(View view) {
-        ArrayList<Parcelable> parcelableArrayList = new ArrayList<Parcelable>(mBraintreeFragment.getCachedPaymentMethodNonces());
+        // TODO: consider caching nonces
+//        ArrayList<Parcelable> parcelableArrayList = new ArrayList<Parcelable>(mBraintreeFragment.getCachedPaymentMethodNonces());
 
+        ArrayList<Parcelable> parcelableArrayList = new ArrayList<>();
         Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
                 .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest)
                 .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, parcelableArrayList);
         startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
 
-        mBraintreeFragment.sendAnalyticsEvent("manager.appeared");
+        getBraintreeClient().sendAnalyticsEvent("manager.appeared");
     }
 
     private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces, boolean googlePayEnabled) {
         mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
         mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
 
-        VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter = new VaultedPaymentMethodsAdapter(new PaymentMethodNonceCreatedListener() {
+        VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter = new VaultedPaymentMethodsAdapter(paymentMethodNonces, new VaultedPaymentMethodSelectedCallback() {
             @Override
-            public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
+            public void onResult(PaymentMethodNonce paymentMethodNonce, Exception error) {
                 if (paymentMethodNonce instanceof CardNonce) {
-                    mBraintreeFragment.sendAnalyticsEvent("vaulted-card.select");
+                    getBraintreeClient().sendAnalyticsEvent("vaulted-card.select");
                 }
 
                 DropInActivity.this.onPaymentMethodNonceCreated(paymentMethodNonce);
             }
-        }, paymentMethodNonces);
+        });
 
         vaultedPaymentMethodsAdapter.setup(
                 this, mConfiguration, mDropInRequest, googlePayEnabled, mClientTokenPresent);
@@ -426,7 +469,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
 
         if (vaultedPaymentMethodsAdapter.hasCardNonce()) {
-            mBraintreeFragment.sendAnalyticsEvent("vaulted-card.appear");
+            getBraintreeClient().sendAnalyticsEvent("vaulted-card.appear");
         }
     }
 }

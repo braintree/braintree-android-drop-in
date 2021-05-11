@@ -11,8 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
 
 public class PaymentMethodItemView extends LinearLayout {
 
@@ -79,7 +77,8 @@ public class PaymentMethodItemView extends LinearLayout {
         if (paymentMethodNonce instanceof CardNonce) {
             mDescription.setText("••• ••" + ((CardNonce) paymentMethodNonce).getLastTwo());
         } else {
-            mDescription.setText(paymentMethodNonce.getDescription());
+            // TODO: payment method description
+//            mDescription.setText(paymentMethodNonce.getDescription());
         }
     }
 

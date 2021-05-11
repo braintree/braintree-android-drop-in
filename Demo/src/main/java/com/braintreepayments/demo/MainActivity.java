@@ -89,7 +89,7 @@ public class MainActivity extends BaseActivity {
             mPurchased = false;
             clearNonce();
 
-            dropInClient.fetchMostRecentPaymentMethod(new FetchMostRecentPaymentMethodCallback() {
+            dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
                 @Override
                 public void onResult(DropInResult dropInResult, Exception error) {
                    if (dropInResult != null) {
@@ -234,7 +234,7 @@ public class MainActivity extends BaseActivity {
     protected void onAuthorizationFetched() {
         dropInClient = new DropInClient(this, mAuthorization);
 
-        dropInClient.fetchMostRecentPaymentMethod(new FetchMostRecentPaymentMethodCallback() {
+        dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
             @Override
             public void onResult(DropInResult dropInResult, Exception error) {
                 if (dropInResult != null) {

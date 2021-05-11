@@ -7,6 +7,7 @@ public class SignatureVerificationOverrides {
      * never do this as it opens a security hole.
      */
     public static void disableAppSwitchSignatureVerification(boolean disable) {
-        SignatureVerification.sEnableSignatureVerification = !disable;
+        // TODO: fix signature verification
+//        SignatureVerification.sEnableSignatureVerification = !disable;
     }
 }

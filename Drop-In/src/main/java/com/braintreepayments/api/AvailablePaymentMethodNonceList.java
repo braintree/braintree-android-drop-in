@@ -2,12 +2,6 @@ package com.braintreepayments.api;
 
 import android.content.Context;
 
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.models.GooglePaymentCardNonce;
-import com.braintreepayments.api.models.PayPalAccountNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.models.VenmoAccountNonce;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,10 +19,10 @@ class AvailablePaymentMethodNonceList {
             if (paymentMethodNonce instanceof PayPalAccountNonce) {
                 shouldAddPaymentMethod = dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled();
             } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
-                shouldAddPaymentMethod = dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(context);
+                shouldAddPaymentMethod = dropInRequest.isVenmoEnabled() && configuration.isVenmoEnabled();
             } else if (paymentMethodNonce instanceof CardNonce) {
-                shouldAddPaymentMethod = dropInRequest.isCardEnabled() && !configuration.getCardConfiguration().getSupportedCardTypes().isEmpty();
-            } else if (paymentMethodNonce instanceof GooglePaymentCardNonce) {
+                shouldAddPaymentMethod = dropInRequest.isCardEnabled() && !configuration.getSupportedCardTypes().isEmpty();
+            } else if (paymentMethodNonce instanceof GooglePayCardNonce) {
                 shouldAddPaymentMethod = googlePayEnabled && dropInRequest.isGooglePaymentEnabled();
             }
 

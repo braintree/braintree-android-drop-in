@@ -11,23 +11,20 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.List;
 
 class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMethodsAdapter.ViewHolder> {
 
-    private final PaymentMethodNonceCreatedListener mSelectedListener;
 
     private final List<PaymentMethodNonce> mPaymentMethodNonces;
     private AvailablePaymentMethodNonceList mAvailablePaymentMethodNonces;
 
-    VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener, List<PaymentMethodNonce> paymentMethodNonces) {
-        mSelectedListener = listener;
+    private final VaultedPaymentMethodSelectedCallback callback;
+
+    VaultedPaymentMethodsAdapter(List<PaymentMethodNonce> paymentMethodNonces, VaultedPaymentMethodSelectedCallback callback) {
         mPaymentMethodNonces = paymentMethodNonces;
+        this.callback = callback;
     }
 
     void setup(Context context, Configuration configuration, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
@@ -52,13 +49,14 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
         if (paymentMethodNonce instanceof CardNonce) {
             holder.description.setText("••• ••" + ((CardNonce) paymentMethodNonce).getLastTwo());
         } else {
-            holder.description.setText(paymentMethodNonce.getDescription());
+            // TODO: payment method description
+//            holder.description.setText(paymentMethodNonce.getDescription());
         }
 
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSelectedListener.onPaymentMethodNonceCreated(paymentMethodNonce);
+                callback.onResult(paymentMethodNonce, null);
             }
         });
     }
