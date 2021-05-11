@@ -86,9 +86,7 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
 
         enterState(LOADING);
 
-        mBraintreeFragment = getBraintreeClient();
-
-        mBraintreeFragment.sendAnalyticsEvent("card.selected");
+        getBraintreeClient().sendAnalyticsEvent("card.selected");
     }
 
     @Override
