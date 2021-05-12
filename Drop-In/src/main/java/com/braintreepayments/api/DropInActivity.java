@@ -11,13 +11,18 @@ import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
+import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.Configuration;
+import com.braintreepayments.api.models.GooglePaymentCardNonce;
 import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.models.ThreeDSecureRequest;
 
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 public class DropInActivity extends BaseActivity implements ConfigurationListener, PaymentMethodNonceCreatedListener {
+
+    private boolean mPerformedThreeDSecureVerification;
 
     /**
      * Errors are returned as the serializable value of this key in the data intent in
@@ -150,8 +155,39 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         overridePendingTransition(R.anim.bt_activity_fade_in, R.anim.bt_activity_fade_out);
     }
 
+    private boolean paymentMethodCanPerformThreeDSecureVerification(final PaymentMethodNonce paymentMethodNonce) {
+        if (paymentMethodNonce instanceof CardNonce) {
+            return true;
+        }
+
+        if (paymentMethodNonce instanceof GooglePaymentCardNonce) {
+            return ((GooglePaymentCardNonce) paymentMethodNonce).isNetworkTokenized() == false;
+        }
+
+        return false;
+    }
+
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-       finish(paymentMethodNonce, mDeviceData);
+        if (!mPerformedThreeDSecureVerification &&
+                paymentMethodCanPerformThreeDSecureVerification(paymentMethodNonce) &&
+                shouldRequestThreeDSecureVerification()) {
+            mPerformedThreeDSecureVerification = true;
+//            mLoadingViewSwitcher.setDisplayedChild(0);
+
+            if (mDropInRequest.getThreeDSecureRequest() == null) {
+                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
+                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
+            }
+
+            if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
+                mDropInRequest.getThreeDSecureRequest().amount(mDropInRequest.getAmount());
+            }
+
+            mDropInRequest.getThreeDSecureRequest().nonce(paymentMethodNonce.getNonce());
+            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
+            return;
+        }
+        finish(paymentMethodNonce, mDeviceData);
     }
 }
