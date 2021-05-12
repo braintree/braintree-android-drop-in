@@ -136,7 +136,6 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         }
 
         braintreeFragment.sendAnalyticsEvent("appeared");
-//        slideUp();
 
         return view;
     }
@@ -267,17 +266,12 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
             return;
         }
 
-        slideDown(new AnimationFinishedListener() {
-            @Override
-            public void onAnimationFinished() {
-                braintreeFragment.sendAnalyticsEvent("sdk.exit.success");
+        braintreeFragment.sendAnalyticsEvent("sdk.exit.success");
 
-                DropInResult.setLastUsedPaymentMethodType(getActivity(), paymentMethodNonce);
+        DropInResult.setLastUsedPaymentMethodType(getActivity(), paymentMethodNonce);
 
-                DropInActivity activity = ((DropInActivity) getActivity());
-                activity.finish(paymentMethodNonce, mDeviceData);
-            }
-        });
+        DropInActivity activity = ((DropInActivity) getActivity());
+        activity.finish(paymentMethodNonce, mDeviceData);
     }
 
     private void handleThreeDSecureFailure() {
@@ -313,35 +307,6 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
                 hasAmount;
     }
 
-    private void slideUp() {
-        if (!mSheetSlideUpPerformed) {
-            braintreeFragment.sendAnalyticsEvent("appeared");
-
-            mSheetSlideUpPerformed = true;
-            mBottomSheet.startAnimation(loadAnimation(getActivity(), R.anim.bt_slide_in_up));
-        }
-    }
-
-    private void slideDown(final AnimationFinishedListener listener) {
-        Animation slideOutAnimation = loadAnimation(getActivity(), R.anim.bt_slide_out_down);
-        slideOutAnimation.setFillAfter(true);
-        if (listener != null) {
-            slideOutAnimation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {}
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    listener.onAnimationFinished();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {}
-            });
-        }
-        mBottomSheet.startAnimation(slideOutAnimation);
-    }
-
     @Override
     public void onCancel(int requestCode) {
         handleThreeDSecureFailure();
@@ -358,25 +323,20 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
             return;
         }
 
-        slideDown(new AnimationFinishedListener() {
-            @Override
-            public void onAnimationFinished() {
-                if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
-                        error instanceof UpgradeRequiredException) {
-                    braintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
-                } else if (error instanceof ConfigurationException) {
-                    braintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
-                } else if (error instanceof ServerException || error instanceof UnexpectedException) {
-                    braintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-                } else if (error instanceof DownForMaintenanceException) {
-                    braintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
-                } else {
-                    braintreeFragment.sendAnalyticsEvent("sdk.exit.sdk-error");
-                }
+        if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
+                error instanceof UpgradeRequiredException) {
+            braintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
+        } else if (error instanceof ConfigurationException) {
+            braintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
+        } else if (error instanceof ServerException || error instanceof UnexpectedException) {
+            braintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
+        } else if (error instanceof DownForMaintenanceException) {
+            braintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
+        } else {
+            braintreeFragment.sendAnalyticsEvent("sdk.exit.sdk-error");
+        }
 
-                DropInActivity activity = ((DropInActivity) getActivity());
-                activity.finish(error);
-            }
-        });
+        DropInActivity activity = ((DropInActivity) getActivity());
+        activity.finish(error);
     }
 }

@@ -43,7 +43,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
 
         if (savedInstanceState != null) {
-//            mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED, false);
             mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
         }
     }
@@ -73,7 +72,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-//        outState.putBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED, mSheetSlideUpPerformed);
         outState.putString(EXTRA_DEVICE_DATA, mDeviceData);
     }
 
@@ -137,18 +135,9 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-//        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//        if (!mSheetSlideDownPerformed) {
-//            mSheetSlideDownPerformed = true;
-//            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.canceled");
-//
-//            slideDown(new AnimationFinishedListener() {
-//                @Override
-//                public void onAnimationFinished() {
-//                    finish();
-//                }
-//            });
-//        }
+
+        mBraintreeFragment.sendAnalyticsEvent("sdk.exit.canceled");
+        finish();
     }
 
     @Override
