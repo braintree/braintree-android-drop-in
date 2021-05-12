@@ -10,12 +10,14 @@ import androidx.fragment.app.FragmentManager;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
+import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PayPalRequest;
+import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
-public class DropInActivity extends BaseActivity implements ConfigurationListener {
+public class DropInActivity extends BaseActivity implements ConfigurationListener, PaymentMethodNonceCreatedListener {
 
     /**
      * Errors are returned as the serializable value of this key in the data intent in
@@ -146,5 +148,10 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     public void finish() {
         super.finish();
         overridePendingTransition(R.anim.bt_activity_fade_in, R.anim.bt_activity_fade_out);
+    }
+
+    @Override
+    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
+       finish(paymentMethodNonce, mDeviceData);
     }
 }

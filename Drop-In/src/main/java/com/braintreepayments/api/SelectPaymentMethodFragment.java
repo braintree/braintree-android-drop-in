@@ -149,6 +149,7 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
 
         // TODO: show spinner while fetching nonces
         fetchPaymentMethodNonces(true);
+        mLoadingViewSwitcher.setDisplayedChild(1);
     }
 
     private void showSupportedPaymentMethods(boolean googlePaymentEnabled) {
@@ -259,7 +260,7 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         DropInResult.setLastUsedPaymentMethodType(getActivity(), paymentMethodNonce);
 
         DropInActivity activity = ((DropInActivity) getActivity());
-        activity.finish(paymentMethodNonce, mDeviceData);
+        activity.onPaymentMethodNonceCreated(paymentMethodNonce);
     }
 
     private void handleThreeDSecureFailure() {
