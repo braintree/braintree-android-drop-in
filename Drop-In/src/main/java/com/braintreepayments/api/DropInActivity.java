@@ -137,7 +137,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 //        if (!mSheetSlideDownPerformed) {
 //            mSheetSlideDownPerformed = true;
 //            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.canceled");
@@ -154,7 +154,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        overridePendingTransition(R.anim.bt_activity_fade_in, R.anim.bt_activity_fade_out);
     }
 
     public void onVaultEditButtonClick(View view) {

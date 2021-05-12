@@ -130,6 +130,7 @@ public class MainActivity extends BaseActivity implements PaymentMethodNonceCrea
         }
 
         startActivityForResult(dropInRequest.getIntent(this), DROP_IN_REQUEST);
+        overridePendingTransition(R.anim.bt_activity_fade_in, R.anim.bt_activity_fade_out);
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {
