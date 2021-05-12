@@ -3,11 +3,11 @@ package com.braintreepayments.api;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,32 +35,27 @@ import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
-import com.braintreepayments.api.models.Authorization;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.GooglePaymentCardNonce;
-import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.ThreeDSecureRequest;
 
 import org.json.JSONException;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.animation.AnimationUtils.loadAnimation;
-import static com.braintreepayments.api.DropInActivity.ADD_CARD_REQUEST_CODE;
+import static com.braintreepayments.api.DropInActivity.DELETE_PAYMENT_METHOD_NONCE_CODE;
+import static com.braintreepayments.api.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 public class SelectPaymentMethodFragment extends Fragment implements BraintreeCancelListener, BraintreeErrorListener, PaymentMethodNoncesUpdatedListener, PaymentMethodNonceCreatedListener, SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener {
 
-    private View mBottomSheet;
     private String mDeviceData;
     private ViewSwitcher mLoadingViewSwitcher;
     private TextView mSupportedPaymentMethodsHeader;
-
-    private boolean mSheetSlideUpPerformed;
-    private boolean mSheetSlideDownPerformed;
 
     private boolean mPerformedThreeDSecureVerification;
 
@@ -90,6 +85,7 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
 
                 dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
                 braintreeFragment = BraintreeFragment.newInstance(this, dropInRequest.getAuthorization());
+                braintreeFragment.addListener(this);
 
                 isClientTokenPresent = braintreeFragment.getAuthorization() instanceof ClientToken;
 
@@ -102,15 +98,22 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_select_payment_method, container, false);
+        View view = inflater.inflate(R.layout.bt_fragment_select_payment_method, container, false);
 
-        mBottomSheet = view.findViewById(R.id.bt_dropin_bottom_sheet);
         mLoadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
         mSupportedPaymentMethodsHeader = view.findViewById(R.id.bt_supported_payment_methods_header);
         mSupportedPaymentMethodListView = view.findViewById(R.id.bt_supported_payment_methods);
         mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
         mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
+
+        mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onVaultEditButtonClick(view);
+            }
+        });
+
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
@@ -140,6 +143,14 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // TODO: show spinner while fetching nonces
+        fetchPaymentMethodNonces(true);
+    }
+
     private void showSupportedPaymentMethods(boolean googlePaymentEnabled) {
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(getActivity(), this);
         adapter.setup(configuration, dropInRequest, googlePaymentEnabled, isClientTokenPresent);
@@ -151,31 +162,8 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
     @Override
     public void onPaymentMethodSelected(PaymentMethodType type) {
         mLoadingViewSwitcher.setDisplayedChild(0);
-
-        switch (type) {
-            case PAYPAL:
-                PayPalRequest paypalRequest = dropInRequest.getPayPalRequest();
-                if (paypalRequest == null) {
-                    paypalRequest = new PayPalRequest();
-                }
-                if (paypalRequest.getAmount() != null) {
-                    PayPal.requestOneTimePayment(braintreeFragment, paypalRequest);
-                } else {
-                    PayPal.requestBillingAgreement(braintreeFragment, paypalRequest);
-                }
-                break;
-            case GOOGLE_PAYMENT:
-                GooglePayment.requestPayment(braintreeFragment, dropInRequest.getGooglePaymentRequest());
-                break;
-            case PAY_WITH_VENMO:
-                Venmo.authorizeAccount(braintreeFragment, dropInRequest.shouldVaultVenmo());
-                break;
-            case UNKNOWN:
-                Intent intent = new Intent(getActivity(), AddCardActivity.class)
-                        .putExtra(EXTRA_CHECKOUT_REQUEST, dropInRequest);
-                startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
-                break;
-        }
+        DropInActivity activity = ((DropInActivity) getActivity());
+        activity.onPaymentMethodSelected(type);
     }
 
     private void fetchPaymentMethodNonces(final boolean refetch) {
@@ -305,6 +293,17 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         return dropInRequest.shouldRequestThreeDSecureVerification() &&
                 configuration.isThreeDSecureEnabled() &&
                 hasAmount;
+    }
+
+    public void onVaultEditButtonClick(View view) {
+        ArrayList<Parcelable> parcelableArrayList = new ArrayList<Parcelable>(braintreeFragment.getCachedPaymentMethodNonces());
+
+        Intent intent = new Intent(getActivity(), VaultManagerActivity.class)
+                .putExtra(EXTRA_CHECKOUT_REQUEST, dropInRequest)
+                .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, parcelableArrayList);
+        startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
+
+        braintreeFragment.sendAnalyticsEvent("manager.appeared");
     }
 
     @Override
