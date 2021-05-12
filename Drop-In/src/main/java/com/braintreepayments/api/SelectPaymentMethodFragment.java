@@ -135,7 +135,8 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
             showSupportedPaymentMethods(false);
         }
 
-        slideUp();
+        braintreeFragment.sendAnalyticsEvent("appeared");
+//        slideUp();
 
         return view;
     }
