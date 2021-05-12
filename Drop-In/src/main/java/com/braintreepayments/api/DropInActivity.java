@@ -22,8 +22,6 @@ import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 public class DropInActivity extends BaseActivity implements ConfigurationListener, PaymentMethodNonceCreatedListener {
 
-    private boolean mPerformedThreeDSecureVerification;
-
     /**
      * Errors are returned as the serializable value of this key in the data intent in
      * {@link #onActivityResult(int, int, android.content.Intent)} if
@@ -169,25 +167,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     @Override
     public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-        if (!mPerformedThreeDSecureVerification &&
-                paymentMethodCanPerformThreeDSecureVerification(paymentMethodNonce) &&
-                shouldRequestThreeDSecureVerification()) {
-            mPerformedThreeDSecureVerification = true;
-//            mLoadingViewSwitcher.setDisplayedChild(0);
-
-            if (mDropInRequest.getThreeDSecureRequest() == null) {
-                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
-                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
-            }
-
-            if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
-                mDropInRequest.getThreeDSecureRequest().amount(mDropInRequest.getAmount());
-            }
-
-            mDropInRequest.getThreeDSecureRequest().nonce(paymentMethodNonce.getNonce());
-            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
-            return;
-        }
         finish(paymentMethodNonce, mDeviceData);
     }
 }
