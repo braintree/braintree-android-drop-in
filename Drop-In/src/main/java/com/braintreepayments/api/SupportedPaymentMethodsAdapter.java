@@ -9,60 +9,36 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.lifecycle.LiveData;
+
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.models.Configuration;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
     private Context mContext;
-    private ArrayList<PaymentMethodType> mAvailablePaymentMethods;
+    private LiveData<List<PaymentMethodType>> mAvailablePaymentMethods;
     private PaymentMethodSelectedListener mPaymentMethodSelectedListener;
 
-    SupportedPaymentMethodsAdapter(Context context, PaymentMethodSelectedListener paymentMethodSelectedListener) {
+    SupportedPaymentMethodsAdapter(Context context, PaymentMethodSelectedListener paymentMethodSelectedListener, LiveData<List<PaymentMethodType>> availablePaymentMethods) {
         mContext = context;
         mPaymentMethodSelectedListener = paymentMethodSelectedListener;
-        mAvailablePaymentMethods = new ArrayList<>();
-    }
-
-    void setup(Configuration configuration, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
-        if (dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled()) {
-            mAvailablePaymentMethods.add(PaymentMethodType.PAYPAL);
-        }
-
-        if (dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(mContext)) {
-            mAvailablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
-        }
-
-        if (dropInRequest.isCardEnabled()) {
-            Set<String> supportedCardTypes =
-                    new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
-            if (!unionpaySupported) {
-                supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
-            }
-            if (supportedCardTypes.size() > 0) {
-                mAvailablePaymentMethods.add(PaymentMethodType.UNKNOWN);
-            }
-        }
-
-        if (googlePayEnabled) {
-            if (dropInRequest.isGooglePaymentEnabled()) {
-                mAvailablePaymentMethods.add(PaymentMethodType.GOOGLE_PAYMENT);
-            }
-        }
+        mAvailablePaymentMethods = availablePaymentMethods;
     }
 
     @Override
     public int getCount() {
-        return mAvailablePaymentMethods.size();
+        return mAvailablePaymentMethods.getValue().size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mAvailablePaymentMethods.get(position);
+        return mAvailablePaymentMethods.getValue().get(position);
     }
 
     @Override
@@ -76,7 +52,7 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.bt_payment_method_list_item, parent, false);
         }
 
-        final PaymentMethodType type = mAvailablePaymentMethods.get(position);
+        final PaymentMethodType type = mAvailablePaymentMethods.getValue().get(position);
 
         ImageView icon = convertView.findViewById(R.id.bt_payment_method_icon);
         icon.setImageResource(type.getDrawable());

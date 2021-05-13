@@ -16,6 +16,8 @@ import android.widget.ViewSwitcher;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -71,6 +73,7 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
     private boolean isClientTokenPresent;
 
     private BraintreeFragment braintreeFragment;
+    private DropInViewModel dropInViewModel;
 
     public SelectPaymentMethodFragment() {}
 
@@ -88,7 +91,6 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
                 braintreeFragment.addListener(this);
 
                 isClientTokenPresent = braintreeFragment.getAuthorization() instanceof ClientToken;
-
             } catch (InvalidArgumentException | JSONException e) {
                 e.printStackTrace();
             }
@@ -127,18 +129,15 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
             });
         }
 
-        if (dropInRequest.isGooglePaymentEnabled()) {
-            GooglePayment.isReadyToPay(braintreeFragment, new BraintreeResponseListener<Boolean>() {
-                @Override
-                public void onResponse(Boolean isReadyToPay) {
-                    showSupportedPaymentMethods(isReadyToPay);
-                }
-            });
-        } else {
-            showSupportedPaymentMethods(false);
-        }
-
         braintreeFragment.sendAnalyticsEvent("appeared");
+        dropInViewModel = new ViewModelProvider(getActivity()).get(DropInViewModel.class);
+
+        dropInViewModel.getAvailablePaymentMethods().observe(this, new Observer<List<PaymentMethodType>>() {
+            @Override
+            public void onChanged(List<PaymentMethodType> paymentMethodTypes) {
+                showSupportedPaymentMethods();
+            }
+        });
 
         return view;
     }
@@ -152,9 +151,8 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         mLoadingViewSwitcher.setDisplayedChild(1);
     }
 
-    private void showSupportedPaymentMethods(boolean googlePaymentEnabled) {
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(getActivity(), this);
-        adapter.setup(configuration, dropInRequest, googlePaymentEnabled, isClientTokenPresent);
+    private void showSupportedPaymentMethods() {
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(getActivity(), this, dropInViewModel.getAvailablePaymentMethods());
         mSupportedPaymentMethodListView.setAdapter(adapter);
         mLoadingViewSwitcher.setDisplayedChild(1);
         fetchPaymentMethodNonces(false);
@@ -319,7 +317,7 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         handleThreeDSecureFailure();
 
         if (error instanceof GoogleApiClientException) {
-            showSupportedPaymentMethods(false);
+            showSupportedPaymentMethods();
             return;
         }
 
