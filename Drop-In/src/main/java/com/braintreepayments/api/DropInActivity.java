@@ -6,6 +6,7 @@ import android.view.View;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
@@ -37,6 +38,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     private String mDeviceData;
 
+    private DropInViewModel viewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +55,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         if (savedInstanceState != null) {
             mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
         }
+
+        viewModel = new ViewModelProvider(this).get(DropInViewModel.class);
     }
 
     @Override
@@ -113,7 +118,12 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == ADD_CARD_REQUEST_CODE) {
+        if (resultCode == RESULT_CANCELED) {
+            if (requestCode == ADD_CARD_REQUEST_CODE) {
+                viewModel.setIsLoading(false);
+            }
+
+        } else if (requestCode == ADD_CARD_REQUEST_CODE) {
             final Intent response;
             if (resultCode == RESULT_OK) {
                 DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
