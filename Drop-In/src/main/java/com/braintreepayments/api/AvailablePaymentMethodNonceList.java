@@ -54,4 +54,8 @@ class AvailablePaymentMethodNonceList {
         }
         return false;
     }
+
+    public List<PaymentMethodNonce> getItems() {
+        return items;
+    }
 }

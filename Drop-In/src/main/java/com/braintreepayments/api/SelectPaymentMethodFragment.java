@@ -2,7 +2,6 @@ package com.braintreepayments.api;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -15,7 +14,6 @@ import android.widget.ViewSwitcher;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -36,7 +34,6 @@ import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.ClientToken;
 import com.braintreepayments.api.models.Configuration;
@@ -53,7 +50,7 @@ import static com.braintreepayments.api.DropInActivity.DELETE_PAYMENT_METHOD_NON
 import static com.braintreepayments.api.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
-public class SelectPaymentMethodFragment extends Fragment implements BraintreeCancelListener, BraintreeErrorListener, PaymentMethodNoncesUpdatedListener, PaymentMethodNonceCreatedListener, SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener {
+public class SelectPaymentMethodFragment extends Fragment implements BraintreeCancelListener, BraintreeErrorListener, PaymentMethodNonceCreatedListener, SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener {
 
     private String mDeviceData;
     private ViewSwitcher mLoadingViewSwitcher;
@@ -130,12 +127,22 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         }
 
         braintreeFragment.sendAnalyticsEvent("appeared");
-        dropInViewModel = new ViewModelProvider(getActivity()).get(DropInViewModel.class);
+
+        DropInViewModelFactory viewModelFactory =
+                new DropInViewModelFactory(requireActivity(), dropInRequest);
+        dropInViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(DropInViewModel.class);
 
         dropInViewModel.getAvailablePaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<PaymentMethodType>>() {
             @Override
             public void onChanged(List<PaymentMethodType> paymentMethodTypes) {
                 showSupportedPaymentMethods();
+            }
+        });
+
+        dropInViewModel.getVaultedPaymentMethodNonces().observe(getViewLifecycleOwner(), new Observer<List<PaymentMethodNonce>>() {
+            @Override
+            public void onChanged(List<PaymentMethodNonce> paymentMethodNonces) {
+                showVaultedPaymentMethods(paymentMethodNonces);
             }
         });
 
@@ -147,7 +154,7 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         super.onResume();
 
         // TODO: show spinner while fetching nonces
-        fetchPaymentMethodNonces(true);
+        dropInViewModel.fetchPaymentMethodNonces(true);
         mLoadingViewSwitcher.setDisplayedChild(1);
     }
 
@@ -155,7 +162,7 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(getActivity(), this, dropInViewModel.getAvailablePaymentMethods());
         mSupportedPaymentMethodListView.setAdapter(adapter);
         mLoadingViewSwitcher.setDisplayedChild(1);
-        fetchPaymentMethodNonces(false);
+        dropInViewModel.fetchPaymentMethodNonces(false);
     }
 
     @Override
@@ -165,69 +172,42 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         activity.onPaymentMethodSelected(type);
     }
 
-    private void fetchPaymentMethodNonces(final boolean refetch) {
-        if (isClientTokenPresent) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    FragmentActivity activity = getActivity();
-                    if (activity != null && !activity.isFinishing()) {
-                        if (braintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
-                            onPaymentMethodNoncesUpdated(braintreeFragment.getCachedPaymentMethodNonces());
-                        } else {
-                            PaymentMethod.getPaymentMethodNonces(braintreeFragment, true);
-                        }
-                    }
-                }
-            }, getResources().getInteger(android.R.integer.config_shortAnimTime));
-        }
-    }
-
-    @Override
-    public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {
-        final List<PaymentMethodNonce> noncesRef = paymentMethodNonces;
+    private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {
         if (paymentMethodNonces.size() > 0) {
-            if (dropInRequest.isGooglePaymentEnabled()) {
-                GooglePayment.isReadyToPay(braintreeFragment, new BraintreeResponseListener<Boolean>() {
-                    @Override
-                    public void onResponse(Boolean isReadyToPay) {
-                        showVaultedPaymentMethods(noncesRef, isReadyToPay);
+            mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
+            mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
+
+            VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter = new VaultedPaymentMethodsAdapter(new PaymentMethodNonceCreatedListener() {
+                @Override
+                public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
+                    if (paymentMethodNonce instanceof CardNonce) {
+                        braintreeFragment.sendAnalyticsEvent("vaulted-card.select");
                     }
-                });
-            } else {
-                showVaultedPaymentMethods(paymentMethodNonces, false);
+
+                    SelectPaymentMethodFragment.this.onPaymentMethodNonceCreated(paymentMethodNonce);
+                }
+            }, paymentMethodNonces);
+
+            mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
+
+            if (dropInRequest.isVaultManagerEnabled()) {
+                mVaultManagerButton.setVisibility(View.VISIBLE);
+            }
+
+            boolean hasCardNonce = false;
+            for (PaymentMethodNonce nonce : paymentMethodNonces) {
+                if (nonce instanceof CardNonce) {
+                    hasCardNonce = true;
+                    break;
+                }
+            }
+
+            if (hasCardNonce) {
+                braintreeFragment.sendAnalyticsEvent("vaulted-card.appear");
             }
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
             mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
-        }
-    }
-
-    private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces, boolean googlePayEnabled) {
-        mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
-        mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
-
-        VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter = new VaultedPaymentMethodsAdapter(new PaymentMethodNonceCreatedListener() {
-            @Override
-            public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-                if (paymentMethodNonce instanceof CardNonce) {
-                    braintreeFragment.sendAnalyticsEvent("vaulted-card.select");
-                }
-
-                SelectPaymentMethodFragment.this.onPaymentMethodNonceCreated(paymentMethodNonce);
-            }
-        }, paymentMethodNonces);
-
-        vaultedPaymentMethodsAdapter.setup(
-                getActivity(), configuration, dropInRequest, googlePayEnabled, isClientTokenPresent);
-        mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
-
-        if (dropInRequest.isVaultManagerEnabled()) {
-            mVaultManagerButton.setVisibility(View.VISIBLE);
-        }
-
-        if (vaultedPaymentMethodsAdapter.hasCardNonce()) {
-            braintreeFragment.sendAnalyticsEvent("vaulted-card.appear");
         }
     }
 
@@ -264,7 +244,7 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
     private void handleThreeDSecureFailure() {
         if (mPerformedThreeDSecureVerification) {
             mPerformedThreeDSecureVerification = false;
-            fetchPaymentMethodNonces(true);
+            dropInViewModel.fetchPaymentMethodNonces(true);
         }
     }
 

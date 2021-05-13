@@ -74,8 +74,10 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
 
         isClientTokenPresent = mBraintreeFragment.getAuthorization() instanceof ClientToken;
-        viewModel = new ViewModelProvider(this).get(DropInViewModel.class);
 
+        DropInViewModelFactory viewModelFactory =
+            new DropInViewModelFactory(this, mDropInRequest);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(DropInViewModel.class);
     }
 
     @Override
@@ -108,23 +110,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                     .setReorderingAllowed(true)
                     .add(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
                     .commit();
-        }
-    }
-
-    private void fetchPaymentMethodNonces(final boolean refetch) {
-        if (isClientTokenPresent) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (!isFinishing()) {
-                        if (mBraintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
-                            onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
-                        } else {
-                            PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
-                        }
-                    }
-                }
-            }, getResources().getInteger(R.integer.bt_bottom_sheet_transition_duration));
         }
     }
 

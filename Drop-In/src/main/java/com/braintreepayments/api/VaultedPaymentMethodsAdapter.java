@@ -23,16 +23,10 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
     private final PaymentMethodNonceCreatedListener mSelectedListener;
 
     private final List<PaymentMethodNonce> mPaymentMethodNonces;
-    private AvailablePaymentMethodNonceList mAvailablePaymentMethodNonces;
 
     VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener, List<PaymentMethodNonce> paymentMethodNonces) {
         mSelectedListener = listener;
         mPaymentMethodNonces = paymentMethodNonces;
-    }
-
-    void setup(Context context, Configuration configuration, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
-        mAvailablePaymentMethodNonces = new AvailablePaymentMethodNonceList(
-                context, configuration, mPaymentMethodNonces, dropInRequest, googlePayEnabled);
     }
 
     @Override
@@ -43,7 +37,7 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final PaymentMethodNonce paymentMethodNonce = mAvailablePaymentMethodNonces.get(position);
+        final PaymentMethodNonce paymentMethodNonce = mPaymentMethodNonces.get(position);
         PaymentMethodType paymentMethodType = PaymentMethodType.forType(paymentMethodNonce);
 
         holder.icon.setImageResource(paymentMethodType.getVaultedDrawable());
@@ -65,11 +59,7 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
 
     @Override
     public int getItemCount() {
-        return mAvailablePaymentMethodNonces.size();
-    }
-
-    boolean hasCardNonce() {
-        return mAvailablePaymentMethodNonces.hasCardNonce();
+        return mPaymentMethodNonces.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
