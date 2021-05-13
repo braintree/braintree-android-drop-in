@@ -132,7 +132,7 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         braintreeFragment.sendAnalyticsEvent("appeared");
         dropInViewModel = new ViewModelProvider(getActivity()).get(DropInViewModel.class);
 
-        dropInViewModel.getAvailablePaymentMethods().observe(this, new Observer<List<PaymentMethodType>>() {
+        dropInViewModel.getAvailablePaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<PaymentMethodType>>() {
             @Override
             public void onChanged(List<PaymentMethodType> paymentMethodTypes) {
                 showSupportedPaymentMethods();
