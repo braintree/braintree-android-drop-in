@@ -62,13 +62,6 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
         mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
 
-        mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dropInViewModel.postNavigationEvent(NavigationEvent.SHOW_VAULT_MANAGER);
-            }
-        });
-
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(getActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
@@ -92,6 +85,13 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         });
 
         dropInViewModel.sendAnalyticsEvent("appeared");
+
+        mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showVaultManager();
+            }
+        });
         return view;
     }
 
@@ -102,6 +102,11 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         // TODO: show spinner while fetching nonces
         dropInViewModel.fetchPaymentMethodNonces(true);
         mLoadingViewSwitcher.setDisplayedChild(1);
+    }
+
+    private void showVaultManager() {
+        DropInActivity activity = ((DropInActivity) getActivity());
+        activity.showVaultManager();
     }
 
     private void showSupportedPaymentMethods() {

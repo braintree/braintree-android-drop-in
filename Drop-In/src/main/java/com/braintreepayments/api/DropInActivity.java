@@ -104,15 +104,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 onPaymentMethodNonceCreated(paymentMethodNonce);
             }
         });
-
-        viewModel.getEvent().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(String event) {
-                if (NavigationEvent.SHOW_VAULT_MANAGER.equals(event)) {
-                    showVaultManager();
-                }
-            }
-        });
     }
 
     @Override
@@ -319,7 +310,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         finish(error);
     }
 
-    private void showVaultManager() {
+    void showVaultManager() {
         ArrayList<Parcelable> parcelableArrayList = new ArrayList<Parcelable>(mBraintreeFragment.getCachedPaymentMethodNonces());
 
         Intent intent = new Intent(this, VaultManagerActivity.class)
