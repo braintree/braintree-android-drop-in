@@ -33,7 +33,7 @@ public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpd
     private final MutableLiveData<PaymentMethodType> selectedPaymentMethodType = new MutableLiveData<>();
     private final MutableLiveData<PaymentMethodNonce> selectedPaymentMethodNonce = new MutableLiveData<>();
 
-    private final MutableLiveData<UIEvent> uiEvent = new MutableLiveData<>();
+    private final MutableLiveData<String> navigationEvent = new MutableLiveData<>();
 
     DropInViewModel(BraintreeFragment braintreeFragment, DropInRequest dropInRequest) {
         this.dropInRequest = dropInRequest;
@@ -164,11 +164,11 @@ public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpd
         braintreeFragment.sendAnalyticsEvent(eventFragment);
     }
 
-    void notifyEvent(UIEvent event) {
-        uiEvent.postValue(event);
+    void postNavigationEvent(@NavigationEvent String event) {
+        navigationEvent.postValue(event);
     }
 
-    public MutableLiveData<UIEvent> getEvent() {
-        return uiEvent;
+    public MutableLiveData<String> getEvent() {
+        return navigationEvent;
     }
 }

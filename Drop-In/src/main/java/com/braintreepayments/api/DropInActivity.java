@@ -106,11 +106,10 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             }
         });
 
-        viewModel.getEvent().observe(this, new Observer<UIEvent>() {
+        viewModel.getEvent().observe(this, new Observer<String>() {
             @Override
-            public void onChanged(UIEvent event) {
-                @UIEventType int type = event.getType();
-                if (type == UIEventType.SHOW_VAULT_MANAGER) {
+            public void onChanged(String event) {
+                if (NavigationEvent.SHOW_VAULT_MANAGER.equals(event)) {
                     showVaultManager();
                 }
             }

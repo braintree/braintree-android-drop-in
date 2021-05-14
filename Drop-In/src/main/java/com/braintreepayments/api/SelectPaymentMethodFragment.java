@@ -149,7 +149,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     }
 
     public void onVaultEditButtonClick(View view) {
-        dropInViewModel.notifyEvent(new UIEvent(UIEventType.SHOW_VAULT_MANAGER));
+        dropInViewModel.postNavigationEvent(NavigationEvent.SHOW_VAULT_MANAGER);
     }
 
     private static boolean containsCardNonce(List<PaymentMethodNonce> paymentMethodNonces) {
