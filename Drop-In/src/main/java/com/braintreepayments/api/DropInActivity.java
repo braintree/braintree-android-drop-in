@@ -2,6 +2,8 @@ package com.braintreepayments.api;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.text.TextUtils;
 import android.view.View;
 
 import androidx.fragment.app.Fragment;
@@ -31,6 +33,7 @@ import com.braintreepayments.api.models.PayPalRequest;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.ThreeDSecureRequest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
@@ -74,16 +77,42 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
         }
 
+        if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
+            DataCollector.collectDeviceData(mBraintreeFragment, new BraintreeResponseListener<String>() {
+                @Override
+                public void onResponse(String deviceData) {
+                    mDeviceData = deviceData;
+                }
+            });
+        }
+
         isClientTokenPresent = mBraintreeFragment.getAuthorization() instanceof ClientToken;
 
         DropInViewModelFactory viewModelFactory =
             new DropInViewModelFactory(this, mDropInRequest);
         viewModel = new ViewModelProvider(this, viewModelFactory).get(DropInViewModel.class);
 
+        viewModel.getSelectedPaymentMethodType().observe(this, new Observer<PaymentMethodType>() {
+            @Override
+            public void onChanged(PaymentMethodType paymentMethodType) {
+                onPaymentMethodSelected(paymentMethodType);
+            }
+        });
+
         viewModel.getSelectedPaymentMethodNonce().observe(this, new Observer<PaymentMethodNonce>() {
             @Override
             public void onChanged(PaymentMethodNonce paymentMethodNonce) {
                 onPaymentMethodNonceCreated(paymentMethodNonce);
+            }
+        });
+
+        viewModel.getEvent().observe(this, new Observer<UIEvent>() {
+            @Override
+            public void onChanged(UIEvent event) {
+                @UIEventType int type = event.getType();
+                if (type == UIEventType.SHOW_VAULT_MANAGER) {
+                    showVaultManager();
+                }
             }
         });
     }
@@ -290,5 +319,16 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
 
         finish(error);
+    }
+
+    private void showVaultManager() {
+        ArrayList<Parcelable> parcelableArrayList = new ArrayList<Parcelable>(mBraintreeFragment.getCachedPaymentMethodNonces());
+
+        Intent intent = new Intent(this, VaultManagerActivity.class)
+                .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest)
+                .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, parcelableArrayList);
+        startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
+
+        viewModel.sendAnalyticsEvent("manager.appeared");
     }
 }

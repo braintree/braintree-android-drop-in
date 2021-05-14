@@ -1,9 +1,6 @@
 package com.braintreepayments.api;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,22 +18,14 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.braintreepayments.api.DropInActivity.DELETE_PAYMENT_METHOD_NONCE_CODE;
-import static com.braintreepayments.api.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
-import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 public class SelectPaymentMethodFragment extends Fragment implements SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener {
 
-    private String mDeviceData;
     private ViewSwitcher mLoadingViewSwitcher;
     private TextView mSupportedPaymentMethodsHeader;
 
@@ -48,8 +37,6 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     private Button mVaultManagerButton;
 
     private DropInRequest dropInRequest;
-
-    private BraintreeFragment braintreeFragment;
     private DropInViewModel dropInViewModel;
 
     public SelectPaymentMethodFragment() {}
@@ -60,12 +47,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
 
         Bundle args = getArguments();
         if (args != null) {
-            try {
-                dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
-                braintreeFragment = BraintreeFragment.newInstance(this, dropInRequest.getAuthorization());
-            } catch (InvalidArgumentException e) {
-                e.printStackTrace();
-            }
+            dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
         }
     }
 
@@ -92,17 +74,6 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
-        if (dropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
-            DataCollector.collectDeviceData(braintreeFragment, new BraintreeResponseListener<String>() {
-                @Override
-                public void onResponse(String deviceData) {
-                    mDeviceData = deviceData;
-                }
-            });
-        }
-
-        braintreeFragment.sendAnalyticsEvent("appeared");
-
         DropInViewModelFactory viewModelFactory =
                 new DropInViewModelFactory(requireActivity(), dropInRequest);
         dropInViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(DropInViewModel.class);
@@ -121,6 +92,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             }
         });
 
+        dropInViewModel.sendAnalyticsEvent("appeared");
         return view;
     }
 
@@ -143,8 +115,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     @Override
     public void onPaymentMethodSelected(PaymentMethodType type) {
         mLoadingViewSwitcher.setDisplayedChild(0);
-        DropInActivity activity = ((DropInActivity) getActivity());
-        activity.onPaymentMethodSelected(type);
+        dropInViewModel.setSelectedPaymentMethodType(type);
     }
 
     private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {
@@ -156,7 +127,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
                 @Override
                 public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
                     if (paymentMethodNonce instanceof CardNonce) {
-                        braintreeFragment.sendAnalyticsEvent("vaulted-card.select");
+                        dropInViewModel.sendAnalyticsEvent("vaulted-card.select");
                     }
                     dropInViewModel.setSelectedPaymentMethodNonce(paymentMethodNonce);
                 }
@@ -177,7 +148,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             }
 
             if (hasCardNonce) {
-                braintreeFragment.sendAnalyticsEvent("vaulted-card.appear");
+                dropInViewModel.sendAnalyticsEvent("vaulted-card.appear");
             }
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
@@ -186,13 +157,6 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     }
 
     public void onVaultEditButtonClick(View view) {
-        ArrayList<Parcelable> parcelableArrayList = new ArrayList<Parcelable>(braintreeFragment.getCachedPaymentMethodNonces());
-
-        Intent intent = new Intent(getActivity(), VaultManagerActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST, dropInRequest)
-                .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, parcelableArrayList);
-        startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
-
-        braintreeFragment.sendAnalyticsEvent("manager.appeared");
+        dropInViewModel.notifyEvent(new UIEvent(UIEventType.SHOW_VAULT_MANAGER));
     }
 }
