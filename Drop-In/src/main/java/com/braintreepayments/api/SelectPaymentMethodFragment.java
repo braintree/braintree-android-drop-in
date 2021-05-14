@@ -21,27 +21,11 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.exceptions.AuthenticationException;
-import com.braintreepayments.api.exceptions.AuthorizationException;
-import com.braintreepayments.api.exceptions.ConfigurationException;
-import com.braintreepayments.api.exceptions.DownForMaintenanceException;
-import com.braintreepayments.api.exceptions.GoogleApiClientException;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.exceptions.ServerException;
-import com.braintreepayments.api.exceptions.UnexpectedException;
-import com.braintreepayments.api.exceptions.UpgradeRequiredException;
-import com.braintreepayments.api.interfaces.BraintreeCancelListener;
-import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.ClientToken;
-import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.models.GooglePaymentCardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.models.ThreeDSecureRequest;
-
-import org.json.JSONException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,13 +34,11 @@ import static com.braintreepayments.api.DropInActivity.DELETE_PAYMENT_METHOD_NON
 import static com.braintreepayments.api.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
-public class SelectPaymentMethodFragment extends Fragment implements BraintreeCancelListener, BraintreeErrorListener, PaymentMethodNonceCreatedListener, SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener {
+public class SelectPaymentMethodFragment extends Fragment implements SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener {
 
     private String mDeviceData;
     private ViewSwitcher mLoadingViewSwitcher;
     private TextView mSupportedPaymentMethodsHeader;
-
-    private boolean mPerformedThreeDSecureVerification;
 
     @VisibleForTesting
     protected ListView mSupportedPaymentMethodListView;
@@ -65,9 +47,7 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
     private RecyclerView mVaultedPaymentMethodsView;
     private Button mVaultManagerButton;
 
-    private Configuration configuration;
     private DropInRequest dropInRequest;
-    private boolean isClientTokenPresent;
 
     private BraintreeFragment braintreeFragment;
     private DropInViewModel dropInViewModel;
@@ -81,14 +61,9 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         Bundle args = getArguments();
         if (args != null) {
             try {
-                configuration = Configuration.fromJson(args.getString("EXTRA_CONFIGURATION"));
-
                 dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
                 braintreeFragment = BraintreeFragment.newInstance(this, dropInRequest.getAuthorization());
-                braintreeFragment.addListener(this);
-
-                isClientTokenPresent = braintreeFragment.getAuthorization() instanceof ClientToken;
-            } catch (InvalidArgumentException | JSONException e) {
+            } catch (InvalidArgumentException e) {
                 e.printStackTrace();
             }
         }
@@ -183,8 +158,7 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
                     if (paymentMethodNonce instanceof CardNonce) {
                         braintreeFragment.sendAnalyticsEvent("vaulted-card.select");
                     }
-
-                    SelectPaymentMethodFragment.this.onPaymentMethodNonceCreated(paymentMethodNonce);
+                    dropInViewModel.setSelectedPaymentMethodNonce(paymentMethodNonce);
                 }
             }, paymentMethodNonces);
 
@@ -211,69 +185,6 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         }
     }
 
-    @Override
-    public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethodNonce) {
-        if (!mPerformedThreeDSecureVerification &&
-                paymentMethodCanPerformThreeDSecureVerification(paymentMethodNonce) &&
-                shouldRequestThreeDSecureVerification()) {
-            mPerformedThreeDSecureVerification = true;
-            mLoadingViewSwitcher.setDisplayedChild(0);
-
-            if (dropInRequest.getThreeDSecureRequest() == null) {
-                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(dropInRequest.getAmount());
-                dropInRequest.threeDSecureRequest(threeDSecureRequest);
-            }
-
-            if (dropInRequest.getThreeDSecureRequest().getAmount() == null && dropInRequest.getAmount() != null) {
-                dropInRequest.getThreeDSecureRequest().amount(dropInRequest.getAmount());
-            }
-
-            dropInRequest.getThreeDSecureRequest().nonce(paymentMethodNonce.getNonce());
-            ThreeDSecure.performVerification(braintreeFragment, dropInRequest.getThreeDSecureRequest());
-            return;
-        }
-
-        braintreeFragment.sendAnalyticsEvent("sdk.exit.success");
-
-        DropInResult.setLastUsedPaymentMethodType(getActivity(), paymentMethodNonce);
-
-        DropInActivity activity = ((DropInActivity) getActivity());
-        activity.onPaymentMethodNonceCreated(paymentMethodNonce);
-    }
-
-    private void handleThreeDSecureFailure() {
-        if (mPerformedThreeDSecureVerification) {
-            mPerformedThreeDSecureVerification = false;
-            dropInViewModel.fetchPaymentMethodNonces(true);
-        }
-    }
-
-    private boolean paymentMethodCanPerformThreeDSecureVerification(final PaymentMethodNonce paymentMethodNonce) {
-        if (paymentMethodNonce instanceof CardNonce) {
-            return true;
-        }
-
-        if (paymentMethodNonce instanceof GooglePaymentCardNonce) {
-            return ((GooglePaymentCardNonce) paymentMethodNonce).isNetworkTokenized() == false;
-        }
-
-        return false;
-    }
-
-    protected boolean shouldRequestThreeDSecureVerification() {
-        boolean hasAmount = !TextUtils.isEmpty(dropInRequest.getAmount()) ||
-                (dropInRequest.getThreeDSecureRequest() != null && !TextUtils.isEmpty(dropInRequest.getThreeDSecureRequest().getAmount()));
-
-        // TODO: NEXT_MAJOR_VERSION use BraintreeClient#getConfiguration and don't cache configuration in memory
-        if (configuration == null) {
-            return false;
-        }
-
-        return dropInRequest.shouldRequestThreeDSecureVerification() &&
-                configuration.isThreeDSecureEnabled() &&
-                hasAmount;
-    }
-
     public void onVaultEditButtonClick(View view) {
         ArrayList<Parcelable> parcelableArrayList = new ArrayList<Parcelable>(braintreeFragment.getCachedPaymentMethodNonces());
 
@@ -283,38 +194,5 @@ public class SelectPaymentMethodFragment extends Fragment implements BraintreeCa
         startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
 
         braintreeFragment.sendAnalyticsEvent("manager.appeared");
-    }
-
-    @Override
-    public void onCancel(int requestCode) {
-        handleThreeDSecureFailure();
-
-        mLoadingViewSwitcher.setDisplayedChild(1);
-    }
-
-    @Override
-    public void onError(final Exception error) {
-        handleThreeDSecureFailure();
-
-        if (error instanceof GoogleApiClientException) {
-            showSupportedPaymentMethods();
-            return;
-        }
-
-        if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
-                error instanceof UpgradeRequiredException) {
-            braintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
-        } else if (error instanceof ConfigurationException) {
-            braintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
-        } else if (error instanceof ServerException || error instanceof UnexpectedException) {
-            braintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-        } else if (error instanceof DownForMaintenanceException) {
-            braintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
-        } else {
-            braintreeFragment.sendAnalyticsEvent("sdk.exit.sdk-error");
-        }
-
-        DropInActivity activity = ((DropInActivity) getActivity());
-        activity.finish(error);
     }
 }

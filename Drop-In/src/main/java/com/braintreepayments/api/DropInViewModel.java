@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.braintreepayments.api.exceptions.GoogleApiClientException;
+import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
 import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
@@ -18,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpdatedListener {
+public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpdatedListener, BraintreeErrorListener {
 
     private final DropInRequest dropInRequest;
     private final BraintreeFragment braintreeFragment;
@@ -27,6 +29,8 @@ public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpd
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethodNonces = new MutableLiveData<List<PaymentMethodNonce>>(new ArrayList<PaymentMethodNonce>());
     private final MutableLiveData<List<PaymentMethodType>> availablePaymentMethods = new MutableLiveData<List<PaymentMethodType>>(new ArrayList<PaymentMethodType>());
+
+    private final MutableLiveData<PaymentMethodNonce> selectedPaymentMethodNonce = new MutableLiveData<>();
 
     DropInViewModel(BraintreeFragment braintreeFragment, DropInRequest dropInRequest) {
         this.dropInRequest = dropInRequest;
@@ -123,5 +127,25 @@ public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpd
                 vaultedPaymentMethodNonces.postValue(availablePaymentMethodNonceList.getItems());
             }
         });
+    }
+
+    @Override
+    public void onError(Exception error) {
+        if (error instanceof GoogleApiClientException) {
+            braintreeFragment.waitForConfiguration(new ConfigurationListener() {
+                @Override
+                public void onConfigurationFetched(Configuration configuration) {
+                    updateAvailablePaymentMethods(braintreeFragment.getApplicationContext(), configuration, dropInRequest, false, configuration.getUnionPay().isEnabled());
+                }
+            });
+        }
+    }
+
+    MutableLiveData<PaymentMethodNonce> getSelectedPaymentMethodNonce() {
+        return selectedPaymentMethodNonce;
+    }
+
+    void setSelectedPaymentMethodNonce(PaymentMethodNonce value) {
+        selectedPaymentMethodNonce.postValue(value);
     }
 }

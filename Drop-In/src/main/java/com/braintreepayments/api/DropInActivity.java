@@ -2,12 +2,11 @@ package com.braintreepayments.api;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
@@ -15,7 +14,6 @@ import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
 import com.braintreepayments.api.exceptions.ConfigurationException;
 import com.braintreepayments.api.exceptions.DownForMaintenanceException;
-import com.braintreepayments.api.exceptions.GoogleApiClientException;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.ServerException;
 import com.braintreepayments.api.exceptions.UnexpectedException;
@@ -57,6 +55,9 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     private DropInViewModel viewModel;
     private boolean isClientTokenPresent;
 
+    private boolean mPerformedThreeDSecureVerification;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +79,13 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         DropInViewModelFactory viewModelFactory =
             new DropInViewModelFactory(this, mDropInRequest);
         viewModel = new ViewModelProvider(this, viewModelFactory).get(DropInViewModel.class);
+
+        viewModel.getSelectedPaymentMethodNonce().observe(this, new Observer<PaymentMethodNonce>() {
+            @Override
+            public void onChanged(PaymentMethodNonce paymentMethodNonce) {
+                onPaymentMethodNonceCreated(paymentMethodNonce);
+            }
+        });
     }
 
     @Override
@@ -228,20 +236,45 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         return false;
     }
 
+    private void handleThreeDSecureFailure() {
+        if (mPerformedThreeDSecureVerification) {
+            mPerformedThreeDSecureVerification = false;
+            viewModel.fetchPaymentMethodNonces(true);
+        }
+    }
+
     @Override
-    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
+    public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethodNonce) {
+        if (!mPerformedThreeDSecureVerification &&
+                paymentMethodCanPerformThreeDSecureVerification(paymentMethodNonce) &&
+                shouldRequestThreeDSecureVerification()) {
+            mPerformedThreeDSecureVerification = true;
+//            mLoadingViewSwitcher.setDisplayedChild(0);
+
+            if (mDropInRequest.getThreeDSecureRequest() == null) {
+                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
+                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
+            }
+
+            if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
+                mDropInRequest.getThreeDSecureRequest().amount(mDropInRequest.getAmount());
+            }
+
+            mDropInRequest.getThreeDSecureRequest().nonce(paymentMethodNonce.getNonce());
+            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
+            return;
+        }
+
+        mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
+
+        DropInResult.setLastUsedPaymentMethodType(this, paymentMethodNonce);
+
         finish(paymentMethodNonce, mDeviceData);
     }
 
     @Override
     public void onError(Exception error) {
-//        handleThreeDSecureFailure();
-
-        if (error instanceof GoogleApiClientException) {
-//            showSupportedPaymentMethods();
-            viewModel.updateAvailablePaymentMethods(DropInActivity.this, mConfiguration, mDropInRequest, false, isClientTokenPresent);
-            return;
-        }
+        handleThreeDSecureFailure();
 
         if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                 error instanceof UpgradeRequiredException) {
