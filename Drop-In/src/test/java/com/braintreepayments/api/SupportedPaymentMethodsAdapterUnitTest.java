@@ -2,10 +2,6 @@ package com.braintreepayments.api;
 
 import android.content.Context;
 
-import com.braintreepayments.api.DropInRequest;
-import com.braintreepayments.api.SupportedPaymentMethodsAdapter;
-import com.braintreepayments.api.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
-import com.braintreepayments.api.PaymentMethodType;
 import com.braintreepayments.api.models.CardConfiguration;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.GooglePaymentConfiguration;
@@ -176,7 +172,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
     @Test
     public void callsOnPaymentMethodSelectedListenerWhenPaymentMethodClicked() {
         Configuration configuration = getConfiguration(true, true, true, true);
-        PaymentMethodSelectedListener listener = mock(PaymentMethodSelectedListener.class);
+        SupportedPaymentMethodSelectedListener listener = mock(SupportedPaymentMethodSelectedListener.class);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 RuntimeEnvironment.application, listener);

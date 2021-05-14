@@ -18,13 +18,12 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.CardNonce;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.List;
 
-public class SelectPaymentMethodFragment extends Fragment implements SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener {
+public class SelectPaymentMethodFragment extends Fragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
 
     private ViewSwitcher mLoadingViewSwitcher;
     private TextView mSupportedPaymentMethodsHeader;
@@ -118,20 +117,21 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         dropInViewModel.setSelectedPaymentMethodType(type);
     }
 
+    @Override
+    public void onVaultedPaymentMethodSelected(PaymentMethodNonce paymentMethodNonce) {
+        if (paymentMethodNonce instanceof CardNonce) {
+            dropInViewModel.sendAnalyticsEvent("vaulted-card.select");
+        }
+        dropInViewModel.setSelectedPaymentMethodNonce(paymentMethodNonce);
+    }
+
     private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {
         if (paymentMethodNonces.size() > 0) {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
             mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
 
-            VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter = new VaultedPaymentMethodsAdapter(new PaymentMethodNonceCreatedListener() {
-                @Override
-                public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-                    if (paymentMethodNonce instanceof CardNonce) {
-                        dropInViewModel.sendAnalyticsEvent("vaulted-card.select");
-                    }
-                    dropInViewModel.setSelectedPaymentMethodNonce(paymentMethodNonce);
-                }
-            }, paymentMethodNonces);
+            VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter =
+                new VaultedPaymentMethodsAdapter(this, paymentMethodNonces);
 
             mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
 
@@ -139,15 +139,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
                 mVaultManagerButton.setVisibility(View.VISIBLE);
             }
 
-            boolean hasCardNonce = false;
-            for (PaymentMethodNonce nonce : paymentMethodNonces) {
-                if (nonce instanceof CardNonce) {
-                    hasCardNonce = true;
-                    break;
-                }
-            }
-
-            if (hasCardNonce) {
+            if (containsCardNonce(paymentMethodNonces)) {
                 dropInViewModel.sendAnalyticsEvent("vaulted-card.appear");
             }
         } else {
@@ -158,5 +150,14 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
 
     public void onVaultEditButtonClick(View view) {
         dropInViewModel.notifyEvent(new UIEvent(UIEventType.SHOW_VAULT_MANAGER));
+    }
+
+    private static boolean containsCardNonce(List<PaymentMethodNonce> paymentMethodNonces) {
+        for (PaymentMethodNonce nonce : paymentMethodNonces) {
+            if (nonce instanceof CardNonce) {
+                return true;
+            }
+        }
+        return false;
     }
 }

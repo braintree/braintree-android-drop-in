@@ -1,6 +1,5 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,20 +10,18 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
 import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.List;
 
 class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMethodsAdapter.ViewHolder> {
 
-    private final PaymentMethodNonceCreatedListener mSelectedListener;
+    private final VaultedPaymentMethodSelectedListener mSelectedListener;
 
     private final List<PaymentMethodNonce> mPaymentMethodNonces;
 
-    VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener, List<PaymentMethodNonce> paymentMethodNonces) {
+    VaultedPaymentMethodsAdapter(VaultedPaymentMethodSelectedListener listener, List<PaymentMethodNonce> paymentMethodNonces) {
         mSelectedListener = listener;
         mPaymentMethodNonces = paymentMethodNonces;
     }
@@ -52,7 +49,7 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSelectedListener.onPaymentMethodNonceCreated(paymentMethodNonce);
+                mSelectedListener.onVaultedPaymentMethodSelected(paymentMethodNonce);
             }
         });
     }

@@ -12,22 +12,18 @@ import android.widget.TextView;
 import androidx.lifecycle.LiveData;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.models.Configuration;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
     private Context mContext;
     private LiveData<List<PaymentMethodType>> mAvailablePaymentMethods;
-    private PaymentMethodSelectedListener mPaymentMethodSelectedListener;
+    private SupportedPaymentMethodSelectedListener mSupportedPaymentMethodSelectedListener;
 
-    SupportedPaymentMethodsAdapter(Context context, PaymentMethodSelectedListener paymentMethodSelectedListener, LiveData<List<PaymentMethodType>> availablePaymentMethods) {
+    SupportedPaymentMethodsAdapter(Context context, SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener, LiveData<List<PaymentMethodType>> availablePaymentMethods) {
         mContext = context;
-        mPaymentMethodSelectedListener = paymentMethodSelectedListener;
+        mSupportedPaymentMethodSelectedListener = supportedPaymentMethodSelectedListener;
         mAvailablePaymentMethods = availablePaymentMethods;
     }
 
@@ -63,14 +59,11 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
         convertView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mPaymentMethodSelectedListener.onPaymentMethodSelected(type);
+                mSupportedPaymentMethodSelectedListener.onPaymentMethodSelected(type);
             }
         });
 
         return convertView;
     }
 
-    interface PaymentMethodSelectedListener {
-        void onPaymentMethodSelected(PaymentMethodType type);
-    }
 }
