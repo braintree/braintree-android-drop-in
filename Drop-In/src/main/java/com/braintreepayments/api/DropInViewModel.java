@@ -157,8 +157,4 @@ public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpd
     void setSelectedPaymentMethodType(PaymentMethodType value) {
         selectedPaymentMethodType.postValue(value);
     }
-
-    void sendAnalyticsEvent(String eventFragment) {
-        braintreeFragment.sendAnalyticsEvent(eventFragment);
-    }
 }

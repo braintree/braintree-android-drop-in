@@ -139,6 +139,10 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
     }
 
+    void sendAnalyticsEvent(String eventFragment) {
+        mBraintreeFragment.sendAnalyticsEvent(eventFragment);
+    }
+
     @Override
     public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {
         final List<PaymentMethodNonce> noncesRef = paymentMethodNonces;
@@ -318,6 +322,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, parcelableArrayList);
         startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
 
-        viewModel.sendAnalyticsEvent("manager.appeared");
+        sendAnalyticsEvent("manager.appeared");
     }
 }

@@ -84,8 +84,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             }
         });
 
-        dropInViewModel.sendAnalyticsEvent("appeared");
-
+        sendAnalyticsEvent("appeared");
         mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,8 +104,13 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     }
 
     private void showVaultManager() {
-        DropInActivity activity = ((DropInActivity) getActivity());
+        DropInActivity activity = ((DropInActivity) requireActivity());
         activity.showVaultManager();
+    }
+
+    private void sendAnalyticsEvent(String eventFragment) {
+        DropInActivity activity = ((DropInActivity) requireActivity());
+        activity.sendAnalyticsEvent(eventFragment);
     }
 
     private void showSupportedPaymentMethods() {
@@ -125,7 +129,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     @Override
     public void onVaultedPaymentMethodSelected(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
-            dropInViewModel.sendAnalyticsEvent("vaulted-card.select");
+            sendAnalyticsEvent("vaulted-card.select");
         }
         dropInViewModel.setSelectedPaymentMethodNonce(paymentMethodNonce);
     }
@@ -145,7 +149,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             }
 
             if (containsCardNonce(paymentMethodNonces)) {
-                dropInViewModel.sendAnalyticsEvent("vaulted-card.appear");
+                sendAnalyticsEvent("vaulted-card.appear");
             }
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
