@@ -33,6 +33,8 @@ public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpd
     private final MutableLiveData<PaymentMethodType> selectedPaymentMethodType = new MutableLiveData<>();
     private final MutableLiveData<PaymentMethodNonce> selectedPaymentMethodNonce = new MutableLiveData<>();
 
+    private final MutableLiveData<Boolean> isGooglePayEnabled = new MutableLiveData<>();
+
     DropInViewModel(BraintreeFragment braintreeFragment, DropInRequest dropInRequest) {
         this.dropInRequest = dropInRequest;
         this.braintreeFragment = braintreeFragment;
@@ -51,6 +53,7 @@ public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpd
     }
 
     void setVaultedPaymentMethodNonces(List<PaymentMethodNonce> value) {
+        // TODO: switch map GooglePay.isReadyToPay value onto vaulted payment method nonces and supported payment methods loading
         vaultedPaymentMethodNonces.postValue(value);
     }
 

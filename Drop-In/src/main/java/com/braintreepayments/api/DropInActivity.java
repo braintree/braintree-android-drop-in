@@ -145,22 +145,10 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     @Override
     public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {
-        final List<PaymentMethodNonce> noncesRef = paymentMethodNonces;
         if (paymentMethodNonces.size() > 0) {
+            // TODO: fetch vaulted payment methods from within view model and remove payment
+            // method nonces updated listener
             viewModel.setVaultedPaymentMethodNonces(paymentMethodNonces);
-            if (mDropInRequest.isGooglePaymentEnabled()) {
-                GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
-                    @Override
-                    public void onResponse(Boolean isReadyToPay) {
-//                        showVaultedPaymentMethods(noncesRef, isReadyToPay);
-                    }
-                });
-            } else {
-//                showVaultedPaymentMethods(paymentMethodNonces, false);
-            }
-        } else {
-//            mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
-//            mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
         }
     }
 
