@@ -65,7 +65,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onVaultEditButtonClick(view);
+                dropInViewModel.postNavigationEvent(NavigationEvent.SHOW_VAULT_MANAGER);
             }
         });
 
@@ -146,10 +146,6 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
             mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
         }
-    }
-
-    public void onVaultEditButtonClick(View view) {
-        dropInViewModel.postNavigationEvent(NavigationEvent.SHOW_VAULT_MANAGER);
     }
 
     private static boolean containsCardNonce(List<PaymentMethodNonce> paymentMethodNonces) {

@@ -60,7 +60,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     private boolean mPerformedThreeDSecureVerification;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
