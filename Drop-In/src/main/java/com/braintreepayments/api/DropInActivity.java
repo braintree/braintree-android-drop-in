@@ -113,99 +113,83 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
     }
 
-    void updateVaultedPaymentMethodNonces(final boolean refetch) {
-        if (isClientTokenPresent) {
-            if (mBraintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
-                onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
-            } else {
-                PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
-            }
+    private void handleThreeDSecureFailure() {
+        if (mPerformedThreeDSecureVerification) {
+            mPerformedThreeDSecureVerification = false;
+            updateVaultedPaymentMethodNonces(true);
         }
-    }
-
-    private void updateSupportedPaymentMethods(boolean googlePayEnabled) {
-        List<PaymentMethodType> availablePaymentMethods = new ArrayList<>();
-        if (mDropInRequest.isPayPalEnabled() && mConfiguration.isPayPalEnabled()) {
-            availablePaymentMethods.add(PaymentMethodType.PAYPAL);
-        }
-
-        if (mDropInRequest.isVenmoEnabled() && mConfiguration.getPayWithVenmo().isEnabled(this)) {
-            availablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
-        }
-
-        if (mDropInRequest.isCardEnabled()) {
-            Set<String> supportedCardTypes =
-                    new HashSet<>(mConfiguration.getCardConfiguration().getSupportedCardTypes());
-            if (!mConfiguration.getUnionPay().isEnabled()) {
-                supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
-            }
-            if (supportedCardTypes.size() > 0) {
-                availablePaymentMethods.add(PaymentMethodType.UNKNOWN);
-            }
-        }
-
-        if (googlePayEnabled) {
-            if (mDropInRequest.isGooglePaymentEnabled()) {
-                availablePaymentMethods.add(PaymentMethodType.GOOGLE_PAYMENT);
-            }
-        }
-
-        viewModel.setAvailablePaymentMethods(availablePaymentMethods);
-    }
-
-    private void showSelectPaymentMethodFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag("SELECT_PAYMENT_METHOD");
-        if (fragment == null) {
-            Bundle args = new Bundle();
-            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-            args.putString("EXTRA_CONFIGURATION", mConfiguration.toJson());
-
-            fragmentManager
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .add(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
-                    .commit();
-        }
-    }
-
-    void sendAnalyticsEvent(String eventFragment) {
-        mBraintreeFragment.sendAnalyticsEvent(eventFragment);
     }
 
     @Override
-    public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {
-        final List<PaymentMethodNonce> noncesRef = paymentMethodNonces;
-        if (paymentMethodNonces.size() > 0) {
-            if (mDropInRequest.isGooglePaymentEnabled()) {
-                GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
-                    @Override
-                    public void onResponse(Boolean isReadyToPay) {
-                        updatedVaultedPaymentMethods(noncesRef, isReadyToPay);
-                    }
-                });
-            } else {
-                updatedVaultedPaymentMethods(noncesRef, false);
-            }
-        }
-    }
+    public void onCancel(int requestCode) {
+        handleThreeDSecureFailure();
 
-    private void updatedVaultedPaymentMethods(final List<PaymentMethodNonce> paymentMethodNonces, final boolean googlePayEnabled) {
-        mBraintreeFragment.waitForConfiguration(new ConfigurationListener() {
-            @Override
-            public void onConfigurationFetched(Configuration configuration) {
-                AvailablePaymentMethodNonceList availablePaymentMethodNonceList = new AvailablePaymentMethodNonceList(
-                        DropInActivity.this, configuration, paymentMethodNonces, mDropInRequest, googlePayEnabled);
-
-                viewModel.setVaultedPaymentMethodNonces(availablePaymentMethodNonceList.getItems());
-            }
-        });
+        viewModel.setIsLoading(false);
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(EXTRA_DEVICE_DATA, mDeviceData);
+    public void onError(Exception error) {
+        handleThreeDSecureFailure();
+
+        if (error instanceof GoogleApiClientException) {
+            updateSupportedPaymentMethods(false);
+        }
+
+        if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
+                error instanceof UpgradeRequiredException) {
+            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
+        } else if (error instanceof ConfigurationException) {
+            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
+        } else if (error instanceof ServerException || error instanceof UnexpectedException) {
+            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
+        } else if (error instanceof DownForMaintenanceException) {
+            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
+        } else {
+            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.sdk-error");
+        }
+
+        finish(error);
+    }
+
+    @Override
+    public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethodNonce) {
+        if (!mPerformedThreeDSecureVerification &&
+                paymentMethodCanPerformThreeDSecureVerification(paymentMethodNonce) &&
+                shouldRequestThreeDSecureVerification()) {
+            mPerformedThreeDSecureVerification = true;
+            viewModel.setIsLoading(true);
+
+            if (mDropInRequest.getThreeDSecureRequest() == null) {
+                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
+                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
+            }
+
+            if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
+                mDropInRequest.getThreeDSecureRequest().amount(mDropInRequest.getAmount());
+            }
+
+            mDropInRequest.getThreeDSecureRequest().nonce(paymentMethodNonce.getNonce());
+            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
+            return;
+        }
+
+        mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
+
+        DropInResult.setLastUsedPaymentMethodType(this, paymentMethodNonce);
+
+        finish(paymentMethodNonce, mDeviceData);
+    }
+
+    private boolean paymentMethodCanPerformThreeDSecureVerification(final PaymentMethodNonce paymentMethodNonce) {
+        if (paymentMethodNonce instanceof CardNonce) {
+            return true;
+        }
+
+        if (paymentMethodNonce instanceof GooglePaymentCardNonce) {
+            return ((GooglePaymentCardNonce) paymentMethodNonce).isNetworkTokenized() == false;
+        }
+
+        return false;
     }
 
     public void onPaymentMethodSelected(PaymentMethodType type) {
@@ -234,6 +218,40 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
                 break;
         }
+    }
+
+
+    void updateVaultedPaymentMethodNonces(final boolean refetch) {
+        if (isClientTokenPresent) {
+            if (mBraintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
+                onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
+            } else {
+                PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
+            }
+        }
+    }
+
+    @Override
+    public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {
+        final List<PaymentMethodNonce> noncesRef = paymentMethodNonces;
+        if (paymentMethodNonces.size() > 0) {
+            if (mDropInRequest.isGooglePaymentEnabled()) {
+                GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean isReadyToPay) {
+                        updatedVaultedPaymentMethods(noncesRef, isReadyToPay);
+                    }
+                });
+            } else {
+                updatedVaultedPaymentMethods(noncesRef, false);
+            }
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(EXTRA_DEVICE_DATA, mDeviceData);
     }
 
     @Override
@@ -300,83 +318,66 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         overridePendingTransition(R.anim.bt_activity_fade_in, R.anim.bt_activity_fade_out);
     }
 
-    private boolean paymentMethodCanPerformThreeDSecureVerification(final PaymentMethodNonce paymentMethodNonce) {
-        if (paymentMethodNonce instanceof CardNonce) {
-            return true;
-        }
+    private void updatedVaultedPaymentMethods(final List<PaymentMethodNonce> paymentMethodNonces, final boolean googlePayEnabled) {
+        mBraintreeFragment.waitForConfiguration(new ConfigurationListener() {
+            @Override
+            public void onConfigurationFetched(Configuration configuration) {
+                AvailablePaymentMethodNonceList availablePaymentMethodNonceList = new AvailablePaymentMethodNonceList(
+                        DropInActivity.this, configuration, paymentMethodNonces, mDropInRequest, googlePayEnabled);
 
-        if (paymentMethodNonce instanceof GooglePaymentCardNonce) {
-            return ((GooglePaymentCardNonce) paymentMethodNonce).isNetworkTokenized() == false;
-        }
-
-        return false;
-    }
-
-    private void handleThreeDSecureFailure() {
-        if (mPerformedThreeDSecureVerification) {
-            mPerformedThreeDSecureVerification = false;
-            updateVaultedPaymentMethodNonces(true);
-        }
-    }
-
-    @Override
-    public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethodNonce) {
-        if (!mPerformedThreeDSecureVerification &&
-                paymentMethodCanPerformThreeDSecureVerification(paymentMethodNonce) &&
-                shouldRequestThreeDSecureVerification()) {
-            mPerformedThreeDSecureVerification = true;
-            viewModel.setIsLoading(true);
-
-            if (mDropInRequest.getThreeDSecureRequest() == null) {
-                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
-                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
+                viewModel.setVaultedPaymentMethodNonces(availablePaymentMethodNonceList.getItems());
             }
+        });
+    }
 
-            if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
-                mDropInRequest.getThreeDSecureRequest().amount(mDropInRequest.getAmount());
+    private void updateSupportedPaymentMethods(boolean googlePayEnabled) {
+        List<PaymentMethodType> availablePaymentMethods = new ArrayList<>();
+        if (mDropInRequest.isPayPalEnabled() && mConfiguration.isPayPalEnabled()) {
+            availablePaymentMethods.add(PaymentMethodType.PAYPAL);
+        }
+
+        if (mDropInRequest.isVenmoEnabled() && mConfiguration.getPayWithVenmo().isEnabled(this)) {
+            availablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
+        }
+
+        if (mDropInRequest.isCardEnabled()) {
+            Set<String> supportedCardTypes =
+                    new HashSet<>(mConfiguration.getCardConfiguration().getSupportedCardTypes());
+            if (!mConfiguration.getUnionPay().isEnabled()) {
+                supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
             }
-
-            mDropInRequest.getThreeDSecureRequest().nonce(paymentMethodNonce.getNonce());
-            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
-            return;
+            if (supportedCardTypes.size() > 0) {
+                availablePaymentMethods.add(PaymentMethodType.UNKNOWN);
+            }
         }
 
-        mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
+        if (googlePayEnabled) {
+            if (mDropInRequest.isGooglePaymentEnabled()) {
+                availablePaymentMethods.add(PaymentMethodType.GOOGLE_PAYMENT);
+            }
+        }
 
-        DropInResult.setLastUsedPaymentMethodType(this, paymentMethodNonce);
-
-        finish(paymentMethodNonce, mDeviceData);
+        viewModel.setAvailablePaymentMethods(availablePaymentMethods);
     }
 
-    @Override
-    public void onCancel(int requestCode) {
-        handleThreeDSecureFailure();
+    private void showSelectPaymentMethodFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("SELECT_PAYMENT_METHOD");
+        if (fragment == null) {
+            Bundle args = new Bundle();
+            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+            args.putString("EXTRA_CONFIGURATION", mConfiguration.toJson());
 
-        viewModel.setIsLoading(false);
+            fragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
+                    .commit();
+        }
     }
 
-    @Override
-    public void onError(Exception error) {
-        handleThreeDSecureFailure();
-
-        if (error instanceof GoogleApiClientException) {
-            updateSupportedPaymentMethods(false);
-        }
-
-        if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
-                error instanceof UpgradeRequiredException) {
-            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
-        } else if (error instanceof ConfigurationException) {
-            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
-        } else if (error instanceof ServerException || error instanceof UnexpectedException) {
-            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-        } else if (error instanceof DownForMaintenanceException) {
-            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
-        } else {
-            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.sdk-error");
-        }
-
-        finish(error);
+    void sendAnalyticsEvent(String eventFragment) {
+        mBraintreeFragment.sendAnalyticsEvent(eventFragment);
     }
 
     void showVaultManager() {
