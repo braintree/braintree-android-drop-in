@@ -107,7 +107,6 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     public void onResume() {
         super.onResume();
 
-        updateVaultedPaymentMethodNonces(true);
         dropInViewModel.setIsLoading(false);
     }
 
