@@ -317,6 +317,17 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         overridePendingTransition(R.anim.bt_activity_fade_in, R.anim.bt_activity_fade_out);
     }
 
+    void showVaultManager() {
+        ArrayList<Parcelable> parcelableArrayList = new ArrayList<Parcelable>(mBraintreeFragment.getCachedPaymentMethodNonces());
+
+        Intent intent = new Intent(this, VaultManagerActivity.class)
+                .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest)
+                .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, parcelableArrayList);
+        startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
+
+        sendAnalyticsEvent("manager.appeared");
+    }
+
     private void updateSupportedPaymentMethods(boolean googlePayEnabled) {
         List<PaymentMethodType> availablePaymentMethods = new ArrayList<>();
         if (mDropInRequest.isPayPalEnabled() && mConfiguration.isPayPalEnabled()) {
@@ -377,16 +388,5 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     void sendAnalyticsEvent(String eventFragment) {
         mBraintreeFragment.sendAnalyticsEvent(eventFragment);
-    }
-
-    void showVaultManager() {
-        ArrayList<Parcelable> parcelableArrayList = new ArrayList<Parcelable>(mBraintreeFragment.getCachedPaymentMethodNonces());
-
-        Intent intent = new Intent(this, VaultManagerActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest)
-                .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, parcelableArrayList);
-        startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
-
-        sendAnalyticsEvent("manager.appeared");
     }
 }
