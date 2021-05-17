@@ -9,8 +9,6 @@ import android.view.View;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
@@ -93,9 +91,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
         isClientTokenPresent = mBraintreeFragment.getAuthorization() instanceof ClientToken;
 
-        DropInViewModelFactory viewModelFactory =
-            new DropInViewModelFactory(this, mDropInRequest);
-        viewModel = new ViewModelProvider(this, viewModelFactory).get(DropInViewModel.class);
+        viewModel = new ViewModelProvider(this).get(DropInViewModel.class);
     }
 
     @Override
@@ -112,6 +108,16 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             });
         } else {
             updateSupportedPaymentMethods(false);
+        }
+    }
+
+    void updateVaultedPaymentMethodNonces(final boolean refetch) {
+        if (isClientTokenPresent) {
+            if (mBraintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
+                onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
+            } else {
+                PaymentMethod.getPaymentMethodNonces(mBraintreeFragment, true);
+            }
         }
     }
 
@@ -167,11 +173,33 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     @Override
     public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {
+        final List<PaymentMethodNonce> noncesRef = paymentMethodNonces;
         if (paymentMethodNonces.size() > 0) {
             // TODO: fetch vaulted payment methods from within view model and remove payment
             // method nonces updated listener
-            viewModel.setVaultedPaymentMethodNonces(paymentMethodNonces);
+            if (mDropInRequest.isGooglePaymentEnabled()) {
+                GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
+                    @Override
+                    public void onResponse(Boolean isReadyToPay) {
+                        updatedVaultedPaymentMethods(noncesRef, isReadyToPay);
+                    }
+                });
+            } else {
+                updatedVaultedPaymentMethods(noncesRef, false);
+            }
         }
+    }
+
+    private void updatedVaultedPaymentMethods(final List<PaymentMethodNonce> paymentMethodNonces, final boolean googlePayEnabled) {
+        mBraintreeFragment.waitForConfiguration(new ConfigurationListener() {
+            @Override
+            public void onConfigurationFetched(Configuration configuration) {
+                AvailablePaymentMethodNonceList availablePaymentMethodNonceList = new AvailablePaymentMethodNonceList(
+                        DropInActivity.this, configuration, paymentMethodNonces, mDropInRequest, googlePayEnabled);
+
+                viewModel.setVaultedPaymentMethodNonces(availablePaymentMethodNonceList.getItems());
+            }
+        });
     }
 
     @Override
@@ -289,7 +317,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     private void handleThreeDSecureFailure() {
         if (mPerformedThreeDSecureVerification) {
             mPerformedThreeDSecureVerification = false;
-            viewModel.fetchPaymentMethodNonces(true);
+            updateVaultedPaymentMethodNonces(true);
         }
     }
 

@@ -66,9 +66,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
-        DropInViewModelFactory viewModelFactory =
-                new DropInViewModelFactory(requireActivity(), dropInRequest);
-        dropInViewModel = new ViewModelProvider(requireActivity(), viewModelFactory).get(DropInViewModel.class);
+        dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
         dropInViewModel.getAvailablePaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<PaymentMethodType>>() {
             @Override
@@ -109,8 +107,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     public void onResume() {
         super.onResume();
 
-        // TODO: show spinner while fetching nonces
-        dropInViewModel.fetchPaymentMethodNonces(true);
+        updateVaultedPaymentMethodNonces(true);
         dropInViewModel.setIsLoading(false);
     }
 
@@ -124,11 +121,17 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         activity.sendAnalyticsEvent(eventFragment);
     }
 
+    private void updateVaultedPaymentMethodNonces(boolean refetch) {
+        DropInActivity activity = ((DropInActivity) requireActivity());
+        activity.updateVaultedPaymentMethodNonces(refetch);
+    }
+
     private void showSupportedPaymentMethods() {
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(getActivity(), this, dropInViewModel.getAvailablePaymentMethods());
         mSupportedPaymentMethodListView.setAdapter(adapter);
         dropInViewModel.setIsLoading(false);
-        dropInViewModel.fetchPaymentMethodNonces(false);
+
+        updateVaultedPaymentMethodNonces(false);
     }
 
     @Override
