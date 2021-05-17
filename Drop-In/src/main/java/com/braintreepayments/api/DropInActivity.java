@@ -261,9 +261,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         if (resultCode == RESULT_CANCELED) {
             if (requestCode == ADD_CARD_REQUEST_CODE) {
                 viewModel.setIsLoading(true);
-                // NOTE: moved to SelectPaymentMethodFragment::onResume
-                // TODO: move nonce refreshing to view model after v4 BraintreeClient migration
-                //fetchPaymentMethodNonces(true);
+
+                updateVaultedPaymentMethodNonces(true);
             }
 
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
@@ -318,18 +317,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         overridePendingTransition(R.anim.bt_activity_fade_in, R.anim.bt_activity_fade_out);
     }
 
-    private void updatedVaultedPaymentMethods(final List<PaymentMethodNonce> paymentMethodNonces, final boolean googlePayEnabled) {
-        mBraintreeFragment.waitForConfiguration(new ConfigurationListener() {
-            @Override
-            public void onConfigurationFetched(Configuration configuration) {
-                AvailablePaymentMethodNonceList availablePaymentMethodNonceList = new AvailablePaymentMethodNonceList(
-                        DropInActivity.this, configuration, paymentMethodNonces, mDropInRequest, googlePayEnabled);
-
-                viewModel.setVaultedPaymentMethodNonces(availablePaymentMethodNonceList.getItems());
-            }
-        });
-    }
-
     private void updateSupportedPaymentMethods(boolean googlePayEnabled) {
         List<PaymentMethodType> availablePaymentMethods = new ArrayList<>();
         if (mDropInRequest.isPayPalEnabled() && mConfiguration.isPayPalEnabled()) {
@@ -358,6 +345,18 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         }
 
         viewModel.setAvailablePaymentMethods(availablePaymentMethods);
+    }
+
+    private void updatedVaultedPaymentMethods(final List<PaymentMethodNonce> paymentMethodNonces, final boolean googlePayEnabled) {
+        mBraintreeFragment.waitForConfiguration(new ConfigurationListener() {
+            @Override
+            public void onConfigurationFetched(Configuration configuration) {
+                AvailablePaymentMethodNonceList availablePaymentMethodNonceList = new AvailablePaymentMethodNonceList(
+                        DropInActivity.this, configuration, paymentMethodNonces, mDropInRequest, googlePayEnabled);
+
+                viewModel.setVaultedPaymentMethodNonces(availablePaymentMethodNonceList.getItems());
+            }
+        });
     }
 
     private void showSelectPaymentMethodFragment() {
