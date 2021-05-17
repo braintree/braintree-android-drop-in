@@ -123,7 +123,9 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     @Override
     public void onPaymentMethodSelected(PaymentMethodType type) {
         mLoadingViewSwitcher.setDisplayedChild(0);
-        dropInViewModel.setSelectedPaymentMethodType(type);
+
+        DropInActivity activity = ((DropInActivity) requireActivity());
+        activity.onPaymentMethodSelected(type);
     }
 
     @Override
@@ -131,7 +133,9 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         if (paymentMethodNonce instanceof CardNonce) {
             sendAnalyticsEvent("vaulted-card.select");
         }
-        dropInViewModel.setSelectedPaymentMethodNonce(paymentMethodNonce);
+
+        DropInActivity activity = ((DropInActivity) requireActivity());
+        activity.onPaymentMethodNonceCreated(paymentMethodNonce);
     }
 
     private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {

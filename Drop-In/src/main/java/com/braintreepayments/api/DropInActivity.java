@@ -8,6 +8,7 @@ import android.view.View;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -90,20 +91,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         DropInViewModelFactory viewModelFactory =
             new DropInViewModelFactory(this, mDropInRequest);
         viewModel = new ViewModelProvider(this, viewModelFactory).get(DropInViewModel.class);
-
-        viewModel.getSelectedPaymentMethodType().observe(this, new Observer<PaymentMethodType>() {
-            @Override
-            public void onChanged(PaymentMethodType paymentMethodType) {
-                onPaymentMethodSelected(paymentMethodType);
-            }
-        });
-
-        viewModel.getSelectedPaymentMethodNonce().observe(this, new Observer<PaymentMethodNonce>() {
-            @Override
-            public void onChanged(PaymentMethodNonce paymentMethodNonce) {
-                onPaymentMethodNonceCreated(paymentMethodNonce);
-            }
-        });
     }
 
     @Override

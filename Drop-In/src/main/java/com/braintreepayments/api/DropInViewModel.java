@@ -27,13 +27,8 @@ public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpd
     private final boolean isClientTokenPresent;
 
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
-    private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethodNonces = new MutableLiveData<List<PaymentMethodNonce>>(new ArrayList<PaymentMethodNonce>());
     private final MutableLiveData<List<PaymentMethodType>> availablePaymentMethods = new MutableLiveData<List<PaymentMethodType>>(new ArrayList<PaymentMethodType>());
-
-    private final MutableLiveData<PaymentMethodType> selectedPaymentMethodType = new MutableLiveData<>();
-    private final MutableLiveData<PaymentMethodNonce> selectedPaymentMethodNonce = new MutableLiveData<>();
-
-    private final MutableLiveData<Boolean> isGooglePayEnabled = new MutableLiveData<>();
+    private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethodNonces = new MutableLiveData<List<PaymentMethodNonce>>(new ArrayList<PaymentMethodNonce>());
 
     DropInViewModel(BraintreeFragment braintreeFragment, DropInRequest dropInRequest) {
         this.dropInRequest = dropInRequest;
@@ -143,21 +138,5 @@ public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpd
                 }
             });
         }
-    }
-
-    MutableLiveData<PaymentMethodNonce> getSelectedPaymentMethodNonce() {
-        return selectedPaymentMethodNonce;
-    }
-
-    void setSelectedPaymentMethodNonce(PaymentMethodNonce value) {
-        selectedPaymentMethodNonce.postValue(value);
-    }
-
-    MutableLiveData<PaymentMethodType> getSelectedPaymentMethodType() {
-        return selectedPaymentMethodType;
-    }
-
-    void setSelectedPaymentMethodType(PaymentMethodType value) {
-        selectedPaymentMethodType.postValue(value);
     }
 }
