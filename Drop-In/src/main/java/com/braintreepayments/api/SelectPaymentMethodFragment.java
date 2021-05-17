@@ -71,7 +71,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         dropInViewModel.getAvailablePaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<PaymentMethodType>>() {
             @Override
             public void onChanged(List<PaymentMethodType> paymentMethodTypes) {
-                showSupportedPaymentMethods();
+                showSupportedPaymentMethods(paymentMethodTypes);
             }
         });
 
@@ -111,22 +111,22 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     }
 
     private void showVaultManager() {
-        DropInActivity activity = ((DropInActivity) requireActivity());
-        activity.showVaultManager();
+//        DropInActivity activity = ((DropInActivity) requireActivity());
+//        activity.showVaultManager();
     }
 
     private void sendAnalyticsEvent(String eventFragment) {
-        DropInActivity activity = ((DropInActivity) requireActivity());
-        activity.sendAnalyticsEvent(eventFragment);
+//        DropInActivity activity = ((DropInActivity) requireActivity());
+//        activity.sendAnalyticsEvent(eventFragment);
     }
 
     private void updateVaultedPaymentMethodNonces(boolean refetch) {
-        DropInActivity activity = ((DropInActivity) requireActivity());
-        activity.updateVaultedPaymentMethodNonces(refetch);
+//        DropInActivity activity = ((DropInActivity) requireActivity());
+//        activity.updateVaultedPaymentMethodNonces(refetch);
     }
 
-    private void showSupportedPaymentMethods() {
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(getActivity(), this, dropInViewModel.getAvailablePaymentMethods());
+    private void showSupportedPaymentMethods(List<PaymentMethodType> availablePaymentMethods) {
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(getActivity(), this, availablePaymentMethods);
         mSupportedPaymentMethodListView.setAdapter(adapter);
         dropInViewModel.setIsLoading(false);
 

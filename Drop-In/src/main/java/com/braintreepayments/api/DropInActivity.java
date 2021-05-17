@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.view.View;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -61,7 +62,8 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
     private String mDeviceData;
 
-    private DropInViewModel viewModel;
+    @VisibleForTesting
+    DropInViewModel viewModel;
     private boolean isClientTokenPresent;
 
     private boolean mPerformedThreeDSecureVerification;

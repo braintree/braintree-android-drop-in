@@ -18,10 +18,10 @@ import java.util.List;
 class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
     private Context mContext;
-    private LiveData<List<PaymentMethodType>> mAvailablePaymentMethods;
+    private List<PaymentMethodType> mAvailablePaymentMethods;
     private SupportedPaymentMethodSelectedListener mSupportedPaymentMethodSelectedListener;
 
-    SupportedPaymentMethodsAdapter(Context context, SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener, LiveData<List<PaymentMethodType>> availablePaymentMethods) {
+    SupportedPaymentMethodsAdapter(Context context, SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener, List<PaymentMethodType> availablePaymentMethods) {
         mContext = context;
         mSupportedPaymentMethodSelectedListener = supportedPaymentMethodSelectedListener;
         mAvailablePaymentMethods = availablePaymentMethods;
@@ -29,12 +29,12 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return mAvailablePaymentMethods.getValue().size();
+        return mAvailablePaymentMethods.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return mAvailablePaymentMethods.getValue().get(position);
+        return mAvailablePaymentMethods.get(position);
     }
 
     @Override
@@ -48,7 +48,7 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.bt_payment_method_list_item, parent, false);
         }
 
-        final PaymentMethodType type = mAvailablePaymentMethods.getValue().get(position);
+        final PaymentMethodType type = mAvailablePaymentMethods.get(position);
 
         ImageView icon = convertView.findViewById(R.id.bt_payment_method_icon);
         icon.setImageResource(type.getDrawable());

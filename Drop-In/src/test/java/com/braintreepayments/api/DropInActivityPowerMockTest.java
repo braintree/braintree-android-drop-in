@@ -74,18 +74,16 @@ public class DropInActivityPowerMockTest {
                 .buildConfiguration();
         mActivity.setDropInRequest(new DropInRequest()
                 .googlePaymentRequest(new GooglePaymentRequest()));
-        mActivity.mSupportedPaymentMethodListView = mock(ListView.class);
+
+        DropInViewModel viewModel = mock(DropInViewModel.class);
+        mActivity.viewModel = viewModel;
         mActivity.onConfigurationFetched(configuration);
 
-        ArgumentCaptor<SupportedPaymentMethodsAdapter> captor = ArgumentCaptor.forClass(SupportedPaymentMethodsAdapter.class);
-        verify(mActivity.mSupportedPaymentMethodListView, times(1)).setAdapter(captor.capture());
-        assertEquals(1, captor.getValue().getCount());
+        assertEquals(1, viewModel.getAvailablePaymentMethods().getValue().size());
 
         mActivity.onError(new GoogleApiClientException(GoogleApiClientException.ErrorType.ConnectionFailed, 1));
 
-        assertFalse(mActivity.isFinishing());
-        verify(mActivity.mSupportedPaymentMethodListView, times(2)).setAdapter(captor.capture());
-        assertEquals(0, captor.getValue().getCount());
+        assertEquals(0, viewModel.getAvailablePaymentMethods().getValue().size());
     }
 
     @Test

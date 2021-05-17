@@ -953,16 +953,6 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onCreate_vaultEditButtonIsInvisible() {
-        mActivity.setDropInRequest(new DropInRequest()
-                .vaultManager(true));
-
-        mActivityController.setup();
-
-        assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
-    }
-
-    @Test
     public void vaultEditButton_whenVaultManagerEnabled_isVisible() {
         setup(mock(BraintreeFragment.class));
         mActivity.mConfiguration = new TestConfigurationBuilder()
@@ -1008,29 +998,6 @@ public class DropInActivityUnitTest {
         mActivity.onPaymentMethodNoncesUpdated(nonceList);
 
         assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
-    }
-
-    @Test
-    public void onVaultEditButtonClick_sendsAnalyticEvent() {
-        setup(mock(BraintreeFragment.class));
-
-        mActivity.onVaultEditButtonClick(null);
-
-        verify(mActivity.mBraintreeFragment).sendAnalyticsEvent("manager.appeared");
-    }
-
-    @Test
-    public void onVaultEditButtonClick_launchesVaultManagerActivity() {
-        setup(mock(BraintreeFragment.class));
-
-        mActivity.onVaultEditButtonClick(null);
-
-        ShadowActivity.IntentForResult intent = mShadowActivity.getNextStartedActivityForResult();
-
-        assertEquals(2, intent.requestCode);
-        assertEquals(mActivity.mDropInRequest, intent.intent.getParcelableExtra(EXTRA_CHECKOUT_REQUEST));
-        assertEquals(mActivity.mBraintreeFragment.getCachedPaymentMethodNonces(),
-                intent.intent.getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES));
     }
 
     private void setup(BraintreeFragment fragment) {
