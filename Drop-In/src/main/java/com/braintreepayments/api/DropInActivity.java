@@ -1,5 +1,6 @@
 package com.braintreepayments.api;
 
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -17,6 +18,7 @@ import com.braintreepayments.api.exceptions.AuthenticationException;
 import com.braintreepayments.api.exceptions.AuthorizationException;
 import com.braintreepayments.api.exceptions.ConfigurationException;
 import com.braintreepayments.api.exceptions.DownForMaintenanceException;
+import com.braintreepayments.api.exceptions.GoogleApiClientException;
 import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.ServerException;
 import com.braintreepayments.api.exceptions.UnexpectedException;
@@ -36,7 +38,9 @@ import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.models.ThreeDSecureRequest;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
@@ -103,12 +107,42 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
                 @Override
                 public void onResponse(Boolean isReadyToPay) {
-                    viewModel.updateAvailablePaymentMethods(DropInActivity.this, mConfiguration, mDropInRequest, isReadyToPay, isClientTokenPresent);
+                    updateSupportedPaymentMethods(isReadyToPay);
                 }
             });
         } else {
-            viewModel.updateAvailablePaymentMethods(DropInActivity.this, mConfiguration, mDropInRequest, false, isClientTokenPresent);
+            updateSupportedPaymentMethods(false);
         }
+    }
+
+    private void updateSupportedPaymentMethods(boolean googlePayEnabled) {
+        List<PaymentMethodType> availablePaymentMethods = new ArrayList<>();
+        if (mDropInRequest.isPayPalEnabled() && mConfiguration.isPayPalEnabled()) {
+            availablePaymentMethods.add(PaymentMethodType.PAYPAL);
+        }
+
+        if (mDropInRequest.isVenmoEnabled() && mConfiguration.getPayWithVenmo().isEnabled(this)) {
+            availablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
+        }
+
+        if (mDropInRequest.isCardEnabled()) {
+            Set<String> supportedCardTypes =
+                    new HashSet<>(mConfiguration.getCardConfiguration().getSupportedCardTypes());
+            if (!mConfiguration.getUnionPay().isEnabled()) {
+                supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
+            }
+            if (supportedCardTypes.size() > 0) {
+                availablePaymentMethods.add(PaymentMethodType.UNKNOWN);
+            }
+        }
+
+        if (googlePayEnabled) {
+            if (mDropInRequest.isGooglePaymentEnabled()) {
+                availablePaymentMethods.add(PaymentMethodType.GOOGLE_PAYMENT);
+            }
+        }
+
+        viewModel.setAvailablePaymentMethods(availablePaymentMethods);
     }
 
     private void showSelectPaymentMethodFragment() {
@@ -298,6 +332,10 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     @Override
     public void onError(Exception error) {
         handleThreeDSecureFailure();
+
+        if (error instanceof GoogleApiClientException) {
+            updateSupportedPaymentMethods(false);
+        }
 
         if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                 error instanceof UpgradeRequiredException) {

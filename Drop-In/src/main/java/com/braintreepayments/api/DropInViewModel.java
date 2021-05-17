@@ -20,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpdatedListener, BraintreeErrorListener {
+public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpdatedListener {
 
     private final DropInRequest dropInRequest;
     private final BraintreeFragment braintreeFragment;
@@ -56,33 +56,7 @@ public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpd
         return vaultedPaymentMethodNonces;
     }
 
-    void updateAvailablePaymentMethods(Context context, Configuration configuration, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
-        List<PaymentMethodType> availablePaymentMethods = new ArrayList<>();
-        if (dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled()) {
-            availablePaymentMethods.add(PaymentMethodType.PAYPAL);
-        }
-
-        if (dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(context)) {
-            availablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
-        }
-
-        if (dropInRequest.isCardEnabled()) {
-            Set<String> supportedCardTypes =
-                    new HashSet<>(configuration.getCardConfiguration().getSupportedCardTypes());
-            if (!unionpaySupported) {
-                supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
-            }
-            if (supportedCardTypes.size() > 0) {
-                availablePaymentMethods.add(PaymentMethodType.UNKNOWN);
-            }
-        }
-
-        if (googlePayEnabled) {
-            if (dropInRequest.isGooglePaymentEnabled()) {
-                availablePaymentMethods.add(PaymentMethodType.GOOGLE_PAYMENT);
-            }
-        }
-
+    public void setAvailablePaymentMethods(List<PaymentMethodType> availablePaymentMethods) {
         this.availablePaymentMethods.postValue(availablePaymentMethods);
     }
 
@@ -126,17 +100,5 @@ public class DropInViewModel extends ViewModel implements PaymentMethodNoncesUpd
                 vaultedPaymentMethodNonces.postValue(availablePaymentMethodNonceList.getItems());
             }
         });
-    }
-
-    @Override
-    public void onError(Exception error) {
-        if (error instanceof GoogleApiClientException) {
-            braintreeFragment.waitForConfiguration(new ConfigurationListener() {
-                @Override
-                public void onConfigurationFetched(Configuration configuration) {
-                    updateAvailablePaymentMethods(braintreeFragment.getApplicationContext(), configuration, dropInRequest, false, configuration.getUnionPay().isEnabled());
-                }
-            });
-        }
     }
 }
