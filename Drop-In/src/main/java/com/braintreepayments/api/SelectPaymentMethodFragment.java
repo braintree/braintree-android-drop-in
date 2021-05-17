@@ -84,6 +84,17 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             }
         });
 
+        dropInViewModel.isLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isLoading) {
+                if (isLoading) {
+                    mLoadingViewSwitcher.setDisplayedChild(0);
+                } else {
+                    mLoadingViewSwitcher.setDisplayedChild(1);
+                }
+            }
+        });
+
         sendAnalyticsEvent("appeared");
         mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +111,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
 
         // TODO: show spinner while fetching nonces
         dropInViewModel.fetchPaymentMethodNonces(true);
-        mLoadingViewSwitcher.setDisplayedChild(1);
+        dropInViewModel.setIsLoading(false);
     }
 
     private void showVaultManager() {
@@ -116,13 +127,13 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     private void showSupportedPaymentMethods() {
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(getActivity(), this, dropInViewModel.getAvailablePaymentMethods());
         mSupportedPaymentMethodListView.setAdapter(adapter);
-        mLoadingViewSwitcher.setDisplayedChild(1);
+        dropInViewModel.setIsLoading(false);
         dropInViewModel.fetchPaymentMethodNonces(false);
     }
 
     @Override
     public void onPaymentMethodSelected(PaymentMethodType type) {
-        mLoadingViewSwitcher.setDisplayedChild(0);
+        dropInViewModel.setIsLoading(true);
 
         DropInActivity activity = ((DropInActivity) requireActivity());
         activity.onPaymentMethodSelected(type);

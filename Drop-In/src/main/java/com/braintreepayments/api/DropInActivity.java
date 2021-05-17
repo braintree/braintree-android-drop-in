@@ -21,6 +21,7 @@ import com.braintreepayments.api.exceptions.InvalidArgumentException;
 import com.braintreepayments.api.exceptions.ServerException;
 import com.braintreepayments.api.exceptions.UnexpectedException;
 import com.braintreepayments.api.exceptions.UpgradeRequiredException;
+import com.braintreepayments.api.interfaces.BraintreeCancelListener;
 import com.braintreepayments.api.interfaces.BraintreeErrorListener;
 import com.braintreepayments.api.interfaces.BraintreeResponseListener;
 import com.braintreepayments.api.interfaces.ConfigurationListener;
@@ -39,7 +40,7 @@ import java.util.List;
 
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
-public class DropInActivity extends BaseActivity implements ConfigurationListener, PaymentMethodNonceCreatedListener, PaymentMethodNoncesUpdatedListener, BraintreeErrorListener {
+public class DropInActivity extends BaseActivity implements ConfigurationListener, PaymentMethodNonceCreatedListener, PaymentMethodNoncesUpdatedListener, BraintreeErrorListener, BraintreeCancelListener {
 
     /**
      * Errors are returned as the serializable value of this key in the data intent in
@@ -146,6 +147,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     }
 
     public void onPaymentMethodSelected(PaymentMethodType type) {
+        viewModel.setIsLoading(true);
         switch (type) {
             case PAYPAL:
                 PayPalRequest paypalRequest = mDropInRequest.getPayPalRequest();
@@ -178,7 +180,10 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
 
         if (resultCode == RESULT_CANCELED) {
             if (requestCode == ADD_CARD_REQUEST_CODE) {
-                viewModel.setIsLoading(false);
+                viewModel.setIsLoading(true);
+                // NOTE: moved to SelectPaymentMethodFragment::onResume
+                // TODO: move nonce refreshing to view model after v4 BraintreeClient migration
+                //fetchPaymentMethodNonces(true);
             }
 
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
@@ -198,8 +203,22 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             finish();
         } else if (requestCode == DELETE_PAYMENT_METHOD_NONCE_CODE) {
             if (resultCode == RESULT_OK) {
-                // TODO: Remove deleted nonce from the view
+                viewModel.setIsLoading(true);
+
+                if (data != null) {
+                    ArrayList<PaymentMethodNonce> paymentMethodNonces = data
+                            .getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES);
+
+                    if (paymentMethodNonces != null) {
+                        onPaymentMethodNoncesUpdated(paymentMethodNonces);
+                    }
+                }
+
+                // NOTE: moved to SelectPaymentMethodFragment::onResume
+                // TODO: move nonce refreshing to view model after v4 BraintreeClient migration
+                //fetchPaymentMethodNonces(true);
             }
+            viewModel.setIsLoading(false);
         }
     }
 
@@ -246,7 +265,7 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
                 paymentMethodCanPerformThreeDSecureVerification(paymentMethodNonce) &&
                 shouldRequestThreeDSecureVerification()) {
             mPerformedThreeDSecureVerification = true;
-//            mLoadingViewSwitcher.setDisplayedChild(0);
+            viewModel.setIsLoading(true);
 
             if (mDropInRequest.getThreeDSecureRequest() == null) {
                 ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
@@ -267,6 +286,13 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
         DropInResult.setLastUsedPaymentMethodType(this, paymentMethodNonce);
 
         finish(paymentMethodNonce, mDeviceData);
+    }
+
+    @Override
+    public void onCancel(int requestCode) {
+        handleThreeDSecureFailure();
+
+        viewModel.setIsLoading(false);
     }
 
     @Override
