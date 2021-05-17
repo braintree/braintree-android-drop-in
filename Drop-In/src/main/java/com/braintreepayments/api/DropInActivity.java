@@ -42,7 +42,9 @@ import java.util.Set;
 
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
-public class DropInActivity extends BaseActivity implements ConfigurationListener, PaymentMethodNonceCreatedListener, PaymentMethodNoncesUpdatedListener, BraintreeErrorListener, BraintreeCancelListener {
+public class DropInActivity extends BaseActivity implements ConfigurationListener, BraintreeCancelListener,
+        BraintreeErrorListener, PaymentMethodNoncesUpdatedListener,
+        PaymentMethodNonceCreatedListener {
 
     /**
      * Errors are returned as the serializable value of this key in the data intent in
@@ -80,15 +82,6 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
             mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
         }
 
-        if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
-            DataCollector.collectDeviceData(mBraintreeFragment, new BraintreeResponseListener<String>() {
-                @Override
-                public void onResponse(String deviceData) {
-                    mDeviceData = deviceData;
-                }
-            });
-        }
-
         isClientTokenPresent = mBraintreeFragment.getAuthorization() instanceof ClientToken;
 
         viewModel = new ViewModelProvider(this).get(DropInViewModel.class);
@@ -98,6 +91,15 @@ public class DropInActivity extends BaseActivity implements ConfigurationListene
     public void onConfigurationFetched(Configuration configuration) {
         mConfiguration = configuration;
         showSelectPaymentMethodFragment();
+
+        if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
+            DataCollector.collectDeviceData(mBraintreeFragment, new BraintreeResponseListener<String>() {
+                @Override
+                public void onResponse(String deviceData) {
+                    mDeviceData = deviceData;
+                }
+            });
+        }
 
         if (mDropInRequest.isGooglePaymentEnabled()) {
             GooglePayment.isReadyToPay(mBraintreeFragment, new BraintreeResponseListener<Boolean>() {
