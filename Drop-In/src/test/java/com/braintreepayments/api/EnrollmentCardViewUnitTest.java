@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.exceptions.ErrorWithResponse;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
 import org.junit.Before;
