@@ -1,26 +1,17 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
+import androidx.test.core.app.ApplicationProvider;
 
-import com.braintreepayments.api.DropInRequest;
-import com.braintreepayments.api.SupportedPaymentMethodsAdapter;
 import com.braintreepayments.api.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
-import com.braintreepayments.api.PaymentMethodType;
-import com.braintreepayments.api.models.CardConfiguration;
-import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.models.GooglePaymentConfiguration;
-import com.braintreepayments.api.models.VenmoConfiguration;
+
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.Arrays;
-import java.util.HashSet;
 
 import static junit.framework.Assert.assertEquals;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -33,8 +24,8 @@ public class SupportedPaymentMethodsAdapterUnitTest {
     public void noPaymentMethodsAvailableIfNotEnabled() {
         Configuration configuration = getConfiguration(false, false, false, false);
 
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(ApplicationProvider.getApplicationContext(),
+                null);
         adapter.setup(configuration, new DropInRequest(), false, false);
 
         assertEquals(0, adapter.getCount());
@@ -45,7 +36,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         Configuration configuration = getConfiguration(true, true, true, true);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+                ApplicationProvider.getApplicationContext(), null);
         adapter.setup(configuration, new DropInRequest(), true, true);
 
         assertEquals(4, adapter.getCount());
@@ -60,7 +51,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         Configuration configuration = getConfiguration(false, false, true, false);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+                ApplicationProvider.getApplicationContext(), null);
         adapter.setup(configuration, new DropInRequest(), false, false);
 
         assertEquals(1, adapter.getCount());
@@ -70,11 +61,11 @@ public class SupportedPaymentMethodsAdapterUnitTest {
     @Test
     public void cardsNotAvailableIfOnlyUnionPayPresentAndNotSupported() {
         Configuration configuration = getConfiguration(false, false, false, false);
-        when(configuration.getCardConfiguration().getSupportedCardTypes())
-                .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
+        when(configuration.getSupportedCardTypes())
+                .thenReturn(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName()));
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+                ApplicationProvider.getApplicationContext(), null);
         adapter.setup(configuration, new DropInRequest(), false, false);
 
         assertEquals(0, adapter.getCount());
@@ -83,11 +74,11 @@ public class SupportedPaymentMethodsAdapterUnitTest {
     @Test
     public void cardsAvailableIfOnlyUnionPayPresentAndSupported() {
         Configuration configuration = getConfiguration(false, false, false, false);
-        when(configuration.getCardConfiguration().getSupportedCardTypes())
-                .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
+        when(configuration.getSupportedCardTypes())
+                .thenReturn(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName()));
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+                ApplicationProvider.getApplicationContext(), null);
         adapter.setup(configuration, new DropInRequest(), false, true);
 
         assertEquals(1, adapter.getCount());
@@ -101,7 +92,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
                 .disableCard();
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+                ApplicationProvider.getApplicationContext(), null);
         adapter.setup(configuration, dropInRequest, false, false);
 
         assertEquals(0, adapter.getCount());
@@ -114,7 +105,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
                 .disablePayPal();
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+                ApplicationProvider.getApplicationContext(), null);
         adapter.setup(configuration, dropInRequest, false, false);
 
         assertEquals(0, adapter.getCount());
@@ -127,7 +118,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
                 .disableVenmo();
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+                ApplicationProvider.getApplicationContext(), null);
         adapter.setup(configuration, dropInRequest, false, false);
 
         assertEquals(0, adapter.getCount());
@@ -141,7 +132,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
                 .disableGooglePayment();
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+                ApplicationProvider.getApplicationContext(), null);
         adapter.setup(configuration, dropInRequest, true, false);
 
         assertEquals(0, adapter.getCount());
@@ -153,7 +144,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         DropInRequest dropInRequest = new DropInRequest();
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+                ApplicationProvider.getApplicationContext(), null);
         adapter.setup(configuration, dropInRequest, true, false);
 
         assertEquals(1, adapter.getCount());
@@ -167,7 +158,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
                 .disableGooglePayment();
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, null);
+                ApplicationProvider.getApplicationContext(), null);
         adapter.setup(configuration, dropInRequest, true, false);
 
         assertEquals(0, adapter.getCount());
@@ -179,7 +170,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         PaymentMethodSelectedListener listener = mock(PaymentMethodSelectedListener.class);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                RuntimeEnvironment.application, listener);
+                ApplicationProvider.getApplicationContext(), listener);
         adapter.setup(configuration, new DropInRequest(), true, true);
 
         adapter.getView(0, null, null).callOnClick();
@@ -198,28 +189,15 @@ public class SupportedPaymentMethodsAdapterUnitTest {
                                            boolean cardEnabled, boolean googlePaymentEnabled) {
         Configuration configuration = mock(Configuration.class);
 
-        if (paypalEnabled) {
-            when(configuration.isPayPalEnabled()).thenReturn(true);
-        }
+        when(configuration.isPayPalEnabled()).thenReturn(paypalEnabled);
+        when(configuration.isVenmoEnabled()).thenReturn(venmoEnabled);
 
-        VenmoConfiguration venmoConfiguration = mock(VenmoConfiguration.class);
-        when(configuration.getPayWithVenmo()).thenReturn(venmoConfiguration);
-        if (venmoEnabled) {
-            when(venmoConfiguration.isEnabled(any(Context.class))).thenReturn(true);
-        }
-
-        CardConfiguration cardConfiguration = mock(CardConfiguration.class);
-        when(configuration.getCardConfiguration()).thenReturn(cardConfiguration);
         if (cardEnabled) {
-            when(cardConfiguration.getSupportedCardTypes()).thenReturn(
-                    new HashSet<>(Arrays.asList(PaymentMethodType.VISA.getCanonicalName())));
+            when(configuration.getSupportedCardTypes()).thenReturn(
+                    Arrays.asList(PaymentMethodType.VISA.getCanonicalName()));
         }
 
-        GooglePaymentConfiguration googlePaymentConfiguration = mock(GooglePaymentConfiguration.class);
-        when(configuration.getGooglePayment()).thenReturn(googlePaymentConfiguration);
-        if (googlePaymentEnabled) {
-            when(googlePaymentConfiguration.isEnabled(any(Context.class))).thenReturn(true);
-        }
+        when(configuration.isGooglePayEnabled()).thenReturn(googlePaymentEnabled);
 
         return configuration;
     }
