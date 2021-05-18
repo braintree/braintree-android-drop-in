@@ -2,16 +2,6 @@ package com.braintreepayments.api;
 
 import android.content.Context;
 
-import com.braintreepayments.api.models.CardConfiguration;
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.models.GooglePaymentCardNonce;
-import com.braintreepayments.api.models.GooglePaymentConfiguration;
-import com.braintreepayments.api.models.PayPalAccountNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.models.VenmoAccountNonce;
-import com.braintreepayments.api.models.VenmoConfiguration;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,13 +10,11 @@ import org.robolectric.RuntimeEnvironment;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -38,7 +26,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
     private PayPalAccountNonce payPalAccountNonce;
     private VenmoAccountNonce venmoAccountNonce;
     private CardNonce cardNonce;
-    private GooglePaymentCardNonce googlePaymentCardNonce;
+    private GooglePayCardNonce googlePaymentCardNonce;
 
     @Before
     public void beforeEach() {
@@ -46,7 +34,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         payPalAccountNonce = mock(PayPalAccountNonce.class);
         venmoAccountNonce = mock(VenmoAccountNonce.class);
         cardNonce = mock(CardNonce.class);
-        googlePaymentCardNonce = mock(GooglePaymentCardNonce.class);
+        googlePaymentCardNonce = mock(GooglePayCardNonce.class);
     }
 
     @Test
@@ -207,24 +195,14 @@ public class AvailablePaymentMethodNonceListUnitTest {
             when(configuration.isPayPalEnabled()).thenReturn(true);
         }
 
-        VenmoConfiguration venmoConfiguration = mock(VenmoConfiguration.class);
-        when(configuration.getPayWithVenmo()).thenReturn(venmoConfiguration);
-        if (venmoEnabled) {
-            when(venmoConfiguration.isEnabled(any(Context.class))).thenReturn(true);
-        }
+        when(configuration.isVenmoEnabled()).thenReturn(venmoEnabled);
 
-        CardConfiguration cardConfiguration = mock(CardConfiguration.class);
-        when(configuration.getCardConfiguration()).thenReturn(cardConfiguration);
         if (cardEnabled) {
-            when(cardConfiguration.getSupportedCardTypes()).thenReturn(
-                    new HashSet<>(Arrays.asList(PaymentMethodType.VISA.getCanonicalName())));
+            when(configuration.getSupportedCardTypes()).thenReturn(
+                    Arrays.asList(PaymentMethodType.VISA.getCanonicalName()));
         }
 
-        GooglePaymentConfiguration googlePaymentConfiguration = mock(GooglePaymentConfiguration.class);
-        when(configuration.getGooglePayment()).thenReturn(googlePaymentConfiguration);
-        if (googlePaymentEnabled) {
-            when(googlePaymentConfiguration.isEnabled(any(Context.class))).thenReturn(true);
-        }
+        when(configuration.isGooglePayEnabled()).thenReturn(googlePaymentEnabled);
 
         return configuration;
     }
