@@ -61,9 +61,7 @@ public enum DropInPaymentMethodType {
      * if no match could be made.
      */
     public static DropInPaymentMethodType forType(PaymentMethodNonce paymentMethodNonce) {
-        // TODO: revisit type label
-        return UNKNOWN;
-//        return forType(paymentMethodNonce.getTypeLabel());
+        return forType(paymentMethodNonce.getTypeLabel());
     }
 
     /**

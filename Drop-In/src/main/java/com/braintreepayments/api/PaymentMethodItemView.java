@@ -77,8 +77,7 @@ public class PaymentMethodItemView extends LinearLayout {
         if (paymentMethodNonce instanceof CardNonce) {
             mDescription.setText("••• ••" + ((CardNonce) paymentMethodNonce).getLastTwo());
         } else {
-            // TODO: payment method description
-//            mDescription.setText(paymentMethodNonce.getDescription());
+            mDescription.setText(paymentMethodNonce.getDescription());
         }
     }
 
