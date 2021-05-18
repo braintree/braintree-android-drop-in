@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public enum PaymentMethodType {
+public enum DropInPaymentMethodType {
     // `getFrontResource` is pulling icons from android-card-form, `R.drawable` icons are drop-in internal
     AMEX(CardType.AMEX.getFrontResource(), R.drawable.bt_ic_vaulted_amex, R.string.bt_descriptor_amex, "American Express", CardType.AMEX),
     GOOGLE_PAYMENT(R.drawable.bt_ic_google_pay, 0, R.string.bt_descriptor_google_pay, "Google Pay", null),
@@ -32,7 +32,7 @@ public enum PaymentMethodType {
     private String mCanonicalName;
     private CardType mCardType;
 
-    PaymentMethodType(int iconDrawable, int vaultedDrawable, int localizedName, String canonicalName, CardType cardType) {
+    DropInPaymentMethodType(int iconDrawable, int vaultedDrawable, int localizedName, String canonicalName, CardType cardType) {
         mIconDrawable = iconDrawable;
         mVaultedDrawable = vaultedDrawable;
         mLocalizedName = localizedName;
@@ -43,11 +43,11 @@ public enum PaymentMethodType {
     /**
      * @param paymentMethodType A {@link String} representing a canonical name for a payment
      * method.
-     * @return a {@link PaymentMethodType} for for the given {@link String}, or {@link
-     * PaymentMethodType#UNKNOWN} if no match could be made.
+     * @return a {@link DropInPaymentMethodType} for for the given {@link String}, or {@link
+     * DropInPaymentMethodType#UNKNOWN} if no match could be made.
      */
-    public static PaymentMethodType forType(@Nullable String paymentMethodType) {
-        for (PaymentMethodType type : values()) {
+    public static DropInPaymentMethodType forType(@Nullable String paymentMethodType) {
+        for (DropInPaymentMethodType type : values()) {
             if (type.mCanonicalName.equals(paymentMethodType)) {
                 return type;
             }
@@ -56,11 +56,11 @@ public enum PaymentMethodType {
     }
 
     /**
-     * @param paymentMethodNonce A {@link PaymentMethodNonce} to get the {@link PaymentMethodType} of.
-     * @return a {@link PaymentMethodType} for the given {@link PaymentMethodNonce}, or {@link PaymentMethodType#UNKNOWN}
+     * @param paymentMethodNonce A {@link PaymentMethodNonce} to get the {@link DropInPaymentMethodType} of.
+     * @return a {@link DropInPaymentMethodType} for the given {@link PaymentMethodNonce}, or {@link DropInPaymentMethodType#UNKNOWN}
      * if no match could be made.
      */
-    public static PaymentMethodType forType(PaymentMethodNonce paymentMethodNonce) {
+    public static DropInPaymentMethodType forType(PaymentMethodNonce paymentMethodNonce) {
         // TODO: revisit type label
         return UNKNOWN;
 //        return forType(paymentMethodNonce.getTypeLabel());
@@ -75,7 +75,7 @@ public enum PaymentMethodType {
     public static CardType[] getCardsTypes(Set<String> supportedCardTypes) {
         List<CardType> convertedCardTypes = new ArrayList<>();
         for (String cardType : supportedCardTypes) {
-            PaymentMethodType paymentMethodType = PaymentMethodType.forType(cardType);
+            DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(cardType);
             if (paymentMethodType != UNKNOWN && paymentMethodType.mCardType != null) {
                 convertedCardTypes.add(paymentMethodType.mCardType);
             }
@@ -86,7 +86,7 @@ public enum PaymentMethodType {
 
     /**
      * @return An id representing a {@link android.graphics.drawable.Drawable} icon for the current
-     * {@link PaymentMethodType}.
+     * {@link DropInPaymentMethodType}.
      */
     public int getDrawable() {
         return mIconDrawable;
@@ -94,7 +94,7 @@ public enum PaymentMethodType {
 
     /**
      * @return An id representing a {@link android.graphics.drawable.Drawable} vaulted icon for the current
-     * {@link PaymentMethodType}.
+     * {@link DropInPaymentMethodType}.
      */
     public int getVaultedDrawable() {
         return mVaultedDrawable;
@@ -102,14 +102,14 @@ public enum PaymentMethodType {
 
     /**
      * @return An id representing a localized {@link String} for the current {@link
-     * PaymentMethodType}.
+     * DropInPaymentMethodType}.
      */
     public int getLocalizedName() {
         return mLocalizedName;
     }
 
     /**
-     * @return A {@link String} name of the {@link PaymentMethodType} as it is categorized by
+     * @return A {@link String} name of the {@link DropInPaymentMethodType} as it is categorized by
      * Braintree.
      */
     public String getCanonicalName() {

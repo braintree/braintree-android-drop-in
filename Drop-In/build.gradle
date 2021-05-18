@@ -58,6 +58,9 @@ android {
 }
 
 dependencies {
+    // TODO: consider making this api in core to allow for PaymentType and other @IntDef / @StringDef constants to work for merchants
+    implementation 'androidx.annotation:annotation:1.1.0'
+
     api 'com.braintreepayments.api:braintree-core:4.0.0-beta3-SNAPSHOT'
     api 'com.braintreepayments.api:three-d-secure:4.0.0-beta3-SNAPSHOT'
     api 'com.braintreepayments.api:paypal:4.0.0-beta3-SNAPSHOT'

@@ -217,7 +217,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         when(configuration.getCardConfiguration()).thenReturn(cardConfiguration);
         if (cardEnabled) {
             when(cardConfiguration.getSupportedCardTypes()).thenReturn(
-                    new HashSet<>(Arrays.asList(PaymentMethodType.VISA.getCanonicalName())));
+                    new HashSet<>(Arrays.asList(DropInPaymentMethodType.VISA.getCanonicalName())));
         }
 
         GooglePaymentConfiguration googlePaymentConfiguration = mock(GooglePaymentConfiguration.class);

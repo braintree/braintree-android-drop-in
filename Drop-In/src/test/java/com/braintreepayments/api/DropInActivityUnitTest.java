@@ -381,7 +381,7 @@ public class DropInActivityUnitTest {
         setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
 
-        mActivity.onPaymentMethodSelected(PaymentMethodType.UNKNOWN);
+        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.UNKNOWN);
 
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
@@ -491,7 +491,7 @@ public class DropInActivityUnitTest {
 
         mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
-        assertEquals(PaymentMethodType.VISA.getCanonicalName(),
+        assertEquals(DropInPaymentMethodType.VISA.getCanonicalName(),
                 BraintreeSharedPreferences.getSharedPreferences(mActivity)
                         .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
     }
@@ -834,7 +834,7 @@ public class DropInActivityUnitTest {
 
         mActivity.onActivityResult(1, RESULT_OK, data);
 
-        assertEquals(PaymentMethodType.VISA.getCanonicalName(),
+        assertEquals(DropInPaymentMethodType.VISA.getCanonicalName(),
                 BraintreeSharedPreferences.getSharedPreferences(mActivity)
                         .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
     }

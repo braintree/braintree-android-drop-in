@@ -23,7 +23,7 @@ public class DropInResult implements Parcelable {
     static final String LAST_USED_PAYMENT_METHOD_TYPE =
             "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
 
-    private PaymentMethodType mPaymentMethodType;
+    private DropInPaymentMethodType mPaymentMethodType;
 
     private PaymentMethodNonce mPaymentMethodNonce;
     private String mDeviceData;
@@ -46,18 +46,18 @@ public class DropInResult implements Parcelable {
         return this;
     }
 
-    void setPaymentMethodType(PaymentMethodType mPaymentMethodType) {
+    void setPaymentMethodType(DropInPaymentMethodType mPaymentMethodType) {
         this.mPaymentMethodType = mPaymentMethodType;
     }
 
     /**
-     * @return The previously used {@link PaymentMethodType} or {@code null} if there was no
-     * previous payment method. If the type is {@link PaymentMethodType#GOOGLE_PAYMENT} the Android
+     * @return The previously used {@link DropInPaymentMethodType} or {@code null} if there was no
+     * previous payment method. If the type is {@link DropInPaymentMethodType#GOOGLE_PAYMENT} the Android
      * Pay flow will need to be performed by the user again at the time of checkout,
      * {@link #getPaymentMethodNonce()} will return {@code null} in this case.
      */
     @Nullable
-    public PaymentMethodType getPaymentMethodType() {
+    public DropInPaymentMethodType getPaymentMethodType() {
         return mPaymentMethodType;
     }
 
@@ -86,7 +86,7 @@ public class DropInResult implements Parcelable {
         BraintreeSharedPreferences.getSharedPreferences(context)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        PaymentMethodType.forType(paymentMethodNonce).getCanonicalName())
+                        DropInPaymentMethodType.forType(paymentMethodNonce).getCanonicalName())
                 .apply();
     }
 
@@ -104,7 +104,7 @@ public class DropInResult implements Parcelable {
 
     protected DropInResult(Parcel in) {
         int paymentMethodType = in.readInt();
-        mPaymentMethodType = paymentMethodType == -1 ? null : PaymentMethodType.values()[paymentMethodType];
+        mPaymentMethodType = paymentMethodType == -1 ? null : DropInPaymentMethodType.values()[paymentMethodType];
         mPaymentMethodNonce = in.readParcelable(PaymentMethodNonce.class.getClassLoader());
         mDeviceData = in.readString();
     }

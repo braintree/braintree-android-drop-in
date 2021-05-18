@@ -61,7 +61,7 @@ public class PaymentMethodItemView extends LinearLayout {
     public void setPaymentMethod(PaymentMethodNonce paymentMethodNonce, boolean usedInList) {
         mPaymentMethodNonce = paymentMethodNonce;
 
-        PaymentMethodType paymentMethodType = PaymentMethodType.forType(paymentMethodNonce);
+        DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(paymentMethodNonce);
 
         if (usedInList) {
             mIcon.setImageResource(paymentMethodType.getDrawable());

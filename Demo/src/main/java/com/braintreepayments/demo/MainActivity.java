@@ -18,10 +18,9 @@ import com.braintreepayments.api.DropInResult;
 import com.braintreepayments.api.FetchMostRecentPaymentMethodCallback;
 import com.braintreepayments.api.GooglePayCardNonce;
 import com.braintreepayments.api.GooglePayRequest;
-import com.braintreepayments.api.InvalidArgumentException;
 import com.braintreepayments.api.PayPalAccountNonce;
 import com.braintreepayments.api.PaymentMethodNonce;
-import com.braintreepayments.api.PaymentMethodType;
+import com.braintreepayments.api.DropInPaymentMethodType;
 import com.braintreepayments.api.PostalAddress;
 import com.braintreepayments.api.ThreeDSecureAdditionalInformation;
 import com.braintreepayments.api.ThreeDSecurePostalAddress;
@@ -40,7 +39,7 @@ public class MainActivity extends BaseActivity {
 
     private static final String KEY_NONCE = "nonce";
 
-    private PaymentMethodType mPaymentMethodType;
+    private DropInPaymentMethodType mPaymentMethodType;
     private PaymentMethodNonce mNonce;
 
     private CardView mPaymentMethod;
@@ -126,7 +125,7 @@ public class MainActivity extends BaseActivity {
             dropInRequest.threeDSecureRequest(demoThreeDSecureRequest());
         }
 
-        startActivityForResult(dropInRequest.getIntent(this), DROP_IN_REQUEST);
+        dropInClient.launchDropInForResult(this, DROP_IN_REQUEST, dropInRequest);
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {
@@ -248,9 +247,9 @@ public class MainActivity extends BaseActivity {
 
     private void displayResult(PaymentMethodNonce paymentMethodNonce, String deviceData) {
         mNonce = paymentMethodNonce;
-        mPaymentMethodType = PaymentMethodType.forType(mNonce);
+        mPaymentMethodType = DropInPaymentMethodType.forType(mNonce);
 
-        mPaymentMethodIcon.setImageResource(PaymentMethodType.forType(mNonce).getDrawable());
+        mPaymentMethodIcon.setImageResource(DropInPaymentMethodType.forType(mNonce).getDrawable());
 
         // TODO: consider adding back methods for displaying types/descriptions
 //        mPaymentMethodTitle.setText(paymentMethodNonce.getTypeLabel());

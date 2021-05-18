@@ -15,10 +15,10 @@ import java.util.List;
 
 class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
-    private final List<PaymentMethodType> supportedPaymentMethods;
+    private final List<DropInPaymentMethodType> supportedPaymentMethods;
     private final PaymentMethodSelectedListener selectionListener;
 
-    SupportedPaymentMethodsAdapter(List<PaymentMethodType> supportedPaymentMethods, PaymentMethodSelectedListener selectionListener) {
+    SupportedPaymentMethodsAdapter(List<DropInPaymentMethodType> supportedPaymentMethods, PaymentMethodSelectedListener selectionListener) {
         this.selectionListener = selectionListener;
         this.supportedPaymentMethods = supportedPaymentMethods;
     }
@@ -45,7 +45,7 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.bt_payment_method_list_item, parent, false);
         }
 
-        final PaymentMethodType type = supportedPaymentMethods.get(position);
+        final DropInPaymentMethodType type = supportedPaymentMethods.get(position);
 
         ImageView icon = convertView.findViewById(R.id.bt_payment_method_icon);
         icon.setImageResource(type.getDrawable());
@@ -64,6 +64,6 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
     }
 
     interface PaymentMethodSelectedListener {
-        void onPaymentMethodSelected(PaymentMethodType type);
+        void onPaymentMethodSelected(DropInPaymentMethodType type);
     }
 }

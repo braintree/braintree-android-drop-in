@@ -1001,8 +1001,8 @@ public class AddCardActivityUnitTest {
 
     private TestConfigurationBuilder.TestCardConfigurationBuilder getSupportedCardConfiguration() {
         return new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName(),
-                        PaymentMethodType.AMEX.getCanonicalName(),
-                        PaymentMethodType.UNIONPAY.getCanonicalName());
+                .supportedCardTypes(DropInPaymentMethodType.VISA.getCanonicalName(),
+                        DropInPaymentMethodType.AMEX.getCanonicalName(),
+                        DropInPaymentMethodType.UNIONPAY.getCanonicalName());
     }
 }

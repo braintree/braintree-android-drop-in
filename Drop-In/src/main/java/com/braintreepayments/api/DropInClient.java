@@ -3,20 +3,15 @@ package com.braintreepayments.api;
 import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
-import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
-import com.braintreepayments.api.dropin.R;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 public class DropInClient {
 
@@ -142,30 +137,30 @@ public class DropInClient {
                             isGooglePayEnabled = isReadyToPay;
                         }
 
-                        List<PaymentMethodType> availablePaymentMethods = new ArrayList<>();
+                        List<DropInPaymentMethodType> availablePaymentMethods = new ArrayList<>();
 
                         if (dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled()) {
-                            availablePaymentMethods.add(PaymentMethodType.PAYPAL);
+                            availablePaymentMethods.add(DropInPaymentMethodType.PAYPAL);
                         }
 
                         if (dropInRequest.isVenmoEnabled() && configuration.isVenmoEnabled()) {
-                            availablePaymentMethods.add(PaymentMethodType.PAY_WITH_VENMO);
+                            availablePaymentMethods.add(DropInPaymentMethodType.PAY_WITH_VENMO);
                         }
 
                         if (dropInRequest.isCardEnabled()) {
                             Set<String> supportedCardTypes =
                                     new HashSet<>(configuration.getSupportedCardTypes());
                             if (!configuration.isUnionPayEnabled()) {
-                                supportedCardTypes.remove(PaymentMethodType.UNIONPAY.getCanonicalName());
+                                supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
                             }
                             if (supportedCardTypes.size() > 0) {
-                                availablePaymentMethods.add(PaymentMethodType.UNKNOWN);
+                                availablePaymentMethods.add(DropInPaymentMethodType.UNKNOWN);
                             }
                         }
 
                         if (isGooglePayEnabled) {
                             if (dropInRequest.isGooglePaymentEnabled()) {
-                                availablePaymentMethods.add(PaymentMethodType.GOOGLE_PAYMENT);
+                                availablePaymentMethods.add(DropInPaymentMethodType.GOOGLE_PAYMENT);
                             }
                         }
 
@@ -217,10 +212,10 @@ public class DropInClient {
             return;
         }
 
-        final PaymentMethodType lastUsedPaymentMethodType = PaymentMethodType.forType(BraintreeSharedPreferences.getSharedPreferences(activity)
+        final DropInPaymentMethodType lastUsedPaymentMethodType = DropInPaymentMethodType.forType(BraintreeSharedPreferences.getSharedPreferences(activity)
                 .getString(LAST_USED_PAYMENT_METHOD_TYPE, null));
 
-        if (lastUsedPaymentMethodType == PaymentMethodType.GOOGLE_PAYMENT) {
+        if (lastUsedPaymentMethodType == DropInPaymentMethodType.GOOGLE_PAYMENT) {
             googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
                 @Override
                 public void onResult(Boolean isReadyToPay, Exception error) {

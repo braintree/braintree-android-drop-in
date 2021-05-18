@@ -116,7 +116,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
         dropInClient.getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
-            public void onResult(@Nullable List<PaymentMethodType> paymentMethods, @Nullable Exception error) {
+            public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
                 if (paymentMethods != null) {
                     showSupportedPaymentMethods(paymentMethods);
                 } else {
@@ -126,7 +126,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         });
     }
 
-    private void showSupportedPaymentMethods(List<PaymentMethodType> supportedPaymentMethods) {
+    private void showSupportedPaymentMethods(List<DropInPaymentMethodType> supportedPaymentMethods) {
         SupportedPaymentMethodsAdapter adapter =
             new SupportedPaymentMethodsAdapter(supportedPaymentMethods, this);
         mSupportedPaymentMethodListView.setAdapter(adapter);
@@ -212,7 +212,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     }
 
     @Override
-    public void onPaymentMethodSelected(PaymentMethodType type) {
+    public void onPaymentMethodSelected(DropInPaymentMethodType type) {
         mLoadingViewSwitcher.setDisplayedChild(0);
 
         switch (type) {

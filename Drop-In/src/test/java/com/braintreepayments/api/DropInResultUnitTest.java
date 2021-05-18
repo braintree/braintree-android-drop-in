@@ -70,7 +70,7 @@ public class DropInResultUnitTest {
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(cardNonce);
 
-        assertEquals(PaymentMethodType.VISA, result.getPaymentMethodType());
+        assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
         assertEquals(cardNonce, result.getPaymentMethodNonce());
     }
 
@@ -111,7 +111,7 @@ public class DropInResultUnitTest {
 
         DropInResult parceled = DropInResult.CREATOR.createFromParcel(parcel);
 
-        assertEquals(PaymentMethodType.VISA, parceled.getPaymentMethodType());
+        assertEquals(DropInPaymentMethodType.VISA, parceled.getPaymentMethodType());
         assertEquals(cardNonce.getNonce(), parceled.getPaymentMethodNonce().getNonce());
         assertEquals("device_data", parceled.getDeviceData());
     }
@@ -143,7 +143,7 @@ public class DropInResultUnitTest {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        PaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
+                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
                 .commit();
         googlePaymentReadyToPay(true);
         DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
@@ -154,7 +154,7 @@ public class DropInResultUnitTest {
 
             @Override
             public void onResult(DropInResult result) {
-                assertEquals(PaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
+                assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
                 assertNull(result.getPaymentMethodNonce());
                 mCountDownLatch.countDown();
             }
@@ -170,7 +170,7 @@ public class DropInResultUnitTest {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        PaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
+                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
                 .commit();
         googlePaymentReadyToPay(false);
         setupFragment(new BraintreeUnitTestHttpClient()
@@ -184,7 +184,7 @@ public class DropInResultUnitTest {
 
             @Override
             public void onResult(DropInResult result) {
-                assertEquals(PaymentMethodType.VISA, result.getPaymentMethodType());
+                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
                 assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
                 mCountDownLatch.countDown();
             }
@@ -201,7 +201,7 @@ public class DropInResultUnitTest {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        PaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
+                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
                 .commit();
         googlePaymentReadyToPay(true);
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
@@ -224,7 +224,7 @@ public class DropInResultUnitTest {
 
             @Override
             public void onResult(DropInResult result) {
-                assertEquals(PaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
+                assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
                 mCountDownLatch.countDown();
             }
         };
@@ -244,7 +244,7 @@ public class DropInResultUnitTest {
         BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        PaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
+                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
                 .commit();
         googlePaymentReadyToPay(true);
         BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
@@ -257,7 +257,7 @@ public class DropInResultUnitTest {
 
             @Override
             public void onResult(DropInResult result) {
-                assertEquals(PaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
+                assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
                 mCountDownLatch.countDown();
             }
         };
@@ -398,7 +398,7 @@ public class DropInResultUnitTest {
 
             @Override
             public void onResult(DropInResult result) {
-                assertEquals(PaymentMethodType.VISA, result.getPaymentMethodType());
+                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
                 assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
                 mCountDownLatch.countDown();
             }
@@ -458,7 +458,7 @@ public class DropInResultUnitTest {
 
             @Override
             public void onResult(DropInResult result) {
-                assertEquals(PaymentMethodType.VISA, result.getPaymentMethodType());
+                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
                 mCountDownLatch.countDown();
             }
         };
@@ -486,7 +486,7 @@ public class DropInResultUnitTest {
 
             @Override
             public void onResult(DropInResult result) {
-                assertEquals(PaymentMethodType.VISA, result.getPaymentMethodType());
+                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
                 mCountDownLatch.countDown();
             }
         };

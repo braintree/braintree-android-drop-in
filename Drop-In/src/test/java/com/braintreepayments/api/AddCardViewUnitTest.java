@@ -59,7 +59,7 @@ public class AddCardViewUnitTest {
         mView = mActivity.findViewById(R.id.bt_add_card_view);
         mView.setup(mActivity, (Configuration) new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.VISA.getCanonicalName()))
                 .buildConfiguration(), false);
     }
 
@@ -92,11 +92,11 @@ public class AddCardViewUnitTest {
             IllegalAccessException {
         Configuration configuration = new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.AMEX.getCanonicalName(),
-                                PaymentMethodType.VISA.getCanonicalName(),
-                                PaymentMethodType.MASTERCARD.getCanonicalName(),
-                                PaymentMethodType.DISCOVER.getCanonicalName(),
-                                PaymentMethodType.JCB.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.AMEX.getCanonicalName(),
+                                DropInPaymentMethodType.VISA.getCanonicalName(),
+                                DropInPaymentMethodType.MASTERCARD.getCanonicalName(),
+                                DropInPaymentMethodType.DISCOVER.getCanonicalName(),
+                                DropInPaymentMethodType.JCB.getCanonicalName()))
                 .buildConfiguration();
 
         mView.setup(mActivity, configuration, true);
@@ -116,8 +116,8 @@ public class AddCardViewUnitTest {
             throws NoSuchFieldException, IllegalAccessException {
         Configuration configuration = new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.UNIONPAY.getCanonicalName(),
-                                PaymentMethodType.VISA.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.UNIONPAY.getCanonicalName(),
+                                DropInPaymentMethodType.VISA.getCanonicalName()))
                 .buildConfiguration();
 
         mView.setup(mActivity, configuration, true);
@@ -134,8 +134,8 @@ public class AddCardViewUnitTest {
             throws NoSuchFieldException, IllegalAccessException {
         Configuration configuration = new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.UNIONPAY.getCanonicalName(),
-                                PaymentMethodType.VISA.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.UNIONPAY.getCanonicalName(),
+                                DropInPaymentMethodType.VISA.getCanonicalName()))
                 .buildConfiguration();
 
         mView.setup(mActivity, configuration, false);
@@ -151,7 +151,7 @@ public class AddCardViewUnitTest {
             throws NoSuchFieldException, IllegalAccessException {
         Configuration configuration = new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.VISA.getCanonicalName()))
                 .buildConfiguration();
 
         mView.setup(mActivity, configuration, false);
@@ -269,8 +269,8 @@ public class AddCardViewUnitTest {
             IllegalAccessException {
         mView.setup(mActivity, (Configuration) new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName(),
-                                PaymentMethodType.AMEX.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.VISA.getCanonicalName(),
+                                DropInPaymentMethodType.AMEX.getCanonicalName()))
                 .buildConfiguration(), true);
 
         mView.getCardForm().getCardEditText().setText(VISA);

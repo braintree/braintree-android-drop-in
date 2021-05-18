@@ -2,10 +2,7 @@ package com.braintreepayments.api;
 
 import android.content.Context;
 
-import com.braintreepayments.api.DropInRequest;
-import com.braintreepayments.api.SupportedPaymentMethodsAdapter;
 import com.braintreepayments.api.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
-import com.braintreepayments.api.PaymentMethodType;
 import com.braintreepayments.api.models.CardConfiguration;
 import com.braintreepayments.api.models.Configuration;
 import com.braintreepayments.api.models.GooglePaymentConfiguration;
@@ -49,10 +46,10 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         adapter.setup(configuration, new DropInRequest(), true, true);
 
         assertEquals(4, adapter.getCount());
-        assertEquals(PaymentMethodType.PAYPAL, adapter.getItem(0));
-        assertEquals(PaymentMethodType.PAY_WITH_VENMO, adapter.getItem(1));
-        assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(2));
-        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, adapter.getItem(3));
+        assertEquals(DropInPaymentMethodType.PAYPAL, adapter.getItem(0));
+        assertEquals(DropInPaymentMethodType.PAY_WITH_VENMO, adapter.getItem(1));
+        assertEquals(DropInPaymentMethodType.UNKNOWN, adapter.getItem(2));
+        assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, adapter.getItem(3));
     }
 
     @Test
@@ -64,14 +61,14 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         adapter.setup(configuration, new DropInRequest(), false, false);
 
         assertEquals(1, adapter.getCount());
-        assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(0));
+        assertEquals(DropInPaymentMethodType.UNKNOWN, adapter.getItem(0));
     }
 
     @Test
     public void cardsNotAvailableIfOnlyUnionPayPresentAndNotSupported() {
         Configuration configuration = getConfiguration(false, false, false, false);
         when(configuration.getCardConfiguration().getSupportedCardTypes())
-                .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
+                .thenReturn(new HashSet<>(Arrays.asList(DropInPaymentMethodType.UNIONPAY.getCanonicalName())));
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 RuntimeEnvironment.application, null);
@@ -84,14 +81,14 @@ public class SupportedPaymentMethodsAdapterUnitTest {
     public void cardsAvailableIfOnlyUnionPayPresentAndSupported() {
         Configuration configuration = getConfiguration(false, false, false, false);
         when(configuration.getCardConfiguration().getSupportedCardTypes())
-                .thenReturn(new HashSet<>(Arrays.asList(PaymentMethodType.UNIONPAY.getCanonicalName())));
+                .thenReturn(new HashSet<>(Arrays.asList(DropInPaymentMethodType.UNIONPAY.getCanonicalName())));
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 RuntimeEnvironment.application, null);
         adapter.setup(configuration, new DropInRequest(), false, true);
 
         assertEquals(1, adapter.getCount());
-        assertEquals(PaymentMethodType.UNKNOWN, adapter.getItem(0));
+        assertEquals(DropInPaymentMethodType.UNKNOWN, adapter.getItem(0));
     }
 
     @Test
@@ -157,7 +154,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         adapter.setup(configuration, dropInRequest, true, false);
 
         assertEquals(1, adapter.getCount());
-        assertEquals(PaymentMethodType.GOOGLE_PAYMENT, adapter.getItem(0));
+        assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, adapter.getItem(0));
     }
 
     @Test
@@ -187,10 +184,10 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         adapter.getView(2, null, null).callOnClick();
         adapter.getView(3, null, null).callOnClick();
 
-        verify(listener).onPaymentMethodSelected(PaymentMethodType.PAYPAL);
-        verify(listener).onPaymentMethodSelected(PaymentMethodType.PAY_WITH_VENMO);
-        verify(listener).onPaymentMethodSelected(PaymentMethodType.UNKNOWN);
-        verify(listener).onPaymentMethodSelected(PaymentMethodType.GOOGLE_PAYMENT);
+        verify(listener).onPaymentMethodSelected(DropInPaymentMethodType.PAYPAL);
+        verify(listener).onPaymentMethodSelected(DropInPaymentMethodType.PAY_WITH_VENMO);
+        verify(listener).onPaymentMethodSelected(DropInPaymentMethodType.UNKNOWN);
+        verify(listener).onPaymentMethodSelected(DropInPaymentMethodType.GOOGLE_PAYMENT);
         verifyNoMoreInteractions(listener);
     }
 
@@ -212,7 +209,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         when(configuration.getCardConfiguration()).thenReturn(cardConfiguration);
         if (cardEnabled) {
             when(cardConfiguration.getSupportedCardTypes()).thenReturn(
-                    new HashSet<>(Arrays.asList(PaymentMethodType.VISA.getCanonicalName())));
+                    new HashSet<>(Arrays.asList(DropInPaymentMethodType.VISA.getCanonicalName())));
         }
 
         GooglePaymentConfiguration googlePaymentConfiguration = mock(GooglePaymentConfiguration.class);

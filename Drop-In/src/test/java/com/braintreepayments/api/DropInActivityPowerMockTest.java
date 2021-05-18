@@ -96,7 +96,7 @@ public class DropInActivityPowerMockTest {
         doNothing().when(PayPal.class);
         PayPal.requestBillingAgreement(any(BraintreeFragment.class), any(PayPalRequest.class));
 
-        mActivity.onPaymentMethodSelected(PaymentMethodType.PAYPAL);
+        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.PAYPAL);
 
         verifyStatic();
         PayPal.requestBillingAgreement(eq(mActivity.braintreeFragment), any(PayPalRequest.class));
@@ -113,7 +113,7 @@ public class DropInActivityPowerMockTest {
         doNothing().when(PayPal.class);
         PayPal.requestOneTimePayment(any(BraintreeFragment.class), any(PayPalRequest.class));
 
-        mActivity.onPaymentMethodSelected(PaymentMethodType.PAYPAL);
+        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.PAYPAL);
 
         verifyStatic();
         PayPal.requestOneTimePayment(eq(mActivity.braintreeFragment), any(PayPalRequest.class));
@@ -130,7 +130,7 @@ public class DropInActivityPowerMockTest {
         doNothing().when(PayPal.class);
         PayPal.requestBillingAgreement(any(BraintreeFragment.class), any(PayPalRequest.class));
 
-        mActivity.onPaymentMethodSelected(PaymentMethodType.PAYPAL);
+        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.PAYPAL);
 
         verifyStatic();
         PayPal.requestBillingAgreement(eq(mActivity.braintreeFragment), any(PayPalRequest.class));
@@ -146,7 +146,7 @@ public class DropInActivityPowerMockTest {
         doNothing().when(GooglePayment.class);
         GooglePayment.requestPayment(any(BraintreeFragment.class), any(GooglePaymentRequest.class));
 
-        mActivity.onPaymentMethodSelected(PaymentMethodType.GOOGLE_PAYMENT);
+        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.GOOGLE_PAYMENT);
 
         verifyStatic();
         GooglePayment.requestPayment(mActivity.braintreeFragment, dropInRequest.getGooglePaymentRequest());
@@ -162,7 +162,7 @@ public class DropInActivityPowerMockTest {
         doNothing().when(Venmo.class);
         Venmo.authorizeAccount(any(BraintreeFragment.class));
 
-        mActivity.onPaymentMethodSelected(PaymentMethodType.PAY_WITH_VENMO);
+        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.PAY_WITH_VENMO);
 
         verifyStatic();
         Venmo.authorizeAccount(mActivity.braintreeFragment, true);
@@ -172,7 +172,7 @@ public class DropInActivityPowerMockTest {
     public void onPaymentMethodSelected_startsAddCardActivity() {
         ShadowActivity shadowActivity = shadowOf(mActivity);
 
-        mActivity.onPaymentMethodSelected(PaymentMethodType.UNKNOWN);
+        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.UNKNOWN);
 
         IntentForResult intent = shadowActivity.peekNextStartedActivityForResult();
         assertEquals(AddCardActivity.class.getName(), intent.intent.getComponent().getClassName());

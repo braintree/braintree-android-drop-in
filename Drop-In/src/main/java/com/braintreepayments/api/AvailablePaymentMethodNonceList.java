@@ -1,8 +1,5 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
-
-
 import java.util.ArrayList;
 import java.util.List;
 
