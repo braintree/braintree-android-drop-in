@@ -34,10 +34,12 @@
                 android:gravity="center">
 
                 <ProgressBar
+                    android:id="@+id/bt_select_payment_method_loader"
                     android:layout_width="@dimen/bt_progress_bar_diameter"
                     android:layout_height="@dimen/bt_progress_bar_diameter"
                     android:layout_gravity="center"
-                    android:indeterminate="true"/>
+                    android:indeterminate="true"
+                    />
 
             </LinearLayout>
 

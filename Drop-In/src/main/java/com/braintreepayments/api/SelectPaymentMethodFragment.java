@@ -93,13 +93,14 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             }
         });
 
-        sendAnalyticsEvent("appeared");
         mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showVaultManager();
             }
         });
+
+        sendAnalyticsEvent("appeared");
         return view;
     }
 
@@ -107,7 +108,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     public void onResume() {
         super.onResume();
 
-        dropInViewModel.setIsLoading(false);
+        dropInViewModel.setIsLoading(true);
     }
 
     private void showVaultManager() {

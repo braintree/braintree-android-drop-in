@@ -20,7 +20,7 @@ public class DropInViewModel extends ViewModel {
     }
 
     void setIsLoading(boolean value) {
-        isLoading.postValue(value);
+        isLoading.setValue(value);
     }
 
     void setVaultedPaymentMethodNonces(List<PaymentMethodNonce> value) {
@@ -32,7 +32,7 @@ public class DropInViewModel extends ViewModel {
     }
 
     public void setAvailablePaymentMethods(List<PaymentMethodType> availablePaymentMethods) {
-        this.availablePaymentMethods.postValue(availablePaymentMethods);
+        this.availablePaymentMethods.setValue(availablePaymentMethods);
     }
 
     public LiveData<List<PaymentMethodType>> getAvailablePaymentMethods() {
