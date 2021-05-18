@@ -4,18 +4,12 @@ import android.content.Context;
 import android.os.Bundle;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.internal.BraintreeGraphQLHttpClient;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-
-import static com.braintreepayments.api.BraintreeFragmentTestUtils.setGraphQlClient;
-import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
 import static org.mockito.Mockito.spy;
 
 public class VaultManagerUnitTestActivity extends VaultManagerActivity {
 
     public Context context;
-    public BraintreeFragment braintreeFragment;
+    public BraintreeClient braintreeFragment;
     public BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient();
     public BraintreeGraphQLHttpClient graphQLHttpClient;
 
@@ -33,14 +27,14 @@ public class VaultManagerUnitTestActivity extends VaultManagerActivity {
     }
 
     @Override
-    protected BraintreeFragment getBraintreeClient() {
+    protected BraintreeClient getBraintreeClient() {
         if (braintreeFragment == null) {
             braintreeFragment = super.getBraintreeClient();
-            setHttpClient(braintreeFragment, httpClient);
+//            setHttpClient(braintreeFragment, httpClient);
         }
 
         if (graphQLHttpClient != null) {
-            setGraphQlClient(braintreeFragment, graphQLHttpClient);
+//            setGraphQlClient(braintreeFragment, graphQLHttpClient);
         }
 
         return braintreeFragment;
@@ -55,10 +49,10 @@ public class VaultManagerUnitTestActivity extends VaultManagerActivity {
         return super.getApplicationContext();
     }
 
-    public BraintreeFragment mockFragment() {
-        mBraintreeFragment = spy(mBraintreeFragment);
+    public BraintreeClient mockFragment() {
+        braintreeFragment = spy(braintreeFragment);
 
-        return mBraintreeFragment;
+        return braintreeFragment;
     }
 
     public VaultManagerPaymentMethodsAdapter mockAdapter() {

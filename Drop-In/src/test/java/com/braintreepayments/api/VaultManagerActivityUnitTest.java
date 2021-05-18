@@ -8,12 +8,6 @@ import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.api.test.Fixtures;
-import com.braintreepayments.api.exceptions.PaymentMethodDeleteException;
-import com.braintreepayments.api.interfaces.HttpResponseCallback;
-import com.braintreepayments.api.internal.BraintreeGraphQLHttpClient;
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.PayPalAccountNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -66,10 +60,10 @@ public class VaultManagerActivityUnitTest {
     public void setup() {
         mGraphQlClient = mock(BraintreeGraphQLHttpClient.class);
         mCardNonce = mock(CardNonce.class);
-        when(mCardNonce.getNonce()).thenReturn("card-nonce");
+        when(mCardNonce.getString()).thenReturn("card-nonce");
 
         PaymentMethodNonce payPalNonce = mock(PayPalAccountNonce.class);
-        when(payPalNonce.getNonce()).thenReturn("paypal-nonce");
+        when(payPalNonce.getString()).thenReturn("paypal-nonce");
 
         mPaymentMethodNonces.add(mCardNonce);
         mPaymentMethodNonces.add(payPalNonce);
@@ -113,7 +107,7 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onPaymentMethodNonceDeleted_sendsAnalyticCall() {
-        BraintreeFragment fragment = mActivity.mockFragment();
+        BraintreeClient fragment = mActivity.mockFragment();
         mActivity.onPaymentMethodNonceDeleted(mCardNonce);
 
         verify(fragment).sendAnalyticsEvent("manager.delete.succeeded");
@@ -134,7 +128,7 @@ public class VaultManagerActivityUnitTest {
                 .getParcelableArrayListExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES");
 
         assertTrue(availableNonces.size() == 1);
-        assertEquals("paypal-nonce", availableNonces.get(0).getNonce());
+        assertEquals("paypal-nonce", availableNonces.get(0).getString());
     }
 
     @Test
@@ -148,7 +142,7 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onError_whenPaymentMethodDeletedException_sendsAnalyticCall() {
-        BraintreeFragment fragment = mActivity.mockFragment();
+        BraintreeClient fragment = mActivity.mockFragment();
         Exception originalException = new RuntimeException("Real Exception");
         Exception error = new PaymentMethodDeleteException(mCardNonce, originalException);
 
@@ -182,7 +176,7 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onError_whenUnknownError_sendsAnalyticCall() {
-        BraintreeFragment fragment = mActivity.mockFragment();
+        BraintreeClient fragment = mActivity.mockFragment();
         mActivity.onError(new RuntimeException());
 
         verify(fragment).sendAnalyticsEvent("manager.unknown.failed");
@@ -204,7 +198,7 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onClick_selectingPositiveButton_sendsAnalyticEvent() {
-        BraintreeFragment fragment = mActivity.mockFragment();
+        BraintreeClient fragment = mActivity.mockFragment();
         mockGraphQlResponse(true);
 
         mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
@@ -242,7 +236,7 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onClick_selectingPositiveButton_doesNotSendNegativeAnalyticEvent() {
-        BraintreeFragment fragment = mActivity.mockFragment();
+        BraintreeClient fragment = mActivity.mockFragment();
         mockGraphQlResponse(true);
 
         mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
@@ -267,7 +261,7 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onClick_selectingNegativeButton_sendsAnalyticEvent() {
-        BraintreeFragment fragment = mActivity.mockFragment();
+        BraintreeClient fragment = mActivity.mockFragment();
 
         mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
         mActivity.onClick(mPaymentMethodItemView);
@@ -291,7 +285,7 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onClick_dismissingDialog_sendsAnalyticEvent() {
-        BraintreeFragment fragment = mActivity.mockFragment();
+        BraintreeClient fragment = mActivity.mockFragment();
         mActivity.mockAdapter();
 
         mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
@@ -327,7 +321,7 @@ public class VaultManagerActivityUnitTest {
     }
 
     private void mockGraphQlResponseNotToCallback() {
-        doNothing().when(mGraphQlClient).post(anyString(), any(HttpResponseCallback.class));
+        doNothing().when(mGraphQlClient).post(anyString(), anyString(), any(Configuration.class), any(HttpResponseCallback.class));
     }
 
     private void mockGraphQlResponse(final boolean success) {
@@ -342,6 +336,6 @@ public class VaultManagerActivityUnitTest {
                 }
                 return null;
             }
-        }).when(mGraphQlClient).post(anyString(), any(HttpResponseCallback.class));
+        }).when(mGraphQlClient).post(anyString(), anyString(), any(Configuration.class), any(HttpResponseCallback.class));
     }
 }
