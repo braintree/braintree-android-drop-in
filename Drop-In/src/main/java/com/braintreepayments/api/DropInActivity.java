@@ -409,7 +409,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 mVaultManagerButton.setVisibility(View.VISIBLE);
             }
 
-            if (vaultedPaymentMethodsAdapter.hasCardNonce()) {
+            if (hasCardNonce(paymentMethodNonces)) {
                 getBraintreeClient().sendAnalyticsEvent("vaulted-card.appear");
             }
 
@@ -417,6 +417,15 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
             mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
         }
+    }
+
+    boolean hasCardNonce(List<PaymentMethodNonce> paymentMethodNonces) {
+        for (PaymentMethodNonce nonce : paymentMethodNonces) {
+            if (nonce.getType() == PaymentMethodType.CARD) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

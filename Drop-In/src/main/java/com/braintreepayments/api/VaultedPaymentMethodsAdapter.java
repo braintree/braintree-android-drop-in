@@ -16,7 +16,6 @@ import java.util.List;
 class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMethodsAdapter.ViewHolder> {
 
     private final List<PaymentMethodNonce> mPaymentMethodNonces;
-    private AvailablePaymentMethodNonceList mAvailablePaymentMethodNonces;
 
     private final VaultedPaymentMethodSelectedListener callback;
 
@@ -33,7 +32,7 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final PaymentMethodNonce paymentMethodNonce = mAvailablePaymentMethodNonces.get(position);
+        final PaymentMethodNonce paymentMethodNonce = mPaymentMethodNonces.get(position);
         DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(paymentMethodNonce);
 
         holder.icon.setImageResource(paymentMethodType.getVaultedDrawable());
@@ -56,11 +55,7 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
 
     @Override
     public int getItemCount() {
-        return mAvailablePaymentMethodNonces.size();
-    }
-
-    boolean hasCardNonce() {
-        return mAvailablePaymentMethodNonces.hasCardNonce();
+        return mPaymentMethodNonces.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

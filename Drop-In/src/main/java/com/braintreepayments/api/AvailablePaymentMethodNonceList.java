@@ -13,13 +13,13 @@ class AvailablePaymentMethodNonceList {
         for (PaymentMethodNonce paymentMethodNonce: paymentMethodNonces) {
             boolean shouldAddPaymentMethod = false;
 
-            if (paymentMethodNonce instanceof PayPalAccountNonce) {
+            if (paymentMethodNonce.getType() == PaymentMethodType.PAYPAL) {
                 shouldAddPaymentMethod = dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled();
-            } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
+            } else if (paymentMethodNonce.getType() == PaymentMethodType.VENMO) {
                 shouldAddPaymentMethod = dropInRequest.isVenmoEnabled() && configuration.isVenmoEnabled();
-            } else if (paymentMethodNonce instanceof CardNonce) {
+            } else if (paymentMethodNonce.getType() == PaymentMethodType.CARD) {
                 shouldAddPaymentMethod = dropInRequest.isCardEnabled() && !configuration.getSupportedCardTypes().isEmpty();
-            } else if (paymentMethodNonce instanceof GooglePayCardNonce) {
+            } else if (paymentMethodNonce.getType() == PaymentMethodType.GOOGLE_PAY) {
                 shouldAddPaymentMethod = googlePayEnabled && dropInRequest.isGooglePaymentEnabled();
             }
 
@@ -35,15 +35,6 @@ class AvailablePaymentMethodNonceList {
 
     PaymentMethodNonce get(int index) {
         return items.get(index);
-    }
-
-    boolean hasCardNonce() {
-        for (PaymentMethodNonce nonce : items) {
-            if (nonce instanceof CardNonce) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public List<PaymentMethodNonce> getItems() {
