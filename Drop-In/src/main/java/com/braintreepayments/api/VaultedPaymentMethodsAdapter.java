@@ -1,6 +1,5 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -16,20 +15,14 @@ import java.util.List;
 
 class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMethodsAdapter.ViewHolder> {
 
-
     private final List<PaymentMethodNonce> mPaymentMethodNonces;
     private AvailablePaymentMethodNonceList mAvailablePaymentMethodNonces;
 
-    private final VaultedPaymentMethodSelectedCallback callback;
+    private final VaultedPaymentMethodSelectedListener callback;
 
-    VaultedPaymentMethodsAdapter(List<PaymentMethodNonce> paymentMethodNonces, VaultedPaymentMethodSelectedCallback callback) {
+    VaultedPaymentMethodsAdapter(List<PaymentMethodNonce> paymentMethodNonces, VaultedPaymentMethodSelectedListener callback) {
         mPaymentMethodNonces = paymentMethodNonces;
         this.callback = callback;
-    }
-
-    void setup(Context context, Configuration configuration, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
-        mAvailablePaymentMethodNonces = new AvailablePaymentMethodNonceList(
-                context, configuration, mPaymentMethodNonces, dropInRequest, googlePayEnabled);
     }
 
     @Override
@@ -56,7 +49,7 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                callback.onResult(paymentMethodNonce, null);
+                callback.onVaultedPaymentMethodSelected(paymentMethodNonce);
             }
         });
     }

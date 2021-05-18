@@ -10,7 +10,7 @@ class AvailablePaymentMethodNonceList {
 
     final private List<PaymentMethodNonce> items;
 
-    AvailablePaymentMethodNonceList(Context context, Configuration configuration, List<PaymentMethodNonce> paymentMethodNonces, DropInRequest dropInRequest, boolean googlePayEnabled) {
+    AvailablePaymentMethodNonceList(Configuration configuration, List<PaymentMethodNonce> paymentMethodNonces, DropInRequest dropInRequest, boolean googlePayEnabled) {
         items = new ArrayList<>();
 
         for (PaymentMethodNonce paymentMethodNonce: paymentMethodNonces) {
@@ -47,5 +47,9 @@ class AvailablePaymentMethodNonceList {
             }
         }
         return false;
+    }
+
+    public List<PaymentMethodNonce> getItems() {
+        return items;
     }
 }
