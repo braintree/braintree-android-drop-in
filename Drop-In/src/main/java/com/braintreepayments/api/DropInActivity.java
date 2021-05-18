@@ -61,13 +61,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
     private DropInClient dropInClient;
 
-//    private BraintreeClient braintreeClient;
-//    private PayPalClient payPalClient;
-//    private GooglePayClient googlePayClient;
-//    private VenmoClient venmoClient;
-//    private ThreeDSecureClient threeDSecureClient;
-//    private PaymentMethodClient paymentMethodClient;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,13 +84,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         DropInRequest dropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
 
         dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
-
-//        braintreeClient = getBraintreeClient();
-//        payPalClient = new PayPalClient(getBraintreeClient());
-//        googlePayClient = new GooglePayClient(getBraintreeClient());
-//        venmoClient = new VenmoClient(getBraintreeClient());
-//        threeDSecureClient = new ThreeDSecureClient(getBraintreeClient());
-//        paymentMethodClient = new PaymentMethodClient(getBraintreeClient());
 
         if (savedInstanceState != null) {
             mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED,
