@@ -30,7 +30,7 @@ class BaseActivity extends AppCompatActivity {
             } catch (JSONException ignored) {}
         }
 
-        mDropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
+        mDropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
     }
 
     @Override

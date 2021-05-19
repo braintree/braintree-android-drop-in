@@ -65,16 +65,24 @@ public class DropInActivityUnitTest {
 
     @Before
     public void setup() {
-        mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class);
+    }
+
+    private void setupDropInActivity(String authorization, DropInRequest dropInRequest, String sessionId) {
+        Intent intent = new Intent()
+                .putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, dropInRequest)
+                .putExtra(DropInClient.EXTRA_AUTHORIZATION, authorization)
+                .putExtra(DropInClient.EXTRA_SESSION_ID, sessionId);
+
+        mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class, intent);
         mActivity = (DropInUnitTestActivity) mActivityController.get();
         mShadowActivity = shadowOf(mActivity);
     }
 
     @Test
     public void onCreate_whenAuthorizationIsInvalid_finishesWithError() {
-        mActivity.setDropInRequest(new DropInRequest()
-                .tokenizationKey("not a tokenization key"));
-
+        String authorization = "not a tokenization key";
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
         mActivityController.setup();
 
         assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
@@ -86,9 +94,8 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onCreate_whenAuthorizationIsEmpty_finishesWithError() {
-        mActivity.setDropInRequest(new DropInRequest()
-                .tokenizationKey(null));
-
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(null);
+        setupDropInActivity(null, dropInRequest, "sessionId");
         mActivityController.setup();
 
         assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
@@ -100,18 +107,25 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    @Ignore("This test depends on DropInActivity being in the com.braintreepayments.api.dropin pacakge, which no longer exists")
-    public void setsIntegrationTypeToDropinForDropinActivity() throws NoSuchFieldException, IllegalAccessException {
-//        setup(new BraintreeUnitTestHttpClient());
-//
-//        // TODO: revisit this logic post v4 integration
-//        assertEquals("dropin2", getField(mActivity.braintreeFragment, "mIntegrationType"));
+    public void setsIntegrationTypeToDropinForDropinActivity() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        // TODO: revisit integration type metadata and consider passing integration
+        // type through BraintreeClient constructor instead of relying on reflection
+        assertEquals("dropin3", mActivity.getBraintreeClient().getIntegrationType());
     }
 
+    // TODO: stub sendAnalyticsEvent so we can verify analytics
     @Test
     public void sendsAnalyticsEventWhenShown() {
-//        setup(mock(BraintreeFragment.class));
+//        String authorization = Fixtures.TOKENIZATION_KEY;
+//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+//        setupDropInActivity(authorization, dropInRequest, "sessionId");
 //
+//        mActivityController.create();
 //        verify(mActivity.braintreeFragment).sendAnalyticsEvent("appeared");
     }
 
@@ -138,7 +152,10 @@ public class DropInActivityUnitTest {
 
     @Test
     public void showsLoadingIndicatorWhenWaitingForConfiguration() {
-//        setup(new BraintreeUnitTestHttpClient());
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
 
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }

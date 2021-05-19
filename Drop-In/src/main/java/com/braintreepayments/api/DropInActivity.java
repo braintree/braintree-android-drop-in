@@ -59,7 +59,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     private boolean mSheetSlideDownPerformed;
     private boolean mPerformedThreeDSecureVerification;
 
-    private DropInClient dropInClient;
+    DropInClient dropInClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +81,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         Intent intent = getIntent();
         String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
         String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
-        DropInRequest dropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
+        DropInRequest dropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
         dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
 
         if (dropInClient.getAuthorization() instanceof InvalidAuthorization) {

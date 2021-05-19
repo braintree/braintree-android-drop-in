@@ -2,6 +2,8 @@ package com.braintreepayments.api.test
 
 object Fixtures {
 
+    const val TOKENIZATION_KEY = "sandbox_tmxhyf7d_dcpspy2brwdjr3qn"
+
     // region Client Tokens
     // language=JSON
     const val CLIENT_TOKEN = """

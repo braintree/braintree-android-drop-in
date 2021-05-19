@@ -21,13 +21,13 @@ public class DropInUnitTestActivity extends DropInActivity {
     public void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.bt_drop_in_activity_theme);
 
-        if (mDropInRequest == null) {
-            mDropInRequest = new DropInRequest().tokenizationKey(TOKENIZATION_KEY);
-        }
-
-        Intent intent = new Intent()
-                .putExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST, mDropInRequest);
-        setIntent(intent);
+//        if (mDropInRequest == null) {
+//            mDropInRequest = new DropInRequest().tokenizationKey(TOKENIZATION_KEY);
+//        }
+//
+//        Intent intent = new Intent()
+//                .putExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST, mDropInRequest);
+//        setIntent(intent);
 
 //        ConfigurationManagerTestUtils.setFetchingConfiguration(true);
 
