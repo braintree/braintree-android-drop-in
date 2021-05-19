@@ -85,7 +85,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void returnsExceptionWhenAuthorizationIsEmpty() {
+    public void onCreate_whenAuthorizationIsEmpty_finishesWithError() {
         mActivity.setDropInRequest(new DropInRequest()
                 .tokenizationKey(null));
 
@@ -95,7 +95,7 @@ public class DropInActivityUnitTest {
         Exception exception = (Exception) mShadowActivity.getResultIntent()
                 .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertTrue(exception instanceof InvalidArgumentException);
-        assertEquals("A client token or tokenization key must be specified in the DropInRequest",
+        assertEquals("Tokenization Key or Client Token was invalid.",
                 exception.getMessage());
     }
 

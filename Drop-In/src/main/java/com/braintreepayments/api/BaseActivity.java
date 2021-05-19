@@ -42,11 +42,6 @@ class BaseActivity extends AppCompatActivity {
     }
 
     protected BraintreeClient getBraintreeClient() {
-        // TODO: static factory method for braintree client and rename this method and make it not throw
-//        if (TextUtils.isEmpty(mDropInRequest.getAuthorization())) {
-//            throw new InvalidArgumentException("A client token or tokenization key must be " +
-//                    "specified in the " + DropInRequest.class.getSimpleName());
-//        }
 
         mClientTokenPresent = Authorization.fromString(mDropInRequest.getAuthorization())
                     instanceof ClientToken;
