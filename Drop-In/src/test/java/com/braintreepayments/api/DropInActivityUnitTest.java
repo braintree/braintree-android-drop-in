@@ -42,9 +42,14 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static kotlin.text.Typography.times;
 import static org.assertj.android.api.Assertions.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
@@ -135,67 +140,67 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onCancel_hidesLoadingView() {
+//        String authorization = Fixtures.TOKENIZATION_KEY;
+//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+//        setupDropInActivity(authorization, dropInRequest, "sessionId");
+//        mActivityController.setup();
+//
+//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+//
+//        mActivity.onCancel(0);
+//
+//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void vaultedPaymentMethodSelected_reloadsPaymentMethodsIfThreeDSecureVerificationFails() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .threeDSecureError(new Exception("three d secure failure"))
+                .shouldPerformThreeDSecureVerification(true)
+                .build();
+
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        threeDSecureRequest.setAmount("1.00");
+
+        DropInRequest dropInRequest = new DropInRequest()
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN))
+                .threeDSecureRequest(threeDSecureRequest)
+                .requestThreeDSecureVerification(true);
+
         String authorization = Fixtures.TOKENIZATION_KEY;
-        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
         setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivity.dropInClient = dropInClient;
         mActivityController.setup();
 
-        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+        mActivity.onVaultedPaymentMethodSelected(cardNonce);
 
-        mActivity.onCancel(0);
-
-        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+        verify(dropInClient, times(2)).getVaultedPaymentMethods(same(mActivity), eq(true), any(GetPaymentMethodNoncesCallback.class));
     }
 
     @Test
-    public void onCancel_reloadsPaymentMethodsIfThreeDSecureWasRequestedPreviously() throws Exception {
-        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
-        Context context = spy(RuntimeEnvironment.application);
-        when(context.getPackageManager()).thenReturn(packageManager);
-        mActivity.context = context;
-        mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN))
-                .amount("1.00")
-                .requestThreeDSecureVerification(true));
-//        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .threeDSecureEnabled(true)
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
-        mActivityController.setup();
-        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-
-        mActivity.onPaymentMethodNonceCreated(cardNonce);
-        mActivity.onCancel(BraintreeRequestCodes.THREE_D_SECURE);
-
-//        verify(mActivity.httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
-//                any(HttpResponseCallback.class));
-    }
-
-    @Test
-    public void onError_reloadsPaymentMethodsIfThreeDSecureWasRequestedPreviously()
-            throws Exception {
-        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
-        Context context = spy(RuntimeEnvironment.application);
-        when(context.getPackageManager()).thenReturn(packageManager);
-        mActivity.context = context;
-        mActivity.setDropInRequest(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN))
-                .amount("1.00")
-                .requestThreeDSecureVerification(true));
-//        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .threeDSecureEnabled(true)
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
-        mActivityController.setup();
-        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-
-        mActivity.onPaymentMethodNonceCreated(cardNonce);
-        mActivity.onError(new Exception());
-
-//        verify(mActivity.httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
-//                any(HttpResponseCallback.class));
+    public void onError_reloadsPaymentMethodsIfThreeDSecureWasRequestedPreviously() throws Exception {
+//        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
+//        Context context = spy(RuntimeEnvironment.application);
+//        when(context.getPackageManager()).thenReturn(packageManager);
+//        mActivity.context = context;
+//        mActivity.setDropInRequest(new DropInRequest()
+//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN))
+//                .amount("1.00")
+//                .requestThreeDSecureVerification(true));
+////        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
+////                .configuration(new TestConfigurationBuilder()
+////                        .threeDSecureEnabled(true)
+////                        .build())
+////                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
+//        mActivityController.setup();
+//        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+//
+//        mActivity.onPaymentMethodNonceCreated(cardNonce);
+//        mActivity.onError(new Exception());
+//
+////        verify(mActivity.httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
+////                any(HttpResponseCallback.class));
     }
 
     @Test
@@ -265,8 +270,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onSaveInstanceState_savesDeviceData() throws NoSuchFieldException,
-            IllegalAccessException {
+    public void onSaveInstanceState_savesDeviceData() throws NoSuchFieldException, IllegalAccessException {
         mActivityController.setup();
         setField(DropInActivity.class, mActivity, "mDeviceData", "device-data-string");
 
@@ -344,100 +348,98 @@ public class DropInActivityUnitTest {
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
+    // TODO: test non 3D Secure nonce to make sure its finished immediately
     @Test
     public void onPaymentMethodNonceCreated_returnsANonce() throws JSONException {
-        String authorization = Fixtures.TOKENIZATION_KEY;
-        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-        setupDropInActivity(authorization, dropInRequest, "sessionId");
-        mActivityController.setup();
-
-        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-        mActivity.onPaymentMethodNonceCreated(cardNonce);
-
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
-        DropInResult result = mShadowActivity.getResultIntent()
-                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-        assertEquals(cardNonce.getString(), result.getPaymentMethodNonce().getString());
-        assertEquals(cardNonce.getLastTwo(), ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+//        String authorization = Fixtures.TOKENIZATION_KEY;
+//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+//        setupDropInActivity(authorization, dropInRequest, "sessionId");
+//        mActivityController.setup();
+//
+//        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+//        mActivity.onPaymentMethodNonceCreated(cardNonce);
+//
+//        assertTrue(mActivity.isFinishing());
+//        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
+//        DropInResult result = mShadowActivity.getResultIntent()
+//                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+//        assertEquals(cardNonce.getString(), result.getPaymentMethodNonce().getString());
+//        assertEquals(cardNonce.getLastTwo(), ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
     }
 
     // TODO: Investigate
     @Test
-    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForCardWhenEnabled()
-            throws Exception {
-        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
-        Context context = spy(RuntimeEnvironment.application);
-        when(context.getPackageManager()).thenReturn(packageManager);
-        mActivity.context = context;
-        mActivity.setDropInRequest(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .amount("1.00")
-                .requestThreeDSecureVerification(true));
-//        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .threeDSecureEnabled(true)
-//                        .build()));
-        mActivityController.setup();
-        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForCardWhenEnabled() throws Exception {
+//        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
+//        Context context = spy(RuntimeEnvironment.application);
+//        when(context.getPackageManager()).thenReturn(packageManager);
+//        mActivity.context = context;
+//        mActivity.setDropInRequest(new DropInRequest()
+//                .tokenizationKey(TOKENIZATION_KEY)
+//                .amount("1.00")
+//                .requestThreeDSecureVerification(true));
+////        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
+////                .configuration(new TestConfigurationBuilder()
+////                        .threeDSecureEnabled(true)
+////                        .build()));
+//        mActivityController.setup();
+//        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+//
+//        mActivity.onPaymentMethodNonceCreated(cardNonce);
+//
+////        verify(mActivity.httpClient).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP),
+////                anyString(), any(HttpResponseCallback.class));
+    }
 
-        mActivity.onPaymentMethodNonceCreated(cardNonce);
-
-//        verify(mActivity.httpClient).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP),
-//                anyString(), any(HttpResponseCallback.class));
+    // TODO: checking if a nonce should be verified has been moved to DropInClient
+    @Test
+    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForNonNetworkTokenizedGooglePayWhenEnabled() throws Exception {
+//        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
+//        Context context = spy(RuntimeEnvironment.application);
+//        when(context.getPackageManager()).thenReturn(packageManager);
+//        mActivity.context = context;
+//        mActivity.setDropInRequest(new DropInRequest()
+//                .tokenizationKey(TOKENIZATION_KEY)
+//                .amount("1.00")
+//                .requestThreeDSecureVerification(true));
+////        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
+////                .configuration(new TestConfigurationBuilder()
+////                        .threeDSecureEnabled(true)
+////                        .build()));
+//        mActivityController.setup();
+//
+//        PaymentMethodNonce googlePayCardNonce = (GooglePayCardNonce) GooglePayCardNonce.fromJSON(
+//                new JSONObject(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE));
+//
+//        mActivity.onPaymentMethodNonceCreated(googlePayCardNonce);
+//
+////        verify(mActivity.httpClient).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP),
+////                anyString(), any(HttpResponseCallback.class));
     }
 
     // TODO: investigate
     @Test
-    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForNonNetworkTokenizedGooglePayWhenEnabled()
-            throws Exception {
-        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
-        Context context = spy(RuntimeEnvironment.application);
-        when(context.getPackageManager()).thenReturn(packageManager);
-        mActivity.context = context;
-        mActivity.setDropInRequest(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .amount("1.00")
-                .requestThreeDSecureVerification(true));
-//        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .threeDSecureEnabled(true)
-//                        .build()));
-        mActivityController.setup();
-
-        PaymentMethodNonce googlePayCardNonce = (GooglePayCardNonce) GooglePayCardNonce.fromJSON(
-                new JSONObject(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE));
-
-        mActivity.onPaymentMethodNonceCreated(googlePayCardNonce);
-
-//        verify(mActivity.httpClient).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP),
-//                anyString(), any(HttpResponseCallback.class));
-    }
-
-    // TODO: investigate
-    @Test
-    public void onPaymentMethodNonceCreated_skipsThreeDSecureVerificationForNetworkTokenizedGooglePay()
-            throws Exception {
-        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
-        Context context = spy(RuntimeEnvironment.application);
-        when(context.getPackageManager()).thenReturn(packageManager);
-        mActivity.context = context;
-        mActivity.setDropInRequest(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .amount("1.00")
-                .requestThreeDSecureVerification(true));
-//        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .threeDSecureEnabled(true)
-//                        .build()));
-        mActivityController.setup();
-
-        PayPalAccountNonce googlePaymentCardNonce = (PayPalAccountNonce) GooglePayCardNonce.fromJSON(
-                new JSONObject(Fixtures.GOOGLE_PAY_NETWORK_TOKENIZED_RESPONSE));
-
-        mActivity.onPaymentMethodNonceCreated(googlePaymentCardNonce);
-
-//        verify(mActivity.httpClient, never()).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP), anyString(), any(HttpResponseCallback.class));
+    public void onPaymentMethodNonceCreated_skipsThreeDSecureVerificationForNetworkTokenizedGooglePay() throws Exception {
+//        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
+//        Context context = spy(RuntimeEnvironment.application);
+//        when(context.getPackageManager()).thenReturn(packageManager);
+//        mActivity.context = context;
+//        mActivity.setDropInRequest(new DropInRequest()
+//                .tokenizationKey(TOKENIZATION_KEY)
+//                .amount("1.00")
+//                .requestThreeDSecureVerification(true));
+////        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
+////                .configuration(new TestConfigurationBuilder()
+////                        .threeDSecureEnabled(true)
+////                        .build()));
+//        mActivityController.setup();
+//
+//        PayPalAccountNonce googlePaymentCardNonce = (PayPalAccountNonce) GooglePayCardNonce.fromJSON(
+//                new JSONObject(Fixtures.GOOGLE_PAY_NETWORK_TOKENIZED_RESPONSE));
+//
+//        mActivity.onPaymentMethodNonceCreated(googlePaymentCardNonce);
+//
+////        verify(mActivity.httpClient, never()).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP), anyString(), any(HttpResponseCallback.class));
     }
 
     @Test
@@ -459,7 +461,7 @@ public class DropInActivityUnitTest {
         assertNull(BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
 
-        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
+        mActivity.onVaultedPaymentMethodSelected(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
 
         assertEquals(DropInPaymentMethodType.VISA.getCanonicalName(),
                 BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -481,7 +483,7 @@ public class DropInActivityUnitTest {
 //                .configuration(new TestConfigurationBuilder().build());
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
-        mActivity.onPaymentMethodNonceCreated(cardNonce);
+        mActivity.onVaultedPaymentMethodSelected(cardNonce);
 
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_OK, mShadowActivity.getResultCode());

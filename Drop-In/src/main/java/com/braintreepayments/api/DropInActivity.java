@@ -415,9 +415,9 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                             if (threeDSecureResult != null) {
                                 finishWithPaymentMethodNonce(threeDSecureResult.getTokenizedCard());
                             } else {
-                                onError(error);
                                 fetchPaymentMethodNonces(true);
                                 mLoadingViewSwitcher.setDisplayedChild(1);
+                                onError(error);
                             }
                         }
                     });
