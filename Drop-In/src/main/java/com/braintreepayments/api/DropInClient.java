@@ -46,6 +46,10 @@ public class DropInClient {
         this.venmoClient = new VenmoClient(braintreeClient);
     }
 
+    Authorization getAuthorization() {
+        return braintreeClient.getAuthorization();
+    }
+
     void getConfiguration(ConfigurationCallback callback) {
         braintreeClient.getConfiguration(callback);
     }

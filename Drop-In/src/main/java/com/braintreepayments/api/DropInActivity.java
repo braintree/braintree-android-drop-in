@@ -82,8 +82,12 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
         String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
         DropInRequest dropInRequest = getIntent().getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
-
         dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
+
+        if (dropInClient.getAuthorization() instanceof InvalidAuthorization) {
+            finish(new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
+            return;
+        }
 
         if (savedInstanceState != null) {
             mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED,

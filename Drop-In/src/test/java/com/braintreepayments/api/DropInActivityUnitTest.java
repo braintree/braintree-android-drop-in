@@ -71,7 +71,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void returnsExceptionWhenBraintreeFragmentSetupFails() {
+    public void onCreate_whenAuthorizationIsInvalid_finishesWithError() {
         mActivity.setDropInRequest(new DropInRequest()
                 .tokenizationKey("not a tokenization key"));
 
@@ -81,7 +81,7 @@ public class DropInActivityUnitTest {
         Exception exception = (Exception) mShadowActivity.getResultIntent()
                 .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertTrue(exception instanceof InvalidArgumentException);
-        assertEquals("Tokenization Key or client token was invalid.", exception.getMessage());
+        assertEquals("Tokenization Key or Client Token was invalid.", exception.getMessage());
     }
 
     @Test
