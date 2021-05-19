@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -32,20 +31,20 @@ import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 import static com.braintreepayments.api.DropInActivity.ADD_CARD_REQUEST_CODE;
 import static com.braintreepayments.api.DropInActivity.DELETE_PAYMENT_METHOD_NONCE_CODE;
+import static com.braintreepayments.api.DropInActivity.EXTRA_PAYMENT_METHOD_NONCES;
+import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.PackageManagerUtils.mockPackageManagerSupportsThreeDSecure;
-import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static com.braintreepayments.api.ReflectionHelper.getField;
 import static com.braintreepayments.api.ReflectionHelper.setField;
 import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -299,14 +298,18 @@ public class DropInActivityUnitTest {
         assertEquals("device-data-string", getField(DropInActivity.class, mActivity, "mDeviceData"));
     }
 
+    // TODO: investigate
     @Test
     public void pressingBackExitsActivityWithResultCanceled() {
-//        setup(mock(BraintreeFragment.class));
-//
-//        mActivity.onBackPressed();
-//
-//        assertTrue(mActivity.isFinishing());
-//        assertEquals(RESULT_CANCELED, mShadowActivity.getResultCode());
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onBackPressed();
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_CANCELED, mShadowActivity.getResultCode());
     }
 
     @Test
@@ -318,14 +321,18 @@ public class DropInActivityUnitTest {
 //        verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit.canceled");
     }
 
+    // TODO: investigate
     @Test
     public void touchingOutsideSheetTriggersBackPress() {
-//        setup(mock(BraintreeFragment.class));
-//
-//        mActivity.onBackgroundClicked(null);
-//
-//        assertTrue(mActivity.isFinishing());
-//        assertEquals(RESULT_CANCELED, mShadowActivity.getResultCode());
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onBackgroundClicked(null);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_CANCELED, mShadowActivity.getResultCode());
     }
 
     @Test
@@ -337,9 +344,14 @@ public class DropInActivityUnitTest {
 //        verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit.canceled");
     }
 
+    // TODO: investigate
     @Test
     public void onPaymentMethodSelected_showsLoadingView() {
-//        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
+
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
 
         mActivity.onPaymentMethodSelected(DropInPaymentMethodType.UNKNOWN);
@@ -349,9 +361,12 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onPaymentMethodNonceCreated_returnsANonce() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
         mActivityController.setup();
-        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         mActivity.onPaymentMethodNonceCreated(cardNonce);
 
         assertTrue(mActivity.isFinishing());
@@ -362,6 +377,7 @@ public class DropInActivityUnitTest {
         assertEquals(cardNonce.getLastTwo(), ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
     }
 
+    // TODO: Investigate
     @Test
     public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForCardWhenEnabled()
             throws Exception {
@@ -386,6 +402,7 @@ public class DropInActivityUnitTest {
 //                anyString(), any(HttpResponseCallback.class));
     }
 
+    // TODO: investigate
     @Test
     public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForNonNetworkTokenizedGooglePayWhenEnabled()
             throws Exception {
@@ -412,6 +429,7 @@ public class DropInActivityUnitTest {
 //                anyString(), any(HttpResponseCallback.class));
     }
 
+    // TODO: investigate
     @Test
     public void onPaymentMethodNonceCreated_skipsThreeDSecureVerificationForNetworkTokenizedGooglePay()
             throws Exception {
@@ -448,7 +466,11 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onPaymentMethodNonceCreated_storesPaymentMethodType() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
         mActivityController.setup();
+
         assertNull(BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
 
@@ -459,14 +481,19 @@ public class DropInActivityUnitTest {
                         .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
     }
 
+    // TODO: create a data collector inside drop in client and stub collect device data method
     @Test
     public void onPaymentMethodNonceCreated_returnsDeviceData() throws JSONException {
-        mActivity.mDropInRequest = new DropInRequest()
+        DropInRequest dropInRequest = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true);
+
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
+
 //        mActivity.httpClient = new BraintreeUnitTestHttpClient()
 //                .configuration(new TestConfigurationBuilder().build());
-        mActivityController.setup();
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         mActivity.onPaymentMethodNonceCreated(cardNonce);
@@ -478,6 +505,7 @@ public class DropInActivityUnitTest {
         assertNotNull(result.getDeviceData());
     }
 
+    // TODO: inject DropInClient mock using same pattern as BraintreeFragment mocking and stub getVaultedPaymentMethods method
     @Test
     public void selectingAVaultedPaymentMethod_returnsANonce() throws JSONException {
 //        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
@@ -506,6 +534,7 @@ public class DropInActivityUnitTest {
 //                        .getNonce());
     }
 
+    // TODO: create MockDropInClient and stub sendAnalyticsEvent
     @Test
     public void clickingVaultedPaymentMethod_whenCard_sendsAnalyticEvent() {
 //        PaymentMethodNonce nonce = mock(CardNonce.class);
@@ -528,6 +557,7 @@ public class DropInActivityUnitTest {
 //        verify(fragment).sendAnalyticsEvent("vaulted-card.select");
     }
 
+    // TODO: verify DropInClient#sendAnalyticsEvent() not called
     @Test
     public void clickingVaultedPaymentMethod_whenPayPal_doesNotSendAnalyticEvent() {
 //        PaymentMethodNonce nonce = mock(PayPalAccountNonce.class);
@@ -551,6 +581,7 @@ public class DropInActivityUnitTest {
 //        verify(fragment, never()).sendAnalyticsEvent("vaulted-card.select");
     }
 
+    // TODO: stub DropInClient#getVaultedPaymentMethods
     @Test
     public void onPaymentMethodNoncesUpdated_showsVaultedPaymentMethods() {
 //        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
@@ -568,6 +599,7 @@ public class DropInActivityUnitTest {
         assertThat((TextView) mActivity.findViewById(R.id.bt_supported_payment_methods_header)).hasText(R.string.bt_other);
     }
 
+    // TODO: test in DropInClientUnitTest#getVaultedPaymentMethods_filtersOutGooglePayNonces()
     @Test
     public void onPaymentMethodNoncesUpdated_doesNotIncludeVaultedGooglePaymentCardNonces() {
 //        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
@@ -627,7 +659,11 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_cancelHidesLoadingView() {
-//        setup(new BraintreeUnitTestHttpClient());
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
+
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
 
         mActivity.onActivityResult(1, RESULT_CANCELED, null);
@@ -637,7 +673,11 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_successfulAddCardReturnsToApp() throws JSONException {
-//        setup(new BraintreeUnitTestHttpClient());
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
+
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
 
         DropInResult result = new DropInResult()
@@ -652,6 +692,10 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_vaultedPaymentEditedReturnsToDropIn() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
 
         PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
         when(paypalNonce.getDescription()).thenReturn("paypal-nonce");
@@ -703,12 +747,15 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_returnsNonceFromAddCardActivity() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
+
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
         Intent data = new Intent()
                 .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
-        mActivityController.setup();
-
         mActivity.onActivityResult(1, RESULT_OK, data);
 
         assertTrue(mShadowActivity.isFinishing());
@@ -772,9 +819,13 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_returnsErrorFromAddCardActivity() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
+
         Intent data = new Intent()
                 .putExtra(DropInActivity.EXTRA_ERROR, new Exception("Error"));
-        mActivityController.setup();
         mActivity.onActivityResult(1, RESULT_FIRST_USER, data);
 
         assertTrue(mShadowActivity.isFinishing());
@@ -786,7 +837,11 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_storesPaymentMethodType() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
         mActivityController.setup();
+
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
         Intent data = new Intent()
@@ -821,8 +876,13 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_whenVaultManagerResultOk_setsVaultedPaymentMethodsFromVaultManager() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest()
+                .tokenizationKey(authorization)
+                .disableGooglePayment();
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
         mActivityController.setup();
-        mActivity.mDropInRequest.disableGooglePayment();
+
         mActivity.mConfiguration = new TestConfigurationBuilder()
                 .paypal(new TestConfigurationBuilder.TestPayPalConfigurationBuilder(true))
                 .buildConfiguration();
@@ -844,6 +904,9 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_whenVaultManagerResultOk_removesLoadingIndicator() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
         mActivityController.setup();
 
         mActivity.onActivityResult(2, RESULT_FIRST_USER, null);
@@ -863,36 +926,42 @@ public class DropInActivityUnitTest {
                 new AuthenticationException("Access denied"));
     }
 
+    // TODO: mock send analytics
     @Test
     public void authorizationExceptionExitsActivityWithError() {
         assertExceptionIsReturned("developer-error",
                 new AuthorizationException("Access denied"));
     }
 
+    // TODO: mock send analytics
     @Test
     public void upgradeRequiredExceptionExitsActivityWithError() {
         assertExceptionIsReturned("developer-error",
                 new UpgradeRequiredException("Exception"));
     }
 
+    // TODO: mock send analytics
     @Test
     public void serverExceptionExitsActivityWithError() {
         assertExceptionIsReturned("server-error",
                 new ServerException("Exception"));
     }
 
+    // TODO: mock send analytics
     @Test
     public void unexpectedExceptionExitsActivityWithError() {
         assertExceptionIsReturned("server-error",
                 new UnexpectedException("Exception"));
     }
 
+    // TODO: mock send analytics
     @Test
     public void downForMaintenanceExceptionExitsActivityWithError() {
         assertExceptionIsReturned("server-unavailable",
                 new ServiceUnavailableException("Exception"));
     }
 
+    // TODO: mock send analytics
     @Test
     public void anyExceptionExitsActivityWithError() {
         assertExceptionIsReturned("sdk-error", new Exception("Error!"));
@@ -900,14 +969,18 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onCreate_vaultEditButtonIsInvisible() {
-        mActivity.setDropInRequest(new DropInRequest()
-                .vaultManager(true));
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest()
+                .tokenizationKey(authorization)
+                .vaultManager(true);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
 
         mActivityController.setup();
 
         assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
     }
 
+    // TODO: stub vaulted payment methods
     @Test
     public void vaultEditButton_whenVaultManagerEnabled_isVisible() {
 //        mActivity.mConfiguration = new TestConfigurationBuilder()
@@ -926,6 +999,7 @@ public class DropInActivityUnitTest {
 //        assertEquals(View.VISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
     }
 
+    // TODO: stub vaulted payment methods
     @Test
     public void vaultEditButton_whenVaultManagerUnspecified_isInvisible() {
 //        setup(mock(BraintreeFragment.class));
@@ -940,6 +1014,7 @@ public class DropInActivityUnitTest {
 //        assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
     }
 
+    // TODO: stub vaulted payment methods
     @Test
     public void vaultEditButton_whenVaultManagerDisabled_isInvisible() {
 //        setup(mock(BraintreeFragment.class));
@@ -955,6 +1030,7 @@ public class DropInActivityUnitTest {
 //        assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
     }
 
+    // TODO: stub send analytics event
     @Test
     public void onVaultEditButtonClick_sendsAnalyticEvent() {
 //        setup(mock(BraintreeFragment.class));
@@ -964,16 +1040,22 @@ public class DropInActivityUnitTest {
 //        verify(mActivity.mBraintreeFragment).sendAnalyticsEvent("manager.appeared");
     }
 
+    // TODO: stub vaulted payment methods
     @Test
     public void onVaultEditButtonClick_launchesVaultManagerActivity() {
-//        setup(mock(BraintreeFragment.class));
-//
-//        mActivity.onVaultEditButtonClick(null);
-//
-//        ShadowActivity.IntentForResult intent = mShadowActivity.getNextStartedActivityForResult();
-//
-//        assertEquals(2, intent.requestCode);
-//        assertEquals(mActivity.mDropInRequest, intent.intent.getParcelableExtra(EXTRA_CHECKOUT_REQUEST));
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onVaultEditButtonClick(null);
+
+        ShadowActivity.IntentForResult intent = mShadowActivity.getNextStartedActivityForResult();
+
+        assertEquals(2, intent.requestCode);
+        assertEquals(mActivity.mDropInRequest, intent.intent.getParcelableExtra(EXTRA_CHECKOUT_REQUEST));
+
+        // TODO: revisit nonce caching
 //        assertEquals(mActivity.mBraintreeFragment.getCachedPaymentMethodNonces(),
 //                intent.intent.getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES));
     }

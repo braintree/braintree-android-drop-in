@@ -68,6 +68,10 @@ public class DropInClient {
         braintreeClient.getConfiguration(callback);
     }
 
+    void sendAnalyticsEvent(String eventFragment) {
+        braintreeClient.sendAnalyticsEvent(eventFragment);
+    }
+
     void performThreeDSecureVerification(FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, ThreeDSecureResultCallback callback) {
         ThreeDSecureRequest threeDSecureRequest = dropInRequest.getThreeDSecureRequest();
         if (threeDSecureRequest == null) {

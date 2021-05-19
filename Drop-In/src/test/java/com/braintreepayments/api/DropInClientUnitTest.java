@@ -110,4 +110,9 @@ public class DropInClientUnitTest {
         List<DropInPaymentMethodType> paymentMethods = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethods.size());
     }
+
+    @Test
+    public void getVaultedPaymentMethods_filtersOutGooglePayNonces() {
+
+    }
 }
