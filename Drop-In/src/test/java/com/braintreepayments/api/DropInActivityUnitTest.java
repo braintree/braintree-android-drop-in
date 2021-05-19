@@ -45,6 +45,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -110,36 +111,16 @@ public class DropInActivityUnitTest {
         assertEquals("dropin3", mActivity.getBraintreeClient().getIntegrationType());
     }
 
-    // TODO: stub sendAnalyticsEvent so we can verify analytics
     @Test
     public void sendsAnalyticsEventWhenShown() {
-//        String authorization = Fixtures.TOKENIZATION_KEY;
-//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-//        setupDropInActivity(authorization, dropInRequest, "sessionId");
-//
-//        mActivityController.create();
-//        verify(mActivity.braintreeFragment).sendAnalyticsEvent("appeared");
-    }
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
 
-    @Test
-    public void doesNotSendAnalyticsEventTwiceWhenRecreated() {
-//        BraintreeFragment fragment = mock(BraintreeFragment.class);
-//        setup(fragment);
-//
-//        Bundle bundle = new Bundle();
-//        mActivityController.saveInstanceState(bundle)
-//                .pause()
-//                .stop()
-//                .destroy();
-//
-//        mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class);
-//        mActivity = (DropInUnitTestActivity) mActivityController.get();
-//        mActivity.braintreeFragment = fragment;
-//        mActivityController.setup(bundle);
-//        mActivity.braintreeFragment.onAttach(mActivity);
-//        mActivity.braintreeFragment.onResume();
-//
-//        verify(mActivity.braintreeFragment, times(1)).sendAnalyticsEvent("appeared");
+        mActivity.dropInClient = mock(DropInClient.class);
+        mActivityController.setup();
+
+        verify(mActivity.dropInClient).sendAnalyticsEvent("appeared");
     }
 
     @Test

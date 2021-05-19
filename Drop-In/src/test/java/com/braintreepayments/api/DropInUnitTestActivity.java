@@ -12,6 +12,8 @@ import static org.mockito.Mockito.when;
 public class DropInUnitTestActivity extends DropInActivity {
 
     public Context context;
+    public DropInClient dropInClient;
+
 //    public BraintreeFragment braintreeFragment;
 //    public BraintreeUnitTestHttpClient httpClient;
 
@@ -41,7 +43,15 @@ public class DropInUnitTestActivity extends DropInActivity {
         mDropInRequest = dropInRequest;
     }
 
-//    @Override
+    @Override
+    DropInClient getDropInClient() {
+        if (dropInClient == null) {
+            dropInClient = super.getDropInClient();
+        }
+        return dropInClient;
+    }
+
+    //    @Override
 //    protected BraintreeFragment getBraintreeClient() {
 //        if (braintreeFragment == null) {
 //            braintreeFragment = super.getBraintreeClient();

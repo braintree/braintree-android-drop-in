@@ -59,8 +59,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     private boolean mSheetSlideDownPerformed;
     private boolean mPerformedThreeDSecureVerification;
 
-    DropInClient dropInClient;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,13 +76,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
-        Intent intent = getIntent();
-        String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
-        String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
-        DropInRequest dropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
-        dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
-
-        if (dropInClient.getAuthorization() instanceof InvalidAuthorization) {
+        if (getDropInClient().getAuthorization() instanceof InvalidAuthorization) {
             finish(new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
             return;
         }
@@ -97,12 +89,25 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
         slideUp();
 
-        dropInClient.getConfiguration(new ConfigurationCallback() {
+        getDropInClient().getConfiguration(new ConfigurationCallback() {
             @Override
             public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
                 onConfigurationFetched(configuration);
             }
         });
+    }
+
+    // TODO: move to base class to allow stubbing in tests
+    DropInClient getDropInClient() {
+        // TODO: lazily instantiate dropInClient
+//        if (dropInClient != null) {
+//            return dropInClient;
+//        }
+        Intent intent = getIntent();
+        String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
+        String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
+        DropInRequest dropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+        return new DropInClient(this, authorization, sessionId, dropInRequest);
     }
 
     public void onConfigurationFetched(Configuration configuration) {
@@ -118,7 +123,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
             });
         }
 
-        dropInClient.getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
+        getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
             public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
                 if (paymentMethods != null) {
@@ -177,14 +182,14 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
     public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethodNonce) {
         if (!mPerformedThreeDSecureVerification) {
-            dropInClient.shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
+            getDropInClient().shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
                 @Override
                 public void onResult(boolean shouldRequestThreeDSecureVerification) {
                     if (shouldRequestThreeDSecureVerification) {
                         mPerformedThreeDSecureVerification = true;
                         mLoadingViewSwitcher.setDisplayedChild(0);
 
-                        dropInClient.performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new ThreeDSecureResultCallback() {
+                        getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new ThreeDSecureResultCallback() {
 
                             @Override
                             public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
@@ -221,7 +226,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
         switch (type) {
             case PAYPAL:
-                dropInClient.tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {
+                getDropInClient().tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {
                     @Override
                     public void onResult(@Nullable Exception error) {
                         onError(error);
@@ -229,7 +234,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 });
                 break;
             case GOOGLE_PAYMENT:
-                dropInClient.requestGooglePayPayment(this, new GooglePayRequestPaymentCallback() {
+                getDropInClient().requestGooglePayPayment(this, new GooglePayRequestPaymentCallback() {
                     @Override
                     public void onResult(Exception error) {
                         onError(error);
@@ -237,7 +242,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 });
                 break;
             case PAY_WITH_VENMO:
-                dropInClient.tokenizeVenmoAccount(this, new VenmoTokenizeAccountCallback() {
+                getDropInClient().tokenizeVenmoAccount(this, new VenmoTokenizeAccountCallback() {
                     @Override
                     public void onResult(@Nullable Exception error) {
                         onError(error);
@@ -259,7 +264,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 public void run() {
                     if (!DropInActivity.this.isFinishing()) {
 
-                        dropInClient.getVaultedPaymentMethods(DropInActivity.this, refetch, new GetPaymentMethodNoncesCallback() {
+                        getDropInClient().getVaultedPaymentMethods(DropInActivity.this, refetch, new GetPaymentMethodNoncesCallback() {
                             @Override
                             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonces, @Nullable Exception error) {
                                 showVaultedPaymentMethods(paymentMethodNonces);
@@ -352,7 +357,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
     private void slideUp() {
         if (!mSheetSlideUpPerformed) {
-            getBraintreeClient().sendAnalyticsEvent("appeared");
+            getDropInClient().sendAnalyticsEvent("appeared");
 
             mSheetSlideUpPerformed = true;
             mBottomSheet.startAnimation(loadAnimation(this, R.anim.bt_slide_in_up));
@@ -387,7 +392,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
     public void onVaultEditButtonClick(View view) {
         // TODO: consider caching nonces
-        dropInClient.getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
+        getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
             @Override
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
                 Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
