@@ -1,9 +1,5 @@
 package com.braintreepayments.api;
 
-import com.braintreepayments.api.interfaces.HttpResponseCallback;
-import com.braintreepayments.api.internal.BraintreeHttpClient;
-import com.braintreepayments.api.models.CardBuilder;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.AbstractMap.SimpleEntry;

@@ -6,10 +6,7 @@ import android.content.res.Resources;
 import android.os.Bundle;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
 
-import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
-import static com.braintreepayments.api.BraintreeFragmentTestUtils.waitForConfiguration;
 import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
@@ -17,7 +14,7 @@ import static org.mockito.Mockito.when;
 public class DropInUnitTestActivity extends DropInActivity {
 
     public Context context;
-    public BraintreeFragment braintreeFragment;
+//    public BraintreeFragment braintreeFragment;
     public BraintreeUnitTestHttpClient httpClient;
 
     @Override
@@ -36,25 +33,25 @@ public class DropInUnitTestActivity extends DropInActivity {
 
         super.onCreate(savedInstanceState);
 
-        if (braintreeFragment != null) {
-            ConfigurationManagerTestUtils.setFetchingConfiguration(false);
-            waitForConfiguration(braintreeFragment, this);
-        }
+//        if (braintreeFragment != null) {
+//            ConfigurationManagerTestUtils.setFetchingConfiguration(false);
+//            waitForConfiguration(braintreeFragment, this);
+//        }
     }
 
     public void setDropInRequest(DropInRequest dropInRequest) {
         mDropInRequest = dropInRequest;
     }
 
-    @Override
-    protected BraintreeFragment getBraintreeClient() {
-        if (braintreeFragment == null) {
-            braintreeFragment = super.getBraintreeClient();
-            setHttpClient(braintreeFragment, httpClient);
-        }
-
-        return braintreeFragment;
-    }
+//    @Override
+//    protected BraintreeFragment getBraintreeClient() {
+//        if (braintreeFragment == null) {
+//            braintreeFragment = super.getBraintreeClient();
+//            setHttpClient(braintreeFragment, httpClient);
+//        }
+//
+//        return braintreeFragment;
+//    }
 
     @Override
     public Resources getResources() {

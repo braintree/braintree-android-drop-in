@@ -6,18 +6,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.braintreepayments.api.test.Fixtures;
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.interfaces.BraintreeErrorListener;
-import com.braintreepayments.api.interfaces.BraintreeListener;
-import com.braintreepayments.api.interfaces.BraintreeResponseListener;
-import com.braintreepayments.api.interfaces.PaymentMethodNoncesUpdatedListener;
-import com.braintreepayments.api.internal.BraintreeHttpClient;
-import com.braintreepayments.api.internal.BraintreeSharedPreferences;
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -33,7 +25,6 @@ import org.robolectric.RobolectricTestRunner;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
 import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -48,12 +39,7 @@ import static org.powermock.api.mockito.PowerMockito.doAnswer;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(RobolectricTestRunner.class)
-@PowerMockIgnore({ "org.mockito.*", "org.robolectric.*", "androidx.*", "android.*", "org.json.*" })
-@PrepareForTest({GooglePayment.class, GooglePayment.class})
 public class DropInResultUnitTest {
-
-    @Rule
-    public PowerMockRule mPowerMockRule = new PowerMockRule();
 
     private AppCompatActivity mActivity;
     private CountDownLatch mCountDownLatch;
@@ -66,7 +52,7 @@ public class DropInResultUnitTest {
 
     @Test
     public void paymentMethodNonce_setsPaymentMethodTypeAndNonce() throws JSONException {
-        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(cardNonce);
 
@@ -101,7 +87,7 @@ public class DropInResultUnitTest {
 
     @Test
     public void isParcelable() throws JSONException {
-        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(cardNonce)
                 .deviceData("device_data");
@@ -112,411 +98,390 @@ public class DropInResultUnitTest {
         DropInResult parceled = DropInResult.CREATOR.createFromParcel(parcel);
 
         assertEquals(DropInPaymentMethodType.VISA, parceled.getPaymentMethodType());
-        assertEquals(cardNonce.getNonce(), parceled.getPaymentMethodNonce().getNonce());
+        assertEquals(cardNonce.getString(), parceled.getPaymentMethodNonce().getString());
         assertEquals("device_data", parceled.getDeviceData());
     }
 
-    @Test
-    public void fetchDropInResult_callsListenerWithErrorIfInvalidClientTokenWasUsed()
-            throws InterruptedException {
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                assertEquals("Authorization provided is invalid: not a client token", exception.getMessage());
-                mCountDownLatch.countDown();
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                fail("onResult called");
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, "not a client token", listener);
-
-        mCountDownLatch.await();
-    }
-
-    @Test
-    public void fetchDropInResult_callsListenerWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle()
-            throws InterruptedException {
-        BraintreeSharedPreferences.getSharedPreferences(mActivity)
-                .edit()
-                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
-                .commit();
-        googlePaymentReadyToPay(true);
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                fail("onError called");
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
-                assertNull(result.getPaymentMethodNonce());
-                mCountDownLatch.countDown();
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
-
-        mCountDownLatch.await();
-    }
-
-    public void fetchDropInResult_doesNotCallListenerWithPayWithGoogleIfPayWithGoogleIsNotAvailable()
-            throws InterruptedException, InvalidArgumentException {
-        BraintreeSharedPreferences.getSharedPreferences(mActivity)
-                .edit()
-                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
-                .commit();
-        googlePaymentReadyToPay(false);
-        setupFragment(new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                fail("onError called");
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
-                assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
-                mCountDownLatch.countDown();
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, Fixtures.CLIENT_TOKEN, listener);
-
-        mCountDownLatch.await();
-    }
-
-    @Test
-    public void fetchDropInResult_resetsBraintreeListenersWhenPayWithGoogleResultIsReturned()
-            throws InvalidArgumentException, InterruptedException {
-        BraintreeSharedPreferences.getSharedPreferences(mActivity)
-                .edit()
-                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
-                .commit();
-        googlePaymentReadyToPay(true);
-        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build()));
-        BraintreeErrorListener errorListener = new BraintreeErrorListener() {
-            @Override
-            public void onError(Exception error) {}
-        };
-        fragment.addListener(errorListener);
-        PaymentMethodNoncesUpdatedListener paymentMethodListener = new PaymentMethodNoncesUpdatedListener() {
-            @Override
-            public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {}
-        };
-        fragment.addListener(paymentMethodListener);
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                fail("onError called");
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
-                mCountDownLatch.countDown();
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
-
-        mCountDownLatch.await();
-        List<BraintreeListener> listeners = fragment.getListeners();
-        assertEquals(2, listeners.size());
-        assertTrue(listeners.contains(errorListener));
-        assertTrue(listeners.contains(paymentMethodListener));
-    }
-
-    @Test
-    public void fetchDropInResult_clearsListenersWhenPayWithGoogleResultIsReturned()
-            throws InvalidArgumentException, InterruptedException {
-        BraintreeSharedPreferences.getSharedPreferences(mActivity)
-                .edit()
-                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
-                .commit();
-        googlePaymentReadyToPay(true);
-        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build()));
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                fail("onError called");
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
-                mCountDownLatch.countDown();
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
-
-        mCountDownLatch.await();
-        List<BraintreeListener> listeners = fragment.getListeners();
-        assertEquals(0, listeners.size());
-    }
-
-    @Test
-    public void fetchDropInResult_callsListenerWithErrorIfBraintreeFragmentSetupFails()
-            throws InterruptedException {
-        mActivity = spy(mActivity);
-        FragmentManager fragmentManager = mock(FragmentManager.class);
-        doThrow(new IllegalStateException("IllegalState")).when(fragmentManager).beginTransaction();
-        when(mActivity.getSupportFragmentManager()).thenReturn(fragmentManager);
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                assertEquals("IllegalState", exception.getMessage());
-                mCountDownLatch.countDown();
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                fail("onResult called");
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
-
-        mCountDownLatch.await();
-    }
-
-    @Test
-    public void fetchDropInResult_callsListenerWithErrorWhenErrorIsPosted()
-            throws InterruptedException, InvalidArgumentException {
-        setupFragment(new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
-                .errorResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, 404,
-                        "No payment methods found"));
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                assertEquals("No payment methods found", exception.getMessage());
-                mCountDownLatch.countDown();
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                fail("onResult called");
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
-
-        mCountDownLatch.await();
-    }
-
-    @Test
-    public void fetchDropInResult_resetsBraintreeListenersWhenErrorIsPosted()
-            throws InvalidArgumentException, InterruptedException {
-        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
-                .errorResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, 404,
-                        "No payment methods found"));
-        BraintreeErrorListener errorListener = new BraintreeErrorListener() {
-            @Override
-            public void onError(Exception error) {}
-        };
-        fragment.addListener(errorListener);
-        PaymentMethodNoncesUpdatedListener paymentMethodListener = new PaymentMethodNoncesUpdatedListener() {
-            @Override
-            public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {}
-        };
-        fragment.addListener(paymentMethodListener);
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                assertEquals("No payment methods found", exception.getMessage());
-                mCountDownLatch.countDown();
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                fail("onResult called");
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
-
-        mCountDownLatch.await();
-        List<BraintreeListener> listeners = fragment.getListeners();
-        assertEquals(2, listeners.size());
-        assertTrue(listeners.contains(errorListener));
-        assertTrue(listeners.contains(paymentMethodListener));
-    }
-
-    @Test
-    public void fetchDropInResult_clearsListenersWhenErrorIsPosted()
-            throws InvalidArgumentException, InterruptedException {
-        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
-                .errorResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, 404,
-                        "No payment methods found"));
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                assertEquals("No payment methods found", exception.getMessage());
-                mCountDownLatch.countDown();
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                fail("onResult called");
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
-
-        mCountDownLatch.await();
-        assertEquals(0, fragment.getListeners().size());
-    }
-
-    @Test
-    public void fetchDropInResult_callsListenerWithResultWhenThereIsAPaymentMethod()
-            throws InvalidArgumentException, InterruptedException {
-        setupFragment(new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                fail("onError called");
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
-                assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
-                mCountDownLatch.countDown();
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
-
-        mCountDownLatch.await();
-    }
-
-    @Test
-    public void fetchDropInResult_callsListenerWithNullResultWhenThereAreNoPaymentMethods()
-            throws InvalidArgumentException, InterruptedException {
-        setupFragment(new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_EMPTY_RESPONSE));
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                fail("onError called");
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                assertNull(result.getPaymentMethodType());
-                assertNull(result.getPaymentMethodNonce());
-                mCountDownLatch.countDown();
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
-
-        mCountDownLatch.await();
-    }
-
-    @Test
-    public void fetchDropInResult_resetsBraintreeListenersWhenResultIsReturned()
-            throws InvalidArgumentException, InterruptedException {
-        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
-        BraintreeErrorListener errorListener = new BraintreeErrorListener() {
-            @Override
-            public void onError(Exception error) {}
-        };
-        fragment.addListener(errorListener);
-        PaymentMethodNoncesUpdatedListener paymentMethodListener = new PaymentMethodNoncesUpdatedListener() {
-            @Override
-            public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {}
-        };
-        fragment.addListener(paymentMethodListener);
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                fail("onError called");
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
-                mCountDownLatch.countDown();
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
-
-        mCountDownLatch.await();
-        List<BraintreeListener> listeners = fragment.getListeners();
-        assertEquals(2, listeners.size());
-        assertTrue(listeners.contains(errorListener));
-        assertTrue(listeners.contains(paymentMethodListener));
-    }
-
-    @Test
-    public void fetchDropInResult_clearsListenersWhenResultIsReturned()
-            throws InvalidArgumentException, InterruptedException {
-        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
-                .configuration(new TestConfigurationBuilder().build())
-                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
-        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
-            @Override
-            public void onError(Exception exception) {
-                fail("onError called");
-            }
-
-            @Override
-            public void onResult(DropInResult result) {
-                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
-                mCountDownLatch.countDown();
-            }
-        };
-
-        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
-
-        mCountDownLatch.await();
-        List<BraintreeListener> listeners = fragment.getListeners();
-        assertEquals(0, listeners.size());
-    }
-
-    private BraintreeFragment setupFragment(BraintreeHttpClient httpClient) throws InvalidArgumentException {
-        BraintreeFragment fragment = BraintreeFragment.newInstance(mActivity,
-                base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN));
-        setHttpClient(fragment, httpClient);
-        ConfigurationManagerTestUtils.setFetchingConfiguration(false);
-
-        return fragment;
-    }
-
-    private void googlePaymentReadyToPay(final boolean readyToPay) {
-        mockStatic(GooglePayment.class);
-        doAnswer(new Answer() {
-            @Override
-            public Object answer(InvocationOnMock invocation) throws Throwable {
-                ((BraintreeResponseListener<Boolean>) invocation.getArguments()[1])
-                        .onResponse(readyToPay);
-                return null;
-            }
-        }).when(GooglePayment.class);
-        GooglePayment.isReadyToPay(any(BraintreeFragment.class), any(BraintreeResponseListener.class));
-    }
+    // TODO: Move fetchDropInResult tests to DropInClient#fetchMostRecentPaymentMethod
+//    @Test
+//    public void fetchDropInResult_callsListenerWithErrorIfInvalidClientTokenWasUsed()
+//            throws InterruptedException {
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                assertEquals("Authorization provided is invalid: not a client token", exception.getMessage());
+//                mCountDownLatch.countDown();
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                fail("onResult called");
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, "not a client token", listener);
+//
+//        mCountDownLatch.await();
+//    }
+//
+//    @Test
+//    public void fetchDropInResult_callsListenerWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle()
+//            throws InterruptedException {
+//        BraintreeSharedPreferences.getSharedPreferences(mActivity)
+//                .edit()
+//                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+//                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
+//                .commit();
+//        googlePaymentReadyToPay(true);
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                fail("onError called");
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
+//                assertNull(result.getPaymentMethodNonce());
+//                mCountDownLatch.countDown();
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
+//
+//        mCountDownLatch.await();
+//    }
+//
+//    public void fetchDropInResult_doesNotCallListenerWithPayWithGoogleIfPayWithGoogleIsNotAvailable()
+//            throws InterruptedException, InvalidArgumentException {
+//        BraintreeSharedPreferences.getSharedPreferences(mActivity)
+//                .edit()
+//                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+//                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
+//                .commit();
+//        googlePaymentReadyToPay(false);
+//        setupFragment(new BraintreeUnitTestHttpClient()
+//                .configuration(new TestConfigurationBuilder().build())
+//                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                fail("onError called");
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
+//                assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+//                mCountDownLatch.countDown();
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, Fixtures.CLIENT_TOKEN, listener);
+//
+//        mCountDownLatch.await();
+//    }
+//
+//    @Test
+//    public void fetchDropInResult_resetsBraintreeListenersWhenPayWithGoogleResultIsReturned()
+//            throws InvalidArgumentException, InterruptedException {
+//        BraintreeSharedPreferences.getSharedPreferences(mActivity)
+//                .edit()
+//                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+//                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
+//                .commit();
+//        googlePaymentReadyToPay(true);
+//        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
+//                .configuration(new TestConfigurationBuilder().build()));
+//        BraintreeErrorListener errorListener = new BraintreeErrorListener() {
+//            @Override
+//            public void onError(Exception error) {}
+//        };
+//        fragment.addListener(errorListener);
+//        PaymentMethodNoncesUpdatedListener paymentMethodListener = new PaymentMethodNoncesUpdatedListener() {
+//            @Override
+//            public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {}
+//        };
+//        fragment.addListener(paymentMethodListener);
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                fail("onError called");
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
+//                mCountDownLatch.countDown();
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
+//
+//        mCountDownLatch.await();
+//        List<BraintreeListener> listeners = fragment.getListeners();
+//        assertEquals(2, listeners.size());
+//        assertTrue(listeners.contains(errorListener));
+//        assertTrue(listeners.contains(paymentMethodListener));
+//    }
+//
+//    @Test
+//    public void fetchDropInResult_clearsListenersWhenPayWithGoogleResultIsReturned()
+//            throws InvalidArgumentException, InterruptedException {
+//        BraintreeSharedPreferences.getSharedPreferences(mActivity)
+//                .edit()
+//                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+//                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
+//                .commit();
+//        googlePaymentReadyToPay(true);
+//        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
+//                .configuration(new TestConfigurationBuilder().build()));
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                fail("onError called");
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
+//                mCountDownLatch.countDown();
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
+//
+//        mCountDownLatch.await();
+//        List<BraintreeListener> listeners = fragment.getListeners();
+//        assertEquals(0, listeners.size());
+//    }
+//
+//    @Test
+//    public void fetchDropInResult_callsListenerWithErrorIfBraintreeFragmentSetupFails()
+//            throws InterruptedException {
+//        mActivity = spy(mActivity);
+//        FragmentManager fragmentManager = mock(FragmentManager.class);
+//        doThrow(new IllegalStateException("IllegalState")).when(fragmentManager).beginTransaction();
+//        when(mActivity.getSupportFragmentManager()).thenReturn(fragmentManager);
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                assertEquals("IllegalState", exception.getMessage());
+//                mCountDownLatch.countDown();
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                fail("onResult called");
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
+//
+//        mCountDownLatch.await();
+//    }
+//
+//    @Test
+//    public void fetchDropInResult_callsListenerWithErrorWhenErrorIsPosted()
+//            throws InterruptedException, InvalidArgumentException {
+//        setupFragment(new BraintreeUnitTestHttpClient()
+//                .configuration(new TestConfigurationBuilder().build())
+//                .errorResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, 404,
+//                        "No payment methods found"));
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                assertEquals("No payment methods found", exception.getMessage());
+//                mCountDownLatch.countDown();
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                fail("onResult called");
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
+//
+//        mCountDownLatch.await();
+//    }
+//
+//    @Test
+//    public void fetchDropInResult_resetsBraintreeListenersWhenErrorIsPosted()
+//            throws InvalidArgumentException, InterruptedException {
+//        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
+//                .configuration(new TestConfigurationBuilder().build())
+//                .errorResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, 404,
+//                        "No payment methods found"));
+//        BraintreeErrorListener errorListener = new BraintreeErrorListener() {
+//            @Override
+//            public void onError(Exception error) {}
+//        };
+//        fragment.addListener(errorListener);
+//        PaymentMethodNoncesUpdatedListener paymentMethodListener = new PaymentMethodNoncesUpdatedListener() {
+//            @Override
+//            public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {}
+//        };
+//        fragment.addListener(paymentMethodListener);
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                assertEquals("No payment methods found", exception.getMessage());
+//                mCountDownLatch.countDown();
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                fail("onResult called");
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
+//
+//        mCountDownLatch.await();
+//        List<BraintreeListener> listeners = fragment.getListeners();
+//        assertEquals(2, listeners.size());
+//        assertTrue(listeners.contains(errorListener));
+//        assertTrue(listeners.contains(paymentMethodListener));
+//    }
+//
+//    @Test
+//    public void fetchDropInResult_clearsListenersWhenErrorIsPosted()
+//            throws InvalidArgumentException, InterruptedException {
+//        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
+//                .configuration(new TestConfigurationBuilder().build())
+//                .errorResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, 404,
+//                        "No payment methods found"));
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                assertEquals("No payment methods found", exception.getMessage());
+//                mCountDownLatch.countDown();
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                fail("onResult called");
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
+//
+//        mCountDownLatch.await();
+//        assertEquals(0, fragment.getListeners().size());
+//    }
+//
+//    @Test
+//    public void fetchDropInResult_callsListenerWithResultWhenThereIsAPaymentMethod()
+//            throws InvalidArgumentException, InterruptedException {
+//        setupFragment(new BraintreeUnitTestHttpClient()
+//                .configuration(new TestConfigurationBuilder().build())
+//                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                fail("onError called");
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
+//                assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+//                mCountDownLatch.countDown();
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
+//
+//        mCountDownLatch.await();
+//    }
+//
+//    @Test
+//    public void fetchDropInResult_callsListenerWithNullResultWhenThereAreNoPaymentMethods()
+//            throws InvalidArgumentException, InterruptedException {
+//        setupFragment(new BraintreeUnitTestHttpClient()
+//                .configuration(new TestConfigurationBuilder().build())
+//                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_EMPTY_RESPONSE));
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                fail("onError called");
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                assertNull(result.getPaymentMethodType());
+//                assertNull(result.getPaymentMethodNonce());
+//                mCountDownLatch.countDown();
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
+//
+//        mCountDownLatch.await();
+//    }
+//
+//    @Test
+//    public void fetchDropInResult_resetsBraintreeListenersWhenResultIsReturned()
+//            throws InvalidArgumentException, InterruptedException {
+//        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
+//                .configuration(new TestConfigurationBuilder().build())
+//                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
+//        BraintreeErrorListener errorListener = new BraintreeErrorListener() {
+//            @Override
+//            public void onError(Exception error) {}
+//        };
+//        fragment.addListener(errorListener);
+//        PaymentMethodNoncesUpdatedListener paymentMethodListener = new PaymentMethodNoncesUpdatedListener() {
+//            @Override
+//            public void onPaymentMethodNoncesUpdated(List<PaymentMethodNonce> paymentMethodNonces) {}
+//        };
+//        fragment.addListener(paymentMethodListener);
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                fail("onError called");
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
+//                mCountDownLatch.countDown();
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
+//
+//        mCountDownLatch.await();
+//        List<BraintreeListener> listeners = fragment.getListeners();
+//        assertEquals(2, listeners.size());
+//        assertTrue(listeners.contains(errorListener));
+//        assertTrue(listeners.contains(paymentMethodListener));
+//    }
+//
+//    @Test
+//    public void fetchDropInResult_clearsListenersWhenResultIsReturned()
+//            throws InvalidArgumentException, InterruptedException {
+//        BraintreeFragment fragment = setupFragment(new BraintreeUnitTestHttpClient()
+//                .configuration(new TestConfigurationBuilder().build())
+//                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE));
+//        DropInResult.DropInResultListener listener = new DropInResult.DropInResultListener() {
+//            @Override
+//            public void onError(Exception exception) {
+//                fail("onError called");
+//            }
+//
+//            @Override
+//            public void onResult(DropInResult result) {
+//                assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
+//                mCountDownLatch.countDown();
+//            }
+//        };
+//
+//        DropInResult.fetchDropInResult(mActivity, base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN), listener);
+//
+//        mCountDownLatch.await();
+//        List<BraintreeListener> listeners = fragment.getListeners();
+//        assertEquals(0, listeners.size());
+//    }
 }
