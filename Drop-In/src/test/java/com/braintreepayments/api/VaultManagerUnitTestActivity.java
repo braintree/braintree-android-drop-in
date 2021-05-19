@@ -10,14 +10,14 @@ public class VaultManagerUnitTestActivity extends VaultManagerActivity {
 
     public Context context;
 //    public BraintreeFragment braintreeFragment;
-    public BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient();
+//    public BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient();
     public BraintreeGraphQLHttpClient graphQLHttpClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.bt_vault_manager_activity_theme);
 
-        ConfigurationManagerTestUtils.setFetchingConfiguration(true);
+//        ConfigurationManagerTestUtils.setFetchingConfiguration(true);
 
         super.onCreate(savedInstanceState);
 

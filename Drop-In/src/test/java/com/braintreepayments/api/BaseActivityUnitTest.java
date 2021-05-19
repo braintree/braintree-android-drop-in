@@ -8,6 +8,7 @@ import com.braintreepayments.api.test.ReflectionHelper;
 import com.braintreepayments.api.test.TestConfigurationBuilder;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -162,10 +163,13 @@ public class BaseActivityUnitTest {
 
     @Test
     public void shouldRequestThreeDSecureVerification_returnsTrueWhenEnabled_andRequested_andAmountIsPresentOnThreeDSecureRequest() {
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        threeDSecureRequest.setAmount("2.00");
+
         setup(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .requestThreeDSecureVerification(true)
-                .threeDSecureRequest(new ThreeDSecureRequest().amount("2.00"))
+                .threeDSecureRequest(threeDSecureRequest)
                 .getIntent(RuntimeEnvironment.application));
         mActivity.mConfiguration = new TestConfigurationBuilder()
                 .threeDSecureEnabled(true)
@@ -231,10 +235,13 @@ public class BaseActivityUnitTest {
 
     @Test
     public void shouldRequestThreeDSecureVerification_returnsFalseWhenConfigurationIsNull() {
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        threeDSecureRequest.setAmount("2.00");
+
         setup(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .requestThreeDSecureVerification(true)
-                .threeDSecureRequest(new ThreeDSecureRequest().amount("2.00"))
+                .threeDSecureRequest(threeDSecureRequest)
                 .getIntent(RuntimeEnvironment.application));
         mActivity.mConfiguration = null;
 
@@ -244,7 +251,7 @@ public class BaseActivityUnitTest {
     @Test
     public void finish_finishesWithPaymentMethodNonceAndDeviceDataInDropInResult()
             throws JSONException {
-        CardNonce cardNonce = CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE);
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         setup(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application));
@@ -257,7 +264,7 @@ public class BaseActivityUnitTest {
         DropInResult result = shadowActivity.getResultIntent()
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertNotNull(result);
-        assertEquals(cardNonce.getNonce(), result.getPaymentMethodNonce().getNonce());
+        assertEquals(cardNonce.getString(), result.getPaymentMethodNonce().getString());
         assertEquals("device_data", result.getDeviceData());
     }
 

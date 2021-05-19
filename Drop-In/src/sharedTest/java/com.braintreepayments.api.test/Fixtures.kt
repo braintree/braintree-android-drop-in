@@ -508,4 +508,25 @@ object Fixtures {
         }
     """
     // endregion
+
+    // language=JSON
+    const val PAYPAL_ACCOUNT_JSON = """
+        {
+          "paypalAccounts": [
+            {
+              "type": "PayPalAccount",
+              "nonce": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+              "description": "with email paypalaccount@example.com",
+              "default": false,
+              "isLocked": false,
+              "securityQuestions": [],
+              "details": {
+                "email": "paypalaccount@example.com",
+                "payerInfo": {
+                }
+              }
+            }
+          ]
+        }
+    """
 }

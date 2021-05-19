@@ -15,7 +15,7 @@ public class DropInUnitTestActivity extends DropInActivity {
 
     public Context context;
 //    public BraintreeFragment braintreeFragment;
-    public BraintreeUnitTestHttpClient httpClient;
+//    public BraintreeUnitTestHttpClient httpClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -29,7 +29,7 @@ public class DropInUnitTestActivity extends DropInActivity {
                 .putExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST, mDropInRequest);
         setIntent(intent);
 
-        ConfigurationManagerTestUtils.setFetchingConfiguration(true);
+//        ConfigurationManagerTestUtils.setFetchingConfiguration(true);
 
         super.onCreate(savedInstanceState);
 

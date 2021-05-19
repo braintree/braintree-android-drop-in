@@ -3,14 +3,7 @@ package com.braintreepayments.api;
 import android.content.Intent;
 import android.os.Parcel;
 
-import com.braintreepayments.api.DropInActivity;
-import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.test.Fixtures;
-import com.braintreepayments.api.models.GooglePaymentRequest;
-import com.braintreepayments.api.models.PayPalRequest;
-import com.braintreepayments.api.models.ThreeDSecureAdditionalInformation;
-import com.braintreepayments.api.models.ThreeDSecurePostalAddress;
-import com.braintreepayments.api.models.ThreeDSecureRequest;
 import com.braintreepayments.cardform.view.CardForm;
 import com.google.android.gms.wallet.Cart;
 import com.google.android.gms.wallet.TransactionInfo;
@@ -32,44 +25,45 @@ public class DropInRequestUnitTest {
 
     @Test
     public void includesAllOptions() {
-        GooglePaymentRequest googlePaymentRequest = new GooglePaymentRequest()
-                .transactionInfo(TransactionInfo.newBuilder()
-                        .setTotalPrice("10")
-                        .setCurrencyCode("USD")
-                        .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
-                        .build())
-                .emailRequired(true);
+        GooglePayRequest googlePayRequest = new GooglePayRequest();
+        googlePayRequest.setTransactionInfo(TransactionInfo.newBuilder()
+                .setTotalPrice("10")
+                .setCurrencyCode("USD")
+                .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
+                .build());
+        googlePayRequest.setEmailRequired(true);
 
-        PayPalRequest paypalRequest = new PayPalRequest("10")
-                .currencyCode("USD");
+        PayPalCheckoutRequest paypalRequest = new PayPalCheckoutRequest("10.00");
+        paypalRequest.setCurrencyCode("USD");
 
-        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
-                .nonce("abc-123")
-                .versionRequested(ThreeDSecureRequest.VERSION_2)
-                .amount("10.00")
-                .email("tester@example.com")
-                .mobilePhoneNumber("3125551234")
-                .billingAddress(new ThreeDSecurePostalAddress()
-                        .givenName("Given")
-                        .surname("Surname")
-                        .streetAddress("555 Smith St.")
-                        .extendedAddress("#5")
-                        .locality("Chicago")
-                        .region("IL")
-                        .postalCode("54321")
-                        .countryCodeAlpha2("US")
-                        .phoneNumber("3125557890")
-                )
-                .additionalInformation(new ThreeDSecureAdditionalInformation()
-                        .shippingMethodIndicator("GEN")
-                );
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        threeDSecureRequest.setNonce("abc-123");
+        threeDSecureRequest.setVersionRequested(ThreeDSecureRequest.VERSION_2);
+        threeDSecureRequest.setAmount("10.00");
+        threeDSecureRequest.setEmail("tester@example.com");
+        threeDSecureRequest.setMobilePhoneNumber("3125551234");
 
+        ThreeDSecurePostalAddress billingAddress = new ThreeDSecurePostalAddress();
+        billingAddress.setGivenName("Given");
+        billingAddress.setSurname("Surname");
+        billingAddress.setStreetAddress("555 Smith St.");
+        billingAddress.setExtendedAddress("#5");
+        billingAddress.setLocality("Chicago");
+        billingAddress.setRegion("IL");
+        billingAddress.setPostalCode("54321");
+        billingAddress.setCountryCodeAlpha2("US");
+        billingAddress.setPhoneNumber("3125557890");
+        threeDSecureRequest.setBillingAddress(billingAddress);
+
+        ThreeDSecureAdditionalInformation additionalInformation = new ThreeDSecureAdditionalInformation();
+        additionalInformation.setShippingMethodIndicator("GEN");
+        threeDSecureRequest.setAdditionalInformation(additionalInformation);
 
         Intent intent = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
                 .amount("1.00")
-                .googlePaymentRequest(googlePaymentRequest)
+                .googlePaymentRequest(googlePayRequest)
                 .disableGooglePayment()
                 .paypalRequest(paypalRequest)
                 .disablePayPal()
@@ -97,8 +91,11 @@ public class DropInRequestUnitTest {
         assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPriceStatus());
         assertTrue(dropInRequest.getGooglePaymentRequest().isEmailRequired());
         assertFalse(dropInRequest.isGooglePaymentEnabled());
-        assertEquals("10", dropInRequest.getPayPalRequest().getAmount());
-        assertEquals("USD", dropInRequest.getPayPalRequest().getCurrencyCode());
+
+        PayPalCheckoutRequest checkoutRequest = (PayPalCheckoutRequest) dropInRequest.getPayPalRequest();
+        assertEquals("10", checkoutRequest.getAmount());
+        assertEquals("USD", checkoutRequest.getCurrencyCode());
+
         assertFalse(dropInRequest.isPayPalEnabled());
         assertFalse(dropInRequest.isVenmoEnabled());
         assertFalse(dropInRequest.isCardEnabled());
@@ -156,46 +153,45 @@ public class DropInRequestUnitTest {
 
     @Test
     public void isParcelable() {
-        Cart cart = Cart.newBuilder()
-                .setTotalPrice("5.00")
-                .build();
-        GooglePaymentRequest googlePaymentRequest = new GooglePaymentRequest()
-                .transactionInfo(TransactionInfo.newBuilder()
-                        .setTotalPrice("10")
-                        .setCurrencyCode("USD")
-                        .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
-                        .build())
-                .emailRequired(true);
+        GooglePayRequest googlePayRequest = new GooglePayRequest();
+        googlePayRequest.setTransactionInfo(TransactionInfo.newBuilder()
+                .setTotalPrice("10")
+                .setCurrencyCode("USD")
+                .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
+                .build());
+        googlePayRequest.setEmailRequired(true);
 
-        PayPalRequest paypalRequest = new PayPalRequest("10")
-                .currencyCode("USD");
+        PayPalCheckoutRequest paypalRequest = new PayPalCheckoutRequest("10.00");
+        paypalRequest.setCurrencyCode("USD");
 
-        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
-                .nonce("abc-123")
-                .versionRequested(ThreeDSecureRequest.VERSION_2)
-                .amount("10.00")
-                .email("tester@example.com")
-                .mobilePhoneNumber("3125551234")
-                .billingAddress(new ThreeDSecurePostalAddress()
-                        .givenName("Given")
-                        .surname("Surname")
-                        .streetAddress("555 Smith St.")
-                        .extendedAddress("#5")
-                        .locality("Chicago")
-                        .region("IL")
-                        .postalCode("54321")
-                        .countryCodeAlpha2("US")
-                        .phoneNumber("3125557890")
-                )
-                .additionalInformation(new ThreeDSecureAdditionalInformation()
-                        .shippingMethodIndicator("GEN")
-                );
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        threeDSecureRequest.setNonce("abc-123");
+        threeDSecureRequest.setVersionRequested(ThreeDSecureRequest.VERSION_2);
+        threeDSecureRequest.setAmount("10.00");
+        threeDSecureRequest.setEmail("tester@example.com");
+        threeDSecureRequest.setMobilePhoneNumber("3125551234");
+
+        ThreeDSecurePostalAddress billingAddress = new ThreeDSecurePostalAddress();
+        billingAddress.setGivenName("Given");
+        billingAddress.setSurname("Surname");
+        billingAddress.setStreetAddress("555 Smith St.");
+        billingAddress.setExtendedAddress("#5");
+        billingAddress.setLocality("Chicago");
+        billingAddress.setRegion("IL");
+        billingAddress.setPostalCode("54321");
+        billingAddress.setCountryCodeAlpha2("US");
+        billingAddress.setPhoneNumber("3125557890");
+        threeDSecureRequest.setBillingAddress(billingAddress);
+
+        ThreeDSecureAdditionalInformation additionalInformation = new ThreeDSecureAdditionalInformation();
+        additionalInformation.setShippingMethodIndicator("GEN");
+        threeDSecureRequest.setAdditionalInformation(additionalInformation);
 
         DropInRequest dropInRequest = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
                 .amount("1.00")
-                .googlePaymentRequest(googlePaymentRequest)
+                .googlePaymentRequest(googlePayRequest)
                 .disableGooglePayment()
                 .paypalRequest(paypalRequest)
                 .disablePayPal()
@@ -223,8 +219,11 @@ public class DropInRequestUnitTest {
         assertEquals("USD", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getCurrencyCode());
         assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPriceStatus());
         assertTrue(dropInRequest.getGooglePaymentRequest().isEmailRequired());
-        assertEquals("10", dropInRequest.getPayPalRequest().getAmount());
-        assertEquals("USD", dropInRequest.getPayPalRequest().getCurrencyCode());
+
+        PayPalCheckoutRequest checkoutRequest = (PayPalCheckoutRequest) dropInRequest.getPayPalRequest();
+        assertEquals("10", checkoutRequest.getAmount());
+        assertEquals("USD", checkoutRequest.getCurrencyCode());
+
         assertFalse(dropInRequest.isGooglePaymentEnabled());
         assertFalse(parceledDropInRequest.isPayPalEnabled());
         assertFalse(parceledDropInRequest.isVenmoEnabled());

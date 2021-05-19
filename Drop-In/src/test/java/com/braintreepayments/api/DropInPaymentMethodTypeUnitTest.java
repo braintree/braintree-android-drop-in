@@ -2,13 +2,10 @@ package com.braintreepayments.api;
 
 import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.PayPalAccountNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.models.VenmoAccountNonce;
 import com.braintreepayments.cardform.utils.CardType;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -38,15 +35,13 @@ public class DropInPaymentMethodTypeUnitTest {
         assertEquals(DropInPaymentMethodType.HIPERCARD, DropInPaymentMethodType.forType("Hipercard"));
 
         assertEquals(DropInPaymentMethodType.VISA, DropInPaymentMethodType.forType(
-                CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
-        assertEquals(DropInPaymentMethodType.PAYPAL, DropInPaymentMethodType.forType(new PayPalAccountNonce()));
-        assertEquals(DropInPaymentMethodType.UNKNOWN, DropInPaymentMethodType.forType(new PaymentMethodNonce() {
-            @Override
-            public String getTypeLabel() {
-                return null;
-            }
-        }));
-        assertEquals(DropInPaymentMethodType.PAY_WITH_VENMO, DropInPaymentMethodType.forType(new VenmoAccountNonce()));
+                CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))));
+        assertEquals(DropInPaymentMethodType.PAYPAL, DropInPaymentMethodType.forType(
+                PayPalAccountNonce.fromJSON(new JSONObject(Fixtures.PAYPAL_ACCOUNT_JSON))));
+        assertEquals(DropInPaymentMethodType.UNKNOWN, DropInPaymentMethodType.forType(
+                new PaymentMethodNonce("unknown-nonce", false, PaymentMethodType.UNKNOWN, "Unknown", "Description")));
+        assertEquals(DropInPaymentMethodType.PAY_WITH_VENMO, DropInPaymentMethodType.forType(
+                new VenmoAccountNonce("venmo-nonce", "@venmo_user", false)));
     }
 
     @Test
