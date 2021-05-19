@@ -3,9 +3,7 @@ package com.braintreepayments.api;
 import android.content.Intent;
 import android.os.Parcel;
 
-import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.cardform.view.CardForm;
-import com.google.android.gms.wallet.Cart;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
 
@@ -14,7 +12,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;

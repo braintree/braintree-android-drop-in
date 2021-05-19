@@ -1,13 +1,11 @@
 package com.braintreepayments.api;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 
 import com.braintreepayments.api.dropin.R;
 
-import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 

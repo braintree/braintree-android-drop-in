@@ -1,4 +1,4 @@
-package com.braintreepayments.api.test;
+package com.braintreepayments.api;
 
 import org.json.JSONArray;
 import org.json.JSONException;

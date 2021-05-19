@@ -1,4 +1,4 @@
-package com.braintreepayments.api.test;
+package com.braintreepayments.api;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;

@@ -13,13 +13,10 @@ import android.widget.ViewSwitcher;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.test.Fixtures;
-import com.braintreepayments.api.test.TestConfigurationBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -37,21 +34,17 @@ import static com.braintreepayments.api.DropInActivity.ADD_CARD_REQUEST_CODE;
 import static com.braintreepayments.api.DropInActivity.DELETE_PAYMENT_METHOD_NONCE_CODE;
 import static com.braintreepayments.api.PackageManagerUtils.mockPackageManagerSupportsThreeDSecure;
 import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
-import static com.braintreepayments.api.test.ReflectionHelper.getField;
-import static com.braintreepayments.api.test.ReflectionHelper.setField;
-import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.ReflectionHelper.getField;
+import static com.braintreepayments.api.ReflectionHelper.setField;
+import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
@@ -158,36 +151,6 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
-    }
-
-    @Test
-    public void onConfigurationFetched_whenGooglePaymentDisabledClientSide_doesNotShowGooglePayment() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .googlePayment(new TestConfigurationBuilder.TestGooglePaymentConfigurationBuilder()
-//                                .enabled(true))
-//                        .build());
-        mActivity.setDropInRequest(new DropInRequest()
-                .disableGooglePayment()
-                .tokenizationKey(TOKENIZATION_KEY));
-//        setup(httpClient);
-
-        assertEquals(0, ((ListView) mActivity.findViewById(R.id.bt_supported_payment_methods)).getAdapter().getCount());
-    }
-
-    @Test
-    public void onConfigurationFetched_whenGooglePayDisabledClientSide_doesNotShowGooglePay() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .googlePayment(new TestConfigurationBuilder.TestGooglePaymentConfigurationBuilder()
-//                                .enabled(true))
-//                        .build());
-        mActivity.setDropInRequest(new DropInRequest()
-                .disableGooglePayment()
-                .tokenizationKey(TOKENIZATION_KEY));
-//        setup(httpClient);
-
-        assertEquals(0, ((ListView) mActivity.findViewById(R.id.bt_supported_payment_methods)).getAdapter().getCount());
     }
 
     @Test

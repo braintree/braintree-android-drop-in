@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.braintreepayments.api.dropin.R;
-import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 
 public class AddCardUnitTestActivity extends AddCardActivity {
 

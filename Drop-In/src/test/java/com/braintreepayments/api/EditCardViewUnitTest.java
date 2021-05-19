@@ -6,9 +6,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
-import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.test.TestConfigurationBuilder;
 import com.braintreepayments.cardform.view.CardForm;
 
 import org.json.JSONObject;
@@ -22,9 +20,9 @@ import org.robolectric.android.controller.ActivityController;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.braintreepayments.api.test.CardNumber.VISA;
-import static com.braintreepayments.api.test.ExpirationDate.VALID_EXPIRATION;
-import static com.braintreepayments.api.test.TestConfigurationBuilder.basicConfig;
+import static com.braintreepayments.api.CardNumber.VISA;
+import static com.braintreepayments.api.ExpirationDate.VALID_EXPIRATION;
+import static com.braintreepayments.api.TestConfigurationBuilder.basicConfig;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;

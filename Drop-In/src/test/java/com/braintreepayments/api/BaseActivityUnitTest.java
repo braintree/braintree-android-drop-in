@@ -3,10 +3,6 @@ package com.braintreepayments.api;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.braintreepayments.api.test.Fixtures;
-import com.braintreepayments.api.test.ReflectionHelper;
-import com.braintreepayments.api.test.TestConfigurationBuilder;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -19,7 +15,7 @@ import org.robolectric.shadows.ShadowActivity;
 
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
-import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;

@@ -1,6 +1,5 @@
 package com.braintreepayments.api;
 
-import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.cardform.utils.CardType;
 

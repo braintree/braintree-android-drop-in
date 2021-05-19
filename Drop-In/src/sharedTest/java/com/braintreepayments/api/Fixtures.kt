@@ -1,8 +1,31 @@
-package com.braintreepayments.api.test
+package com.braintreepayments.api
 
 object Fixtures {
 
     const val TOKENIZATION_KEY = "sandbox_tmxhyf7d_dcpspy2brwdjr3qn"
+
+    // language=JSON
+    const val CONFIGURATION_WITH_GOOGLE_PAY = """
+        {
+          "clientApiUrl": "client_api_url",
+          "environment": "test",
+          "merchantId": "integration_merchant_id",
+          "merchantAccountId": "integration_merchant_account_id",
+          "androidPay": {
+            "enabled": true,
+            "displayName": "Google Pay Merchant",
+            "environment": "sandbox",
+            "googleAuthorizationFingerprint": "google-auth-fingerprint",
+            "paypalClientId": "pay-pal-client-id",
+            "supportedNetworks": [
+              "visa",
+              "mastercard",
+              "amex",
+              "discover"
+            ]
+          }
+        }
+    """
 
     // region Client Tokens
     // language=JSON
