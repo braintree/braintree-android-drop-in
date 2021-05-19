@@ -57,7 +57,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
     private boolean mSheetSlideUpPerformed;
     private boolean mSheetSlideDownPerformed;
-    private boolean mPerformedThreeDSecureVerification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -143,21 +142,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         fetchPaymentMethodNonces(false);
     }
 
-    private void handleThreeDSecureFailure() {
-        if (mPerformedThreeDSecureVerification) {
-            mPerformedThreeDSecureVerification = false;
-            fetchPaymentMethodNonces(true);
-        }
-    }
-
-    public void onCancel(int requestCode) {
-        handleThreeDSecureFailure();
-
-        mLoadingViewSwitcher.setDisplayedChild(1);
-    }
-
     public void onError(final Exception error) {
-        handleThreeDSecureFailure();
 
         slideDown(new AnimationFinishedListener() {
             @Override
@@ -178,32 +163,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 finish(error);
             }
         });
-    }
-
-    public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethodNonce) {
-        if (!mPerformedThreeDSecureVerification) {
-            getDropInClient().shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
-                @Override
-                public void onResult(boolean shouldRequestThreeDSecureVerification) {
-                    if (shouldRequestThreeDSecureVerification) {
-                        mPerformedThreeDSecureVerification = true;
-                        mLoadingViewSwitcher.setDisplayedChild(0);
-
-                        getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new ThreeDSecureResultCallback() {
-
-                            @Override
-                            public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                                onPaymentMethodNonceCreated(threeDSecureResult.getTokenizedCard());
-                            }
-                        });
-                    } else {
-                        finishWithPaymentMethodNonce(paymentMethodNonce);
-                    }
-                }
-            });
-            return;
-        }
-        finishWithPaymentMethodNonce(paymentMethodNonce);
     }
 
     private void finishWithPaymentMethodNonce(final PaymentMethodNonce paymentMethodNonce) {
@@ -438,11 +397,34 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     }
 
     @Override
-    public void onVaultedPaymentMethodSelected(PaymentMethodNonce paymentMethodNonce) {
+    public void onVaultedPaymentMethodSelected(final PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             getBraintreeClient().sendAnalyticsEvent("vaulted-card.select");
         }
 
-        DropInActivity.this.onPaymentMethodNonceCreated(paymentMethodNonce);
+        getDropInClient().shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
+            @Override
+            public void onResult(boolean shouldRequestThreeDSecureVerification) {
+                if (shouldRequestThreeDSecureVerification) {
+                    mLoadingViewSwitcher.setDisplayedChild(0);
+
+                    getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new ThreeDSecureResultCallback() {
+
+                        @Override
+                        public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
+                            if (threeDSecureResult != null) {
+                                finishWithPaymentMethodNonce(threeDSecureResult.getTokenizedCard());
+                            } else {
+                                onError(error);
+                                fetchPaymentMethodNonces(true);
+                                mLoadingViewSwitcher.setDisplayedChild(1);
+                            }
+                        }
+                    });
+                } else {
+                    finishWithPaymentMethodNonce(paymentMethodNonce);
+                }
+            }
+        });
     }
 }

@@ -135,7 +135,11 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onCancel_hidesLoadingView() {
-//        setup(new BraintreeUnitTestHttpClient());
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+        mActivityController.setup();
+
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
 
         mActivity.onCancel(0);
