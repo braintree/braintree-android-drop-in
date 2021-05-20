@@ -27,6 +27,30 @@ object Fixtures {
         }
     """
 
+    // language=JSON
+    const val CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE = """
+        {
+          "clientApiUrl": "client_api_url",
+          "environment": "test",
+          "merchantId": "integration_merchant_id",
+          "merchantAccountId": "integration_merchant_account_id",
+          "threeDSecureEnabled": true,
+          "androidPay": {
+            "enabled": true,
+            "displayName": "Google Pay Merchant",
+            "environment": "sandbox",
+            "googleAuthorizationFingerprint": "google-auth-fingerprint",
+            "paypalClientId": "pay-pal-client-id",
+            "supportedNetworks": [
+              "visa",
+              "mastercard",
+              "amex",
+              "discover"
+            ]
+          }
+        }
+    """
+
     // region Client Tokens
     // language=JSON
     const val CLIENT_TOKEN = """

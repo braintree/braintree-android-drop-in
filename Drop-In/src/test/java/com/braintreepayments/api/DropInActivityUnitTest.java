@@ -391,57 +391,6 @@ public class DropInActivityUnitTest {
 ////                anyString(), any(HttpResponseCallback.class));
     }
 
-    // TODO: checking if a nonce should be verified has been moved to DropInClient
-    @Test
-    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForNonNetworkTokenizedGooglePayWhenEnabled() throws Exception {
-//        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
-//        Context context = spy(RuntimeEnvironment.application);
-//        when(context.getPackageManager()).thenReturn(packageManager);
-//        mActivity.context = context;
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .tokenizationKey(TOKENIZATION_KEY)
-//                .amount("1.00")
-//                .requestThreeDSecureVerification(true));
-////        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
-////                .configuration(new TestConfigurationBuilder()
-////                        .threeDSecureEnabled(true)
-////                        .build()));
-//        mActivityController.setup();
-//
-//        PaymentMethodNonce googlePayCardNonce = (GooglePayCardNonce) GooglePayCardNonce.fromJSON(
-//                new JSONObject(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE));
-//
-//        mActivity.onPaymentMethodNonceCreated(googlePayCardNonce);
-//
-////        verify(mActivity.httpClient).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP),
-////                anyString(), any(HttpResponseCallback.class));
-    }
-
-    // TODO: investigate
-    @Test
-    public void onPaymentMethodNonceCreated_skipsThreeDSecureVerificationForNetworkTokenizedGooglePay() throws Exception {
-//        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
-//        Context context = spy(RuntimeEnvironment.application);
-//        when(context.getPackageManager()).thenReturn(packageManager);
-//        mActivity.context = context;
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .tokenizationKey(TOKENIZATION_KEY)
-//                .amount("1.00")
-//                .requestThreeDSecureVerification(true));
-////        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
-////                .configuration(new TestConfigurationBuilder()
-////                        .threeDSecureEnabled(true)
-////                        .build()));
-//        mActivityController.setup();
-//
-//        PayPalAccountNonce googlePaymentCardNonce = (PayPalAccountNonce) GooglePayCardNonce.fromJSON(
-//                new JSONObject(Fixtures.GOOGLE_PAY_NETWORK_TOKENIZED_RESPONSE));
-//
-//        mActivity.onPaymentMethodNonceCreated(googlePaymentCardNonce);
-//
-////        verify(mActivity.httpClient, never()).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP), anyString(), any(HttpResponseCallback.class));
-    }
-
     @Test
     public void onPaymentMethodNonceCreated_sendsAnAnalyticsEvent() throws JSONException {
 //        setup(mock(BraintreeFragment.class));
