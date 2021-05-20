@@ -48,6 +48,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -406,16 +407,18 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onPaymentMethodNonceCreated_sendsAnAnalyticsEvent() throws JSONException {
+    public void onVaultedPaymentMethodSelected_sendsAnAnalyticsEvent() throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
         setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
         mActivityController.setup();
 
         mActivity.onVaultedPaymentMethodSelected(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
-//        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-//
-//        verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit.success");
+        verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.success");
     }
 
     @Test
@@ -488,51 +491,36 @@ public class DropInActivityUnitTest {
 //                        .getNonce());
     }
 
-    // TODO: create MockDropInClient and stub sendAnalyticsEvent
     @Test
-    public void clickingVaultedPaymentMethod_whenCard_sendsAnalyticEvent() {
-//        PaymentMethodNonce nonce = mock(CardNonce.class);
-//        ArrayList<PaymentMethodNonce> nonces = new ArrayList<>();
-//        nonces.add(nonce);
-//
-//        BraintreeFragment fragment = mock(BraintreeFragment.class);
-//        setup(fragment);
-//        mActivity.mDropInRequest.disableGooglePayment();
-//        mActivity.mConfiguration = new TestConfigurationBuilder()
-//                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder().supportedCardTypes("Visa"))
-//                .buildConfiguration();
-//
-//        mActivity.onPaymentMethodNoncesUpdated(nonces);
-//        RecyclerView recyclerView = mActivity.findViewById(R.id.bt_vaulted_payment_methods);
-//        recyclerView.measure(0, 0);
-//        recyclerView.layout(0, 0, 100, 10000);
-//        recyclerView.findViewHolderForAdapterPosition(0).itemView.callOnClick();
-//
-//        verify(fragment).sendAnalyticsEvent("vaulted-card.select");
+    public void onVaultedPaymentMethodSelected_whenCard_sendsAnalyticEvent() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+
+        mActivity.onVaultedPaymentMethodSelected(mock(CardNonce.class));
+
+        verify(dropInClient).sendAnalyticsEvent("vaulted-card.select");
     }
 
-    // TODO: verify DropInClient#sendAnalyticsEvent() not called
     @Test
-    public void clickingVaultedPaymentMethod_whenPayPal_doesNotSendAnalyticEvent() {
-//        PaymentMethodNonce nonce = mock(PayPalAccountNonce.class);
-//        ArrayList<PaymentMethodNonce> nonces = new ArrayList<>();
-//        nonces.add(nonce);
-//
-//        BraintreeFragment fragment = mock(BraintreeFragment.class);
-//
-//        setup(fragment);
-//        mActivity.mDropInRequest.disableGooglePayment();
-//        mActivity.mConfiguration = new TestConfigurationBuilder()
-//                .paypal(new TestConfigurationBuilder.TestPayPalConfigurationBuilder(true))
-//                .buildConfiguration();
-//
-//        mActivity.onPaymentMethodNoncesUpdated(nonces);
-//        RecyclerView recyclerView = mActivity.findViewById(R.id.bt_vaulted_payment_methods);
-//        recyclerView.measure(0, 0);
-//        recyclerView.layout(0, 0, 100, 10000);
-//        recyclerView.findViewHolderForAdapterPosition(0).itemView.callOnClick();
-//
-//        verify(fragment, never()).sendAnalyticsEvent("vaulted-card.select");
+    public void onVaultedPaymentMethodSelected_whenPayPal_doesNotSendAnalyticEvent() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+
+        mActivity.onVaultedPaymentMethodSelected(mock(PayPalAccountNonce.class));
+
+        verify(dropInClient, never()).sendAnalyticsEvent("vaulted-card.select");
     }
 
     // TODO: stub DropInClient#getVaultedPaymentMethods
