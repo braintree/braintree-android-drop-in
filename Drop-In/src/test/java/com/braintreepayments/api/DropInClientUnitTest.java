@@ -29,6 +29,9 @@ public class DropInClientUnitTest {
     @Captor
     ArgumentCaptor<List<DropInPaymentMethodType>> paymentMethodTypesCaptor;
 
+    @Captor
+    ArgumentCaptor<List<PaymentMethodNonce>> paymentMethodNoncesCaptor;
+
     private FragmentActivity activity;
 
     @Before
@@ -172,8 +175,29 @@ public class DropInClientUnitTest {
         verify(callback).onResult(false);
     }
 
+    // TODO: the Google Pay filtering happens in PaymentMethodClient in core - is this test needed?
     @Test
-    public void getVaultedPaymentMethods_filtersOutGooglePayNonces() {
+    public void getVaultedPaymentMethods_filtersOutGooglePayNonces() throws JSONException {
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(true)
+                .build();
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .sendGETSuccessfulResponse(Fixtures.GET_PAYMENT_METHODS_GOOGLE_PAY_RESPONSE)
+                .build();
 
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(new DropInRequest())
+                .braintreeClient(braintreeClient)
+                .googlePayClient(googlePayClient);
+
+        DropInClient sut = new DropInClient(params);
+        GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
+
+        sut.getVaultedPaymentMethods(activity, true, callback);
+        verify(callback).onResult(paymentMethodNoncesCaptor.capture(), (Exception) isNull());
+
+        List<PaymentMethodNonce> paymentMethodNonces = paymentMethodNoncesCaptor.getValue();
+        assertEquals(2, paymentMethodNonces.size());
     }
 }

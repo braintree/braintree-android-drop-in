@@ -149,15 +149,15 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
             public void onAnimationFinished() {
                 if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                         error instanceof UpgradeRequiredException) {
-                    getBraintreeClient().sendAnalyticsEvent("sdk.exit.developer-error");
+                    getDropInClient().sendAnalyticsEvent("sdk.exit.developer-error");
                 } else if (error instanceof ConfigurationException) {
-                    getBraintreeClient().sendAnalyticsEvent("sdk.exit.configuration-exception");
+                    getDropInClient().sendAnalyticsEvent("sdk.exit.configuration-exception");
                 } else if (error instanceof ServerException || error instanceof UnexpectedException) {
-                    getBraintreeClient().sendAnalyticsEvent("sdk.exit.server-error");
+                    getDropInClient().sendAnalyticsEvent("sdk.exit.server-error");
                 } else if (error instanceof ServiceUnavailableException) {
-                    getBraintreeClient().sendAnalyticsEvent("sdk.exit.server-unavailable");
+                    getDropInClient().sendAnalyticsEvent("sdk.exit.server-unavailable");
                 } else {
-                    getBraintreeClient().sendAnalyticsEvent("sdk.exit.sdk-error");
+                    getDropInClient().sendAnalyticsEvent("sdk.exit.sdk-error");
                 }
 
                 finish(error);
@@ -170,7 +170,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         slideDown(new AnimationFinishedListener() {
             @Override
             public void onAnimationFinished() {
-                getBraintreeClient().sendAnalyticsEvent("sdk.exit.success");
+                getDropInClient().sendAnalyticsEvent("sdk.exit.success");
 
                 DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, paymentMethodNonce);
 
@@ -303,7 +303,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     public void onBackPressed() {
         if (!mSheetSlideDownPerformed) {
             mSheetSlideDownPerformed = true;
-            getBraintreeClient().sendAnalyticsEvent("sdk.exit.canceled");
+            getDropInClient().sendAnalyticsEvent("sdk.exit.canceled");
 
             slideDown(new AnimationFinishedListener() {
                 @Override
@@ -359,7 +359,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                         .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList));
                 startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
 
-                getBraintreeClient().sendAnalyticsEvent("manager.appeared");
+                getDropInClient().sendAnalyticsEvent("manager.appeared");
             }
         });
     }
@@ -378,7 +378,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
             }
 
             if (hasCardNonce(paymentMethodNonces)) {
-                getBraintreeClient().sendAnalyticsEvent("vaulted-card.appear");
+                getDropInClient().sendAnalyticsEvent("vaulted-card.appear");
             }
 
         } else {
@@ -399,7 +399,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     @Override
     public void onVaultedPaymentMethodSelected(final PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
-            getBraintreeClient().sendAnalyticsEvent("vaulted-card.select");
+            getDropInClient().sendAnalyticsEvent("vaulted-card.select");
         }
 
         getDropInClient().shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
