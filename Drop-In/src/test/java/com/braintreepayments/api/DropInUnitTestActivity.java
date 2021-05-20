@@ -13,6 +13,7 @@ public class DropInUnitTestActivity extends DropInActivity {
 
     public Context context;
     public DropInClient dropInClient;
+    public String deviceData;
 
 //    public BraintreeFragment braintreeFragment;
 //    public BraintreeUnitTestHttpClient httpClient;
