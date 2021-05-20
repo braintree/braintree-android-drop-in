@@ -364,7 +364,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         });
     }
 
-    private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {
+    void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {
         if (paymentMethodNonces.size() > 0) {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
             mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);

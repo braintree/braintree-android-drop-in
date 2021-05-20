@@ -25,6 +25,7 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
@@ -542,31 +543,45 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onPaymentMethodNoncesUpdated_withACard_sendsAnalyticEvent() throws JSONException {
-//        setup(mock(BraintreeFragment.class));
-//        mActivity.mDropInRequest.disableGooglePayment();
-//        mActivity.mConfiguration = new TestConfigurationBuilder()
-//                .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder().supportedCardTypes("Visa"))
-//                .buildConfiguration();
-//
-//        List<PaymentMethodNonce> nonceList = new ArrayList<>();
-//
-//        nonceList.add(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-//
-//        mActivity.onPaymentMethodNoncesUpdated(nonceList);
-//
-//        verify(mActivity.braintreeFragment).sendAnalyticsEvent("vaulted-card.appear");
+    public void showVaultedPaymentMethods_withACard_sendsAnalyticEvent() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest()
+                .tokenizationKey(authorization)
+                .disableGooglePayment();
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+
+        List<PaymentMethodNonce> nonceList = new ArrayList<>();
+
+        nonceList.add(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
+
+        mActivity.showVaultedPaymentMethods(nonceList);
+
+        verify(dropInClient).sendAnalyticsEvent("vaulted-card.appear");
     }
 
     @Test
-    public void onPaymentMethodNoncesUpdated_withNoCards_doesNotSendAnalyticEvent() throws JSONException {
-//        setup(mock(BraintreeFragment.class));
-//
-//        List<PaymentMethodNonce> nonceList = new ArrayList<>();
-//
-//        mActivity.onPaymentMethodNoncesUpdated(nonceList);
-//
-//        verify(mActivity.braintreeFragment, never()).sendAnalyticsEvent("vaulted-card.appear");
+    public void showVaultedPaymentMethods_withNoCards_doesNotSendAnalyticEvent() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest()
+                .tokenizationKey(authorization)
+                .disableGooglePayment();
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+
+        List<PaymentMethodNonce> nonceList = new ArrayList<>();
+
+        mActivity.showVaultedPaymentMethods(nonceList);
+
+        verify(dropInClient, never()).sendAnalyticsEvent("vaulted-card.appear");
     }
 
     @Test
