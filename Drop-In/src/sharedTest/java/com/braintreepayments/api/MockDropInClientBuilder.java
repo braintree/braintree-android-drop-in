@@ -11,6 +11,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class MockDropInClientBuilder {
 
@@ -18,6 +19,9 @@ public class MockDropInClientBuilder {
     private Exception threeDSecureError;
     private List<PaymentMethodNonce> paymentMethodNonceListSuccess;
     private Exception getVaultedPaymentMethodsError;
+    private Authorization authorization;
+    private Configuration configuration;
+    private List<DropInPaymentMethodType> supportedPaymentMethods;
 
     private boolean shouldPerformThreeDSecureVerification;
 
@@ -46,8 +50,24 @@ public class MockDropInClientBuilder {
         return this;
     }
 
+    MockDropInClientBuilder authorization(Authorization authorization) {
+        this.authorization = authorization;
+        return this;
+    }
+
+    MockDropInClientBuilder getConfigurationSuccess(Configuration configuration) {
+        this.configuration = configuration;
+        return this;
+    }
+
+    MockDropInClientBuilder getSupportedPaymentMethodsSuccess(List<DropInPaymentMethodType> supportedPaymentMethods) {
+        this.supportedPaymentMethods = supportedPaymentMethods;
+        return this;
+    }
+
     DropInClient build() {
         DropInClient dropInClient = mock(DropInClient.class);
+        when(dropInClient.getAuthorization()).thenReturn(authorization);
 
         doAnswer(new Answer<Void>() {
             @Override
@@ -83,6 +103,28 @@ public class MockDropInClientBuilder {
                 return null;
             }
         }).when(dropInClient).getVaultedPaymentMethods(any(FragmentActivity.class), anyBoolean(), any(GetPaymentMethodNoncesCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                ConfigurationCallback callback = (ConfigurationCallback) invocation.getArguments()[0];
+                if (configuration != null) {
+                    callback.onResult(configuration, null);
+                }
+                return null;
+            }
+        }).when(dropInClient).getConfiguration(any(ConfigurationCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                GetSupportedPaymentMethodsCallback callback = (GetSupportedPaymentMethodsCallback) invocation.getArguments()[1];
+                if (supportedPaymentMethods != null) {
+                    callback.onResult(supportedPaymentMethods, null);
+                }
+                return null;
+            }
+        }).when(dropInClient).getSupportedPaymentMethods(any(FragmentActivity.class), any(GetSupportedPaymentMethodsCallback.class));
 
         return dropInClient;
     }

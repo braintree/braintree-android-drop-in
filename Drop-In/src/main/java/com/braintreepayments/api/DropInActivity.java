@@ -216,7 +216,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         }
     }
 
-    private void fetchPaymentMethodNonces(final boolean refetch) {
+    void fetchPaymentMethodNonces(final boolean refetch) {
         if (mClientTokenPresent) {
             new Handler().postDelayed(new Runnable() {
                 @Override

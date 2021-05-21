@@ -21,6 +21,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
+import org.robolectric.shadows.ShadowLooper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -346,12 +348,18 @@ public class DropInActivityUnitTest {
         verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.canceled");
     }
 
-    // TODO: investigate
     @Test
-    public void onPaymentMethodSelected_showsLoadingView() {
+    public void onPaymentMethodSelected_showsLoadingView() throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
         setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .authorization(Authorization.fromString(authorization))
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+                .build();
+        mActivity.dropInClient = dropInClient;
         mActivityController.setup();
 
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
@@ -380,28 +388,21 @@ public class DropInActivityUnitTest {
 //        assertEquals(cardNonce.getLastTwo(), ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
     }
 
-    // TODO: Investigate
     @Test
-    public void onPaymentMethodNonceCreated_requestsThreeDSecureVerificationForCardWhenEnabled() throws Exception {
-//        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
-//        Context context = spy(RuntimeEnvironment.application);
-//        when(context.getPackageManager()).thenReturn(packageManager);
-//        mActivity.context = context;
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .tokenizationKey(TOKENIZATION_KEY)
-//                .amount("1.00")
-//                .requestThreeDSecureVerification(true));
-////        mActivity.httpClient = spy(new BraintreeUnitTestHttpClient()
-////                .configuration(new TestConfigurationBuilder()
-////                        .threeDSecureEnabled(true)
-////                        .build()));
-//        mActivityController.setup();
-//        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-//
-//        mActivity.onPaymentMethodNonceCreated(cardNonce);
-//
-////        verify(mActivity.httpClient).post(matches(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP),
-////                anyString(), any(HttpResponseCallback.class));
+    public void onVaultedPaymentSelected_requestsThreeDSecureVerificationForCardWhenEnabled() throws Exception {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .shouldPerformThreeDSecureVerification(true)
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+        mActivity.onVaultedPaymentMethodSelected(cardNonce);
+        verify(dropInClient).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(ThreeDSecureResultCallback.class));
     }
 
     @Test
@@ -460,7 +461,6 @@ public class DropInActivityUnitTest {
         assertNotNull(result.getDeviceData());
     }
 
-    // TODO: inject DropInClient mock using same pattern as BraintreeFragment mocking and stub getVaultedPaymentMethods method
     @Test
     public void selectingAVaultedPaymentMethod_returnsANonce() throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
@@ -543,7 +543,11 @@ public class DropInActivityUnitTest {
                 .getVaultedPaymentMethodsSuccess(nonces)
                 .build();
         mActivity.dropInClient = dropInClient;
+        mActivity.mClientTokenPresent = true;
         mActivityController.setup();
+
+        mActivity.fetchPaymentMethodNonces(true);
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
 
         assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods)).isShown();
         assertEquals(2, ((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter().getItemCount());
@@ -623,9 +627,16 @@ public class DropInActivityUnitTest {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
         setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .authorization(Authorization.fromString(authorization))
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+                .build();
+        mActivity.dropInClient = dropInClient;
         mActivityController.setup();
 
-        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
 
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
@@ -660,19 +671,18 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_addCardCancelRefreshesVaultedPaymentMethods() {
-        mActivity.setDropInRequest(new DropInRequest().clientToken(
-                base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        BraintreeUnitTestHttpClient httpClient = spy(new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder().build()))
-//                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE);
-//        setup(httpClient);
-//        verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
-//                any(HttpResponseCallback.class));
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.mClientTokenPresent = true;
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
 
         mActivity.onActivityResult(1, RESULT_CANCELED, null);
-
-//        verify(httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
-//                any(HttpResponseCallback.class));
+        verify(dropInClient).getVaultedPaymentMethods(same(mActivity), eq(true), any(GetPaymentMethodNoncesCallback.class));
     }
 
     @Test
@@ -826,22 +836,13 @@ public class DropInActivityUnitTest {
 
         DropInClient dropInClient = new MockDropInClientBuilder()
                 .build();
+        mActivity.mClientTokenPresent = true;
         mActivity.dropInClient = dropInClient;
         mActivityController.setup();
-
-//        BraintreeUnitTestHttpClient httpClient = spy(new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder().build()))
-//                .successResponse(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS, Fixtures.GET_PAYMENT_METHODS_TWO_CARDS_RESPONSE);
-//        setup(httpClient);
-//        verify(httpClient).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
-//                any(HttpResponseCallback.class));
 
         mActivity.onActivityResult(2, RESULT_OK, null);
 
         verify(dropInClient).getVaultedPaymentMethods(same(mActivity), eq(true), any(GetPaymentMethodNoncesCallback.class));
-
-//        verify(httpClient, times(2)).get(matches(BraintreeUnitTestHttpClient.GET_PAYMENT_METHODS),
-//                any(HttpResponseCallback.class));
     }
 
     @Test
@@ -869,14 +870,23 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onActivityResult_whenVaultManagerResultOk_removesLoadingIndicator() {
+    public void onActivityResult_whenVaultManagerResultOk_removesLoadingIndicator() throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
         setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .authorization(Authorization.fromString(authorization))
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+                .build();
+        mActivity.dropInClient = dropInClient;
         mActivityController.setup();
 
-        mActivity.onActivityResult(2, RESULT_FIRST_USER, null);
+        mActivity.onActivityResult(2, RESULT_OK, null);
 
+        // TODO: this test doesnt make send - both loading view switches happen in onActivity result so we should verify in order that it sets display child 0 then 1
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
