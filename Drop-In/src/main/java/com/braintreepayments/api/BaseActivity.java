@@ -41,6 +41,19 @@ class BaseActivity extends AppCompatActivity {
         }
     }
 
+    // TODO: move to base class to allow stubbing in tests
+    DropInClient getDropInClient() {
+        // TODO: lazily instantiate dropInClient
+//        if (dropInClient != null) {
+//            return dropInClient;
+//        }
+        Intent intent = getIntent();
+        String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
+        String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
+        DropInRequest dropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+        return new DropInClient(this, authorization, sessionId, dropInRequest);
+    }
+
     protected BraintreeClient getBraintreeClient() {
 
         mClientTokenPresent = Authorization.fromString(mDropInRequest.getAuthorization())

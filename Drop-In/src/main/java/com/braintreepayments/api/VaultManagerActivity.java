@@ -79,7 +79,7 @@ public class VaultManagerActivity extends BaseActivity implements View.OnClickLi
     public void onPaymentMethodNonceDeleted(PaymentMethodNonce paymentMethodNonce) {
         mAdapter.paymentMethodDeleted(paymentMethodNonce);
 
-        getBraintreeClient().sendAnalyticsEvent("manager.delete.succeeded");
+        getDropInClient().sendAnalyticsEvent("manager.delete.succeeded");
         setResult(RESULT_OK, new Intent()
                 .putExtra(EXTRA_PAYMENT_METHOD_NONCES, mAdapter.getPaymentMethodNonces()));
 
@@ -90,11 +90,11 @@ public class VaultManagerActivity extends BaseActivity implements View.OnClickLi
         if(error instanceof PaymentMethodDeleteException) {
             Snackbar.make(findViewById(R.id.bt_base_view), R.string.bt_vault_manager_delete_failure,
                     Snackbar.LENGTH_LONG).show();
-            getBraintreeClient().sendAnalyticsEvent("manager.delete.failed");
+            getDropInClient().sendAnalyticsEvent("manager.delete.failed");
 
             mLoadingViewSwitcher.setDisplayedChild(0);
         } else {
-            getBraintreeClient().sendAnalyticsEvent("manager.unknown.failed");
+            getDropInClient().sendAnalyticsEvent("manager.unknown.failed");
             finish(error);
         }
     }
@@ -120,7 +120,7 @@ public class VaultManagerActivity extends BaseActivity implements View.OnClickLi
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             positiveSelected.set(true);
-                            getBraintreeClient().sendAnalyticsEvent("manager.delete.confirmation.positive");
+                            getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.positive");
                             paymentMethodClient.deletePaymentMethod(VaultManagerActivity.this, paymentMethodNonceToDelete, new DeletePaymentMethodNonceCallback() {
                                 @Override
                                 public void onResult(@Nullable PaymentMethodNonce deletedNonce, @Nullable Exception error) {
@@ -138,7 +138,7 @@ public class VaultManagerActivity extends BaseActivity implements View.OnClickLi
                         @Override
                         public void onDismiss(DialogInterface dialog) {
                             if (!positiveSelected.get()) {
-                                getBraintreeClient().sendAnalyticsEvent("manager.delete.confirmation.negative");
+                                getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.negative");
                             }
                         }
                     })

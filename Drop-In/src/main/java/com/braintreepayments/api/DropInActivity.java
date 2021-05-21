@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.contentcapture.DataRemovalRequest;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -97,18 +96,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         });
     }
 
-    // TODO: move to base class to allow stubbing in tests
-    DropInClient getDropInClient() {
-        // TODO: lazily instantiate dropInClient
-//        if (dropInClient != null) {
-//            return dropInClient;
-//        }
-        Intent intent = getIntent();
-        String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
-        String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
-        DropInRequest dropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
-        return new DropInClient(this, authorization, sessionId, dropInRequest);
-    }
 
     public void onConfigurationFetched(Configuration configuration) {
         mConfiguration = configuration;
@@ -128,7 +115,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 if (paymentMethods != null) {
                     showSupportedPaymentMethods(paymentMethods);
                 } else {
-                    // TODO: handle error
+                    onError(error);
                 }
             }
         });
@@ -143,7 +130,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     }
 
     public void onError(final Exception error) {
-
         slideDown(new AnimationFinishedListener() {
             @Override
             public void onAnimationFinished() {
@@ -166,7 +152,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     }
 
     private void finishWithPaymentMethodNonce(final PaymentMethodNonce paymentMethodNonce) {
-
         slideDown(new AnimationFinishedListener() {
             @Override
             public void onAnimationFinished() {
@@ -226,7 +211,11 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                         getDropInClient().getVaultedPaymentMethods(DropInActivity.this, refetch, new GetPaymentMethodNoncesCallback() {
                             @Override
                             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonces, @Nullable Exception error) {
-                                showVaultedPaymentMethods(paymentMethodNonces);
+                                if (paymentMethodNonces != null) {
+                                    showVaultedPaymentMethods(paymentMethodNonces);
+                                } else if (error != null) {
+                                    onError(error);
+                                }
                             }
                         });
                     }
@@ -354,12 +343,16 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
             @Override
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
-                Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
-                        .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest)
-                        .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList));
-                startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
+                if (paymentMethodNonceList != null) {
+                    Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
+                            .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest)
+                            .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList));
+                    startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
 
-                getDropInClient().sendAnalyticsEvent("manager.appeared");
+                    getDropInClient().sendAnalyticsEvent("manager.appeared");
+                } else if (error != null) {
+                    onError(error);
+                }
             }
         });
     }

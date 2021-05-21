@@ -23,15 +23,15 @@ public class DropInClient {
     static final String LAST_USED_PAYMENT_METHOD_TYPE =
             "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
 
-    private BraintreeClient braintreeClient;
-    private PaymentMethodClient paymentMethodClient;
-    private GooglePayClient googlePayClient;
-    private PayPalClient payPalClient;
-    private VenmoClient venmoClient;
+    private final BraintreeClient braintreeClient;
+    private final PaymentMethodClient paymentMethodClient;
+    private final GooglePayClient googlePayClient;
+    private final PayPalClient payPalClient;
+    private final VenmoClient venmoClient;
 
-    private DropInRequest dropInRequest;
-    private ThreeDSecureClient threeDSecureClient;
-    private DataCollector dataCollector;
+    private final DropInRequest dropInRequest;
+    private final ThreeDSecureClient threeDSecureClient;
+    private final DataCollector dataCollector;
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest) {
         BraintreeClient braintreeClient = new BraintreeClient(context, authorization);
@@ -218,18 +218,6 @@ public class DropInClient {
         activity.startActivityForResult(intent, requestCode);
     }
 
-//    void shouldRequestThreeDSecureVerification(DropInRequest dropInRequest, ShouldRequestThreeDSecureVerificationCallback callback) {
-//
-//    }
-//
-//    void fetchSupportedPaymentMethods(FetchSupportedPaymentMethodsCallback callback) {
-//
-//    }
-//
-//    void fetchVaultedPaymentMethods(FetchVaultedPaymentMethodsCallback callback) {
-//
-//    }
-
     /**
      * Called to get a user's existing payment method, if any. If your user already has an existing
      * payment method, you may not need to show Drop-In.
@@ -330,9 +318,5 @@ public class DropInClient {
                 });
             }
         });
-    }
-
-    void getPaymentMethodNonces(GetPaymentMethodNoncesCallback callback) {
-        paymentMethodClient.getPaymentMethodNonces(callback);
     }
 }

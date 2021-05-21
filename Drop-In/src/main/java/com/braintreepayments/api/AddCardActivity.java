@@ -90,12 +90,12 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
 
         enterState(LOADING);
 
-        getBraintreeClient().sendAnalyticsEvent("card.selected");
+        getDropInClient().sendAnalyticsEvent("card.selected");
         unionPayClient = new UnionPayClient(getBraintreeClient());
         cardClient = new CardClient(getBraintreeClient());
         threeDSecureClient = new ThreeDSecureClient(getBraintreeClient());
 
-        getBraintreeClient().getConfiguration(new ConfigurationCallback() {
+        getDropInClient().getConfiguration(new ConfigurationCallback() {
             @Override
             public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
                 onConfigurationFetched(configuration);
@@ -312,7 +312,7 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
                 }
             });
         } else {
-            getBraintreeClient().sendAnalyticsEvent("sdk.exit.success");
+            getDropInClient().sendAnalyticsEvent("sdk.exit.success");
             finish(paymentMethod, null);
         }
     }
@@ -367,13 +367,13 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
         } else {
             if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                     error instanceof UpgradeRequiredException) {
-                getBraintreeClient().sendAnalyticsEvent("sdk.exit.developer-error");
+                getDropInClient().sendAnalyticsEvent("sdk.exit.developer-error");
             } else if (error instanceof ConfigurationException) {
-                getBraintreeClient().sendAnalyticsEvent("sdk.exit.configuration-exception");
+                getDropInClient().sendAnalyticsEvent("sdk.exit.configuration-exception");
             } else if (error instanceof ServerException || error instanceof UnexpectedException) {
-                getBraintreeClient().sendAnalyticsEvent("sdk.exit.server-error");
+                getDropInClient().sendAnalyticsEvent("sdk.exit.server-error");
             } else if (error instanceof ServiceUnavailableException) {
-                getBraintreeClient().sendAnalyticsEvent("sdk.exit.server-unavailable");
+                getDropInClient().sendAnalyticsEvent("sdk.exit.server-unavailable");
             }
             finish(error);
         }
