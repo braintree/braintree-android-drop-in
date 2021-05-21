@@ -22,6 +22,7 @@ public class MockDropInClientBuilder {
     private Authorization authorization;
     private Configuration configuration;
     private List<DropInPaymentMethodType> supportedPaymentMethods;
+    private String deviceDataSuccess;
 
     private boolean shouldPerformThreeDSecureVerification;
 
@@ -62,6 +63,11 @@ public class MockDropInClientBuilder {
 
     MockDropInClientBuilder getSupportedPaymentMethodsSuccess(List<DropInPaymentMethodType> supportedPaymentMethods) {
         this.supportedPaymentMethods = supportedPaymentMethods;
+        return this;
+    }
+
+    MockDropInClientBuilder collectDeviceDataSuccess(String deviceDataSuccess) {
+        this.deviceDataSuccess = deviceDataSuccess;
         return this;
     }
 
@@ -125,6 +131,17 @@ public class MockDropInClientBuilder {
                 return null;
             }
         }).when(dropInClient).getSupportedPaymentMethods(any(FragmentActivity.class), any(GetSupportedPaymentMethodsCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                DataCollectorCallback callback = (DataCollectorCallback) invocation.getArguments()[1];
+                if (deviceDataSuccess != null) {
+                    callback.onResult(deviceDataSuccess, null);
+                }
+                return null;
+            }
+        }).when(dropInClient).collectDeviceData(any(FragmentActivity.class), any(DataCollectorCallback.class));
 
         return dropInClient;
     }

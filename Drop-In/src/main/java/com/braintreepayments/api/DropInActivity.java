@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.view.contentcapture.DataRemovalRequest;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -113,8 +114,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         mConfiguration = configuration;
 
         if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
-            DataCollector dataCollector = new DataCollector(getBraintreeClient());
-            dataCollector.collectDeviceData(this, new DataCollectorCallback() {
+            getDropInClient().collectDeviceData(this, new DataCollectorCallback() {
                 @Override
                 public void onResult(@Nullable String deviceData, @Nullable Exception error) {
                     mDeviceData = deviceData;

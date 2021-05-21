@@ -31,6 +31,7 @@ public class DropInClient {
 
     private DropInRequest dropInRequest;
     private ThreeDSecureClient threeDSecureClient;
+    private DataCollector dataCollector;
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest) {
         BraintreeClient braintreeClient = new BraintreeClient(context, authorization);
@@ -58,6 +59,7 @@ public class DropInClient {
         this.threeDSecureClient = new ThreeDSecureClient(params.getBraintreeClient());
         this.payPalClient = new PayPalClient(params.getBraintreeClient());
         this.venmoClient = new VenmoClient(params.getBraintreeClient());
+        this.dataCollector = new DataCollector(params.getBraintreeClient());
     }
 
     Authorization getAuthorization() {
@@ -70,6 +72,10 @@ public class DropInClient {
 
     void sendAnalyticsEvent(String eventFragment) {
         braintreeClient.sendAnalyticsEvent(eventFragment);
+    }
+
+    void collectDeviceData(FragmentActivity activity, DataCollectorCallback callback) {
+        dataCollector.collectDeviceData(activity, callback);
     }
 
     void performThreeDSecureVerification(FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, ThreeDSecureResultCallback callback) {

@@ -436,19 +436,25 @@ public class DropInActivityUnitTest {
                         .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
     }
 
-    // TODO: create a data collector inside drop in client and stub collect device data method
     @Test
-    public void onPaymentMethodNonceCreated_returnsDeviceData() throws JSONException {
+    public void onVaultedPaymentMethodSelected_returnsDeviceData() throws JSONException {
         DropInRequest dropInRequest = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true);
 
         String authorization = Fixtures.TOKENIZATION_KEY;
         setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .collectDeviceDataSuccess("device-data")
+                .shouldPerformThreeDSecureVerification(false)
+                .authorization(Authorization.fromString(authorization))
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+                .build();
+        mActivity.dropInClient = dropInClient;
         mActivityController.setup();
 
-//        mActivity.httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder().build());
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         mActivity.onVaultedPaymentMethodSelected(cardNonce);
@@ -457,7 +463,7 @@ public class DropInActivityUnitTest {
         assertEquals(RESULT_OK, mShadowActivity.getResultCode());
         DropInResult result = mShadowActivity.getResultIntent()
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-        assertNotNull(result.getDeviceData());
+        assertEquals("device-data", result.getDeviceData());
     }
 
     @Test
