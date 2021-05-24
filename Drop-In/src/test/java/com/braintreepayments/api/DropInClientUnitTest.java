@@ -15,6 +15,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -22,6 +23,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 public class DropInClientUnitTest {
@@ -361,7 +363,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void fetchMostRecentPaymentMethod_callsListenerWithNullResultWhenThereAreNoPaymentMethods()
+    public void fetchMostRecentPaymentMethod_callsBackWithNullResultWhenThereAreNoPaymentMethods()
             throws JSONException {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -390,5 +392,289 @@ public class DropInClientUnitTest {
         DropInResult result = captor.getValue();
         assertNull(result.getPaymentMethodType());
         assertNull(result.getPaymentMethodNonce());
+    }
+
+    @Test
+    public void getSupportedPaymentMethods_whenNoPaymentMethodsEnabledInConfiguration_callsBackWithNoPaymentMethods() {
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(getConfiguration(false, false, false, false, false))
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(false)
+                .build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(new DropInRequest())
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        GetSupportedPaymentMethodsCallback callback = mock(GetSupportedPaymentMethodsCallback.class);
+        sut.getSupportedPaymentMethods(activity, callback);
+
+        verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
+
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        assertEquals(0, paymentMethodTypes.size());
+    }
+
+    @Test
+    public void getSupportedPaymentMethods_whenPaymentMethodsEnabledInConfiguration_callsBackWithPaymentMethods() {
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(getConfiguration(true, true, true, true, false))
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(true)
+                .build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(new DropInRequest())
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        GetSupportedPaymentMethodsCallback callback = mock(GetSupportedPaymentMethodsCallback.class);
+        sut.getSupportedPaymentMethods(activity, callback);
+
+        verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
+
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+
+        assertEquals(4, paymentMethodTypes.size());
+        assertEquals(DropInPaymentMethodType.PAYPAL, paymentMethodTypes.get(0));
+        assertEquals(DropInPaymentMethodType.PAY_WITH_VENMO, paymentMethodTypes.get(1));
+        assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodTypes.get(2));
+        assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, paymentMethodTypes.get(3));
+    }
+
+    @Test
+    public void getSupportedPaymentMethods_whenUnionPayNotSupportedAndOtherCardsPresent_callsBackWithOtherCards() {
+        Configuration configuration = getConfiguration(false, false, true, false, false);
+        when(configuration.getSupportedCardTypes())
+                .thenReturn(Arrays.asList(DropInPaymentMethodType.UNIONPAY.getCanonicalName(), DropInPaymentMethodType.VISA.getCanonicalName()));
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(false)
+                .build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(new DropInRequest())
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+        GetSupportedPaymentMethodsCallback callback = mock(GetSupportedPaymentMethodsCallback.class);
+        sut.getSupportedPaymentMethods(activity, callback);
+
+        verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
+
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+
+        assertEquals(1, paymentMethodTypes.size());
+        assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodTypes.get(0));
+    }
+
+    @Test
+    public void getSupportedPaymentMethods_whenOnlyUnionPayPresentAndNotSupported_callsBackWithNoCards() {
+        Configuration configuration = getConfiguration(false, false, true, false, false);
+        when(configuration.getSupportedCardTypes())
+                .thenReturn(Arrays.asList(DropInPaymentMethodType.UNIONPAY.getCanonicalName()));
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(false)
+                .build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(new DropInRequest())
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+        GetSupportedPaymentMethodsCallback callback = mock(GetSupportedPaymentMethodsCallback.class);
+        sut.getSupportedPaymentMethods(activity, callback);
+
+        verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
+
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+
+        assertEquals(0, paymentMethodTypes.size());
+    }
+
+    @Test
+    public void getSupportedPaymentMethods_whenOnlyUnionPayPresentAndSupported_callsBackWithCards() {
+        Configuration configuration = getConfiguration(false, false, true, false, true);
+        when(configuration.getSupportedCardTypes())
+                .thenReturn(Arrays.asList(DropInPaymentMethodType.UNIONPAY.getCanonicalName()));
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(false)
+                .build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(new DropInRequest())
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+        GetSupportedPaymentMethodsCallback callback = mock(GetSupportedPaymentMethodsCallback.class);
+        sut.getSupportedPaymentMethods(activity, callback);
+
+        verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
+
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+
+        assertEquals(1, paymentMethodTypes.size());
+        assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodTypes.get(0));
+    }
+
+    @Test
+    public void getSupportedPaymentMethods_whenCardsDisabledInDropInRequest_doesNotReturnCards() {
+        Configuration configuration = getConfiguration(false, false, true, false, false);
+        DropInRequest dropInRequest = new DropInRequest()
+                .disableCard();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(false)
+                .build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+        GetSupportedPaymentMethodsCallback callback = mock(GetSupportedPaymentMethodsCallback.class);
+        sut.getSupportedPaymentMethods(activity, callback);
+
+        verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
+
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+
+        assertEquals(0, paymentMethodTypes.size());
+    }
+
+    @Test
+    public void getSupportedPaymentMethods_whenPayPalDisabledInDropInRequest_doesNotReturnPayPal() {
+        Configuration configuration = getConfiguration(true, false, false, false, false);
+        DropInRequest dropInRequest = new DropInRequest()
+                .disablePayPal();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(false)
+                .build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+        GetSupportedPaymentMethodsCallback callback = mock(GetSupportedPaymentMethodsCallback.class);
+        sut.getSupportedPaymentMethods(activity, callback);
+
+        verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
+
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+
+        assertEquals(0, paymentMethodTypes.size());
+    }
+
+    @Test
+    public void getSupportedPaymentMethods_whenVenmoDisabledInDropInRequest_doesNotReturnVenmo() {
+        Configuration configuration = getConfiguration(false, true, false, false, false);
+        DropInRequest dropInRequest = new DropInRequest()
+                .disableVenmo();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(false)
+                .build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+        GetSupportedPaymentMethodsCallback callback = mock(GetSupportedPaymentMethodsCallback.class);
+        sut.getSupportedPaymentMethods(activity, callback);
+
+        verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
+
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+
+        assertEquals(0, paymentMethodTypes.size());
+    }
+
+    @Test
+    public void getSupportedPaymentMethods_whenGooglePayDisabledInDropInRequest_doesNotReturnGooglePay() {
+        Configuration configuration = getConfiguration(false, false, false, true, false);
+        DropInRequest dropInRequest = new DropInRequest()
+                .disableGooglePayment();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(true)
+                .build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+        GetSupportedPaymentMethodsCallback callback = mock(GetSupportedPaymentMethodsCallback.class);
+        sut.getSupportedPaymentMethods(activity, callback);
+
+        verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
+
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+
+        assertEquals(0, paymentMethodTypes.size());
+    }
+
+    private Configuration getConfiguration(boolean paypalEnabled, boolean venmoEnabled,
+                                           boolean cardEnabled, boolean googlePayEnabled, boolean unionPayEnabled) {
+        Configuration configuration = mock(Configuration.class);
+
+        when(configuration.isPayPalEnabled()).thenReturn(paypalEnabled);
+        when(configuration.isVenmoEnabled()).thenReturn(venmoEnabled);
+        when(configuration.isGooglePayEnabled()).thenReturn(googlePayEnabled);
+        when(configuration.isUnionPayEnabled()).thenReturn(unionPayEnabled);
+
+        if(cardEnabled) {
+            when(configuration.getSupportedCardTypes()).thenReturn(Arrays.asList(DropInPaymentMethodType.VISA.getCanonicalName()));
+        }
+
+        return configuration;
     }
 }
