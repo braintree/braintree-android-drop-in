@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Matchers.same;
@@ -667,20 +668,16 @@ public class DropInClientUnitTest {
     @Test
     public void tokenizePayPalAccount_withoutPayPalRequest_tokenizesPayPalWithVaultRequest() {
         Configuration configuration = getConfiguration(true, false, false, false, false);
-        DropInRequest dropInRequest = new DropInRequest()
-                .disableGooglePayment();
+        DropInRequest dropInRequest = new DropInRequest();
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
-        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
-                .build();
         PayPalClient payPalClient = mock(PayPalClient.class);
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
-                .googlePayClient(googlePayClient)
                 .payPalClient(payPalClient)
                 .braintreeClient(braintreeClient);
 
@@ -690,6 +687,118 @@ public class DropInClientUnitTest {
         sut.tokenizePayPalRequest(activity, callback);
 
         verify(payPalClient).tokenizePayPalAccount(same(activity), any(PayPalVaultRequest.class), same(callback));
+    }
+
+    @Test
+    public void tokenizePayPalAccount_withPayPalCheckoutRequest_tokenizesPayPalWithCheckoutRequest() {
+        Configuration configuration = getConfiguration(true, false, false, false, false);
+        PayPalCheckoutRequest payPalRequest = new PayPalCheckoutRequest("1.00");
+        DropInRequest dropInRequest = new DropInRequest()
+                .paypalRequest(payPalRequest);
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        PayPalClient payPalClient = mock(PayPalClient.class);
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .payPalClient(payPalClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        PayPalFlowStartedCallback callback = mock(PayPalFlowStartedCallback.class);
+        sut.tokenizePayPalRequest(activity, callback);
+
+        verify(payPalClient).tokenizePayPalAccount(same(activity), same(payPalRequest), same(callback));
+    }
+
+    @Test
+    public void tokenizePayPalAccount_withPayPalVaultRequest_tokenizesPayPalWithVaultRequest() {
+        Configuration configuration = getConfiguration(true, false, false, false, false);
+        PayPalVaultRequest payPalRequest = new PayPalVaultRequest();
+        DropInRequest dropInRequest = new DropInRequest()
+                .paypalRequest(payPalRequest);
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        PayPalClient payPalClient = mock(PayPalClient.class);
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .payPalClient(payPalClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        PayPalFlowStartedCallback callback = mock(PayPalFlowStartedCallback.class);
+        sut.tokenizePayPalRequest(activity, callback);
+
+        verify(payPalClient).tokenizePayPalAccount(same(activity), same(payPalRequest), same(callback));
+    }
+
+    @Test
+    public void tokenizeVenmoAccount_tokenizesVenmo() {
+        Configuration configuration = getConfiguration(false, true, false, false, false);
+        DropInRequest dropInRequest = new DropInRequest()
+                .vaultVenmo(true);
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        VenmoClient venmoClient = mock(VenmoClient.class);
+
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .venmoClient(venmoClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        VenmoTokenizeAccountCallback callback = mock(VenmoTokenizeAccountCallback.class);
+        sut.tokenizeVenmoAccount(activity, callback);
+
+        ArgumentCaptor<VenmoRequest> captor = ArgumentCaptor.forClass(VenmoRequest.class);
+        verify(venmoClient).tokenizeVenmoAccount(same(activity), captor.capture(), same(callback));
+
+        VenmoRequest request = captor.getValue();
+        assertTrue(request.getShouldVault());
+    }
+
+    @Test
+    public void requestGooglePayPayment_requestsGooglePay() {
+        Configuration configuration = getConfiguration(false, false, false, true, false);
+
+        GooglePayRequest googlePayRequest = new GooglePayRequest();
+        DropInRequest dropInRequest = new DropInRequest()
+                .googlePaymentRequest(googlePayRequest);
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(true)
+                .build();
+
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        GooglePayRequestPaymentCallback callback = mock(GooglePayRequestPaymentCallback.class);
+        sut.requestGooglePayPayment(activity, callback);
+
+        verify(googlePayClient).requestPayment(same(activity), same(googlePayRequest), same(callback));
     }
 
     private Configuration getConfiguration(boolean paypalEnabled, boolean venmoEnabled,

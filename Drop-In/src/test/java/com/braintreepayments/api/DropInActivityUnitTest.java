@@ -1093,7 +1093,62 @@ public class DropInActivityUnitTest {
 
         mActivity.onPaymentMethodSelected(DropInPaymentMethodType.PAYPAL);
         verify(dropInClient).tokenizePayPalRequest(same(mActivity), any(PayPalFlowStartedCallback.class));
+    }
 
+    @Test
+    public void onPaymentMethodSelected_withTypeVenmo_tokenizesVenmo() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .authorization(Authorization.fromString(authorization))
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+
+        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.PAY_WITH_VENMO);
+        verify(dropInClient).tokenizeVenmoAccount(same(mActivity), any(VenmoTokenizeAccountCallback.class));
+    }
+
+    @Test
+    public void onPaymentMethodSelected_withTypeGooglePay_requestsGooglePay() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .authorization(Authorization.fromString(authorization))
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+
+        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.GOOGLE_PAYMENT);
+        verify(dropInClient).requestGooglePayPayment(same(mActivity), any(GooglePayRequestPaymentCallback.class));
+    }
+
+    @Test
+    public void onPaymentMethodSelected_withTypeUnknown_startsAddCardActivity() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .authorization(Authorization.fromString(authorization))
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+
+        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.UNKNOWN);
+
+        ShadowActivity.IntentForResult intent = mShadowActivity.peekNextStartedActivityForResult();
+        assertEquals(AddCardActivity.class.getName(), intent.intent.getComponent().getClassName());
     }
 
     private void assertExceptionIsReturned(String analyticsEvent, Exception exception) {

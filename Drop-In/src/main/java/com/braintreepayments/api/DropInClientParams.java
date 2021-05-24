@@ -8,6 +8,7 @@ class DropInClientParams {
     private GooglePayClient googlePayClient;
     private PaymentMethodClient paymentMethodClient;
     private PayPalClient payPalClient;
+    private VenmoClient venmoClient;
 
     public DropInRequest getDropInRequest() {
         return dropInRequest;
@@ -51,6 +52,15 @@ class DropInClientParams {
 
     public DropInClientParams payPalClient(PayPalClient payPalClient) {
         this.payPalClient = payPalClient;
+        return this;
+    }
+
+    public VenmoClient getVenmoClient() {
+        return venmoClient;
+    }
+
+    public DropInClientParams venmoClient(VenmoClient venmoClient) {
+        this.venmoClient = venmoClient;
         return this;
     }
 }
