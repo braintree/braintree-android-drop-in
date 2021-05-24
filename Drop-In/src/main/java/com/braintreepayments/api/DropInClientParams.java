@@ -9,6 +9,8 @@ class DropInClientParams {
     private PaymentMethodClient paymentMethodClient;
     private PayPalClient payPalClient;
     private VenmoClient venmoClient;
+    private CardClient cardClient;
+    private UnionPayClient unionPayClient;
 
     public DropInRequest getDropInRequest() {
         return dropInRequest;
@@ -61,6 +63,24 @@ class DropInClientParams {
 
     public DropInClientParams venmoClient(VenmoClient venmoClient) {
         this.venmoClient = venmoClient;
+        return this;
+    }
+
+    public CardClient getCardClient() {
+        return cardClient;
+    }
+
+    public DropInClientParams cardClient(CardClient cardClient) {
+        this.cardClient = cardClient;
+        return this;
+    }
+
+    public UnionPayClient getUnionPayClient() {
+        return unionPayClient;
+    }
+
+    public DropInClientParams unionPayClient(UnionPayClient unionPayClient) {
+        this.unionPayClient = unionPayClient;
         return this;
     }
 }

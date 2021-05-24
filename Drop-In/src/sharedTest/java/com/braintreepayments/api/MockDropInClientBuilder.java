@@ -25,6 +25,14 @@ public class MockDropInClientBuilder {
     private String deviceDataSuccess;
     private PaymentMethodNonce deletedNonce;
     private Exception deletePaymentMethodNonceError;
+    private CardNonce cardTokenizeSuccess;
+    private Exception cardTokenizeError;
+    private UnionPayCapabilities unionPayCapabilitiesSuccess;
+    private Exception unionPayCapabilitiesError;
+    private UnionPayEnrollment enrollUnionPaySuccess;
+    private Exception enrollUnionPayError;
+    private CardNonce unionPayTokenizeSuccess;
+    private Exception unionPayTokenizeError;
 
     private boolean shouldPerformThreeDSecureVerification;
 
@@ -75,6 +83,46 @@ public class MockDropInClientBuilder {
 
     MockDropInClientBuilder deletePaymentMethodSuccess(PaymentMethodNonce deletedNonce) {
         this.deletedNonce = deletedNonce;
+        return this;
+    }
+
+    MockDropInClientBuilder cardTokenizeSuccess(CardNonce cardNonce) {
+        this.cardTokenizeSuccess = cardNonce;
+        return this;
+    }
+
+    MockDropInClientBuilder cardTokenizeError(Exception error) {
+        this.cardTokenizeError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder unionPayCapabilitiesSuccess(UnionPayCapabilities capabilities) {
+        this.unionPayCapabilitiesSuccess = capabilities;
+        return this;
+    }
+
+    MockDropInClientBuilder unionPayCapabilitiesError(Exception error) {
+        this.unionPayCapabilitiesError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder enrollUnionPaySuccess(UnionPayEnrollment enrollment) {
+        this.enrollUnionPaySuccess = enrollment;
+        return this;
+    }
+
+    MockDropInClientBuilder enrollUnionPayError(Exception error) {
+        this.enrollUnionPayError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder unionPayTokenizeSuccess(CardNonce cardNonce) {
+        this.unionPayTokenizeSuccess = cardNonce;
+        return this;
+    }
+
+    MockDropInClientBuilder unionPayTokenizeError(Exception error) {
+        this.unionPayTokenizeError = error;
         return this;
     }
 
@@ -160,6 +208,58 @@ public class MockDropInClientBuilder {
                 return null;
             }
         }).when(dropInClient).deletePaymentMethod(any(FragmentActivity.class), any(PaymentMethodNonce.class), any(DeletePaymentMethodNonceCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                CardTokenizeCallback callback = (CardTokenizeCallback) invocation.getArguments()[2];
+                if (cardTokenizeSuccess != null) {
+                    callback.onResult(cardTokenizeSuccess, null);
+                } else if (cardTokenizeError != null) {
+                    callback.onResult(null, cardTokenizeError);
+                }
+                return null;
+            }
+        }).when(dropInClient).tokenizeCard(any(FragmentActivity.class), any(Card.class), any(CardTokenizeCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                UnionPayFetchCapabilitiesCallback callback = (UnionPayFetchCapabilitiesCallback) invocation.getArguments()[1];
+                if (unionPayCapabilitiesSuccess != null) {
+                    callback.onResult(unionPayCapabilitiesSuccess, null);
+                } else if (unionPayCapabilitiesError != null) {
+                    callback.onResult(null, unionPayCapabilitiesError);
+                }
+                return null;
+            }
+        }).when(dropInClient).fetchUnionPayCapabilities(any(String.class), any(UnionPayFetchCapabilitiesCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                UnionPayEnrollCallback callback = (UnionPayEnrollCallback) invocation.getArguments()[1];
+                if (enrollUnionPaySuccess != null) {
+                    callback.onResult(enrollUnionPaySuccess, null);
+                } else if (enrollUnionPayError != null) {
+                    callback.onResult(null, enrollUnionPayError);
+                }
+                return null;
+            }
+        }).when(dropInClient).enrollUnionPay(any(UnionPayCard.class), any(UnionPayEnrollCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                UnionPayTokenizeCallback callback = (UnionPayTokenizeCallback) invocation.getArguments()[1];
+                if (unionPayTokenizeSuccess != null) {
+                    callback.onResult(unionPayTokenizeSuccess, null);
+                } else if (unionPayTokenizeError != null) {
+                    callback.onResult(null, unionPayTokenizeError);
+                }
+                return null;
+            }
+        }).when(dropInClient).tokenizeUnionPay(any(UnionPayCard.class), any(UnionPayTokenizeCallback.class));
 
         return dropInClient;
     }

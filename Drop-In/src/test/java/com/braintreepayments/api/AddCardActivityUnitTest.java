@@ -8,11 +8,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
+import androidx.test.core.app.ApplicationProvider;
+
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.ErrorEditText;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,7 +41,9 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
+import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -60,44 +65,20 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void returnsExceptionWhenBraintreeFragmentSetupFails() {
-        mActivity.setDropInRequest(new DropInRequest()
-                .tokenizationKey("not a tokenization key"));
+    public void sendsAnalyticsEventWhenStarted() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .build();
+        setup(dropInClient);
 
-        mActivityController.setup();
-
-        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        Exception exception = (Exception) mShadowActivity.getResultIntent()
-                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
-        assertTrue(exception instanceof InvalidArgumentException);
-        assertEquals("Tokenization Key or client token was invalid.", exception.getMessage());
-    }
-
-    @Test
-    public void returnsExceptionWhenAuthorizationIsEmpty() {
-        mActivity.setDropInRequest(new DropInRequest()
-                .tokenizationKey(null));
-
-        mActivityController.setup();
-
-        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        Exception exception = (Exception) mShadowActivity.getResultIntent()
-                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
-        assertTrue(exception instanceof InvalidArgumentException);
-        assertEquals("A client token or tokenization key must be specified in the DropInRequest",
-                exception.getMessage());
-    }
-
-    @Test
-    public void sendsAnalyticsEventWhenStarted() {
-//        setup(mock(BraintreeFragment.class));
-//
-//        verify(mActivity.braintreeFragment).sendAnalyticsEvent("card.selected");
+        verify(dropInClient).sendAnalyticsEvent("card.selected");
     }
 
     @Test
     public void showsLoadingViewWhileWaitingForConfiguration() {
-//        setup(mock(BraintreeFragment.class));
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        setup(dropInClient);
 
         assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
                 .getDisplayedChild());
@@ -107,16 +88,22 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void setsTitleToCardDetailsWhenStarted() {
-//        setup(mock(BraintreeFragment.class));
+    public void setsTitleToCardDetailsWhenStarted() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .build();
+        setup(dropInClient);
 
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_details),
                 mActivity.getSupportActionBar().getTitle());
     }
 
     @Test
-    public void tappingUpExitsActivityWithResultCanceled() {
-//        setup(mock(BraintreeFragment.class));
+    public void tappingUpExitsActivityWithResultCanceled() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .build();
+        setup(dropInClient);
 
         mShadowActivity.clickMenuItem(android.R.id.home);
 
@@ -125,8 +112,11 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void pressingBackExitsActivityWithResultCanceled() {
-//        setup(mock(BraintreeFragment.class));
+    public void pressingBackExitsActivityWithResultCanceled() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .build();
+        setup(dropInClient);
 
         mActivity.onBackPressed();
 
@@ -135,8 +125,11 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void showsAddCardViewAfterConfigurationIsFetched() {
-//        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder().build()));
+    public void showsAddCardViewAfterConfigurationIsFetched() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .build();
+        setup(dropInClient);
 
         assertThat(mAddCardView).isVisible();
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
@@ -166,10 +159,11 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void enteringACardNumberGoesToCardDetailsView() {
-//        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder()
-//                .creditCards(getSupportedCardConfiguration())
-//                .build()));
+    public void enteringACardNumberGoesToCardDetailsView() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .build();
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
 
@@ -204,10 +198,11 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void editingANonUnionPayCardNumberIsPossible() {
-//        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder()
-//                .creditCards(getSupportedCardConfiguration())
-//                .build()));
+    public void editingANonUnionPayCardNumberIsPossible() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .build();
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         assertThat(mEditCardView).isVisible();
@@ -224,17 +219,11 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void editingAUnionPayCardNumberIsPossible() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE);
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+    public void editingAUnionPayCardNumberIsPossible() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_UNIONPAY))
+                .build();
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
         assertThat(mEditCardView).isVisible();
@@ -251,10 +240,11 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void addingACardRemainsOnEditCardView() {
-//        setup(new BraintreeUnitTestHttpClient().configuration(new TestConfigurationBuilder()
-//                .creditCards(getSupportedCardConfiguration())
-//                .build()));
+    public void addingACardRemainsOnEditCardView() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .build();
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -271,13 +261,13 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void addingACardReturnsANonce() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD);
-//        setup(httpClient);
+    public void addingACardReturnsANonce() throws JSONException {
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .cardTokenizeSuccess(cardNonce)
+                .build();
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -293,19 +283,17 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void addingACard_whenCardholderNameOptionalAndEmpty_doesNotSendCardholderNameToTokenize() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .build())
-//                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-//                        "^(?!cardholderName).*$")
-//                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD);
+    public void addingACard_whenCardholderNameOptionalAndEmpty_doesNotSendCardholderNameToTokenize() throws JSONException {
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .cardTokenizeSuccess(cardNonce)
+                .build();
+        setup(dropInClient);
 
         mActivity.setDropInRequest(new DropInRequest()
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -321,19 +309,17 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void addingACard_whenCardholderNameOptionalAndFilled_sendsCardholderNameToTokenize() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .build())
-//                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-//                        "cardholderName\":\"Brian Tree\"")
-//                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD);
+    public void addingACard_whenCardholderNameOptionalAndFilled_sendsCardholderNameToTokenize() throws JSONException {
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .cardTokenizeSuccess(cardNonce)
+                .build();
+        setup(dropInClient);
 
         mActivity.setDropInRequest(new DropInRequest()
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -350,19 +336,17 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void addingACard_whenCardholderNameRequired_sendsCardholderNameToTokenize() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .build())
-//                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-//                        "cardholderName\":\"Brian Tree\"")
-//                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD);
+    public void addingACard_whenCardholderNameRequired_sendsCardholderNameToTokenize() throws JSONException {
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .cardTokenizeSuccess(cardNonce)
+                .build();
+        setup(dropInClient);
 
         mActivity.setDropInRequest(new DropInRequest()
                 .cardholderNameStatus(CardForm.FIELD_REQUIRED)
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -379,16 +363,12 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void cardNumberValidationErrorsAreShownToTheUser() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .challenges("cvv", "postal_code")
-//                        .build())
-//                .errorResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, 422, Fixtures.CREDIT_CARD_ERROR_RESPONSE);
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+    public void cardNumberValidationErrorsAreShownToTheUser() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_VALIDATION_REQUIRED))
+                .cardTokenizeError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
+                .build();
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -398,32 +378,28 @@ public class AddCardActivityUnitTest {
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
         assertThat(mAddCardView).isVisible();
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
+        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_card_number_invalid),
                 mAddCardView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
 
         assertThat(mEditCardView).isGone();
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
+        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_expiration_invalid),
                 mEditCardView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_cvv_invalid,
-                RuntimeEnvironment.application.getString(
+        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_cvv_invalid,
+                ApplicationProvider.getApplicationContext().getString(
                         mEditCardView.getCardForm().getCardEditText().getCardType()
                                 .getSecurityCodeName())),
                 mEditCardView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_invalid),
+        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_postal_code_invalid),
                 mEditCardView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
     }
 
     @Test
-    public void cardValidationErrorsAreShownToTheUser() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .challenges("cvv", "postal_code")
-//                        .build())
-//                .errorResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, 422, Fixtures.CREDIT_CARD_NON_NUMBER_ERROR_RESPONSE);
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+    public void cardValidationErrorsAreShownToTheUser() throws JSONException {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_VALIDATION_REQUIRED))
+                .cardTokenizeError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_NON_NUMBER_ERROR_RESPONSE))
+                .build();
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -436,30 +412,32 @@ public class AddCardActivityUnitTest {
         assertNull(mAddCardView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
 
         assertThat(mEditCardView).isVisible();
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
+        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_expiration_invalid),
                 mEditCardView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_cvv_invalid,
-                RuntimeEnvironment.application.getString(
+        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_cvv_invalid,
+                ApplicationProvider.getApplicationContext().getString(
                         mEditCardView.getCardForm().getCardEditText().getCardType()
                                 .getSecurityCodeName())),
                 mEditCardView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_postal_code_invalid),
+        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_postal_code_invalid),
                 mEditCardView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
     }
 
     @Test
-    public void unionPayValidationErrorsAreShownToTheUser() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
-//                .errorResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, 422, Fixtures.UNIONPAY_ENROLLMENT_ERROR_RESPONSE);
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+    public void unionPayValidationErrorsAreShownToTheUser() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE))
+                .enrollUnionPayError(ErrorWithResponse.fromJson(Fixtures.UNIONPAY_ENROLLMENT_ERROR_RESPONSE))
+                .build();
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -469,7 +447,7 @@ public class AddCardActivityUnitTest {
         setText(mEditCardView, R.id.bt_card_form_mobile_number, "12345678");
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_expiration_invalid),
+        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_expiration_invalid),
                 mEditCardView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
         assertEquals(RuntimeEnvironment.application.getString(R.string.bt_country_code_invalid),
                 mEditCardView.getCardForm().getCountryCodeEditText().getTextInputLayoutParent().getError());
@@ -478,17 +456,21 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void smsCodeValidationErrorsAreShownToTheUser() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_REQUIRED)
-//                .errorResponse("", 422, Fixtures.UNIONPAY_SMS_CODE_ERROR_RESPONSE);
-//        setup(httpClient);
+    public void smsCodeValidationErrorsAreShownToTheUser() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE))
+                .enrollUnionPaySuccess(new UnionPayEnrollment("enrollment-id", true))
+                .unionPayTokenizeError(ErrorWithResponse.fromJson(Fixtures.UNIONPAY_SMS_CODE_ERROR_RESPONSE))
+                .build();
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -506,16 +488,20 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void onPaymentMethodNonceCreated_sendsAnalyticsEvent() throws JSONException {
-//        setup(mock(BraintreeFragment.class));
-//
-//        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJson(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-//
-//        verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit.success");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        setup(dropInClient);
+
+        mActivity.onPaymentMethodNonceCreated(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
+
+        verify(dropInClient).sendAnalyticsEvent("sdk.exit.success");
     }
 
     @Test
     public void nonFormFieldError_callsFinishWithError() {
-//        setup(mock(BraintreeFragment.class));
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        setup(dropInClient);
 
         ErrorWithResponse error = new ErrorWithResponse(422, "{\n" +
                 "  \"error\": {\n" +
@@ -535,68 +521,56 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void configurationExceptionExitsActivityWithError() {
-//        setup(mock(BraintreeFragment.class));
-
         assertExceptionIsReturned("configuration-exception",
                 new ConfigurationException("Configuration exception"));
     }
 
     @Test
     public void authenticationExceptionExitsActivityWithError() {
-//        setup(mock(BraintreeFragment.class));
-
         assertExceptionIsReturned("developer-error", new AuthenticationException("Access denied"));
     }
 
     @Test
     public void authorizationExceptionExitsActivityWithError() {
-//        setup(mock(BraintreeFragment.class));
-
         assertExceptionIsReturned("developer-error", new AuthorizationException("Access denied"));
     }
 
     @Test
     public void upgradeRequiredExceptionExitsActivityWithError() {
-//        setup(mock(BraintreeFragment.class));
-
         assertExceptionIsReturned("developer-error", new UpgradeRequiredException("Exception"));
     }
 
     @Test
     public void serverExceptionExitsActivityWithError() {
-//        setup(mock(BraintreeFragment.class));
-
         assertExceptionIsReturned("server-error", new ServerException("Exception"));
     }
 
     @Test
     public void unexpectedExceptionExitsActivityWithError() {
-//        setup(mock(BraintreeFragment.class));
-
         assertExceptionIsReturned("server-error", new UnexpectedException("Exception"));
     }
 
     @Test
     public void downForMaintenanceExceptionExitsActivityWithError() {
-//        setup(mock(BraintreeFragment.class));
-
         assertExceptionIsReturned("server-unavailable",
                 new ServiceUnavailableException("Exception"));
     }
 
     @Test
-    public void enrollmentViewSetsTitleToConfirmEnrollment() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_REQUIRED);
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+    public void enrollmentViewSetsTitleToConfirmEnrollment() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE))
+                .enrollUnionPaySuccess(new UnionPayEnrollment("enrollment-id", true))
+                .build();
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -614,17 +588,19 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void usingAUnionPayCardShowsMobileNumberFields() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE);
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+    public void usingAUnionPayCardShowsMobileNumberFields() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE))
+                .build();
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -635,18 +611,20 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void addingAUnionPayCardShowsEnrollment() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_REQUIRED);
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+    public void addingAUnionPayCardShowsEnrollment() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE))
+                .enrollUnionPaySuccess(new UnionPayEnrollment("ennrollment-id", true))
+                .build();
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -662,19 +640,21 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void addingAUnionPayCardDoesNotShowEnrollment() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_NOT_REQUIRED)
-//                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD);
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+    public void addingAUnionPayCardDoesNotShowEnrollment() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE))
+                .enrollUnionPaySuccess(new UnionPayEnrollment("ennrollment-id", false))
+                .unionPayTokenizeSuccess(CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD)))
+                .build();
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -693,22 +673,23 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void addingAUnionPayCard_whenCardholderNameOptionalAndEmpty_tokenizesWithoutCardholderName() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_NOT_REQUIRED)
-//                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD)
-//                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-//                        "^(?!cardholderName).*$");
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+    public void addingAUnionPayCard_whenCardholderNameOptionalAndEmpty_tokenizesWithoutCardholderName() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE))
+                .enrollUnionPaySuccess(new UnionPayEnrollment("ennrollment-id", false))
+                .unionPayTokenizeSuccess(CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD)))
+                .build();
+        mActivity.setDropInRequest(new DropInRequest()
+                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -727,57 +708,24 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void addingAUnionPayCard_whenCardholderNameOptionalAndFilled_tokenizesWithCardholderName() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_NOT_REQUIRED)
-//                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD)
-//                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-//                        "cardholderName\":\"Brian Tree\"");
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+    public void addingAUnionPayCard_whenCardholderNameOptionalAndFilled_tokenizesWithCardholderName() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE))
+                .enrollUnionPaySuccess(new UnionPayEnrollment("ennrollment-id", false))
+                .unionPayTokenizeSuccess(CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD)))
+                .build();
 
-        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
-        mAddCardView.findViewById(R.id.bt_button).performClick();
-        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
-        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
-        setText(mEditCardView, R.id.bt_card_form_country_code, "86");
-        setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
-        setText(mEditCardView, R.id.bt_card_form_cardholder_name, "Brian Tree");
-        mEditCardView.findViewById(R.id.bt_button).performClick();
-
-        assertTrue(mActivity.isFinishing());
-        DropInResult result = mShadowActivity.getResultIntent()
-                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
-        assertIsANonce(result.getPaymentMethodNonce().getString());
-        assertEquals("85", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
-    }
-
-    @Test
-    public void addingAUnionPayCard_whenCardholderNameRequired_tokenizesWithCardholderName() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_NOT_REQUIRED)
-//                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD)
-//                .verifyPostData(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD,
-//                        "cardholderName\":\"Brian Tree\"");
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .cardholderNameStatus(CardForm.FIELD_REQUIRED)
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+        mActivity.mClientTokenPresent = true;
+        mActivity.setDropInRequest(new DropInRequest()
+                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
+                .clientToken(Fixtures.BASE64_CLIENT_TOKEN));
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -797,7 +745,54 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void unsupportedUnionPayCardsShowAnErrorMessage() {
+    public void addingAUnionPayCard_whenCardholderNameRequired_tokenizesWithCardholderName() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE))
+                .enrollUnionPaySuccess(new UnionPayEnrollment("ennrollment-id", false))
+                .unionPayTokenizeSuccess(CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_UNIONPAY_CREDIT_CARD)))
+                .build();
+        mActivity.setDropInRequest(new DropInRequest()
+                .cardholderNameStatus(CardForm.FIELD_REQUIRED)
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        setup(dropInClient);
+
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
+        mAddCardView.findViewById(R.id.bt_button).performClick();
+        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
+        setText(mEditCardView, R.id.bt_card_form_country_code, "86");
+        setText(mEditCardView, R.id.bt_card_form_mobile_number, "8888888888");
+        setText(mEditCardView, R.id.bt_card_form_cardholder_name, "Brian Tree");
+        mEditCardView.findViewById(R.id.bt_button).performClick();
+
+        assertTrue(mActivity.isFinishing());
+        DropInResult result = mShadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
+        assertIsANonce(result.getPaymentMethodNonce().getString());
+        assertEquals("85", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+    }
+
+    @Test
+    public void unsupportedUnionPayCardsShowAnErrorMessage() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesError(ErrorWithResponse.fromJson(Fixtures.UNIONPAY_CAPABILITIES_NOT_SUPPORTED_RESPONSE))
+                .build();
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        setup(dropInClient);
 //        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
 //                .configuration(new TestConfigurationBuilder()
 //                        .unionPay(new TestUnionPayConfigurationBuilder()
@@ -928,17 +923,11 @@ public class AddCardActivityUnitTest {
         assertThat(mEditCardView.findViewById(R.id.bt_button)).isVisible();
     }
 
-//    private void setup(BraintreeFragment fragment) {
-//        mActivity.braintreeFragment = fragment;
-//        mActivityController.setup();
-//        setupViews();
-//    }
-
-//    private void setup(BraintreeUnitTestHttpClient httpClient) {
-//        mActivity.httpClient = httpClient;
-//        mActivityController.setup();
-//        setupViews();
-//    }
+    private void setup(DropInClient dropInClient) {
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+        setupViews();
+    }
 
     private void setupViews() {
         mAddCardView = mActivity.findViewById(R.id.bt_add_card_view);
@@ -951,9 +940,12 @@ public class AddCardActivityUnitTest {
     }
 
     private void assertExceptionIsReturned(String analyticsEvent, Exception exception) {
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        setup(dropInClient);
         mActivity.onError(exception);
 
-//        verify(mActivity.braintreeFragment).sendAnalyticsEvent("sdk.exit." + analyticsEvent);
+        verify(dropInClient).sendAnalyticsEvent("sdk.exit." + analyticsEvent);
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception actualException = (Exception) mShadowActivity.getResultIntent()

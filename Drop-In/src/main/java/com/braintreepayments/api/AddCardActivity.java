@@ -51,8 +51,6 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
     private boolean mPerformedThreeDSecureVerification;
 
     private String mEnrollmentId;
-    private UnionPayClient unionPayClient;
-    private CardClient cardClient;
     private ThreeDSecureClient threeDSecureClient;
 
     @State
@@ -91,8 +89,6 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
         enterState(LOADING);
 
         getDropInClient().sendAnalyticsEvent("card.selected");
-        unionPayClient = new UnionPayClient(getBraintreeClient());
-        cardClient = new CardClient(getBraintreeClient());
         threeDSecureClient = new ThreeDSecureClient(getBraintreeClient());
 
         getDropInClient().getConfiguration(new ConfigurationCallback() {
@@ -195,9 +191,13 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
                 mEditCardView.useUnionPay(this, false, false);
                 nextState = DETAILS_ENTRY;
             } else {
-                unionPayClient.fetchCapabilities(mAddCardView.getCardForm().getCardNumber(), new UnionPayFetchCapabilitiesCallback() {
+                getDropInClient().fetchUnionPayCapabilities(mAddCardView.getCardForm().getCardNumber(), new UnionPayFetchCapabilitiesCallback() {
                     @Override
                     public void onResult(@Nullable UnionPayCapabilities capabilities, @Nullable Exception error) {
+                        if (error != null) {
+                            onError(error);
+                            return;
+                        }
                         onCapabilitiesFetched(capabilities);
                     }
                 });
@@ -235,9 +235,13 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
         unionPayCard.setMobileCountryCode(mEditCardView.getCardForm().getCountryCode());
         unionPayCard.setMobilePhoneNumber(mEditCardView.getCardForm().getMobileNumber());
 
-        unionPayClient.enroll(unionPayCard, new UnionPayEnrollCallback() {
+        getDropInClient().enrollUnionPay(unionPayCard, new UnionPayEnrollCallback() {
             @Override
             public void onResult(@Nullable UnionPayEnrollment enrollment, @Nullable Exception error) {
+                if (error != null) {
+                    onError(error);
+                    return;
+                }
                onSmsCodeSent(enrollment.getId(), enrollment.isSmsCodeRequired());
             }
         });
@@ -259,9 +263,13 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
             unionPayCard.setEnrollmentId(mEnrollmentId);
             unionPayCard.setSmsCode(mEnrollmentCardView.getSmsCode());
 
-            unionPayClient.tokenize(unionPayCard, new UnionPayTokenizeCallback() {
+            getDropInClient().tokenizeUnionPay(unionPayCard, new UnionPayTokenizeCallback() {
                 @Override
                 public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
+                    if (error != null) {
+                        onError(error);
+                        return;
+                    }
                     onPaymentMethodNonceCreated(cardNonce);
                 }
             });
@@ -277,9 +285,13 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
             card.setPostalCode(cardForm.getPostalCode());
             card.setShouldValidate(shouldVault);
 
-            cardClient.tokenize(this, card, new CardTokenizeCallback() {
+            getDropInClient().tokenizeCard(this, card, new CardTokenizeCallback() {
                 @Override
                 public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
+                    if (error != null) {
+                        onError(error);
+                        return;
+                    }
                     onPaymentMethodNonceCreated(cardNonce);
                 }
             });

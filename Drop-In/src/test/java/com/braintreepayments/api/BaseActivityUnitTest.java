@@ -115,10 +115,10 @@ public class BaseActivityUnitTest {
     }
 
     @Test(expected = InvalidArgumentException.class)
-    public void getBraintreeFragment_throwsAnExceptionForEmptyAuthorization() throws InvalidArgumentException {
+    public void getDropInClient_throwsAnExceptionForEmptyAuthorization() throws InvalidArgumentException {
         setup(new DropInRequest().getIntent(RuntimeEnvironment.application));
 
-        mActivity.getBraintreeClient();
+        mActivity.getDropInClient();
     }
 
     @Test

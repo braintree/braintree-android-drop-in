@@ -127,7 +127,7 @@ public class TestConfigurationBuilder extends JSONBuilder {
     @SuppressWarnings("unchecked")
     public <T> T buildConfiguration() {
         try {
-            Class configuration = Class.forName("com.braintreepayments.api.models.Configuration");
+            Class configuration = Class.forName("com.braintreepayments.api.Configuration");
             Method fromJson = configuration.getDeclaredMethod("fromJson", String.class);
             return (T) fromJson.invoke(null, build());
         } catch (NoSuchMethodException ignored) {}

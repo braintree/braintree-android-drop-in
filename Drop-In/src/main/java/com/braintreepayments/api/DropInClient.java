@@ -28,6 +28,8 @@ public class DropInClient {
     private final GooglePayClient googlePayClient;
     private final PayPalClient payPalClient;
     private final VenmoClient venmoClient;
+    private final CardClient cardClient;
+    private final UnionPayClient unionPayClient;
 
     private final DropInRequest dropInRequest;
     private final ThreeDSecureClient threeDSecureClient;
@@ -41,6 +43,8 @@ public class DropInClient {
                 .paymentMethodClient(new PaymentMethodClient(braintreeClient))
                 .payPalClient(new PayPalClient(braintreeClient))
                 .venmoClient(new VenmoClient(braintreeClient))
+                .cardClient(new CardClient(braintreeClient))
+                .unionPayClient(new UnionPayClient(braintreeClient))
                 .googlePayClient(new GooglePayClient(braintreeClient));
     }
 
@@ -62,6 +66,8 @@ public class DropInClient {
         this.threeDSecureClient = new ThreeDSecureClient(params.getBraintreeClient());
         this.payPalClient = params.getPayPalClient();
         this.venmoClient = params.getVenmoClient();
+        this.cardClient = params.getCardClient();
+        this.unionPayClient = params.getUnionPayClient();
         this.dataCollector = new DataCollector(params.getBraintreeClient());
     }
 
@@ -141,6 +147,26 @@ public class DropInClient {
 
     void deletePaymentMethod(FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, DeletePaymentMethodNonceCallback callback) {
         paymentMethodClient.deletePaymentMethod(activity, paymentMethodNonce, callback);
+    }
+
+    // TODO: unit test
+    void tokenizeCard(FragmentActivity activity, Card card, CardTokenizeCallback callback) {
+        cardClient.tokenize(activity, card, callback);
+    }
+
+    // TODO: unit test
+    void fetchUnionPayCapabilities(String cardNumber, UnionPayFetchCapabilitiesCallback callback) {
+        unionPayClient.fetchCapabilities(cardNumber, callback);
+    }
+
+    // TODO: unit test
+    void enrollUnionPay(UnionPayCard unionPayCard, UnionPayEnrollCallback callback) {
+        unionPayClient.enroll(unionPayCard, callback);
+    }
+
+    // TODO: unit test
+    void tokenizeUnionPay(UnionPayCard unionPayCard, UnionPayTokenizeCallback callback) {
+        unionPayClient.tokenize(unionPayCard, callback);
     }
 
     private boolean paymentMethodCanPerformThreeDSecureVerification(final PaymentMethodNonce paymentMethodNonce) {

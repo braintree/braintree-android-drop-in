@@ -10,8 +10,7 @@ import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 public class AddCardUnitTestActivity extends AddCardActivity {
 
     public Context context;
-//    public BraintreeFragment braintreeFragment;
-//    public BraintreeUnitTestHttpClient httpClient;
+    public DropInClient dropInClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,25 +26,19 @@ public class AddCardUnitTestActivity extends AddCardActivity {
 
         super.onCreate(savedInstanceState);
 
-//        if (braintreeFragment != null) {
-//            ConfigurationManagerTestUtils.setFetchingConfiguration(false);
-//            waitForConfiguration(braintreeFragment, this);
-//        }
+    }
+
+    @Override
+    DropInClient getDropInClient() {
+        if (dropInClient == null) {
+            dropInClient = super.getDropInClient();
+        }
+        return dropInClient;
     }
 
     public void setDropInRequest(DropInRequest dropInRequest) {
         mDropInRequest = dropInRequest;
     }
-
-//    @Override
-//    protected BraintreeFragment getBraintreeClient() {
-//        if (braintreeFragment == null) {
-//            braintreeFragment = super.getBraintreeClient();
-//            setHttpClient(braintreeFragment, httpClient);
-//        }
-//
-//        return braintreeFragment;
-//    }
 
     @Override
     public Context getApplicationContext() {

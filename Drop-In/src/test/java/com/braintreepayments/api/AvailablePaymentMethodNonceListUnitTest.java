@@ -134,6 +134,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         assertEquals(0, sut.size());
     }
 
+    // TODO: what does this test mean do we need it?
     @Test
     public void prefersGooglePayOverGooglePaymentIfBothEnabled() {
         Configuration configuration = getMockConfiguration(false, false, false, true);

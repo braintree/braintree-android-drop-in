@@ -85,6 +85,48 @@ object Fixtures {
         }
     """
 
+    // language=JSON
+    const val CONFIGURATION_WITH_VALIDATION_REQUIRED = """
+        {
+          "clientApiUrl": "client_api_url",
+          "environment": "test",
+          "merchantId": "integration_merchant_id",
+          "merchantAccountId": "integration_merchant_account_id",
+          "challenges": ["cvv", "postal_code"],
+          "creditCards": {
+            "supportedCardTypes": [
+              "American Express",
+              "Discover",
+              "JCB",
+              "MasterCard",
+              "Visa"
+            ]
+          }
+        }
+    """
+    // language=JSON
+    const val CONFIGURATION_WITH_UNIONPAY = """
+        {
+            "clientApiUrl": "client_api_url",
+            "environment": "test",
+            "merchantId": "integration_merchant_id",
+            "merchantAccountId": "integration_merchant_account_id",
+            "unionPay": {
+                "enabled": true,
+                "merchantAccountId": "merchant_account_id"
+            },
+            "creditCards": {
+            "supportedCardTypes": [
+              "American Express",
+              "Discover",
+              "JCB",
+              "MasterCard",
+              "Visa"
+            ]
+          }
+        }
+    """
+
     // region Client Tokens
     // language=JSON
     const val CLIENT_TOKEN = """
