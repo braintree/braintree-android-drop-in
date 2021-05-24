@@ -55,7 +55,7 @@ public class DropInClient {
         this.dropInRequest = params.getDropInRequest();
         this.braintreeClient = params.getBraintreeClient();
         this.googlePayClient = params.getGooglePayClient();
-        this.paymentMethodClient = new PaymentMethodClient(params.getBraintreeClient());
+        this.paymentMethodClient = params.getPaymentMethodClient();
         this.threeDSecureClient = new ThreeDSecureClient(params.getBraintreeClient());
         this.payPalClient = new PayPalClient(params.getBraintreeClient());
         this.venmoClient = new VenmoClient(params.getBraintreeClient());
@@ -232,7 +232,7 @@ public class DropInClient {
         // TODO: send back empty result if tokenization key auth
         boolean isClientToken = braintreeClient.getAuthorization() instanceof ClientToken;
         if (!isClientToken) {
-            InvalidArgumentException error = new InvalidArgumentException("DropInResult#fetchDropInResult must " +
+            InvalidArgumentException error = new InvalidArgumentException("DropInClient#fetchMostRecentPaymentMethods() must " +
                     "be called with a client token");
             callback.onResult(null, error);
             return;
