@@ -270,6 +270,8 @@ public class DropInClient {
                         result.paymentMethodNonce(paymentMethod);
                     }
                     callback.onResult(result, null);
+                } else if (error != null) {
+                    callback.onResult(null, error);
                 }
             }
         });
