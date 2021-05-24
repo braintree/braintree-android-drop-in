@@ -15,29 +15,11 @@ public class DropInUnitTestActivity extends DropInActivity {
     public DropInClient dropInClient;
     public String deviceData;
 
-//    public BraintreeFragment braintreeFragment;
-//    public BraintreeUnitTestHttpClient httpClient;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.bt_drop_in_activity_theme);
 
-//        if (mDropInRequest == null) {
-//            mDropInRequest = new DropInRequest().tokenizationKey(TOKENIZATION_KEY);
-//        }
-//
-//        Intent intent = new Intent()
-//                .putExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST, mDropInRequest);
-//        setIntent(intent);
-
-//        ConfigurationManagerTestUtils.setFetchingConfiguration(true);
-
         super.onCreate(savedInstanceState);
-
-//        if (braintreeFragment != null) {
-//            ConfigurationManagerTestUtils.setFetchingConfiguration(false);
-//            waitForConfiguration(braintreeFragment, this);
-//        }
     }
 
     public void setDropInRequest(DropInRequest dropInRequest) {
@@ -51,16 +33,6 @@ public class DropInUnitTestActivity extends DropInActivity {
         }
         return dropInClient;
     }
-
-    //    @Override
-//    protected BraintreeFragment getBraintreeClient() {
-//        if (braintreeFragment == null) {
-//            braintreeFragment = super.getBraintreeClient();
-//            setHttpClient(braintreeFragment, httpClient);
-//        }
-//
-//        return braintreeFragment;
-//    }
 
     @Override
     public Resources getResources() {

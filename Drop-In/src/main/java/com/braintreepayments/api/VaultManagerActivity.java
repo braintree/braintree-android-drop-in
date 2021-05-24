@@ -30,8 +30,6 @@ public class VaultManagerActivity extends BaseActivity implements View.OnClickLi
     protected VaultManagerPaymentMethodsAdapter mAdapter = new VaultManagerPaymentMethodsAdapter(this);
     private ViewSwitcher mLoadingViewSwitcher;
 
-    private PaymentMethodClient paymentMethodClient;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +64,6 @@ public class VaultManagerActivity extends BaseActivity implements View.OnClickLi
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(Color.TRANSPARENT);
         }
-
-        paymentMethodClient = new PaymentMethodClient(getBraintreeClient());
     }
 
     @Override
@@ -121,7 +117,7 @@ public class VaultManagerActivity extends BaseActivity implements View.OnClickLi
                         public void onClick(DialogInterface dialog, int which) {
                             positiveSelected.set(true);
                             getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.positive");
-                            paymentMethodClient.deletePaymentMethod(VaultManagerActivity.this, paymentMethodNonceToDelete, new DeletePaymentMethodNonceCallback() {
+                            getDropInClient().deletePaymentMethod(VaultManagerActivity.this, paymentMethodNonceToDelete, new DeletePaymentMethodNonceCallback() {
                                 @Override
                                 public void onResult(@Nullable PaymentMethodNonce deletedNonce, @Nullable Exception error) {
                                    if (deletedNonce != null) {

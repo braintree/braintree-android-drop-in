@@ -2,6 +2,7 @@ package com.braintreepayments.api;
 
 import androidx.fragment.app.FragmentActivity;
 
+import org.checkerframework.common.value.qual.StaticallyExecutable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -799,6 +800,22 @@ public class DropInClientUnitTest {
         sut.requestGooglePayPayment(activity, callback);
 
         verify(googlePayClient).requestPayment(same(activity), same(googlePayRequest), same(callback));
+    }
+
+    @Test
+    public void deletePaymentMethod_callsDeletePaymentMethod() {
+        PaymentMethodClient paymentMethodClient = mock(PaymentMethodClient.class);
+
+        DropInClientParams params = new DropInClientParams()
+                .paymentMethodClient(paymentMethodClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        CardNonce cardNonce = mock(CardNonce.class);
+        DeletePaymentMethodNonceCallback callback = mock(DeletePaymentMethodNonceCallback.class);
+        sut.deletePaymentMethod(activity, cardNonce, callback);
+
+        verify(paymentMethodClient).deletePaymentMethod(same(activity), same(cardNonce), same(callback));
     }
 
     private Configuration getConfiguration(boolean paypalEnabled, boolean venmoEnabled,

@@ -23,6 +23,8 @@ public class MockDropInClientBuilder {
     private Configuration configuration;
     private List<DropInPaymentMethodType> supportedPaymentMethods;
     private String deviceDataSuccess;
+    private PaymentMethodNonce deletedNonce;
+    private Exception deletePaymentMethodNonceError;
 
     private boolean shouldPerformThreeDSecureVerification;
 
@@ -68,6 +70,11 @@ public class MockDropInClientBuilder {
 
     MockDropInClientBuilder collectDeviceDataSuccess(String deviceDataSuccess) {
         this.deviceDataSuccess = deviceDataSuccess;
+        return this;
+    }
+
+    MockDropInClientBuilder deletePaymentMethodSuccess(PaymentMethodNonce deletedNonce) {
+        this.deletedNonce = deletedNonce;
         return this;
     }
 
@@ -142,6 +149,17 @@ public class MockDropInClientBuilder {
                 return null;
             }
         }).when(dropInClient).collectDeviceData(any(FragmentActivity.class), any(DataCollectorCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                DeletePaymentMethodNonceCallback callback = (DeletePaymentMethodNonceCallback) invocation.getArguments()[2];
+                if (deletedNonce != null) {
+                    callback.onResult(deletedNonce, null);
+                }
+                return null;
+            }
+        }).when(dropInClient).deletePaymentMethod(any(FragmentActivity.class), any(PaymentMethodNonce.class), any(DeletePaymentMethodNonceCallback.class));
 
         return dropInClient;
     }

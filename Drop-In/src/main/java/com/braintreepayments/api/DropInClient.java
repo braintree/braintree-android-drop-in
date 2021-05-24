@@ -139,6 +139,10 @@ public class DropInClient {
         venmoClient.tokenizeVenmoAccount(activity, venmoRequest, callback);
     }
 
+    void deletePaymentMethod(FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, DeletePaymentMethodNonceCallback callback) {
+        paymentMethodClient.deletePaymentMethod(activity, paymentMethodNonce, callback);
+    }
+
     private boolean paymentMethodCanPerformThreeDSecureVerification(final PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             return true;

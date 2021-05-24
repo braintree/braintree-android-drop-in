@@ -14,7 +14,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
-import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowAlertDialog;
 
@@ -29,29 +28,27 @@ import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(sdk = 21)
 public class VaultManagerActivityUnitTest {
 
     private PaymentMethodNonce mCardNonce;
-    private Intent mIntent = new Intent();
-    private List<PaymentMethodNonce> mPaymentMethodNonces = new ArrayList<>();
+    private final Intent mIntent = new Intent();
+    private final List<PaymentMethodNonce> mPaymentMethodNonces = new ArrayList<>();
     private VaultManagerUnitTestActivity mActivity;
     private ActivityController<VaultManagerUnitTestActivity> mActivityController;
     private ShadowActivity mShadowActivity;
-    private BraintreeGraphQLHttpClient mGraphQlClient;
     private PaymentMethodItemView mPaymentMethodItemView;
 
     @Before
     public void setup() {
-        mGraphQlClient = mock(BraintreeGraphQLHttpClient.class);
         mCardNonce = mock(CardNonce.class);
         when(mCardNonce.getString()).thenReturn("card-nonce");
 
@@ -73,7 +70,6 @@ public class VaultManagerActivityUnitTest {
         mActivity = mActivityController.get();
         mShadowActivity = shadowOf(mActivity);
 
-        mActivity.graphQLHttpClient = mGraphQlClient;
         mActivityController.setup();
 
         mPaymentMethodItemView = new PaymentMethodItemView(mActivity);
@@ -100,10 +96,12 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onPaymentMethodNonceDeleted_sendsAnalyticCall() {
-//        BraintreeFragment fragment = mActivity.mockFragment();
-//        mActivity.onPaymentMethodNonceDeleted(mCardNonce);
-//
-//        verify(fragment).sendAnalyticsEvent("manager.delete.succeeded");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivity.onPaymentMethodNonceDeleted(mCardNonce);
+
+        verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded");
     }
 
     @Test
@@ -120,7 +118,7 @@ public class VaultManagerActivityUnitTest {
         ArrayList<PaymentMethodNonce> availableNonces = mShadowActivity.getResultIntent()
                 .getParcelableArrayListExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES");
 
-        assertTrue(availableNonces.size() == 1);
+        assertEquals(1, availableNonces.size());
         assertEquals("paypal-nonce", availableNonces.get(0).getString());
     }
 
@@ -135,13 +133,16 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onError_whenPaymentMethodDeletedException_sendsAnalyticCall() {
-//        BraintreeFragment fragment = mActivity.mockFragment();
-//        Exception originalException = new RuntimeException("Real Exception");
-//        Exception error = new PaymentMethodDeleteException(mCardNonce, originalException);
-//
-//        mActivity.onError(error);
-//
-//        verify(fragment).sendAnalyticsEvent("manager.delete.failed");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
+
+        Exception originalException = new RuntimeException("Real Exception");
+        Exception error = new PaymentMethodDeleteException(mCardNonce, originalException);
+
+        mActivity.onError(error);
+
+        verify(dropInClient).sendAnalyticsEvent("manager.delete.failed");
     }
 
     @Test
@@ -169,10 +170,13 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onError_whenUnknownError_sendsAnalyticCall() {
-//        BraintreeFragment fragment = mActivity.mockFragment();
-//        mActivity.onError(new RuntimeException());
-//
-//        verify(fragment).sendAnalyticsEvent("manager.unknown.failed");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
+
+        mActivity.onError(new RuntimeException());
+
+        verify(dropInClient).sendAnalyticsEvent("manager.unknown.failed");
     }
 
     @Test
@@ -181,7 +185,7 @@ public class VaultManagerActivityUnitTest {
 
         mActivity.onError(expected);
 
-        assertTrue(mShadowActivity.isFinishing());
+        assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception actual = (Exception) mShadowActivity.getResultIntent()
                 .getSerializableExtra(DropInActivity.EXTRA_ERROR);
@@ -191,34 +195,38 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onClick_selectingPositiveButton_sendsAnalyticEvent() {
-//        BraintreeFragment fragment = mActivity.mockFragment();
-//        mockGraphQlResponse(true);
-//
-//        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
-//        mActivity.onClick(mPaymentMethodItemView);
-//
-//        getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
-//
-//        verify(fragment).sendAnalyticsEvent("manager.delete.confirmation.positive");
-    }
-
-    @Test
-    public void onClick_selectingPositiveButton_callsDeletePaymentMethod() {
-        VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
-        mockGraphQlResponse(true);
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .deletePaymentMethodSuccess(mCardNonce)
+                .build();
+        mActivity.dropInClient = dropInClient;
 
         mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
         mActivity.onClick(mPaymentMethodItemView);
 
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
 
-        verify(adapter).paymentMethodDeleted(eq(mCardNonce));
+        verify(dropInClient).sendAnalyticsEvent("manager.delete.confirmation.positive");
+    }
+
+    @Test
+    public void onClick_selectingPositiveButton_callsDeletePaymentMethod() {
+        VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .deletePaymentMethodSuccess(mCardNonce)
+                .build();
+        mActivity.dropInClient = dropInClient;
+
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
+
+        getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
+
+        verify(dropInClient).deletePaymentMethod(same(mActivity), same(mCardNonce), any(DeletePaymentMethodNonceCallback.class));
+        verify(adapter).paymentMethodDeleted(same(mCardNonce));
     }
 
     @Test
     public void onClick_selectingPositiveButton_showsLoadingView() {
-        mockGraphQlResponseNotToCallback();
-
         mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
         mActivity.onClick(mPaymentMethodItemView);
 
@@ -229,15 +237,17 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onClick_selectingPositiveButton_doesNotSendNegativeAnalyticEvent() {
-//        BraintreeFragment fragment = mActivity.mockFragment();
-//        mockGraphQlResponse(true);
-//
-//        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
-//        mActivity.onClick(mPaymentMethodItemView);
-//
-//        getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
-//
-//        verify(fragment, times(0)).sendAnalyticsEvent("manager.delete.confirmation.negative");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .deletePaymentMethodSuccess(mCardNonce)
+                .build();
+        mActivity.dropInClient = dropInClient;
+
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
+
+        getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
+
+        verify(dropInClient, never()).sendAnalyticsEvent("manager.delete.confirmation.negative");
     }
 
     @Test
@@ -254,14 +264,16 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onClick_selectingNegativeButton_sendsAnalyticEvent() {
-//        BraintreeFragment fragment = mActivity.mockFragment();
-//
-//        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
-//        mActivity.onClick(mPaymentMethodItemView);
-//
-//        getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_NEGATIVE).callOnClick();
-//
-//        verify(fragment).sendAnalyticsEvent("manager.delete.confirmation.negative");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
+
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
+
+        getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_NEGATIVE).callOnClick();
+
+        verify(dropInClient).sendAnalyticsEvent("manager.delete.confirmation.negative");
     }
 
     @Test
@@ -278,22 +290,24 @@ public class VaultManagerActivityUnitTest {
 
     @Test
     public void onClick_dismissingDialog_sendsAnalyticEvent() {
-//        BraintreeFragment fragment = mActivity.mockFragment();
-//        mActivity.mockAdapter();
-//
-//        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
-//        mActivity.onClick(mPaymentMethodItemView);
-//
-//        getDeleteConfirmationDialog().dismiss();
-//
-//        verify(fragment).sendAnalyticsEvent("manager.delete.confirmation.negative");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivity.mockAdapter();
+
+        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
+        mActivity.onClick(mPaymentMethodItemView);
+
+        getDeleteConfirmationDialog().dismiss();
+
+        verify(dropInClient).sendAnalyticsEvent("manager.delete.confirmation.negative");
     }
 
     @Test
     public void onBackPressed_leavesActivity() {
         mActivity.onBackPressed();
 
-        assertTrue(mShadowActivity.isFinishing());
+        assertTrue(mActivity.isFinishing());
     }
 
     @Test
@@ -302,7 +316,7 @@ public class VaultManagerActivityUnitTest {
 
         mActivity.onBackPressed();
 
-        assertFalse(mShadowActivity.isFinishing());
+        assertFalse(mActivity.isFinishing());
     }
 
     private static androidx.appcompat.app.AlertDialog getDeleteConfirmationDialog() {
@@ -311,24 +325,5 @@ public class VaultManagerActivityUnitTest {
         //
         // This allows us to return the first (and only) v7 alert dialog
         return (androidx.appcompat.app.AlertDialog) ShadowAlertDialog.getShownDialogs().get(0);
-    }
-
-    private void mockGraphQlResponseNotToCallback() {
-//        doNothing().when(mGraphQlClient).post(anyString(), any(HttpResponseCallback.class));
-    }
-
-    private void mockGraphQlResponse(final boolean success) {
-//        doAnswer(new Answer() {
-//            @Override
-//            public Object answer(InvocationOnMock invocation) {
-//                HttpResponseCallback callback = (HttpResponseCallback) invocation.getArguments()[1];
-//                if (success) {
-//                    callback.success(null);
-//                } else {
-//                    callback.failure(null);
-//                }
-//                return null;
-//            }
-//        }).when(mGraphQlClient).post(anyString(), any(HttpResponseCallback.class));
     }
 }
