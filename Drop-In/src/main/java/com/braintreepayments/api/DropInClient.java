@@ -38,6 +38,8 @@ public class DropInClient {
         return new DropInClientParams()
                 .dropInRequest(dropInRequest)
                 .braintreeClient(braintreeClient)
+                .paymentMethodClient(new PaymentMethodClient(braintreeClient))
+                .payPalClient(new PayPalClient(braintreeClient))
                 .googlePayClient(new GooglePayClient(braintreeClient));
     }
 
@@ -57,7 +59,7 @@ public class DropInClient {
         this.googlePayClient = params.getGooglePayClient();
         this.paymentMethodClient = params.getPaymentMethodClient();
         this.threeDSecureClient = new ThreeDSecureClient(params.getBraintreeClient());
-        this.payPalClient = new PayPalClient(params.getBraintreeClient());
+        this.payPalClient = params.getPayPalClient();
         this.venmoClient = new VenmoClient(params.getBraintreeClient());
         this.dataCollector = new DataCollector(params.getBraintreeClient());
     }

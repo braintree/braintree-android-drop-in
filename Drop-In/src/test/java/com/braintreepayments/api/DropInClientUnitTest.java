@@ -20,7 +20,9 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isNull;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -660,6 +662,34 @@ public class DropInClientUnitTest {
         List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
 
         assertEquals(0, paymentMethodTypes.size());
+    }
+
+    @Test
+    public void tokenizePayPalAccount_withoutPayPalRequest_tokenizesPayPalWithVaultRequest() {
+        Configuration configuration = getConfiguration(true, false, false, false, false);
+        DropInRequest dropInRequest = new DropInRequest()
+                .disableGooglePayment();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .build();
+        PayPalClient payPalClient = mock(PayPalClient.class);
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient)
+                .payPalClient(payPalClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        PayPalFlowStartedCallback callback = mock(PayPalFlowStartedCallback.class);
+        sut.tokenizePayPalRequest(activity, callback);
+
+        verify(payPalClient).tokenizePayPalAccount(same(activity), any(PayPalVaultRequest.class), same(callback));
     }
 
     private Configuration getConfiguration(boolean paypalEnabled, boolean venmoEnabled,

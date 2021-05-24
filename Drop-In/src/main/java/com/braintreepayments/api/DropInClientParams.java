@@ -7,6 +7,7 @@ class DropInClientParams {
     private BraintreeClient braintreeClient;
     private GooglePayClient googlePayClient;
     private PaymentMethodClient paymentMethodClient;
+    private PayPalClient payPalClient;
 
     public DropInRequest getDropInRequest() {
         return dropInRequest;
@@ -41,6 +42,15 @@ class DropInClientParams {
 
     public DropInClientParams paymentMethodClient(PaymentMethodClient paymentMethodClient) {
         this.paymentMethodClient = paymentMethodClient;
+        return this;
+    }
+
+    public PayPalClient getPayPalClient() {
+        return payPalClient;
+    }
+
+    public DropInClientParams payPalClient(PayPalClient payPalClient) {
+        this.payPalClient = payPalClient;
         return this;
     }
 }

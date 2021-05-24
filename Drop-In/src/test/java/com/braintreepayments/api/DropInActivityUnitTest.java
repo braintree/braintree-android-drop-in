@@ -1077,6 +1077,24 @@ public class DropInActivityUnitTest {
         verify(dropInClient, never()).sendAnalyticsEvent("vaulted-card.appear");
     }
 
+    @Test
+    public void onPaymentMethodSelected_withTypePayPal_tokenizesPayPal() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .authorization(Authorization.fromString(authorization))
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+
+        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.PAYPAL);
+        verify(dropInClient).tokenizePayPalRequest(same(mActivity), any(PayPalFlowStartedCallback.class));
+
+    }
 
     private void assertExceptionIsReturned(String analyticsEvent, Exception exception) {
         String authorization = Fixtures.TOKENIZATION_KEY;
