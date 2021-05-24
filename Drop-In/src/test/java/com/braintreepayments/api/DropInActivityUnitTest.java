@@ -24,6 +24,7 @@ import org.robolectric.shadows.ShadowActivity;
 import org.robolectric.shadows.ShadowLooper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -1037,6 +1038,45 @@ public class DropInActivityUnitTest {
 //        assertEquals(mActivity.mBraintreeFragment.getCachedPaymentMethodNonces(),
 //                intent.intent.getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES));
     }
+
+    @Test
+    public void showVaultedPaymentMethods_whenCardNonceExists_sendsAnalytics() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        PayPalAccountNonce payPalAccountNonce = PayPalAccountNonce.fromJSON(new JSONObject(Fixtures.PAYPAL_ACCOUNT_JSON));
+        List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(cardNonce, payPalAccountNonce);
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+
+        mActivity.showVaultedPaymentMethods(paymentMethodNonces);
+        verify(dropInClient).sendAnalyticsEvent("vaulted-card.appear");
+    }
+
+    @Test
+    public void showVaultedPaymentMethods_whenCardNonceExists_doesNotSendAnalytics() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, dropInRequest, "sessionId");
+
+        PayPalAccountNonce payPalAccountNonce = PayPalAccountNonce.fromJSON(new JSONObject(Fixtures.PAYPAL_ACCOUNT_JSON));
+        PaymentMethodNonce googlePayCardNonce = GooglePayCardNonce.fromJSON(new JSONObject(Fixtures.GOOGLE_PAY_NETWORK_TOKENIZED_RESPONSE));
+        List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(payPalAccountNonce, googlePayCardNonce);
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .build();
+        mActivity.dropInClient = dropInClient;
+        mActivityController.setup();
+
+        mActivity.showVaultedPaymentMethods(paymentMethodNonces);
+        verify(dropInClient, never()).sendAnalyticsEvent("vaulted-card.appear");
+    }
+
 
     private void assertExceptionIsReturned(String analyticsEvent, Exception exception) {
         String authorization = Fixtures.TOKENIZATION_KEY;

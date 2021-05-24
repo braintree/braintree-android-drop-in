@@ -162,32 +162,6 @@ public class AvailablePaymentMethodNonceListUnitTest {
         assertEquals(0, sut.size());
     }
 
-    // TODO: move tests to DropInActivity to assert that analytics event is sent when
-    // a recently-used vaulted nonce is presented to the user via drop in
-//    @Test
-//    public void hasCardNonce_whenCardNonceExists_returnsTrue() {
-//        Configuration configuration = getMockConfiguration(false, false, true, true);
-//
-//        List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(cardNonce, googlePaymentCardNonce);
-//
-//        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-//                configuration, paymentMethodNonces, new DropInRequest(), false);
-//
-//        assertTrue(sut.hasCardNonce());
-//    }
-//
-//    @Test
-//    public void hasCardNonce_whenNoCardNonceExists_returnsFalse() {
-//        Configuration configuration = getMockConfiguration(false, true, true, true);
-//
-//        List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(venmoAccountNonce, googlePaymentCardNonce);
-//
-//        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-//                configuration, paymentMethodNonces, new DropInRequest(), false);
-//
-//        assertFalse(sut.hasCardNonce());
-//    }
-
     private Configuration getMockConfiguration(boolean paypalEnabled, boolean venmoEnabled, boolean cardEnabled, boolean googlePaymentEnabled) {
         Configuration configuration = mock(Configuration.class);
 

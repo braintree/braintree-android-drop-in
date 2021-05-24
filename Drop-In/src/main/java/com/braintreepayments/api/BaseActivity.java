@@ -41,7 +41,6 @@ class BaseActivity extends AppCompatActivity {
         }
     }
 
-    // TODO: move to base class to allow stubbing in tests
     DropInClient getDropInClient() {
         // TODO: lazily instantiate dropInClient
 //        if (dropInClient != null) {
