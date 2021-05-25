@@ -8,9 +8,11 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
+import com.braintreepayments.api.DropInResultCallback;
 import com.braintreepayments.api.DropInActivity;
 import com.braintreepayments.api.DropInClient;
 import com.braintreepayments.api.DropInRequest;
@@ -84,10 +86,6 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-//        if (dropInClient != null) {
-//            dropInClient.deliverBrowserSwitchResults(this);
-//        }
-
         if (mPurchased) {
             mPurchased = false;
             clearNonce();
@@ -114,22 +112,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void launchDropIn(View v) {
-        DropInRequest dropInRequest = new DropInRequest()
-                .clientToken(mAuthorization)
-                .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))
-                .collectDeviceData(Settings.shouldCollectDeviceData(this))
-                .googlePaymentRequest(getGooglePaymentRequest())
-                .maskCardNumber(true)
-                .maskSecurityCode(true)
-                .allowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this))
-                .vaultCard(Settings.defaultVaultSetting(this))
-                .vaultManager(Settings.isVaultManagerEnabled(this))
-                .cardholderNameStatus(Settings.getCardholderNameStatus(this));
-        if (Settings.isThreeDSecureEnabled(this)) {
-            dropInRequest.threeDSecureRequest(demoThreeDSecureRequest());
-        }
-
-        dropInClient.launchDropInForResult(this, DROP_IN_REQUEST, dropInRequest);
+        dropInClient.launchDropInForResult(this, DROP_IN_REQUEST);
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {
@@ -235,11 +218,37 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onAuthorizationFetched() {
-        dropInClient = new DropInClient(this, mAuthorization);
+        DropInRequest dropInRequest = new DropInRequest()
+                .clientToken(mAuthorization)
+                .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))
+                .collectDeviceData(Settings.shouldCollectDeviceData(this))
+                .googlePaymentRequest(getGooglePaymentRequest())
+                .maskCardNumber(true)
+                .maskSecurityCode(true)
+                .allowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this))
+                .vaultCard(Settings.defaultVaultSetting(this))
+                .vaultManager(Settings.isVaultManagerEnabled(this))
+                .cardholderNameStatus(Settings.getCardholderNameStatus(this));
 
+        if (Settings.isThreeDSecureEnabled(this)) {
+            dropInRequest.threeDSecureRequest(demoThreeDSecureRequest());
+        }
+
+        dropInClient = new DropInClient(this, mAuthorization, dropInRequest);
         dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
             @Override
             public void onResult(DropInResult dropInResult, Exception error) {
+                if (dropInResult != null) {
+                    handleDropInResult(dropInResult);
+                } else {
+                    onError(error);
+                }
+            }
+        });
+
+        dropInClient.deliverBrowserSwitchResult(this, new DropInResultCallback() {
+            @Override
+            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
                 if (dropInResult != null) {
                     handleDropInResult(dropInResult);
                 } else {

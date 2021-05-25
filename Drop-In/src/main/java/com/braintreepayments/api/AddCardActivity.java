@@ -1,5 +1,6 @@
 package com.braintreepayments.api;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
@@ -313,7 +314,7 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
                                 return;
                             }
                             getDropInClient().sendAnalyticsEvent("sdk.exit.success");
-                            finish(paymentMethod, null);
+                            finish(threeDSecureResult.getTokenizedCard(), null);
                         }
                     });
                 } else {
@@ -392,5 +393,21 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == BraintreeRequestCodes.THREE_D_SECURE) {
+            getDropInClient().handleThreeDSecureActivityResult(this, resultCode, data, new DropInResultCallback() {
+                @Override
+                public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                    finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
+                }
+            });
+            return;
+        }
+
+        // TODO: remove after migrating add card to fragment
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
