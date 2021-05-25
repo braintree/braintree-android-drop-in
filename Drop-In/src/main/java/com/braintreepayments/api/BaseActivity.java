@@ -54,7 +54,6 @@ class BaseActivity extends AppCompatActivity {
     }
 
     protected BraintreeClient getBraintreeClient() {
-
         mClientTokenPresent = Authorization.fromString(mDropInRequest.getAuthorization())
                     instanceof ClientToken;
 

@@ -51,7 +51,6 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
     private boolean mPerformedThreeDSecureVerification;
 
     private String mEnrollmentId;
-    private ThreeDSecureClient threeDSecureClient;
 
     @State
     private int mState = CARD_ENTRY;
@@ -89,11 +88,14 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
         enterState(LOADING);
 
         getDropInClient().sendAnalyticsEvent("card.selected");
-        threeDSecureClient = new ThreeDSecureClient(getBraintreeClient());
 
         getDropInClient().getConfiguration(new ConfigurationCallback() {
             @Override
             public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
+                if (error != null) {
+                    onError(error);
+                    return;
+                }
                 onConfigurationFetched(configuration);
             }
         });
@@ -313,7 +315,7 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
             }
 
             mDropInRequest.getThreeDSecureRequest().setNonce(paymentMethod.getString());
-            threeDSecureClient.performVerification(this, mDropInRequest.getThreeDSecureRequest(), new ThreeDSecureResultCallback() {
+            getDropInClient().performThreeDSecureVerification(this, paymentMethod, new ThreeDSecureResultCallback() {
                 @Override
                 public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
                     if (error != null) {

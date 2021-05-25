@@ -28,20 +28,19 @@ import org.robolectric.shadows.ShadowActivity;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
-import static com.braintreepayments.api.PackageManagerUtils.mockPackageManagerSupportsThreeDSecure;
-import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static com.braintreepayments.api.Assertions.assertIsANonce;
 import static com.braintreepayments.api.CardNumber.AMEX;
 import static com.braintreepayments.api.CardNumber.UNIONPAY_CREDIT;
 import static com.braintreepayments.api.CardNumber.UNIONPAY_DEBIT;
 import static com.braintreepayments.api.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.api.CardNumber.VISA;
+import static com.braintreepayments.api.PackageManagerUtils.mockPackageManagerSupportsThreeDSecure;
 import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
-import static org.mockito.Matchers.matches;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
@@ -138,6 +137,7 @@ public class AddCardActivityUnitTest {
         assertThat(mEnrollmentCardView).isGone();
     }
 
+    // TODO: test configuration changes
     @Test
     public void configurationChangeReturnsToAddCardView() {
 //        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
@@ -160,8 +160,11 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void enteringACardNumberGoesToCardDetailsView() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .build());
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getConfigurationSuccess(configuration)
                 .build();
         setup(dropInClient);
 
@@ -199,8 +202,11 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void editingANonUnionPayCardNumberIsPossible() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .build());
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getConfigurationSuccess(configuration)
                 .build();
         setup(dropInClient);
 
@@ -249,8 +255,11 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void addingACardRemainsOnEditCardView() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .build());
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getConfigurationSuccess(configuration)
                 .build();
         setup(dropInClient);
 
@@ -270,9 +279,12 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void addingACardReturnsANonce() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .build());
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getConfigurationSuccess(configuration)
                 .cardTokenizeSuccess(cardNonce)
                 .build();
         setup(dropInClient);
@@ -292,9 +304,12 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void addingACard_whenCardholderNameOptionalAndEmpty_doesNotSendCardholderNameToTokenize() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .build());
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getConfigurationSuccess(configuration)
                 .cardTokenizeSuccess(cardNonce)
                 .build();
         setup(dropInClient);
@@ -318,9 +333,12 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void addingACard_whenCardholderNameOptionalAndFilled_sendsCardholderNameToTokenize() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .build());
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getConfigurationSuccess(configuration)
                 .cardTokenizeSuccess(cardNonce)
                 .build();
         setup(dropInClient);
@@ -345,9 +363,12 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void addingACard_whenCardholderNameRequired_sendsCardholderNameToTokenize() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .build());
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getConfigurationSuccess(configuration)
                 .cardTokenizeSuccess(cardNonce)
                 .build();
         setup(dropInClient);
@@ -372,8 +393,12 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void cardNumberValidationErrorsAreShownToTheUser() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .challenges("cvv", "postal_code")
+                .build());
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_VALIDATION_REQUIRED))
+                .getConfigurationSuccess(configuration)
                 .cardTokenizeError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
                 .build();
         setup(dropInClient);
@@ -403,8 +428,12 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void cardValidationErrorsAreShownToTheUser() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .challenges("cvv", "postal_code")
+                .build());
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_VALIDATION_REQUIRED))
+                .getConfigurationSuccess(configuration)
                 .cardTokenizeError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_NON_NUMBER_ERROR_RESPONSE))
                 .build();
         setup(dropInClient);
@@ -889,8 +918,9 @@ public class AddCardActivityUnitTest {
         assertThat(mEditCardView).isGone();
     }
 
+    // TODO: investigate 3DS flow
     @Test
-    public void showsSubmitButtonAgainWhenThreeDSecureIsCanceled() throws PackageManager.NameNotFoundException {
+    public void showsSubmitButtonAgainWhenThreeDSecureIsCanceled() throws PackageManager.NameNotFoundException, JSONException {
         PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
         Context context = spy(RuntimeEnvironment.application);
         when(context.getPackageManager()).thenReturn(packageManager);
@@ -899,6 +929,16 @@ public class AddCardActivityUnitTest {
                 .tokenizationKey(TOKENIZATION_KEY)
                 .amount("1.00")
                 .requestThreeDSecureVerification(true));
+
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .threeDSecureEnabled(true)
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .cardTokenizeSuccess(CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD)))
+                .threeDSecureSuccess(ThreeDSecureResult.fromJson(Fixtures.THREE_D_SECURE_LOOKUP_RESPONSE))
+                .build();
 //        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
 //                .configuration(new TestConfigurationBuilder()
 //                        .creditCards(getSupportedCardConfiguration())
@@ -908,6 +948,7 @@ public class AddCardActivityUnitTest {
 //                .successResponse(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP, Fixtures.THREE_D_SECURE_LOOKUP_RESPONSE);
 //
 //        setup(httpClient);
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
         mAddCardView.findViewById(R.id.bt_button).performClick();
