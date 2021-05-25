@@ -423,7 +423,10 @@ public class DropInClient {
         threeDSecureClient.onActivityResult(resultCode, data, new ThreeDSecureResultCallback() {
             @Override
             public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                PaymentMethodNonce paymentMethodNonce = threeDSecureResult.getTokenizedCard();
+                PaymentMethodNonce paymentMethodNonce = null;
+                if (threeDSecureResult != null) {
+                    paymentMethodNonce = threeDSecureResult.getTokenizedCard();
+                }
                 notifyDropInResult(activity, paymentMethodNonce, error, callback);
             }
         });

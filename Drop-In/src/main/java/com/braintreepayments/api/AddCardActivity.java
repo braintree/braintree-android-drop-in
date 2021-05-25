@@ -401,7 +401,13 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
             getDropInClient().handleThreeDSecureActivityResult(this, resultCode, data, new DropInResultCallback() {
                 @Override
                 public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                    finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
+                    if (dropInResult != null) {
+                        finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
+                    } else {
+                        // user canceled; show edit card button
+                        // TODO: create user canceled error type to differentiate user cancellations from other errors
+                        mEditCardView.setVisibility(View.VISIBLE);
+                    }
                 }
             });
             return;
