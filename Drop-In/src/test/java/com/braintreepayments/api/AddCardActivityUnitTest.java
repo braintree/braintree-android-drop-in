@@ -220,9 +220,17 @@ public class AddCardActivityUnitTest {
 
     @Test
     public void editingAUnionPayCardNumberIsPossible() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_UNIONPAY))
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE))
                 .build();
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -788,18 +796,11 @@ public class AddCardActivityUnitTest {
                 .build());
         DropInClient dropInClient = new MockDropInClientBuilder()
                 .getConfigurationSuccess(configuration)
-                .unionPayCapabilitiesError(ErrorWithResponse.fromJson(Fixtures.UNIONPAY_CAPABILITIES_NOT_SUPPORTED_RESPONSE))
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_NOT_SUPPORTED_RESPONSE))
                 .build();
         mActivity.setDropInRequest(new DropInRequest()
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(dropInClient);
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_NOT_SUPPORTED_RESPONSE);
-//        setup(httpClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_DEBIT);
         mAddCardView.findViewById(R.id.bt_button).performClick();
@@ -809,18 +810,21 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void enrollingAUnionPayCardRemainsOnEnrollmentCardView() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .unionPay(new TestUnionPayConfigurationBuilder()
-//                                .enabled(true))
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_CAPABILITIES_PATH, Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE)
-//                .successResponse(BraintreeUnitTestHttpClient.UNIONPAY_ENROLLMENT_PATH, Fixtures.UNIONPAY_ENROLLMENT_SMS_REQUIRED);
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-//        setup(httpClient);
+    public void enrollingAUnionPayCardRemainsOnEnrollmentCardView() throws JSONException {
+        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+                .creditCards(getSupportedCardConfiguration())
+                .unionPay(new TestConfigurationBuilder.TestUnionPayConfigurationBuilder()
+                        .enabled(true))
+                .build());
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getConfigurationSuccess(configuration)
+                .unionPayCapabilitiesSuccess(UnionPayCapabilities.fromJson(Fixtures.UNIONPAY_CAPABILITIES_SUCCESS_RESPONSE))
+                .enrollUnionPaySuccess(new UnionPayEnrollment("enrollment-id", true))
+                .build();
+
+        mActivity.setDropInRequest(new DropInRequest()
+                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
         mAddCardView.findViewById(R.id.bt_button).performClick();
