@@ -48,7 +48,7 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
     private boolean mUnionPayCard;
     private boolean mUnionPayDebitCard;
 
-    private boolean mPerformedThreeDSecureVerification;
+    private Configuration mConfiguration;
 
     private String mEnrollmentId;
 
@@ -300,35 +300,28 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
         }
     }
 
-    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
-        if (!mPerformedThreeDSecureVerification && shouldRequestThreeDSecureVerification()) {
-            mPerformedThreeDSecureVerification = true;
-
-            if (mDropInRequest.getThreeDSecureRequest() == null) {
-                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
-                threeDSecureRequest.setAmount(mDropInRequest.getAmount());
-                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
-            }
-
-            if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
-                mDropInRequest.getThreeDSecureRequest().setAmount(mDropInRequest.getAmount());
-            }
-
-            mDropInRequest.getThreeDSecureRequest().setNonce(paymentMethod.getString());
-            getDropInClient().performThreeDSecureVerification(this, paymentMethod, new ThreeDSecureResultCallback() {
-                @Override
-                public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                    if (error != null) {
-                        onError(error);
-                        return;
-                    }
-                    onPaymentMethodNonceCreated(threeDSecureResult.getTokenizedCard());
+    public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
+        getDropInClient().shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
+            @Override
+            public void onResult(boolean shouldRequestThreeDSecureVerification) {
+                if (shouldRequestThreeDSecureVerification) {
+                    getDropInClient().performThreeDSecureVerification(AddCardActivity.this, paymentMethod, new ThreeDSecureResultCallback() {
+                        @Override
+                        public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
+                            if (error != null) {
+                                onError(error);
+                                return;
+                            }
+                            getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+                            finish(paymentMethod, null);
+                        }
+                    });
+                } else {
+                    getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+                    finish(paymentMethod, null);
                 }
-            });
-        } else {
-            getDropInClient().sendAnalyticsEvent("sdk.exit.success");
-            finish(paymentMethod, null);
-        }
+            }
+        });
     }
 
     public void onCapabilitiesFetched(UnionPayCapabilities capabilities) {
@@ -354,14 +347,11 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
 
     public void onCancel(int requestCode) {
         if (requestCode == BraintreeRequestCodes.THREE_D_SECURE) {
-            mPerformedThreeDSecureVerification = false;
             mEditCardView.setVisibility(View.VISIBLE);
         }
     }
 
     public void onError(Exception error) {
-        mPerformedThreeDSecureVerification = false;
-
         if (error instanceof ErrorWithResponse) {
             ErrorWithResponse errorResponse = (ErrorWithResponse) error;
 

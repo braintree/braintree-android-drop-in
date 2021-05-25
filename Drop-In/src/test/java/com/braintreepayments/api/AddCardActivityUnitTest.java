@@ -237,6 +237,7 @@ public class AddCardActivityUnitTest {
                 .build();
         mActivity.setDropInRequest(new DropInRequest()
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        mActivity.mClientTokenPresent = true;
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -474,6 +475,7 @@ public class AddCardActivityUnitTest {
                 .build();
         mActivity.setDropInRequest(new DropInRequest()
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        mActivity.mClientTokenPresent = true;
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -507,6 +509,7 @@ public class AddCardActivityUnitTest {
                 .build();
         mActivity.setDropInRequest(new DropInRequest()
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        mActivity.mClientTokenPresent = true;
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -607,6 +610,7 @@ public class AddCardActivityUnitTest {
                 .build();
         mActivity.setDropInRequest(new DropInRequest()
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        mActivity.mClientTokenPresent = true;
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -637,6 +641,7 @@ public class AddCardActivityUnitTest {
                 .build();
         mActivity.setDropInRequest(new DropInRequest()
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        mActivity.mClientTokenPresent = true;
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -661,6 +666,7 @@ public class AddCardActivityUnitTest {
                 .build();
         mActivity.setDropInRequest(new DropInRequest()
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        mActivity.mClientTokenPresent = true;
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
@@ -691,6 +697,7 @@ public class AddCardActivityUnitTest {
                 .build();
         mActivity.setDropInRequest(new DropInRequest()
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        mActivity.mClientTokenPresent = true;
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
@@ -725,7 +732,7 @@ public class AddCardActivityUnitTest {
         mActivity.setDropInRequest(new DropInRequest()
                 .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
-
+        mActivity.mClientTokenPresent = true;
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
@@ -797,6 +804,7 @@ public class AddCardActivityUnitTest {
         mActivity.setDropInRequest(new DropInRequest()
                 .cardholderNameStatus(CardForm.FIELD_REQUIRED)
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        mActivity.mClientTokenPresent = true;
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_SMS_NOT_REQUIRED);
@@ -829,6 +837,7 @@ public class AddCardActivityUnitTest {
                 .build();
         mActivity.setDropInRequest(new DropInRequest()
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        mActivity.mClientTokenPresent = true;
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_DEBIT);
@@ -853,6 +862,7 @@ public class AddCardActivityUnitTest {
 
         mActivity.setDropInRequest(new DropInRequest()
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
+        mActivity.mClientTokenPresent = true;
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);

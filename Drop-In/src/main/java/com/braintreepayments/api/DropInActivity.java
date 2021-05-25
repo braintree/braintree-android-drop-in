@@ -93,15 +93,13 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         getDropInClient().getConfiguration(new ConfigurationCallback() {
             @Override
             public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
-                onConfigurationFetched(configuration);
+                onConfigurationFetched();
             }
         });
     }
 
 
-    public void onConfigurationFetched(Configuration configuration) {
-        mConfiguration = configuration;
-
+    public void onConfigurationFetched() {
         if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
             getDropInClient().collectDeviceData(this, new DataCollectorCallback() {
                 @Override
@@ -349,8 +347,10 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
                 if (paymentMethodNonceList != null) {
                     Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
-                            .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest)
-                            .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList));
+                            .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList))
+                            .putExtra(EXTRA_CHECKOUT_REQUEST, getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
+                            .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
+                            .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
                     startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
 
                     getDropInClient().sendAnalyticsEvent("manager.appeared");

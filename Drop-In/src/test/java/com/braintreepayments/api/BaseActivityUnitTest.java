@@ -64,184 +64,41 @@ public class BaseActivityUnitTest {
     }
 
     @Test
-    public void onCreate_doesNotSetConfigurationIfNotInBundle() throws NoSuchFieldException, IllegalAccessException {
-        Bundle savedState = new Bundle();
-        mActivityController = Robolectric.buildActivity(BaseActivity.class).create(savedState);
-        mActivity = (BaseActivity) mActivityController.get();
-
-        Configuration restoredConfiguration = (Configuration) ReflectionHelper.getField(mActivity, "mConfiguration");
-        assertNull(restoredConfiguration);
-    }
-
-    @Test
-    public void onSaveInstanceState_savesConfigurationAsJson() throws NoSuchFieldException, IllegalAccessException, JSONException {
-        Configuration configuration = new TestConfigurationBuilder().buildConfiguration();
-
-        mActivityController = Robolectric.buildActivity(BaseActivity.class).create();
-
-        mActivity = (BaseActivity) mActivityController.get();
-        ReflectionHelper.setField(mActivity, "mConfiguration", configuration);
-
-        Bundle outputState = new Bundle();
-        mActivityController.saveInstanceState(outputState);
-        String configAsString = outputState.getString(BaseActivity.EXTRA_CONFIGURATION_DATA);
-        assertNotNull(configAsString);
-
-        Configuration savedConfiguration = Configuration.fromJson(configAsString);
-        assertNotNull(savedConfiguration.getMerchantId());
-        assertEquals(configuration.getMerchantId(), savedConfiguration.getMerchantId());
-    }
-
-    @Test
-    public void onSaveInstanceState_doesNotThrowExceptionIfNoConfiguration() throws NoSuchFieldException, IllegalAccessException {
-        mActivityController = Robolectric.buildActivity(BaseActivity.class).create();
-
-        mActivity = (BaseActivity) mActivityController.get();
-        ReflectionHelper.setField(mActivity, "mConfiguration", null);
-
-        Bundle outputState = new Bundle();
-        mActivityController.saveInstanceState(outputState);
-        String configAsString = outputState.getString(BaseActivity.EXTRA_CONFIGURATION_DATA);
-        assertNull(configAsString);
-    }
-
-    @Test
-    public void getBraintreeFragment_returnsABraintreeFragment() throws InvalidArgumentException {
+    public void getDropInClient_returnsADropInClient() {
         setup(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application));
 
-        assertNotNull(mActivity.getBraintreeClient());
+        assertNotNull(mActivity.getDropInClient());
     }
 
     @Test(expected = InvalidArgumentException.class)
-    public void getDropInClient_throwsAnExceptionForEmptyAuthorization() throws InvalidArgumentException {
+    public void getDropInClient_throwsAnExceptionForEmptyAuthorization() {
         setup(new DropInRequest().getIntent(RuntimeEnvironment.application));
 
         mActivity.getDropInClient();
     }
 
     @Test
-    public void getBraintreeFragment_setsClientTokenPresentWhenAClientTokenIsPresent() throws InvalidArgumentException {
+    public void getDropInClient_setsClientTokenPresentWhenAClientTokenIsPresent() {
         setup(new DropInRequest()
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN))
                 .getIntent(RuntimeEnvironment.application));
 
-        mActivity.getBraintreeClient();
+        mActivity.getDropInClient();
 
         assertTrue(mActivity.mClientTokenPresent);
     }
 
     @Test
-    public void getBraintreeFragment_setsClientTokenPresentWhenAClientTokenIsNotPresent() throws InvalidArgumentException {
+    public void getDropInClient_setsClientTokenPresentWhenAClientTokenIsNotPresent() {
         setup(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application));
 
-        mActivity.getBraintreeClient();
+        mActivity.getDropInClient();
 
         assertFalse(mActivity.mClientTokenPresent);
-    }
-
-    @Test
-    public void shouldRequestThreeDSecureVerification_returnsTrueWhenEnabled_andRequested_andAmountIsPresentOnDropInRequest() {
-        setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .amount("1.00")
-                .requestThreeDSecureVerification(true)
-                .getIntent(RuntimeEnvironment.application));
-        mActivity.mConfiguration = new TestConfigurationBuilder()
-                .threeDSecureEnabled(true)
-                .buildConfiguration();
-
-        assertTrue(mActivity.shouldRequestThreeDSecureVerification());
-    }
-
-    @Test
-    public void shouldRequestThreeDSecureVerification_returnsTrueWhenEnabled_andRequested_andAmountIsPresentOnThreeDSecureRequest() {
-        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
-        threeDSecureRequest.setAmount("2.00");
-
-        setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .requestThreeDSecureVerification(true)
-                .threeDSecureRequest(threeDSecureRequest)
-                .getIntent(RuntimeEnvironment.application));
-        mActivity.mConfiguration = new TestConfigurationBuilder()
-                .threeDSecureEnabled(true)
-                .buildConfiguration();
-
-        assertTrue(mActivity.shouldRequestThreeDSecureVerification());
-    }
-
-    @Test
-    public void shouldRequestThreeDSecureVerification_returnsFalseWhenNotRequested() {
-        setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .amount("1.00")
-                .requestThreeDSecureVerification(false)
-                .getIntent(RuntimeEnvironment.application));
-        mActivity.mConfiguration = new TestConfigurationBuilder()
-                .threeDSecureEnabled(true)
-                .buildConfiguration();
-
-        assertFalse(mActivity.shouldRequestThreeDSecureVerification());
-    }
-
-    @Test
-    public void shouldRequestThreeDSecureVerification_returnsFalseWhenNoAmountSpecified_andThreeDSecureRequestIsPresent() {
-        setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .requestThreeDSecureVerification(true)
-                .threeDSecureRequest(new ThreeDSecureRequest())
-                .getIntent(RuntimeEnvironment.application));
-        mActivity.mConfiguration = new TestConfigurationBuilder()
-                .threeDSecureEnabled(true)
-                .buildConfiguration();
-
-        assertFalse(mActivity.shouldRequestThreeDSecureVerification());
-    }
-
-    @Test
-    public void shouldRequestThreeDSecureVerification_returnsFalseWhenNoAmountSpecified_andThreeDSecureRequestIsNotPresent() {
-        setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .requestThreeDSecureVerification(true)
-                .getIntent(RuntimeEnvironment.application));
-        mActivity.mConfiguration = new TestConfigurationBuilder()
-                .threeDSecureEnabled(true)
-                .buildConfiguration();
-
-        assertFalse(mActivity.shouldRequestThreeDSecureVerification());
-    }
-
-    @Test
-    public void shouldRequestThreeDSecureVerification_returnsFalseWhenThreeDSecureIsNotEnabled() {
-        setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .amount("1.00")
-                .requestThreeDSecureVerification(true)
-                .getIntent(RuntimeEnvironment.application));
-        mActivity.mConfiguration = new TestConfigurationBuilder()
-                .threeDSecureEnabled(false)
-                .buildConfiguration();
-
-        assertFalse(mActivity.shouldRequestThreeDSecureVerification());
-    }
-
-    @Test
-    public void shouldRequestThreeDSecureVerification_returnsFalseWhenConfigurationIsNull() {
-        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
-        threeDSecureRequest.setAmount("2.00");
-
-        setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .requestThreeDSecureVerification(true)
-                .threeDSecureRequest(threeDSecureRequest)
-                .getIntent(RuntimeEnvironment.application));
-        mActivity.mConfiguration = null;
-
-        assertFalse(mActivity.shouldRequestThreeDSecureVerification());
     }
 
     @Test
