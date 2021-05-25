@@ -98,32 +98,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-//        getDropInClient().deliverBrowserSwitchResults(this, new PayPalBrowserSwitchResultCallback() {
-//            @Override
-//            public void onResult(@Nullable PayPalAccountNonce payPalAccountNonce, @Nullable Exception error) {
-//                if (error != null) {
-//                    onError(error);
-//                    return;
-//                }
-//                finishWithPaymentMethodNonce(payPalAccountNonce);
-//            }
-//        }, new ThreeDSecureResultCallback() {
-//            @Override
-//            public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-//                if (error != null) {
-//                    onError(error);
-//                    return;
-//                }
-//                finishWithPaymentMethodNonce(threeDSecureResult.getTokenizedCard());
-//            }
-//        });
-
-    }
-
     public void onConfigurationFetched() {
         if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
             getDropInClient().collectDeviceData(this, new DataCollectorCallback() {

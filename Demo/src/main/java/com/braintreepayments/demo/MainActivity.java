@@ -89,17 +89,6 @@ public class MainActivity extends BaseActivity {
         if (mPurchased) {
             mPurchased = false;
             clearNonce();
-
-            dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
-                @Override
-                public void onResult(DropInResult dropInResult, Exception error) {
-                   if (dropInResult != null) {
-                       handleDropInResult(dropInResult);
-                   } else {
-                       onError(error);
-                   }
-                }
-            });
         }
     }
 
@@ -241,7 +230,7 @@ public class MainActivity extends BaseActivity {
                 if (dropInResult != null) {
                     handleDropInResult(dropInResult);
                 } else {
-                    onError(error);
+                    mAddPaymentMethodButton.setVisibility(VISIBLE);
                 }
             }
         });
