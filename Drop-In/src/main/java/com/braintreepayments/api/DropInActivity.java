@@ -26,6 +26,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static android.view.animation.AnimationUtils.loadAnimation;
+import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
+import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 public class DropInActivity extends BaseActivity implements PaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
@@ -195,7 +197,9 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 break;
             case UNKNOWN:
                 Intent intent = new Intent(this, AddCardActivity.class)
-                        .putExtra(EXTRA_CHECKOUT_REQUEST, mDropInRequest);
+                        .putExtra(EXTRA_CHECKOUT_REQUEST, getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
+                        .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
+                        .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
                 startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
                 break;
         }
