@@ -98,6 +98,31 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+//        getDropInClient().deliverBrowserSwitchResults(this, new PayPalBrowserSwitchResultCallback() {
+//            @Override
+//            public void onResult(@Nullable PayPalAccountNonce payPalAccountNonce, @Nullable Exception error) {
+//                if (error != null) {
+//                    onError(error);
+//                    return;
+//                }
+//                finishWithPaymentMethodNonce(payPalAccountNonce);
+//            }
+//        }, new ThreeDSecureResultCallback() {
+//            @Override
+//            public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
+//                if (error != null) {
+//                    onError(error);
+//                    return;
+//                }
+//                finishWithPaymentMethodNonce(threeDSecureResult.getTokenizedCard());
+//            }
+//        });
+
+    }
 
     public void onConfigurationFetched() {
         if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
@@ -173,7 +198,9 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 getDropInClient().tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {
                     @Override
                     public void onResult(@Nullable Exception error) {
-                        onError(error);
+                        if (error != null) {
+                            onError(error);
+                        }
                     }
                 });
                 break;
@@ -181,7 +208,9 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 getDropInClient().requestGooglePayPayment(this, new GooglePayRequestPaymentCallback() {
                     @Override
                     public void onResult(Exception error) {
-                        onError(error);
+                        if (error != null) {
+                            onError(error);
+                        }
                     }
                 });
                 break;
@@ -189,7 +218,9 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 getDropInClient().tokenizeVenmoAccount(this, new VenmoTokenizeAccountCallback() {
                     @Override
                     public void onResult(@Nullable Exception error) {
-                        onError(error);
+                        if (error != null) {
+                            onError(error);
+                        }
                     }
                 });
                 break;

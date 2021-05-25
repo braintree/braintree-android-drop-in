@@ -17,12 +17,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".SettingsActivity" android:label="@string/options" />
-        <activity android:name=".CreateTransactionActivity" />
-
-        <activity android:name="com.braintreepayments.api.BraintreeBrowserSwitchActivity"
-            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <data android:scheme="${applicationId}.braintree" />
@@ -30,6 +24,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+        <activity android:name=".SettingsActivity" android:label="@string/options" />
+        <activity android:name=".CreateTransactionActivity" />
 
         <service android:name=".internal.LeakLoggerService" />
     </application>

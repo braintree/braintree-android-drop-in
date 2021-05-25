@@ -2,7 +2,6 @@ package com.braintreepayments.api;
 
 import androidx.fragment.app.FragmentActivity;
 
-import org.checkerframework.common.value.qual.StaticallyExecutable;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;

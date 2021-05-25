@@ -84,6 +84,10 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
+//        if (dropInClient != null) {
+//            dropInClient.deliverBrowserSwitchResults(this);
+//        }
+
         if (mPurchased) {
             mPurchased = false;
             clearNonce();

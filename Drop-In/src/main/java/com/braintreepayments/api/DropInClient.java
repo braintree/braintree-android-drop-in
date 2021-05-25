@@ -169,6 +169,36 @@ public class DropInClient {
         unionPayClient.tokenize(unionPayCard, callback);
     }
 
+    public void deliverBrowserSwitchResults(FragmentActivity activity) {
+        if (braintreeClient == null) {
+            return;
+        }
+        BrowserSwitchResult browserSwitchResult = braintreeClient.deliverBrowserSwitchResult(activity);
+        if (browserSwitchResult != null) {
+            int requestCode = browserSwitchResult.getRequestCode();
+
+            switch (requestCode) {
+                case BraintreeRequestCodes.PAYPAL:
+                    payPalClient.onBrowserSwitchResult(browserSwitchResult, new PayPalBrowserSwitchResultCallback() {
+                        @Override
+                        public void onResult(@Nullable PayPalAccountNonce payPalAccountNonce, @Nullable Exception error) {
+
+                        }
+                    });
+                    break;
+                case BraintreeRequestCodes.THREE_D_SECURE:
+                    threeDSecureClient.onBrowserSwitchResult(browserSwitchResult, new ThreeDSecureResultCallback() {
+                        @Override
+                        public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
+
+                        }
+                    });
+                    break;
+            }
+        }
+
+    }
+
     private boolean paymentMethodCanPerformThreeDSecureVerification(final PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             return true;
