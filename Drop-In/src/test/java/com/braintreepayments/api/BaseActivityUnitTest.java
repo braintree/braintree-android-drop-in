@@ -1,7 +1,6 @@
 package com.braintreepayments.api;
 
 import android.content.Intent;
-import android.os.Bundle;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,7 +15,6 @@ import org.robolectric.shadows.ShadowActivity;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
-import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
@@ -47,47 +45,12 @@ public class BaseActivityUnitTest {
     }
 
     @Test
-    public void onCreate_setsConfigurationIfSaved() throws NoSuchFieldException, IllegalAccessException {
-        Configuration configuration = new TestConfigurationBuilder().buildConfiguration();
-
-        Bundle savedState = new Bundle();
-        savedState.putString(BaseActivity.EXTRA_CONFIGURATION_DATA, configuration.toJson());
-        mActivityController = Robolectric.buildActivity(BaseActivity.class);
-
-        mActivityController.create(savedState);
-        mActivity = (BaseActivity) mActivityController.get();
-
-        Configuration restoredConfiguration = (Configuration) ReflectionHelper.getField(mActivity, "mConfiguration");
-        assertNotNull(restoredConfiguration);
-        assertNotNull(restoredConfiguration.getMerchantId());
-        assertEquals(configuration.getMerchantId(), restoredConfiguration.getMerchantId());
-    }
-
-    @Test
     public void getDropInClient_returnsADropInClient() {
         setup(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application));
 
         assertNotNull(mActivity.getDropInClient());
-    }
-
-    @Test(expected = InvalidArgumentException.class)
-    public void getDropInClient_throwsAnExceptionForEmptyAuthorization() {
-        setup(new DropInRequest().getIntent(RuntimeEnvironment.application));
-
-        mActivity.getDropInClient();
-    }
-
-    @Test
-    public void getDropInClient_setsClientTokenPresentWhenAClientTokenIsPresent() {
-        setup(new DropInRequest()
-                .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN))
-                .getIntent(RuntimeEnvironment.application));
-
-        mActivity.getDropInClient();
-
-        assertTrue(mActivity.mClientTokenPresent);
     }
 
     @Test

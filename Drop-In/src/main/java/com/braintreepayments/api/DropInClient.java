@@ -71,6 +71,10 @@ public class DropInClient {
         this.dataCollector = new DataCollector(params.getBraintreeClient());
     }
 
+    boolean isClientToken() {
+        return braintreeClient.getAuthorization() instanceof ClientToken;
+    }
+
     Authorization getAuthorization() {
         return braintreeClient.getAuthorization();
     }
