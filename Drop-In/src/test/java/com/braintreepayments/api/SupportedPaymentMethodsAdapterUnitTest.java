@@ -1,5 +1,12 @@
 package com.braintreepayments.api;
 
+import android.content.Context;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.LinearLayout;
+
+import androidx.test.core.app.ApplicationProvider;
+
 import com.braintreepayments.api.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
 
 import org.junit.Test;
@@ -11,13 +18,16 @@ import java.util.ArrayList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 public class SupportedPaymentMethodsAdapterUnitTest {
 
-    // TODO: refactor test to make sure views display correct displayName / image view icon
     @Test
     public void callsOnPaymentMethodSelectedListenerWhenPaymentMethodClicked() {
+        Context context = ApplicationProvider.getApplicationContext();
+        LinearLayout parent = new LinearLayout(context);
+
         PaymentMethodSelectedListener listener = mock(PaymentMethodSelectedListener.class);
         ArrayList<DropInPaymentMethodType> supportedPaymentMethods = new ArrayList<>();
         supportedPaymentMethods.add(DropInPaymentMethodType.PAYPAL);
@@ -28,10 +38,10 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 supportedPaymentMethods, listener);
 
-        adapter.getView(0, null, null).callOnClick();
-        adapter.getView(1, null, null).callOnClick();
-        adapter.getView(2, null, null).callOnClick();
-        adapter.getView(3, null, null).callOnClick();
+        adapter.getView(0, null, parent).callOnClick();
+        adapter.getView(1, null, parent).callOnClick();
+        adapter.getView(2, null, parent).callOnClick();
+        adapter.getView(3, null, parent).callOnClick();
 
         verify(listener).onPaymentMethodSelected(DropInPaymentMethodType.PAYPAL);
         verify(listener).onPaymentMethodSelected(DropInPaymentMethodType.PAY_WITH_VENMO);
