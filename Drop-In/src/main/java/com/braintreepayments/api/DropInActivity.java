@@ -46,6 +46,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
     static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";
 
+    // TODO: Remove this and callback a full drop in result from DropInClient methods
     private String mDeviceData;
 
     private View mBottomSheet;

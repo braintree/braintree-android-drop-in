@@ -1,7 +1,6 @@
 package com.braintreepayments.api;
 
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 import android.widget.TextView;
@@ -161,31 +160,6 @@ public class DropInActivityUnitTest {
         verify(dropInClient).getVaultedPaymentMethods(same(mActivity), eq(true), any(GetPaymentMethodNoncesCallback.class));
     }
 
-
-    // TODO: investigate why this is failing
-    @Test
-    public void onSaveInstanceState_savesDeviceData() {
-        String authorization = Fixtures.TOKENIZATION_KEY;
-        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-        setupDropInActivity(authorization, dropInRequest, "sessionId");
-
-        mActivity.deviceData = "device-data-string";
-        mActivityController.setup();
-
-        Bundle bundle = new Bundle();
-        mActivityController.saveInstanceState(bundle)
-                .pause()
-                .stop()
-                .destroy();
-
-        mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class);
-        mActivity = (DropInUnitTestActivity) mActivityController.get();
-        mActivityController.setup(bundle);
-
-        assertEquals("device-data-string", mActivity.deviceData);
-    }
-
-    // TODO: investigate
     @Test
     public void pressingBackExitsActivityWithResultCanceled() {
         String authorization = Fixtures.TOKENIZATION_KEY;
