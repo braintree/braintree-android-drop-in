@@ -304,6 +304,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
             slideDown(new AnimationFinishedListener() {
                 @Override
                 public void onAnimationFinished() {
+                    setResult(RESULT_CANCELED);
                     finish();
                 }
             });

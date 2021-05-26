@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -215,7 +214,6 @@ public class DropInActivityUnitTest {
         verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.canceled");
     }
 
-    // TODO: investigate
     @Test
     public void touchingOutsideSheetTriggersBackPress() {
         String authorization = Fixtures.TOKENIZATION_KEY;
