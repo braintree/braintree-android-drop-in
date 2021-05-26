@@ -1,5 +1,7 @@
 package com.braintreepayments.api;
 
+import android.content.Intent;
+
 import androidx.fragment.app.FragmentActivity;
 
 import org.mockito.invocation.InvocationOnMock;
@@ -9,6 +11,7 @@ import java.util.List;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -33,6 +36,7 @@ public class MockDropInClientBuilder {
     private Exception enrollUnionPayError;
     private CardNonce unionPayTokenizeSuccess;
     private Exception unionPayTokenizeError;
+    private Exception handleThreeDSecureActivityResultError;
 
     private boolean shouldPerformThreeDSecureVerification;
 
@@ -123,6 +127,11 @@ public class MockDropInClientBuilder {
 
     MockDropInClientBuilder unionPayTokenizeError(Exception error) {
         this.unionPayTokenizeError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder handleThreeDSecureActivityResultError(Exception error) {
+        this.handleThreeDSecureActivityResultError = error;
         return this;
     }
 
@@ -260,6 +269,17 @@ public class MockDropInClientBuilder {
                 return null;
             }
         }).when(dropInClient).tokenizeUnionPay(any(UnionPayCard.class), any(UnionPayTokenizeCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                DropInResultCallback callback = (DropInResultCallback) invocation.getArguments()[3];
+                if (handleThreeDSecureActivityResultError != null) {
+                    callback.onResult(null, handleThreeDSecureActivityResultError);
+                }
+                return null;
+            }
+        }).when(dropInClient).handleThreeDSecureActivityResult(any(FragmentActivity.class), anyInt(), any(Intent.class), any(DropInResultCallback.class));
 
         return dropInClient;
     }

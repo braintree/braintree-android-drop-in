@@ -1,8 +1,5 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -35,16 +32,15 @@ import static com.braintreepayments.api.CardNumber.UNIONPAY_CREDIT;
 import static com.braintreepayments.api.CardNumber.UNIONPAY_DEBIT;
 import static com.braintreepayments.api.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.api.CardNumber.VISA;
-import static com.braintreepayments.api.PackageManagerUtils.mockPackageManagerSupportsThreeDSecure;
 import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static org.assertj.android.api.Assertions.assertThat;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.verify;
-import static org.powermock.api.mockito.PowerMockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
@@ -932,13 +928,9 @@ public class AddCardActivityUnitTest {
         assertThat(mEditCardView).isGone();
     }
 
-    // TODO: call onActivityResult here to simulate a 3DS V2 user cancelation error
+    // TODO: Update this test to mock returning a UserCanceledException after change is made in core
     @Test
-    public void showsSubmitButtonAgainWhenThreeDSecureIsCanceled() throws PackageManager.NameNotFoundException, JSONException {
-//        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
-//        Context context = spy(RuntimeEnvironment.application);
-//        when(context.getPackageManager()).thenReturn(packageManager);
-//        mActivity.context = context;
+    public void showsSubmitButtonAgainWhenThreeDSecureIsCanceled() throws JSONException {
         mActivity.setDropInRequest(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .amount("1.00")
@@ -948,10 +940,11 @@ public class AddCardActivityUnitTest {
                 .creditCards(getSupportedCardConfiguration())
                 .threeDSecureEnabled(true)
                 .build());
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
         DropInClient dropInClient = new MockDropInClientBuilder()
                 .getConfigurationSuccess(configuration)
-                .cardTokenizeSuccess(CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD)))
-                .threeDSecureSuccess(ThreeDSecureResult.fromJson(Fixtures.THREE_D_SECURE_LOOKUP_RESPONSE))
+                .cardTokenizeSuccess(cardNonce)
+                .handleThreeDSecureActivityResultError(new Exception("user canceled"))
                 .shouldPerformThreeDSecureVerification(true)
                 .build();
         setup(dropInClient);
@@ -961,14 +954,12 @@ public class AddCardActivityUnitTest {
         setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
-        Intent nextStartedActivity = shadowOf(mActivity).peekNextStartedActivity();
-        assertEquals(Intent.ACTION_VIEW, nextStartedActivity.getAction());
-        assertTrue(nextStartedActivity.getDataString().contains("com.braintreepayments.api.dropin.test.braintree"));
+        verify(dropInClient).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(ThreeDSecureResultCallback.class));
 
         assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
         assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();
 
-        mActivity.onCancel(BraintreeRequestCodes.THREE_D_SECURE);
+        mActivity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, RESULT_CANCELED, null);
 
         assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
         assertThat(mEditCardView.findViewById(R.id.bt_button)).isVisible();
