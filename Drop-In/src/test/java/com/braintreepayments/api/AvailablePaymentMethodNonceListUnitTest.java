@@ -1,12 +1,9 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -19,20 +16,20 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricTestRunner.class)
 public class AvailablePaymentMethodNonceListUnitTest {
 
-    private Context context;
-
-    private PayPalAccountNonce payPalAccountNonce;
-    private VenmoAccountNonce venmoAccountNonce;
-    private CardNonce cardNonce;
-    private GooglePayCardNonce googlePaymentCardNonce;
+    private PaymentMethodNonce payPalAccountNonce;
+    private PaymentMethodNonce venmoAccountNonce;
+    private PaymentMethodNonce cardNonce;
+    private PaymentMethodNonce googlePaymentCardNonce;
 
     @Before
     public void beforeEach() {
-        context = RuntimeEnvironment.application;
-        payPalAccountNonce = mock(PayPalAccountNonce.class);
-        venmoAccountNonce = mock(VenmoAccountNonce.class);
-        cardNonce = mock(CardNonce.class);
-        googlePaymentCardNonce = mock(GooglePayCardNonce.class);
+        payPalAccountNonce = mock(PaymentMethodNonce.class);
+        when(payPalAccountNonce.getType()).thenReturn(PaymentMethodType.PAYPAL);
+        venmoAccountNonce = mock(PaymentMethodNonce.class);
+        when(venmoAccountNonce.getType()).thenReturn(PaymentMethodType.VENMO);
+        cardNonce = mock(PaymentMethodNonce.class);
+        when(cardNonce.getType()).thenReturn(PaymentMethodType.CARD);
+        googlePaymentCardNonce = mock(PaymentMethodNonce.class);
     }
 
     @Test
@@ -126,29 +123,12 @@ public class AvailablePaymentMethodNonceListUnitTest {
         DropInRequest dropInRequest = new DropInRequest()
                 .disableGooglePayment();
 
-        when(googlePaymentCardNonce.getType()).thenReturn(PaymentMethodType.GOOGLE_PAY);
-
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
                 configuration, paymentMethodNonces, dropInRequest, true);
 
         assertEquals(0, sut.size());
-    }
-
-    // TODO: what does this test mean do we need it?
-    @Test
-    public void prefersGooglePayOverGooglePaymentIfBothEnabled() {
-        Configuration configuration = getMockConfiguration(false, false, false, true);
-        DropInRequest dropInRequest = new DropInRequest();
-
-        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
-
-        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                configuration, paymentMethodNonces, dropInRequest, true);
-
-        assertEquals(1, sut.size());
-        assertEquals(googlePaymentCardNonce, sut.get(0));
     }
 
     @Test
