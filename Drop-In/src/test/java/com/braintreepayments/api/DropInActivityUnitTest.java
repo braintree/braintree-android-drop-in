@@ -106,7 +106,7 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        // TODO: revisit integration type metadata and consider passing integration
+        // TODO: revisit integration type metadata and consider passing integration (core PR)
         // type through BraintreeClient constructor instead of relying on reflection
 //        assertEquals("dropin3", mActivity.getDropInClient().getIntegrationType());
     }
@@ -356,12 +356,6 @@ public class DropInActivityUnitTest {
 
         mActivity.onVaultedPaymentMethodSelected(paymentMethodNonce);
 
-        // TODO: investigate handler delay if we want to test by clicking an item
-//        RecyclerView recyclerView = mActivity.findViewById(R.id.bt_vaulted_payment_methods);
-//        recyclerView.measure(0, 0);
-//        recyclerView.layout(0, 0, 100, 10000);
-//        recyclerView.findViewHolderForAdapterPosition(0).itemView.callOnClick();
-
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_OK, mShadowActivity.getResultCode());
         assertEquals(paymentMethodNonce.getString(),
@@ -404,7 +398,6 @@ public class DropInActivityUnitTest {
         verify(dropInClient, never()).sendAnalyticsEvent("vaulted-card.select");
     }
 
-    // TODO: investigate why isShown fails and isVisible passes
     @Test
     public void fetchPaymentMethodNonces_showsVaultedPaymentMethods() {
         String authorization = Fixtures.TOKENIZATION_KEY;

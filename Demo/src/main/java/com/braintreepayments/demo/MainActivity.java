@@ -253,7 +253,7 @@ public class MainActivity extends BaseActivity {
 
         mPaymentMethodIcon.setImageResource(DropInPaymentMethodType.forType(mNonce).getDrawable());
 
-        // TODO: consider adding back methods for displaying types/descriptions
+        // TODO: Uncomment this when these PR to make these public is merged into core
 //        mPaymentMethodTitle.setText(paymentMethodNonce.getTypeLabel());
 //        mPaymentMethodDescription.setText(paymentMethodNonce.getDescription());
         mPaymentMethod.setVisibility(VISIBLE);

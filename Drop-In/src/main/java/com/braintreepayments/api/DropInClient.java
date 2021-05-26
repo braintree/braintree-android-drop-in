@@ -71,6 +71,7 @@ public class DropInClient {
         this.dataCollector = new DataCollector(params.getBraintreeClient());
     }
 
+    // TODO: Remove mClientToken and use this method
     boolean isClientToken() {
         return braintreeClient.getAuthorization() instanceof ClientToken;
     }
@@ -330,7 +331,7 @@ public class DropInClient {
      * @param callback callback for handling result
      */
     public void fetchMostRecentPaymentMethod(FragmentActivity activity, final FetchMostRecentPaymentMethodCallback callback) {
-        // TODO: send back empty result if tokenization key auth
+        // TODO: consider sending back empty result if tokenization key auth
         boolean isClientToken = braintreeClient.getAuthorization() instanceof ClientToken;
         if (!isClientToken) {
             InvalidArgumentException error = new InvalidArgumentException("DropInClient#fetchMostRecentPaymentMethods() must " +
@@ -379,12 +380,12 @@ public class DropInClient {
     }
 
     void getVaultedPaymentMethods(final FragmentActivity activity, boolean refetch, final GetPaymentMethodNoncesCallback callback) {
-        // TODO: consider caching nonces
-//                        if (mBraintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
-//                            onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
-//                        } else {
-//                            paymentMethodClient.getPaymentMethodNonces(mBraintreeFragment, true);
-//                        }
+        // TODO: consider caching nonces in ViewModel and remove refetch parameter
+//        if (mBraintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
+//            onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
+//        } else {
+//            paymentMethodClient.getPaymentMethodNonces(mBraintreeFragment, true);
+//        }
 
         braintreeClient.getConfiguration(new ConfigurationCallback() {
             @Override

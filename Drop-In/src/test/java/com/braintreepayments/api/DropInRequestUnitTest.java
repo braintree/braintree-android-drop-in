@@ -149,7 +149,6 @@ public class DropInRequestUnitTest {
         assertEquals(CardForm.FIELD_DISABLED, dropInRequest.getCardholderNameStatus());
     }
 
-    // TODO: this test is failing because we are parceling PayPalRequest instead of specific typed request
     @Test
     public void isParcelable() {
         GooglePayRequest googlePayRequest = new GooglePayRequest();

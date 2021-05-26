@@ -66,7 +66,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
 
-        // TODO: create drop in client using bundle extras
         mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
         mLoadingViewSwitcher = findViewById(R.id.bt_loading_view_switcher);
         mSupportedPaymentMethodsHeader = findViewById(R.id.bt_supported_payment_methods_header);
@@ -348,7 +347,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     }
 
     public void onVaultEditButtonClick(View view) {
-        // TODO: consider caching nonces
+        // TODO: consider caching nonces or use a ViewModel for handling nonces
         getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
             @Override
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
