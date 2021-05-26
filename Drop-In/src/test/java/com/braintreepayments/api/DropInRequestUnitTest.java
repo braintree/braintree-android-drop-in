@@ -91,7 +91,7 @@ public class DropInRequestUnitTest {
         assertFalse(dropInRequest.isGooglePaymentEnabled());
 
         PayPalCheckoutRequest checkoutRequest = (PayPalCheckoutRequest) dropInRequest.getPayPalRequest();
-        assertEquals("10", checkoutRequest.getAmount());
+        assertEquals("10.00", checkoutRequest.getAmount());
         assertEquals("USD", checkoutRequest.getCurrencyCode());
 
         assertFalse(dropInRequest.isPayPalEnabled());
@@ -220,7 +220,7 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.getGooglePaymentRequest().isEmailRequired());
 
         PayPalCheckoutRequest checkoutRequest = (PayPalCheckoutRequest) dropInRequest.getPayPalRequest();
-        assertEquals("10", checkoutRequest.getAmount());
+        assertEquals("10.00", checkoutRequest.getAmount());
         assertEquals("USD", checkoutRequest.getCurrencyCode());
 
         assertFalse(dropInRequest.isGooglePaymentEnabled());

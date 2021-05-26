@@ -17,6 +17,7 @@ import com.braintreepayments.cardform.view.ErrorEditText;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -139,6 +140,7 @@ public class AddCardActivityUnitTest {
 
     // TODO: test configuration changes
     @Test
+    @Ignore("Determine what we're testing here. The concept of a configuration change may be different in v4.")
     public void configurationChangeReturnsToAddCardView() {
 //        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
 //                .configuration(new TestConfigurationBuilder().build());
@@ -178,6 +180,7 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
+    @Ignore("Determine what we're testing here. The concept of a configuration change may be different in v4.")
     public void configurationChangeReturnsToEditCardView() {
 //        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
 //                .configuration(new TestConfigurationBuilder()
@@ -883,6 +886,7 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
+    @Ignore("Investigate Union Pay testing strategy and determine if this is better as a UI test.")
     public void configurationChangeReturnsToEnrollmentView() {
 //        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
 //                .configuration(new TestConfigurationBuilder()
@@ -928,13 +932,13 @@ public class AddCardActivityUnitTest {
         assertThat(mEditCardView).isGone();
     }
 
-    // TODO: investigate 3DS flow
+    // TODO: call onActivityResult here to simulate a 3DS V2 user cancelation error
     @Test
     public void showsSubmitButtonAgainWhenThreeDSecureIsCanceled() throws PackageManager.NameNotFoundException, JSONException {
-        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
-        Context context = spy(RuntimeEnvironment.application);
-        when(context.getPackageManager()).thenReturn(packageManager);
-        mActivity.context = context;
+//        PackageManager packageManager = mockPackageManagerSupportsThreeDSecure();
+//        Context context = spy(RuntimeEnvironment.application);
+//        when(context.getPackageManager()).thenReturn(packageManager);
+//        mActivity.context = context;
         mActivity.setDropInRequest(new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
                 .amount("1.00")
@@ -948,16 +952,8 @@ public class AddCardActivityUnitTest {
                 .getConfigurationSuccess(configuration)
                 .cardTokenizeSuccess(CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD)))
                 .threeDSecureSuccess(ThreeDSecureResult.fromJson(Fixtures.THREE_D_SECURE_LOOKUP_RESPONSE))
+                .shouldPerformThreeDSecureVerification(true)
                 .build();
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .threeDSecureEnabled(true)
-//                        .build())
-//                .successResponse(BraintreeUnitTestHttpClient.TOKENIZE_CREDIT_CARD, Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD)
-//                .successResponse(BraintreeUnitTestHttpClient.THREE_D_SECURE_LOOKUP, Fixtures.THREE_D_SECURE_LOOKUP_RESPONSE);
-//
-//        setup(httpClient);
         setup(dropInClient);
 
         setText(mAddCardView, R.id.bt_card_form_card_number, VISA);

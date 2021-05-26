@@ -126,6 +126,8 @@ public class AvailablePaymentMethodNonceListUnitTest {
         DropInRequest dropInRequest = new DropInRequest()
                 .disableGooglePayment();
 
+        when(googlePaymentCardNonce.getType()).thenReturn(PaymentMethodType.GOOGLE_PAY);
+
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
