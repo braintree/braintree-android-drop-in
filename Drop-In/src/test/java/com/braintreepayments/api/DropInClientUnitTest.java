@@ -34,9 +34,6 @@ public class DropInClientUnitTest {
     @Captor
     ArgumentCaptor<List<DropInPaymentMethodType>> paymentMethodTypesCaptor;
 
-    @Captor
-    ArgumentCaptor<List<PaymentMethodNonce>> paymentMethodNoncesCaptor;
-
     private FragmentActivity activity;
 
     @Before
@@ -46,6 +43,48 @@ public class DropInClientUnitTest {
         ActivityController<FragmentActivity> activityController =
             Robolectric.buildActivity(FragmentActivity.class);
         activity = activityController.get();
+    }
+
+    @Test
+    public void getConfiguration_forwardsInvocationToBraintreeClient() {
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient);
+
+        ConfigurationCallback callback = mock(ConfigurationCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.getConfiguration(callback);
+
+        verify(braintreeClient).getConfiguration(callback);
+    }
+
+    @Test
+    public void sendAnalyticsEvent_forwardsInvocationToBraintreeClient() {
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient);
+
+        String eventFragment = "event.fragment";
+
+        DropInClient sut = new DropInClient(params);
+        sut.sendAnalyticsEvent(eventFragment);
+
+        verify(braintreeClient).sendAnalyticsEvent(eventFragment);
+    }
+
+    @Test
+    public void collectDeviceData_forwardsInvocationToDataCollector() {
+        DataCollector dataCollector = mock(DataCollector.class);
+        DropInClientParams params = new DropInClientParams()
+                .dataCollector(dataCollector);
+
+        DataCollectorCallback callback = mock(DataCollectorCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.collectDeviceData(activity, callback);
+
+        verify(dataCollector).collectDeviceData(activity, callback);
     }
 
     @Test
@@ -375,7 +414,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenNoPaymentMethodsEnabledInConfiguration_callsBackWithNoPaymentMethods() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
-                .configuration(getConfiguration(false, false, false, false, false))
+                .configuration(mockConfiguration(false, false, false, false, false))
                 .build();
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
@@ -401,7 +440,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenPaymentMethodsEnabledInConfiguration_callsBackWithPaymentMethods() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
-                .configuration(getConfiguration(true, true, true, true, false))
+                .configuration(mockConfiguration(true, true, true, true, false))
                 .build();
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
@@ -430,7 +469,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void getSupportedPaymentMethods_whenUnionPayNotSupportedAndOtherCardsPresent_callsBackWithOtherCards() {
-        Configuration configuration = getConfiguration(false, false, true, false, false);
+        Configuration configuration = mockConfiguration(false, false, true, false, false);
         when(configuration.getSupportedCardTypes())
                 .thenReturn(Arrays.asList(DropInPaymentMethodType.UNIONPAY.getCanonicalName(), DropInPaymentMethodType.VISA.getCanonicalName()));
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
@@ -460,7 +499,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void getSupportedPaymentMethods_whenOnlyUnionPayPresentAndNotSupported_callsBackWithNoCards() {
-        Configuration configuration = getConfiguration(false, false, true, false, false);
+        Configuration configuration = mockConfiguration(false, false, true, false, false);
         when(configuration.getSupportedCardTypes())
                 .thenReturn(Arrays.asList(DropInPaymentMethodType.UNIONPAY.getCanonicalName()));
 
@@ -490,7 +529,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void getSupportedPaymentMethods_whenOnlyUnionPayPresentAndSupported_callsBackWithCards() {
-        Configuration configuration = getConfiguration(false, false, true, false, true);
+        Configuration configuration = mockConfiguration(false, false, true, false, true);
         when(configuration.getSupportedCardTypes())
                 .thenReturn(Arrays.asList(DropInPaymentMethodType.UNIONPAY.getCanonicalName()));
 
@@ -521,7 +560,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void getSupportedPaymentMethods_whenCardsDisabledInDropInRequest_doesNotReturnCards() {
-        Configuration configuration = getConfiguration(false, false, true, false, false);
+        Configuration configuration = mockConfiguration(false, false, true, false, false);
         DropInRequest dropInRequest = new DropInRequest()
                 .disableCard();
 
@@ -551,7 +590,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void getSupportedPaymentMethods_whenPayPalDisabledInDropInRequest_doesNotReturnPayPal() {
-        Configuration configuration = getConfiguration(true, false, false, false, false);
+        Configuration configuration = mockConfiguration(true, false, false, false, false);
         DropInRequest dropInRequest = new DropInRequest()
                 .disablePayPal();
 
@@ -581,7 +620,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void getSupportedPaymentMethods_whenVenmoDisabledInDropInRequest_doesNotReturnVenmo() {
-        Configuration configuration = getConfiguration(false, true, false, false, false);
+        Configuration configuration = mockConfiguration(false, true, false, false, false);
         DropInRequest dropInRequest = new DropInRequest()
                 .disableVenmo();
 
@@ -611,7 +650,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void getSupportedPaymentMethods_whenGooglePayDisabledInDropInRequest_doesNotReturnGooglePay() {
-        Configuration configuration = getConfiguration(false, false, false, true, false);
+        Configuration configuration = mockConfiguration(false, false, false, true, false);
         DropInRequest dropInRequest = new DropInRequest()
                 .disableGooglePayment();
 
@@ -641,7 +680,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void tokenizePayPalAccount_withoutPayPalRequest_tokenizesPayPalWithVaultRequest() {
-        Configuration configuration = getConfiguration(true, false, false, false, false);
+        Configuration configuration = mockConfiguration(true, false, false, false, false);
         DropInRequest dropInRequest = new DropInRequest();
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
@@ -665,7 +704,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void tokenizePayPalAccount_withPayPalCheckoutRequest_tokenizesPayPalWithCheckoutRequest() {
-        Configuration configuration = getConfiguration(true, false, false, false, false);
+        Configuration configuration = mockConfiguration(true, false, false, false, false);
         PayPalCheckoutRequest payPalRequest = new PayPalCheckoutRequest("1.00");
         DropInRequest dropInRequest = new DropInRequest()
                 .paypalRequest(payPalRequest);
@@ -691,7 +730,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void tokenizePayPalAccount_withPayPalVaultRequest_tokenizesPayPalWithVaultRequest() {
-        Configuration configuration = getConfiguration(true, false, false, false, false);
+        Configuration configuration = mockConfiguration(true, false, false, false, false);
         PayPalVaultRequest payPalRequest = new PayPalVaultRequest();
         DropInRequest dropInRequest = new DropInRequest()
                 .paypalRequest(payPalRequest);
@@ -717,7 +756,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void tokenizeVenmoAccount_tokenizesVenmo() {
-        Configuration configuration = getConfiguration(false, true, false, false, false);
+        Configuration configuration = mockConfiguration(false, true, false, false, false);
         DropInRequest dropInRequest = new DropInRequest()
                 .vaultVenmo(true);
 
@@ -747,7 +786,7 @@ public class DropInClientUnitTest {
 
     @Test
     public void requestGooglePayPayment_requestsGooglePay() {
-        Configuration configuration = getConfiguration(false, false, false, true, false);
+        Configuration configuration = mockConfiguration(false, false, false, true, false);
 
         GooglePayRequest googlePayRequest = new GooglePayRequest();
         DropInRequest dropInRequest = new DropInRequest()
@@ -847,8 +886,8 @@ public class DropInClientUnitTest {
         sut.tokenizeUnionPay(unionPayCard, callback);
     }
 
-    private Configuration getConfiguration(boolean paypalEnabled, boolean venmoEnabled,
-                                           boolean cardEnabled, boolean googlePayEnabled, boolean unionPayEnabled) {
+    private Configuration mockConfiguration(boolean paypalEnabled, boolean venmoEnabled,
+                                            boolean cardEnabled, boolean googlePayEnabled, boolean unionPayEnabled) {
         Configuration configuration = mock(Configuration.class);
 
         when(configuration.isPayPalEnabled()).thenReturn(paypalEnabled);

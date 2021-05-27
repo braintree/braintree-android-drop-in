@@ -12,74 +12,85 @@ class DropInClientParams {
     private CardClient cardClient;
     private UnionPayClient unionPayClient;
 
-    public DropInRequest getDropInRequest() {
+    private DataCollector dataCollector;
+
+    DataCollector getDataCollector() {
+        return dataCollector;
+    }
+
+    DropInClientParams dataCollector(DataCollector dataCollector) {
+        this.dataCollector = dataCollector;
+        return this;
+    }
+
+    DropInRequest getDropInRequest() {
         return dropInRequest;
     }
 
-    public DropInClientParams dropInRequest(DropInRequest dropInRequest) {
+    DropInClientParams dropInRequest(DropInRequest dropInRequest) {
         this.dropInRequest = dropInRequest;
         return this;
     }
 
-    public BraintreeClient getBraintreeClient() {
+    BraintreeClient getBraintreeClient() {
         return braintreeClient;
     }
 
-    public DropInClientParams braintreeClient(BraintreeClient braintreeClient) {
+    DropInClientParams braintreeClient(BraintreeClient braintreeClient) {
         this.braintreeClient = braintreeClient;
         return this;
     }
 
-    public GooglePayClient getGooglePayClient() {
+    GooglePayClient getGooglePayClient() {
         return googlePayClient;
     }
 
-    public DropInClientParams googlePayClient(GooglePayClient googlePayClient) {
+    DropInClientParams googlePayClient(GooglePayClient googlePayClient) {
         this.googlePayClient = googlePayClient;
         return this;
     }
 
-    public PaymentMethodClient getPaymentMethodClient() {
+    PaymentMethodClient getPaymentMethodClient() {
         return paymentMethodClient;
     }
 
-    public DropInClientParams paymentMethodClient(PaymentMethodClient paymentMethodClient) {
+    DropInClientParams paymentMethodClient(PaymentMethodClient paymentMethodClient) {
         this.paymentMethodClient = paymentMethodClient;
         return this;
     }
 
-    public PayPalClient getPayPalClient() {
+    PayPalClient getPayPalClient() {
         return payPalClient;
     }
 
-    public DropInClientParams payPalClient(PayPalClient payPalClient) {
+    DropInClientParams payPalClient(PayPalClient payPalClient) {
         this.payPalClient = payPalClient;
         return this;
     }
 
-    public VenmoClient getVenmoClient() {
+    VenmoClient getVenmoClient() {
         return venmoClient;
     }
 
-    public DropInClientParams venmoClient(VenmoClient venmoClient) {
+    DropInClientParams venmoClient(VenmoClient venmoClient) {
         this.venmoClient = venmoClient;
         return this;
     }
 
-    public CardClient getCardClient() {
+    CardClient getCardClient() {
         return cardClient;
     }
 
-    public DropInClientParams cardClient(CardClient cardClient) {
+    DropInClientParams cardClient(CardClient cardClient) {
         this.cardClient = cardClient;
         return this;
     }
 
-    public UnionPayClient getUnionPayClient() {
+    UnionPayClient getUnionPayClient() {
         return unionPayClient;
     }
 
-    public DropInClientParams unionPayClient(UnionPayClient unionPayClient) {
+    DropInClientParams unionPayClient(UnionPayClient unionPayClient) {
         this.unionPayClient = unionPayClient;
         return this;
     }

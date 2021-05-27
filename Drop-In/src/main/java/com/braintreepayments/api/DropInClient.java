@@ -45,6 +45,7 @@ public class DropInClient {
                 .venmoClient(new VenmoClient(braintreeClient))
                 .cardClient(new CardClient(braintreeClient))
                 .unionPayClient(new UnionPayClient(braintreeClient))
+                .dataCollector(new DataCollector(braintreeClient))
                 .googlePayClient(new GooglePayClient(braintreeClient));
     }
 
@@ -68,7 +69,7 @@ public class DropInClient {
         this.venmoClient = params.getVenmoClient();
         this.cardClient = params.getCardClient();
         this.unionPayClient = params.getUnionPayClient();
-        this.dataCollector = new DataCollector(params.getBraintreeClient());
+        this.dataCollector = params.getDataCollector();
     }
 
     // TODO: Remove mClientToken and use this method
