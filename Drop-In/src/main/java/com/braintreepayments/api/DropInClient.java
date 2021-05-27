@@ -40,6 +40,7 @@ public class DropInClient {
         return new DropInClientParams()
                 .dropInRequest(dropInRequest)
                 .braintreeClient(braintreeClient)
+                .threeDSecureClient(new ThreeDSecureClient(braintreeClient))
                 .paymentMethodClient(new PaymentMethodClient(braintreeClient))
                 .payPalClient(new PayPalClient(braintreeClient))
                 .venmoClient(new VenmoClient(braintreeClient))
@@ -64,7 +65,7 @@ public class DropInClient {
         this.braintreeClient = params.getBraintreeClient();
         this.googlePayClient = params.getGooglePayClient();
         this.paymentMethodClient = params.getPaymentMethodClient();
-        this.threeDSecureClient = new ThreeDSecureClient(params.getBraintreeClient());
+        this.threeDSecureClient = params.getThreeDSecureClient();
         this.payPalClient = params.getPayPalClient();
         this.venmoClient = params.getVenmoClient();
         this.cardClient = params.getCardClient();
@@ -94,21 +95,17 @@ public class DropInClient {
     }
 
     void performThreeDSecureVerification(final FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, final ThreeDSecureResultCallback callback) {
-        ThreeDSecureRequest threeDSecureRequest = dropInRequest.getThreeDSecureRequest();
-        if (threeDSecureRequest == null) {
-            threeDSecureRequest = new ThreeDSecureRequest();
-        }
-
-        if (threeDSecureRequest.getAmount() == null && dropInRequest.getAmount() != null) {
-            threeDSecureRequest.setAmount(dropInRequest.getAmount());
-        }
+        final ThreeDSecureRequest threeDSecureRequest = dropInRequest.getThreeDSecureRequest();
         threeDSecureRequest.setNonce(paymentMethodNonce.getString());
 
-        final ThreeDSecureRequest finalThreeDSecureRequest = threeDSecureRequest;
         threeDSecureClient.performVerification(activity, threeDSecureRequest, new ThreeDSecureResultCallback() {
             @Override
             public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                threeDSecureClient.continuePerformVerification(activity, finalThreeDSecureRequest, threeDSecureResult, callback);
+                if (error != null) {
+                    callback.onResult(null, error);
+                    return;
+                }
+                threeDSecureClient.continuePerformVerification(activity, threeDSecureRequest, threeDSecureResult, callback);
             }
         });
     }

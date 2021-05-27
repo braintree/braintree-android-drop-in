@@ -25,6 +25,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +42,7 @@ public class DropInClientUnitTest {
         MockitoAnnotations.initMocks(this);
 
         ActivityController<FragmentActivity> activityController =
-            Robolectric.buildActivity(FragmentActivity.class);
+                Robolectric.buildActivity(FragmentActivity.class);
         activity = activityController.get();
     }
 
@@ -242,8 +243,79 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void fetchMostRecentPaymentMethod_callsBackWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle()
-            throws JSONException {
+    public void performThreeDSecureVerification_performsVerificationAndSetsNonceOnThreeDSecureRequest() throws JSONException {
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        DropInRequest dropInRequest = new DropInRequest()
+                .threeDSecureRequest(threeDSecureRequest);
+
+        ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder().build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .threeDSecureClient(threeDSecureClient);
+
+        PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
+                new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        ThreeDSecureResultCallback callback = mock(ThreeDSecureResultCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
+
+        verify(threeDSecureClient).performVerification(same(activity), same(threeDSecureRequest), any(ThreeDSecureResultCallback.class));
+        assertEquals(paymentMethodNonce.getString(), threeDSecureRequest.getNonce());
+    }
+
+    @Test
+    public void performThreeDSecureVerification_whenVerificationFails_callbackError() throws JSONException {
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        DropInRequest dropInRequest = new DropInRequest()
+                .threeDSecureRequest(threeDSecureRequest);
+
+        Exception performVerificationError = new Exception("verification error");
+        ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder()
+                .performVerificationError(performVerificationError)
+                .build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .threeDSecureClient(threeDSecureClient);
+
+        PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
+                new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        ThreeDSecureResultCallback callback = mock(ThreeDSecureResultCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
+
+        verify(callback).onResult(null, performVerificationError);
+        verify(threeDSecureClient, never()).continuePerformVerification(any(FragmentActivity.class), any(ThreeDSecureRequest.class), any(ThreeDSecureResult.class), any(ThreeDSecureResultCallback.class));
+    }
+
+    @Test
+    public void performThreeDSecureVerification_continuesThreeDSecureVerificationAndForwardsResponseCallback() throws JSONException {
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        DropInRequest dropInRequest = new DropInRequest()
+                .threeDSecureRequest(threeDSecureRequest);
+
+        ThreeDSecureResult threeDSecureResult = new ThreeDSecureResult();
+        ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder()
+                .performVerificationSuccess(threeDSecureResult)
+                .build();
+
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .threeDSecureClient(threeDSecureClient);
+
+        PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
+                new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        ThreeDSecureResultCallback callback = mock(ThreeDSecureResultCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
+
+        verify(threeDSecureClient).continuePerformVerification(activity, threeDSecureRequest, threeDSecureResult, callback);
+    }
+
+    @Test
+    public void fetchMostRecentPaymentMethod_callsBackWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle() throws JSONException {
         BraintreeSharedPreferences.getSharedPreferences(activity)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
@@ -895,7 +967,7 @@ public class DropInClientUnitTest {
         when(configuration.isGooglePayEnabled()).thenReturn(googlePayEnabled);
         when(configuration.isUnionPayEnabled()).thenReturn(unionPayEnabled);
 
-        if(cardEnabled) {
+        if (cardEnabled) {
             when(configuration.getSupportedCardTypes()).thenReturn(Arrays.asList(DropInPaymentMethodType.VISA.getCanonicalName()));
         }
 

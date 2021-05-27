@@ -11,8 +11,17 @@ class DropInClientParams {
     private VenmoClient venmoClient;
     private CardClient cardClient;
     private UnionPayClient unionPayClient;
-
     private DataCollector dataCollector;
+    private ThreeDSecureClient threeDSecureClient;
+
+    ThreeDSecureClient getThreeDSecureClient() {
+        return threeDSecureClient;
+    }
+
+    DropInClientParams threeDSecureClient(ThreeDSecureClient threeDSecureClient) {
+        this.threeDSecureClient = threeDSecureClient;
+        return this;
+    }
 
     DataCollector getDataCollector() {
         return dataCollector;
