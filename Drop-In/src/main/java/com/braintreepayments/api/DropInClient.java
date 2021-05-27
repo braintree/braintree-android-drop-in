@@ -73,11 +73,6 @@ public class DropInClient {
         this.dataCollector = params.getDataCollector();
     }
 
-    // TODO: Remove mClientToken and use this method
-    boolean isClientToken() {
-        return braintreeClient.getAuthorization() instanceof ClientToken;
-    }
-
     Authorization getAuthorization() {
         return braintreeClient.getAuthorization();
     }

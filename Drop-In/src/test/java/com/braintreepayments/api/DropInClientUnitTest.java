@@ -20,6 +20,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.isNull;
@@ -58,6 +59,20 @@ public class DropInClientUnitTest {
         sut.getConfiguration(callback);
 
         verify(braintreeClient).getConfiguration(callback);
+    }
+
+    @Test
+    public void getAuthorization_forwardsAuthorizationFromBraintreeClient() {
+        Authorization authorization = mock(Authorization.class);
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(authorization)
+                .build();
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+        assertSame(authorization, sut.getAuthorization());
     }
 
     @Test
@@ -163,8 +178,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void shouldRequestThreeDSecureVerification_whenGooglePayEnabled_andGooglePayNonNetworkTokenized_returnsTrue() throws JSONException {
-        GooglePayClient googlePayClient = new MockGooglePayClientBuilder().build();
+    public void shouldRequestThreeDSecureVerification_whenNonceIsGooglePayNonNetworkTokenized_returnsTrue() throws JSONException {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
                 .build();
@@ -178,8 +192,7 @@ public class DropInClientUnitTest {
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
-                .braintreeClient(braintreeClient)
-                .googlePayClient(googlePayClient);
+                .braintreeClient(braintreeClient);
 
         PaymentMethodNonce googlePayCardNonce = GooglePayCardNonce.fromJSON(
                 new JSONObject(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE));
@@ -192,8 +205,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void shouldRequestThreeDSecureVerification_whenGooglePayEnabled_andGooglePayNetworkTokenized_returnsTrue() throws JSONException {
-        GooglePayClient googlePayClient = new MockGooglePayClientBuilder().build();
+    public void shouldRequestThreeDSecureVerification_whenNonceIsGooglePayNetworkTokenized_returnsFalse() throws JSONException {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
                 .build();
@@ -207,11 +219,37 @@ public class DropInClientUnitTest {
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
-                .braintreeClient(braintreeClient)
-                .googlePayClient(googlePayClient);
+                .braintreeClient(braintreeClient);
 
         PaymentMethodNonce googlePayCardNonce = GooglePayCardNonce.fromJSON(
                 new JSONObject(Fixtures.GOOGLE_PAY_NETWORK_TOKENIZED_RESPONSE));
+
+        DropInClient sut = new DropInClient(params);
+        ShouldRequestThreeDSecureVerification callback = mock(ShouldRequestThreeDSecureVerification.class);
+
+        sut.shouldRequestThreeDSecureVerification(googlePayCardNonce, callback);
+        verify(callback).onResult(false);
+    }
+
+    @Test
+    public void shouldRequestThreeDSecureVerification_whenConfigurationFetchFails_returnsFalse() throws JSONException {
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configurationError(new Exception("configuration error"))
+                .build();
+
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        threeDSecureRequest.setAmount("1.00");
+
+        DropInRequest dropInRequest = new DropInRequest()
+                .threeDSecureRequest(threeDSecureRequest)
+                .requestThreeDSecureVerification(true);
+
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .braintreeClient(braintreeClient);
+
+        PaymentMethodNonce googlePayCardNonce = GooglePayCardNonce.fromJSON(
+                new JSONObject(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE));
 
         DropInClient sut = new DropInClient(params);
         ShouldRequestThreeDSecureVerification callback = mock(ShouldRequestThreeDSecureVerification.class);
