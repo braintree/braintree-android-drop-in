@@ -791,6 +791,62 @@ public class DropInClientUnitTest {
         verify(paymentMethodClient).deletePaymentMethod(same(activity), same(cardNonce), same(callback));
     }
 
+    @Test
+    public void tokenizeCard_forwardsInvocationToCardClient() {
+        CardClient cardClient = mock(CardClient.class);
+        DropInClientParams params = new DropInClientParams()
+                .cardClient(cardClient);
+
+        Card card = new Card();
+        CardTokenizeCallback callback = mock(CardTokenizeCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.tokenizeCard(activity, card, callback);
+
+        verify(cardClient).tokenize(activity, card, callback);
+    }
+
+    @Test
+    public void fetchUnionPayCapabilities_forwardsInvocationToUnionPayClient() {
+        UnionPayClient unionPayClient = mock(UnionPayClient.class);
+        DropInClientParams params = new DropInClientParams()
+                .unionPayClient(unionPayClient);
+
+        String cardNumber = "4111111111111111";
+        UnionPayFetchCapabilitiesCallback callback = mock(UnionPayFetchCapabilitiesCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.fetchUnionPayCapabilities(cardNumber, callback);
+
+        verify(unionPayClient).fetchCapabilities(cardNumber, callback);
+    }
+
+    @Test
+    public void enrollUnionPay_forwardsInvocationToUnionPayClient() {
+        UnionPayClient unionPayClient = mock(UnionPayClient.class);
+        DropInClientParams params = new DropInClientParams()
+                .unionPayClient(unionPayClient);
+
+        UnionPayCard unionPayCard = new UnionPayCard();
+        UnionPayEnrollCallback callback = mock(UnionPayEnrollCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.enrollUnionPay(unionPayCard, callback);
+    }
+
+    @Test
+    public void tokenizeUnionPay_forwardsInvocationToUnionPayClient() {
+        UnionPayClient unionPayClient = mock(UnionPayClient.class);
+        DropInClientParams params = new DropInClientParams()
+                .unionPayClient(unionPayClient);
+
+        UnionPayCard unionPayCard = new UnionPayCard();
+        UnionPayTokenizeCallback callback = mock(UnionPayTokenizeCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.tokenizeUnionPay(unionPayCard, callback);
+    }
+
     private Configuration getConfiguration(boolean paypalEnabled, boolean venmoEnabled,
                                            boolean cardEnabled, boolean googlePayEnabled, boolean unionPayEnabled) {
         Configuration configuration = mock(Configuration.class);

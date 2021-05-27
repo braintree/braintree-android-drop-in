@@ -160,22 +160,18 @@ public class DropInClient {
         paymentMethodClient.deletePaymentMethod(activity, paymentMethodNonce, callback);
     }
 
-    // TODO: unit test
     void tokenizeCard(FragmentActivity activity, Card card, CardTokenizeCallback callback) {
         cardClient.tokenize(activity, card, callback);
     }
 
-    // TODO: unit test
     void fetchUnionPayCapabilities(String cardNumber, UnionPayFetchCapabilitiesCallback callback) {
         unionPayClient.fetchCapabilities(cardNumber, callback);
     }
 
-    // TODO: unit test
     void enrollUnionPay(UnionPayCard unionPayCard, UnionPayEnrollCallback callback) {
         unionPayClient.enroll(unionPayCard, callback);
     }
 
-    // TODO: unit test
     void tokenizeUnionPay(UnionPayCard unionPayCard, UnionPayTokenizeCallback callback) {
         unionPayClient.tokenize(unionPayCard, callback);
     }
