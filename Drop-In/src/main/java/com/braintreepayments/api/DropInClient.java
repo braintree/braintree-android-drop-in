@@ -170,9 +170,6 @@ public class DropInClient {
     }
 
     public void deliverBrowserSwitchResult(final FragmentActivity activity, final DropInResultCallback callback) {
-        if (braintreeClient == null) {
-            return;
-        }
         BrowserSwitchResult browserSwitchResult = braintreeClient.deliverBrowserSwitchResult(activity);
         if (browserSwitchResult != null) {
             int requestCode = browserSwitchResult.getRequestCode();
@@ -208,8 +205,6 @@ public class DropInClient {
         final DropInResult dropInResult = new DropInResult()
                 .paymentMethodNonce(paymentMethodNonce);
         if (dropInRequest.shouldCollectDeviceData()) {
-            callback.onResult(dropInResult, null);
-        } else {
             dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
                 @Override
                 public void onResult(@Nullable String deviceData, @Nullable Exception dataCollectionError) {
@@ -224,6 +219,8 @@ public class DropInClient {
                     }
                 }
             });
+        } else {
+            callback.onResult(dropInResult, null);
         }
     }
 

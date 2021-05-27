@@ -1,5 +1,8 @@
 package com.braintreepayments.api;
 
+import android.content.Context;
+import android.hardware.camera2.CameraCaptureSession;
+
 import androidx.fragment.app.FragmentActivity;
 
 import org.json.JSONException;
@@ -994,6 +997,59 @@ public class DropInClientUnitTest {
 
         DropInClient sut = new DropInClient(params);
         sut.tokenizeUnionPay(unionPayCard, callback);
+    }
+
+    @Test
+    public void deliverBrowserSwitchResult_whenPayPalWithoutDataCollection_tokenizesResult() {
+        PayPalAccountNonce payPalAccountNonce = mock(PayPalAccountNonce.class);
+        PayPalClient payPalClient = new MockPayPalClientBuilder()
+                .browserSwitchResult(payPalAccountNonce)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest()
+                .collectDeviceData(false);
+
+        DataCollector dataCollector = mock(DataCollector.class);
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(dropInRequest)
+                .dataCollector(dataCollector)
+                .payPalClient(payPalClient);
+
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        BrowserSwitchResult browserSwitchResult = mock(BrowserSwitchResult.class);
+        when(browserSwitchResult.getRequestCode()).thenReturn(BraintreeRequestCodes.PAYPAL);
+
+        when(braintreeClient.deliverBrowserSwitchResult(activity)).thenReturn(browserSwitchResult);
+
+        DropInClient sut = new DropInClient(params);
+        sut.deliverBrowserSwitchResult(activity, callback);
+
+        ArgumentCaptor<DropInResult> captor = ArgumentCaptor.forClass(DropInResult.class);
+        verify(callback).onResult(captor.capture(), (Exception) isNull());
+
+        DropInResult dropInResult = captor.getValue();
+        assertSame(dropInResult.getPaymentMethodNonce(), payPalAccountNonce);
+        assertNull(dropInResult.getDeviceData());
+
+        verify(dataCollector, never()).collectDeviceData(any(Context.class), any(DataCollectorCallback.class));
+    }
+
+    @Test
+    public void deliverBrowserSwitchResult_whenPayPalWithDataCollection_tokenizesResultAndCollectsData() {
+
+    }
+
+    @Test
+    public void deliverBrowserSwitchResult_whenThreeDSecureWithoutDataCollection_tokenizesResult() {
+
+    }
+
+    @Test
+    public void deliverBrowserSwitchResult_whenThreeDSecureWithDataCollection_tokenizesResultAndCollectsData() {
+
     }
 
     private Configuration mockConfiguration(boolean paypalEnabled, boolean venmoEnabled,
