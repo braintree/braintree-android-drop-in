@@ -382,16 +382,16 @@ public class DropInClient {
     }
 
     void getVaultedPaymentMethods(final FragmentActivity activity, boolean refetch, final GetPaymentMethodNoncesCallback callback) {
-        // TODO: consider caching nonces in ViewModel and remove refetch parameter
-//        if (mBraintreeFragment.hasFetchedPaymentMethodNonces() && !refetch) {
-//            onPaymentMethodNoncesUpdated(mBraintreeFragment.getCachedPaymentMethodNonces());
-//        } else {
-//            paymentMethodClient.getPaymentMethodNonces(mBraintreeFragment, true);
-//        }
+        // TODO: cache nonces in ViewModel and allow refresh of vaulted payment methods instead of having a refetch parameter
 
         braintreeClient.getConfiguration(new ConfigurationCallback() {
             @Override
             public void onResult(@Nullable final Configuration configuration, @Nullable Exception error) {
+                if (error != null) {
+                    callback.onResult(null, error);
+                    return;
+                }
+
                 paymentMethodClient.getPaymentMethodNonces(new GetPaymentMethodNoncesCallback() {
 
                     @Override

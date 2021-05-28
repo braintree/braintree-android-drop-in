@@ -41,6 +41,9 @@ public class DropInClientUnitTest {
     @Captor
     ArgumentCaptor<List<DropInPaymentMethodType>> paymentMethodTypesCaptor;
 
+    @Captor
+    ArgumentCaptor<List<PaymentMethodNonce>> paymentMethodNoncesCaptor;
+
     private FragmentActivity activity;
 
     @Before
@@ -1437,6 +1440,151 @@ public class DropInClientUnitTest {
 
         DropInRequest dropInRequestExtra = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
         assertTrue(dropInRequestExtra.isVaultManagerEnabled());
+    }
+
+    @Test
+    public void getVaultedPaymentMethods_forwardsConfigurationFetchError() {
+        Exception configurationError = new Exception("configuration error");
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configurationError(configurationError)
+                .build();
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient);
+
+        GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.getVaultedPaymentMethods(activity, false, callback);
+
+        verify(callback).onResult(null, configurationError);
+    }
+
+    @Test
+    public void getVaultedPaymentMethods_forwardsPaymentMethodClientError() {
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configuration(mockConfiguration(true, true, true, true, true))
+                .build();
+
+        Exception paymentMethodClientError = new Exception("payment method client error");
+        PaymentMethodClient paymentMethodClient = new MockPaymentMethodClientBuilder()
+                .getPaymentMethodNoncesError(paymentMethodClientError)
+                .build();
+
+        DropInClientParams params = new DropInClientParams()
+                .paymentMethodClient(paymentMethodClient)
+                .braintreeClient(braintreeClient);
+
+        GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.getVaultedPaymentMethods(activity, false, callback);
+
+        verify(callback).onResult(null, paymentMethodClientError);
+    }
+
+    @Test
+    public void getVaultedPaymentMethods_whenGooglePayDisabled_callbackPaymentMethodClientResult() throws JSONException {
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configuration(mockConfiguration(true, true, true, true, true))
+                .build();
+
+        PaymentMethodNonce cardNonce = CardNonce.fromJSON(
+                new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+
+        PaymentMethodClient paymentMethodClient = new MockPaymentMethodClientBuilder()
+                .getPaymentMethodNoncesSuccess(Collections.singletonList(cardNonce))
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest()
+                .disableGooglePayment();
+
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .paymentMethodClient(paymentMethodClient)
+                .braintreeClient(braintreeClient);
+
+        GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.getVaultedPaymentMethods(activity, false, callback);
+
+        verify(callback).onResult(paymentMethodNoncesCaptor.capture(), (Exception) isNull());
+
+        List<PaymentMethodNonce> paymentMethodNonces = paymentMethodNoncesCaptor.getValue();
+        assertEquals(1, paymentMethodNonces.size());
+        assertSame(cardNonce, paymentMethodNonces.get(0));
+    }
+
+    @Test
+    public void getVaultedPaymentMethods_whenGooglePayReadyToPay_callbackPaymentMethodClientResultWithGooglePayNonce() throws JSONException {
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(true)
+                .build();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configuration(mockConfiguration(true, true, true, true, true))
+                .build();
+
+        PaymentMethodNonce googlePayCardNonce = GooglePayCardNonce.fromJSON(
+                new JSONObject(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE));
+
+        PaymentMethodClient paymentMethodClient = new MockPaymentMethodClientBuilder()
+                .getPaymentMethodNoncesSuccess(Collections.singletonList(googlePayCardNonce))
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient)
+                .paymentMethodClient(paymentMethodClient)
+                .braintreeClient(braintreeClient);
+
+        GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.getVaultedPaymentMethods(activity, false, callback);
+
+        verify(callback).onResult(paymentMethodNoncesCaptor.capture(), (Exception) isNull());
+
+        List<PaymentMethodNonce> paymentMethodNonces = paymentMethodNoncesCaptor.getValue();
+        assertEquals(1, paymentMethodNonces.size());
+        assertSame(googlePayCardNonce, paymentMethodNonces.get(0));
+    }
+
+    @Test
+    public void getVaultedPaymentMethods_whenGooglePayClientErrors_callbackPaymentMethodClientResultWithoutGooglePayNonce() throws JSONException {
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPayError(new Exception("google pay client error"))
+                .build();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configuration(mockConfiguration(true, true, true, true, true))
+                .build();
+
+        PaymentMethodNonce googlePayCardNonce = GooglePayCardNonce.fromJSON(
+                new JSONObject(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE));
+
+        PaymentMethodClient paymentMethodClient = new MockPaymentMethodClientBuilder()
+                .getPaymentMethodNoncesSuccess(Collections.singletonList(googlePayCardNonce))
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient)
+                .paymentMethodClient(paymentMethodClient)
+                .braintreeClient(braintreeClient);
+
+        GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.getVaultedPaymentMethods(activity, false, callback);
+
+        verify(callback).onResult(paymentMethodNoncesCaptor.capture(), (Exception) isNull());
+
+        List<PaymentMethodNonce> paymentMethodNonces = paymentMethodNoncesCaptor.getValue();
+        assertEquals(0, paymentMethodNonces.size());
     }
 
     private Configuration mockConfiguration(boolean paypalEnabled, boolean venmoEnabled,
