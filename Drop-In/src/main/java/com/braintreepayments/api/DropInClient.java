@@ -18,7 +18,7 @@ public class DropInClient {
 
     public static final String EXTRA_CHECKOUT_REQUEST = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST";
     public static final String EXTRA_SESSION_ID = "com.braintreepayments.api.EXTRA_SESSION_ID";
-    public static final String EXTRA_AUTHORIZATION = "com.braintreepayments.api.EXTRA_SESSION_ID";
+    public static final String EXTRA_AUTHORIZATION = "com.braintreepayments.api.EXTRA_AUTHORIZATION";
 
     static final String LAST_USED_PAYMENT_METHOD_TYPE =
             "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
@@ -187,13 +187,29 @@ public class DropInClient {
                     threeDSecureClient.onBrowserSwitchResult(browserSwitchResult, new ThreeDSecureResultCallback() {
                         @Override
                         public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                            PaymentMethodNonce paymentMethodNonce = threeDSecureResult.getTokenizedCard();
+                            PaymentMethodNonce paymentMethodNonce = null;
+                            if (threeDSecureResult != null) {
+                                paymentMethodNonce = threeDSecureResult.getTokenizedCard();
+                            }
                             notifyDropInResult(activity, paymentMethodNonce, error, callback);
                         }
                     });
                     break;
             }
         }
+    }
+
+    void handleThreeDSecureActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
+        threeDSecureClient.onActivityResult(resultCode, data, new ThreeDSecureResultCallback() {
+            @Override
+            public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
+                PaymentMethodNonce paymentMethodNonce = null;
+                if (threeDSecureResult != null) {
+                    paymentMethodNonce = threeDSecureResult.getTokenizedCard();
+                }
+                notifyDropInResult(activity, paymentMethodNonce, error, callback);
+            }
+        });
     }
 
     private void notifyDropInResult(FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, Exception dropInResultError, final DropInResultCallback callback) {
@@ -406,19 +422,6 @@ public class DropInClient {
                         }
                     }
                 });
-            }
-        });
-    }
-
-    void handleThreeDSecureActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
-        threeDSecureClient.onActivityResult(resultCode, data, new ThreeDSecureResultCallback() {
-            @Override
-            public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                PaymentMethodNonce paymentMethodNonce = null;
-                if (threeDSecureResult != null) {
-                    paymentMethodNonce = threeDSecureResult.getTokenizedCard();
-                }
-                notifyDropInResult(activity, paymentMethodNonce, error, callback);
             }
         });
     }

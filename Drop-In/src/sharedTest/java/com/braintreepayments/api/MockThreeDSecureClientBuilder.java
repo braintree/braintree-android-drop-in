@@ -16,6 +16,19 @@ public class MockThreeDSecureClientBuilder {
 
     private ThreeDSecureResult continueVerificationSuccess;
 
+    private Exception browserSwitchError;
+    private ThreeDSecureResult browserSwitchResult;
+
+    public MockThreeDSecureClientBuilder browserSwitchError(Exception browserSwitchError) {
+        this.browserSwitchError = browserSwitchError;
+        return this;
+    }
+
+    public MockThreeDSecureClientBuilder browserSwitchResult(ThreeDSecureResult browserSwitchResult) {
+        this.browserSwitchResult = browserSwitchResult;
+        return this;
+    }
+
     public MockThreeDSecureClientBuilder performVerificationError(Exception performVerificationError) {
         this.performVerificationError = performVerificationError;
         return this;
@@ -57,6 +70,19 @@ public class MockThreeDSecureClientBuilder {
                 return null;
             }
         }).when(threeDSecureClient).continuePerformVerification(any(FragmentActivity.class), any(ThreeDSecureRequest.class), any(ThreeDSecureResult.class), any(ThreeDSecureResultCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                ThreeDSecureResultCallback callback = (ThreeDSecureResultCallback) invocation.getArguments()[1];
+                if (browserSwitchResult != null) {
+                    callback.onResult(browserSwitchResult, null);
+                } else if (browserSwitchError != null) {
+                    callback.onResult(null, browserSwitchError);
+                }
+                return null;
+            }
+        }).when(threeDSecureClient).onBrowserSwitchResult(any(BrowserSwitchResult.class), any(ThreeDSecureResultCallback.class));
 
         return threeDSecureClient;
     }

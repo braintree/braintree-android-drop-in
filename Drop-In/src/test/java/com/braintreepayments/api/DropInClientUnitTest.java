@@ -1,7 +1,7 @@
 package com.braintreepayments.api;
 
 import android.content.Context;
-import android.hardware.camera2.CameraCaptureSession;
+import android.content.Intent;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -19,6 +19,7 @@ import org.robolectric.android.controller.ActivityController;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -26,6 +27,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -181,6 +183,23 @@ public class DropInClientUnitTest {
     }
 
     @Test
+    public void getSupportedPaymentMethods_whenConfigurationFetchFails_forwardsError() {
+        Exception configurationError = new Exception("configuration error");
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configurationError(configurationError)
+                .build();
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+        GetSupportedPaymentMethodsCallback callback = mock(GetSupportedPaymentMethodsCallback.class);
+
+        sut.getSupportedPaymentMethods(activity, callback);
+        verify(callback).onResult(null, configurationError);
+    }
+
+    @Test
     public void shouldRequestThreeDSecureVerification_whenNonceIsGooglePayNonNetworkTokenized_returnsTrue() throws JSONException {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
@@ -231,6 +250,59 @@ public class DropInClientUnitTest {
         ShouldRequestThreeDSecureVerification callback = mock(ShouldRequestThreeDSecureVerification.class);
 
         sut.shouldRequestThreeDSecureVerification(googlePayCardNonce, callback);
+        verify(callback).onResult(false);
+    }
+
+    @Test
+    public void shouldRequestThreeDSecureVerification_whenNonceIsCardNonce_returnsTrue() throws JSONException {
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
+                .build();
+
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        threeDSecureRequest.setAmount("1.00");
+
+        DropInRequest dropInRequest = new DropInRequest()
+                .threeDSecureRequest(threeDSecureRequest)
+                .requestThreeDSecureVerification(true);
+
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .braintreeClient(braintreeClient);
+
+        PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
+                new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+
+        DropInClient sut = new DropInClient(params);
+        ShouldRequestThreeDSecureVerification callback = mock(ShouldRequestThreeDSecureVerification.class);
+
+        sut.shouldRequestThreeDSecureVerification(paymentMethodNonce, callback);
+        verify(callback).onResult(true);
+    }
+
+    @Test
+    public void shouldRequestThreeDSecureVerification_whenNonceIsNotCardOrGooglePay_returnsFalse() throws JSONException {
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
+                .build();
+
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        threeDSecureRequest.setAmount("1.00");
+
+        DropInRequest dropInRequest = new DropInRequest()
+                .threeDSecureRequest(threeDSecureRequest)
+                .requestThreeDSecureVerification(true);
+
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .braintreeClient(braintreeClient);
+
+        PaymentMethodNonce paymentMethodNonce = mock(PayPalAccountNonce.class);
+
+        DropInClient sut = new DropInClient(params);
+        ShouldRequestThreeDSecureVerification callback = mock(ShouldRequestThreeDSecureVerification.class);
+
+        sut.shouldRequestThreeDSecureVerification(paymentMethodNonce, callback);
         verify(callback).onResult(false);
     }
 
@@ -614,7 +686,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenOnlyUnionPayPresentAndNotSupported_callsBackWithNoCards() {
         Configuration configuration = mockConfiguration(false, false, true, false, false);
         when(configuration.getSupportedCardTypes())
-                .thenReturn(Arrays.asList(DropInPaymentMethodType.UNIONPAY.getCanonicalName()));
+                .thenReturn(Collections.singletonList(DropInPaymentMethodType.UNIONPAY.getCanonicalName()));
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -644,7 +716,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenOnlyUnionPayPresentAndSupported_callsBackWithCards() {
         Configuration configuration = mockConfiguration(false, false, true, false, true);
         when(configuration.getSupportedCardTypes())
-                .thenReturn(Arrays.asList(DropInPaymentMethodType.UNIONPAY.getCanonicalName()));
+                .thenReturn(Collections.singletonList(DropInPaymentMethodType.UNIONPAY.getCanonicalName()));
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -1039,17 +1111,219 @@ public class DropInClientUnitTest {
 
     @Test
     public void deliverBrowserSwitchResult_whenPayPalWithDataCollection_tokenizesResultAndCollectsData() {
+        PayPalAccountNonce payPalAccountNonce = mock(PayPalAccountNonce.class);
+        PayPalClient payPalClient = new MockPayPalClientBuilder()
+                .browserSwitchResult(payPalAccountNonce)
+                .build();
 
+        DropInRequest dropInRequest = new DropInRequest()
+                .collectDeviceData(true);
+
+        DataCollector dataCollector = new MockDataCollectorBuilder()
+                .collectDeviceDataSuccess("device data")
+                .build();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(dropInRequest)
+                .dataCollector(dataCollector)
+                .payPalClient(payPalClient);
+
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        BrowserSwitchResult browserSwitchResult = mock(BrowserSwitchResult.class);
+        when(browserSwitchResult.getRequestCode()).thenReturn(BraintreeRequestCodes.PAYPAL);
+
+        when(braintreeClient.deliverBrowserSwitchResult(activity)).thenReturn(browserSwitchResult);
+
+        DropInClient sut = new DropInClient(params);
+        sut.deliverBrowserSwitchResult(activity, callback);
+
+        ArgumentCaptor<DropInResult> captor = ArgumentCaptor.forClass(DropInResult.class);
+        verify(callback).onResult(captor.capture(), (Exception) isNull());
+
+        DropInResult dropInResult = captor.getValue();
+        assertSame(dropInResult.getPaymentMethodNonce(), payPalAccountNonce);
+        assertEquals("device data", dropInResult.getDeviceData());
     }
 
     @Test
-    public void deliverBrowserSwitchResult_whenThreeDSecureWithoutDataCollection_tokenizesResult() {
+    public void deliverBrowserSwitchResult_whenPayPalTokenizationFails_callbackError() {
+        Exception browserSwitchError = new Exception("paypal tokenization error");
+        PayPalClient payPalClient = new MockPayPalClientBuilder()
+                .browserSwitchError(browserSwitchError)
+                .build();
 
+        DropInRequest dropInRequest = new DropInRequest()
+                .collectDeviceData(false);
+
+        DataCollector dataCollector = mock(DataCollector.class);
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(dropInRequest)
+                .dataCollector(dataCollector)
+                .payPalClient(payPalClient);
+
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        BrowserSwitchResult browserSwitchResult = mock(BrowserSwitchResult.class);
+        when(browserSwitchResult.getRequestCode()).thenReturn(BraintreeRequestCodes.PAYPAL);
+
+        when(braintreeClient.deliverBrowserSwitchResult(activity)).thenReturn(browserSwitchResult);
+
+        DropInClient sut = new DropInClient(params);
+        sut.deliverBrowserSwitchResult(activity, callback);
+
+        verify(callback).onResult(null, browserSwitchError);
     }
 
     @Test
-    public void deliverBrowserSwitchResult_whenThreeDSecureWithDataCollection_tokenizesResultAndCollectsData() {
+    public void deliverBrowserSwitchResult_whenThreeDSecureWithoutDataCollection_tokenizesResult() throws JSONException {
+        CardNonce cardNonce = CardNonce.fromJSON(
+                new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        ThreeDSecureResult threeDSecureResult = new ThreeDSecureResult();
+        threeDSecureResult.setTokenizedCard(cardNonce);
 
+        ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder()
+                .browserSwitchResult(threeDSecureResult)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest()
+                .collectDeviceData(false);
+
+        DataCollector dataCollector = mock(DataCollector.class);
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(dropInRequest)
+                .dataCollector(dataCollector)
+                .threeDSecureClient(threeDSecureClient);
+
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        BrowserSwitchResult browserSwitchResult = mock(BrowserSwitchResult.class);
+        when(browserSwitchResult.getRequestCode()).thenReturn(BraintreeRequestCodes.THREE_D_SECURE);
+
+        when(braintreeClient.deliverBrowserSwitchResult(activity)).thenReturn(browserSwitchResult);
+
+        DropInClient sut = new DropInClient(params);
+        sut.deliverBrowserSwitchResult(activity, callback);
+
+        ArgumentCaptor<DropInResult> captor = ArgumentCaptor.forClass(DropInResult.class);
+        verify(callback).onResult(captor.capture(), (Exception) isNull());
+
+        DropInResult dropInResult = captor.getValue();
+        assertSame(dropInResult.getPaymentMethodNonce(), cardNonce);
+        assertNull(dropInResult.getDeviceData());
+
+        verify(dataCollector, never()).collectDeviceData(any(Context.class), any(DataCollectorCallback.class));
+    }
+
+    @Test
+    public void deliverBrowserSwitchResult_whenThreeDSecureWithDataCollection_tokenizesResultAndCollectsData() throws JSONException {
+        CardNonce cardNonce = CardNonce.fromJSON(
+                new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        ThreeDSecureResult threeDSecureResult = new ThreeDSecureResult();
+        threeDSecureResult.setTokenizedCard(cardNonce);
+
+        ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder()
+                .browserSwitchResult(threeDSecureResult)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest()
+                .collectDeviceData(true);
+
+        DataCollector dataCollector = new MockDataCollectorBuilder()
+                .collectDeviceDataSuccess("device data")
+                .build();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(dropInRequest)
+                .dataCollector(dataCollector)
+                .threeDSecureClient(threeDSecureClient);
+
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        BrowserSwitchResult browserSwitchResult = mock(BrowserSwitchResult.class);
+        when(browserSwitchResult.getRequestCode()).thenReturn(BraintreeRequestCodes.THREE_D_SECURE);
+
+        when(braintreeClient.deliverBrowserSwitchResult(activity)).thenReturn(browserSwitchResult);
+
+        DropInClient sut = new DropInClient(params);
+        sut.deliverBrowserSwitchResult(activity, callback);
+
+        ArgumentCaptor<DropInResult> captor = ArgumentCaptor.forClass(DropInResult.class);
+        verify(callback).onResult(captor.capture(), (Exception) isNull());
+
+        DropInResult dropInResult = captor.getValue();
+        assertSame(dropInResult.getPaymentMethodNonce(), cardNonce);
+        assertEquals("device data", dropInResult.getDeviceData());
+    }
+
+    @Test
+    public void deliverBrowserSwitchResult_whenThreeDSecureTokenizationFails_callbackError() throws JSONException {
+        Exception browserSwitchError = new Exception("threedsecure tokenization error");
+        ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder()
+                .browserSwitchError(browserSwitchError)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest()
+                .collectDeviceData(false);
+
+        DataCollector dataCollector = mock(DataCollector.class);
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(dropInRequest)
+                .dataCollector(dataCollector)
+                .threeDSecureClient(threeDSecureClient);
+
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        BrowserSwitchResult browserSwitchResult = mock(BrowserSwitchResult.class);
+        when(browserSwitchResult.getRequestCode()).thenReturn(BraintreeRequestCodes.THREE_D_SECURE);
+
+        when(braintreeClient.deliverBrowserSwitchResult(activity)).thenReturn(browserSwitchResult);
+
+        DropInClient sut = new DropInClient(params);
+        sut.deliverBrowserSwitchResult(activity, callback);
+
+        verify(callback).onResult(null, browserSwitchError);
+    }
+
+    @Test
+    public void launchDropInForResult_launchesDropInActivityWithIntentExtras() {
+        Authorization authorization = mock(Authorization.class);
+        when(authorization.toString()).thenReturn("authorization");
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .sessionId("session-id")
+                .authorization(authorization)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest().vaultManager(true);
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(dropInRequest);
+
+        DropInClient sut = new DropInClient(params);
+
+        FragmentActivity activity = mock(FragmentActivity.class);
+        sut.launchDropInForResult(activity, 123);
+
+        ArgumentCaptor<Intent> captor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivityForResult(captor.capture(), eq(123));
+
+        Intent intent = captor.getValue();
+        assertEquals("session-id", intent.getStringExtra(DropInClient.EXTRA_SESSION_ID));
+        assertEquals("authorization", intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION));
+
+        DropInRequest dropInRequestExtra = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+        assertTrue(dropInRequestExtra.isVaultManagerEnabled());
     }
 
     private Configuration mockConfiguration(boolean paypalEnabled, boolean venmoEnabled,
