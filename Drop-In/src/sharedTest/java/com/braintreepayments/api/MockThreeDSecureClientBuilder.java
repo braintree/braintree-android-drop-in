@@ -1,11 +1,14 @@
 package com.braintreepayments.api;
 
+import android.content.Intent;
+
 import androidx.fragment.app.FragmentActivity;
 
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
 import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 
@@ -18,6 +21,19 @@ public class MockThreeDSecureClientBuilder {
 
     private Exception browserSwitchError;
     private ThreeDSecureResult browserSwitchResult;
+
+    private Exception activityResultError;
+    private ThreeDSecureResult activityResult;
+
+    public MockThreeDSecureClientBuilder activityResultError(Exception activityResultError) {
+        this.activityResultError = activityResultError;
+        return this;
+    }
+
+    public MockThreeDSecureClientBuilder activityResult(ThreeDSecureResult activityResult) {
+        this.activityResult = activityResult;
+        return this;
+    }
 
     public MockThreeDSecureClientBuilder browserSwitchError(Exception browserSwitchError) {
         this.browserSwitchError = browserSwitchError;
@@ -83,6 +99,19 @@ public class MockThreeDSecureClientBuilder {
                 return null;
             }
         }).when(threeDSecureClient).onBrowserSwitchResult(any(BrowserSwitchResult.class), any(ThreeDSecureResultCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                ThreeDSecureResultCallback callback = (ThreeDSecureResultCallback) invocation.getArguments()[2];
+                if (activityResult != null) {
+                    callback.onResult(activityResult, null);
+                } else if (activityResultError != null) {
+                    callback.onResult(null, activityResultError);
+                }
+                return null;
+            }
+        }).when(threeDSecureClient).onActivityResult(anyInt(), any(Intent.class), any(ThreeDSecureResultCallback.class));
 
         return threeDSecureClient;
     }
