@@ -4,7 +4,7 @@
 
 * Add `DropInClient`
 * Add `DropInResultCallback`
-* Add `FetchMostRecentPaymentMethodCalback`
+* Add `FetchMostRecentPaymentMethodCallback`
 * Add `VaultedPaymentMethodSelectedListener`
 * Breaking Changes
   * Make `AddPaymentUpdateListener` package-private
