@@ -10,11 +10,8 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Class used to retrieve a customer's payment methods.
@@ -27,13 +24,6 @@ public class PaymentMethodClient {
     private static final String VARIABLES = "variables";
     private static final String INPUT = "input";
     private static final String CLIENT_SDK_META_DATA = "clientSdkMetadata";
-
-    // NOTE: for feature parity with 3.x, return only the following vaulted payment methods
-    private static final Set<Integer> supportedPaymentMethods = new HashSet<>(Arrays.asList(
-            PaymentMethodType.CARD,
-            PaymentMethodType.PAYPAL,
-            PaymentMethodType.VENMO,
-            PaymentMethodType.VISA_CHECKOUT));
 
     private final BraintreeClient braintreeClient;
 
@@ -62,9 +52,7 @@ public class PaymentMethodClient {
         for (int i = 0; i < paymentMethods.length(); i++) {
             json = paymentMethods.getJSONObject(i);
             paymentMethodNonce = PaymentMethodNonce.fromJSON(json);
-            if (supportedPaymentMethods.contains(paymentMethodNonce.getType())) {
-                paymentMethodNonces.add(paymentMethodNonce);
-            }
+            paymentMethodNonces.add(paymentMethodNonce);
         }
 
         return paymentMethodNonces;
