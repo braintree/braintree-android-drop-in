@@ -334,7 +334,6 @@ public class DropInClient {
      * @param callback callback for handling result
      */
     public void fetchMostRecentPaymentMethod(FragmentActivity activity, final FetchMostRecentPaymentMethodCallback callback) {
-        // TODO: consider sending back empty result if tokenization key auth
         boolean isClientToken = braintreeClient.getAuthorization() instanceof ClientToken;
         if (!isClientToken) {
             InvalidArgumentException error = new InvalidArgumentException("DropInClient#fetchMostRecentPaymentMethods() must " +
