@@ -281,6 +281,7 @@ public class DropInRequest implements Parcelable {
         return mCardEnabled;
     }
 
+    // TODO: rename to get GooglePayRequest
     public GooglePayRequest getGooglePaymentRequest() {
         return mGooglePaymentRequest;
     }
