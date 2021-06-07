@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Include `braintree-core`, `three-d-secure`, `paypal`, `venmo`, `google-pay`, `card`, `data-collector`, and `union-pay` as api
 * Add `DropInClient`
 * Add `DropInResultCallback`
 * Add `FetchMostRecentPaymentMethodCallback`
