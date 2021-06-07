@@ -16,10 +16,10 @@ import java.util.List;
 class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
     private final List<DropInPaymentMethodType> supportedPaymentMethods;
-    private final PaymentMethodSelectedListener selectionListener;
+    private final PaymentMethodSelectedListener selectedListener;
 
-    SupportedPaymentMethodsAdapter(List<DropInPaymentMethodType> supportedPaymentMethods, PaymentMethodSelectedListener selectionListener) {
-        this.selectionListener = selectionListener;
+    SupportedPaymentMethodsAdapter(List<DropInPaymentMethodType> supportedPaymentMethods, PaymentMethodSelectedListener selectedListener) {
+        this.selectedListener = selectedListener;
         this.supportedPaymentMethods = supportedPaymentMethods;
     }
 
@@ -56,7 +56,7 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
         convertView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectionListener.onPaymentMethodSelected(type);
+                selectedListener.onPaymentMethodSelected(type);
             }
         });
 
