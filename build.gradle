@@ -33,6 +33,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        // TODO: Remove after migrating to non-local 4.0.0 core module dependencies
         mavenLocal()
     }
 }
