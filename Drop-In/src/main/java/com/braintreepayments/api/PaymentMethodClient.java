@@ -2,6 +2,7 @@ package com.braintreepayments.api;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.net.Uri;
 
 import org.json.JSONArray;
 import org.json.JSONException;

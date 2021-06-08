@@ -32,7 +32,7 @@ public class DropInResult implements Parcelable {
 
     DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce != null) {
-            mPaymentMethodType = DropInPaymentMethodType.forType(paymentMethodNonce.getTypeLabel());
+//            mPaymentMethodType = DropInPaymentMethodType.forType(paymentMethodNonce.getTypeLabel());
         }
 
         mPaymentMethodNonce = paymentMethodNonce;
