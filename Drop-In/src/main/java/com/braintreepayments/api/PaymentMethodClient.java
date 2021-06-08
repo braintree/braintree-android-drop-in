@@ -19,6 +19,7 @@ import java.util.List;
 public class PaymentMethodClient {
 
     private static final String PAYMENT_METHOD_NONCE_COLLECTION_KEY = "paymentMethods";
+    private static final String PAYMENT_METHOD_TYPE_KEY = "type";
 
     protected static final String SINGLE_USE_TOKEN_ID = "singleUseTokenId";
     protected static final String VARIABLES = "variables";
@@ -51,14 +52,26 @@ public class PaymentMethodClient {
         PaymentMethodNonce paymentMethodNonce;
         for(int i = 0; i < paymentMethods.length(); i++) {
             json = paymentMethods.getJSONObject(i);
-            // TODO: leverage compileOnly gradle dependencies to return strongly-typed nonces (e.g. CardNonce, PayPalAccountNonce etc.)
-            paymentMethodNonce = PaymentMethodNonce.fromJSON(json);
-            if (paymentMethodNonce.getType() != PaymentMethodType.GOOGLE_PAY) {
+            paymentMethodNonce = parsePaymentMethodNonces(json, json.getString(PAYMENT_METHOD_TYPE_KEY));
+            if (paymentMethodNonce != null) {
                 paymentMethodNonces.add(paymentMethodNonce);
             }
         }
 
         return paymentMethodNonces;
+    }
+
+    private static PaymentMethodNonce parsePaymentMethodNonces(JSONObject json, String type) throws JSONException {
+        switch (type) {
+            case "CreditCard":
+                return CardNonce.fromJSON(json);
+            case "PayPalAccount":
+                return PayPalAccountNonce.fromJSON(json);
+            case "VenmoAccount":
+                return VenmoAccountNonce.fromJSON(json);
+            default:
+                return null;
+        }
     }
 
     /**

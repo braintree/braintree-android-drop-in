@@ -61,7 +61,15 @@ public enum DropInPaymentMethodType {
      * if no match could be made.
      */
     public static DropInPaymentMethodType forType(PaymentMethodNonce paymentMethodNonce) {
-        return forType(paymentMethodNonce.getTypeLabel());
+        if (paymentMethodNonce instanceof CardNonce) {
+            return forType(((CardNonce) paymentMethodNonce).getCardType());
+        } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
+            return forType("PayPal");
+        } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
+            return forType("Venmo");
+        }
+        return null;
+//        return forType(paymentMethodNonce.getTypeLabel());
     }
 
     /**
