@@ -1,6 +1,131 @@
-package com.braintreepayments.api.test
+package com.braintreepayments.api
 
 object Fixtures {
+
+    const val TOKENIZATION_KEY = "sandbox_tmxhyf7d_dcpspy2brwdjr3qn"
+    const val BASE64_CLIENT_TOKEN = "eyJ2ZXJzaW9uIjoyLCJhdXRob3JpemF0aW9uRmluZ2VycHJpbnQiOiJlbmNvZGVkX2F1dGhfZmluZ2VycHJpbnQiLCJjaGFsbGVuZ2VzIjpbImN2diIsInBvc3RhbF9jb2RlIl0sImNvbmZpZ1VybCI6ImVuY29kZWRfY2FwaV9jb25maWd1cmF0aW9uX3VybCIsImFzc2V0c1VybCI6Imh0dHA6Ly9sb2NhbGhvc3Q6OTAwMCIsInRocmVlRFNlY3VyZUVuYWJsZWQiOmZhbHNlLCJwYXlwYWxFbmFibGVkIjpmYWxzZX0="
+
+    // language=JSON
+    const val CONFIGURATION_WITH_GOOGLE_PAY = """
+        {
+          "clientApiUrl": "client_api_url",
+          "environment": "test",
+          "merchantId": "integration_merchant_id",
+          "merchantAccountId": "integration_merchant_account_id",
+          "androidPay": {
+            "enabled": true,
+            "displayName": "Google Pay Merchant",
+            "environment": "sandbox",
+            "googleAuthorizationFingerprint": "google-auth-fingerprint",
+            "paypalClientId": "pay-pal-client-id",
+            "supportedNetworks": [
+              "visa",
+              "mastercard",
+              "amex",
+              "discover"
+            ]
+          }
+        }
+    """
+
+    // language=JSON
+    const val CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE = """
+        {
+          "clientApiUrl": "client_api_url",
+          "environment": "test",
+          "merchantId": "integration_merchant_id",
+          "merchantAccountId": "integration_merchant_account_id",
+          "threeDSecureEnabled": true,
+          "androidPay": {
+            "enabled": true,
+            "displayName": "Google Pay Merchant",
+            "environment": "sandbox",
+            "googleAuthorizationFingerprint": "google-auth-fingerprint",
+            "paypalClientId": "pay-pal-client-id",
+            "supportedNetworks": [
+              "visa",
+              "mastercard",
+              "amex",
+              "discover"
+            ]
+          }
+        }
+    """
+
+    // language=JSON
+    const val CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL = """
+        {
+          "clientApiUrl": "client_api_url",
+          "environment": "test",
+          "merchantId": "integration_merchant_id",
+          "merchantAccountId": "integration_merchant_account_id",
+          "paypalEnabled": true,
+          "creditCards": {
+            "supportedCardTypes": [
+              "American Express",
+              "Discover",
+              "JCB",
+              "MasterCard",
+              "Visa"
+            ]
+          },
+          "androidPay": {
+            "enabled": true,
+            "displayName": "Google Pay Merchant",
+            "environment": "sandbox",
+            "googleAuthorizationFingerprint": "google-auth-fingerprint",
+            "paypalClientId": "pay-pal-client-id",
+            "supportedNetworks": [
+              "visa",
+              "mastercard",
+              "amex",
+              "discover"
+            ]
+          }
+        }
+    """
+
+    // language=JSON
+    const val CONFIGURATION_WITH_VALIDATION_REQUIRED = """
+        {
+          "clientApiUrl": "client_api_url",
+          "environment": "test",
+          "merchantId": "integration_merchant_id",
+          "merchantAccountId": "integration_merchant_account_id",
+          "challenges": ["cvv", "postal_code"],
+          "creditCards": {
+            "supportedCardTypes": [
+              "American Express",
+              "Discover",
+              "JCB",
+              "MasterCard",
+              "Visa"
+            ]
+          }
+        }
+    """
+    // language=JSON
+    const val CONFIGURATION_WITH_UNIONPAY = """
+        {
+            "clientApiUrl": "client_api_url",
+            "environment": "test",
+            "merchantId": "integration_merchant_id",
+            "merchantAccountId": "integration_merchant_account_id",
+            "unionPay": {
+                "enabled": true,
+                "merchantAccountId": "merchant_account_id"
+            },
+            "creditCards": {
+            "supportedCardTypes": [
+              "American Express",
+              "Discover",
+              "JCB",
+              "MasterCard",
+              "Visa"
+            ]
+          }
+        }
+    """
 
     // region Client Tokens
     // language=JSON
@@ -508,4 +633,25 @@ object Fixtures {
         }
     """
     // endregion
+
+    // language=JSON
+    const val PAYPAL_ACCOUNT_JSON = """
+        {
+          "paypalAccounts": [
+            {
+              "type": "PayPalAccount",
+              "nonce": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+              "description": "with email paypalaccount@example.com",
+              "default": false,
+              "isLocked": false,
+              "securityQuestions": [],
+              "details": {
+                "email": "paypalaccount@example.com",
+                "payerInfo": {
+                }
+              }
+            }
+          ]
+        }
+    """
 }

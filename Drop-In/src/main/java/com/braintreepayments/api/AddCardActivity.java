@@ -1,5 +1,6 @@
 package com.braintreepayments.api;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
@@ -8,31 +9,11 @@ import android.view.View;
 import android.widget.ViewSwitcher;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.exceptions.AuthenticationException;
-import com.braintreepayments.api.exceptions.AuthorizationException;
-import com.braintreepayments.api.exceptions.ConfigurationException;
-import com.braintreepayments.api.exceptions.DownForMaintenanceException;
-import com.braintreepayments.api.exceptions.ErrorWithResponse;
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
-import com.braintreepayments.api.exceptions.ServerException;
-import com.braintreepayments.api.exceptions.UnexpectedException;
-import com.braintreepayments.api.exceptions.UpgradeRequiredException;
-import com.braintreepayments.api.interfaces.BraintreeCancelListener;
-import com.braintreepayments.api.interfaces.BraintreeErrorListener;
-import com.braintreepayments.api.interfaces.ConfigurationListener;
-import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.interfaces.UnionPayListener;
-import com.braintreepayments.api.models.BraintreeRequestCodes;
-import com.braintreepayments.api.models.CardBuilder;
-import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.models.ThreeDSecureRequest;
-import com.braintreepayments.api.models.UnionPayCapabilities;
-import com.braintreepayments.api.models.UnionPayCardBuilder;
 import com.braintreepayments.cardform.view.CardForm;
 
 import java.lang.annotation.Retention;
@@ -41,9 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class AddCardActivity extends BaseActivity implements ConfigurationListener,
-        AddPaymentUpdateListener, PaymentMethodNonceCreatedListener, BraintreeErrorListener,
-        BraintreeCancelListener, UnionPayListener {
+public class AddCardActivity extends BaseActivity implements AddPaymentUpdateListener {
 
     private static final String EXTRA_STATE = "com.braintreepayments.api.EXTRA_STATE";
     private static final String EXTRA_ENROLLMENT_ID = "com.braintreepayments.api.EXTRA_ENROLLMENT_ID";
@@ -70,7 +49,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     private boolean mUnionPayCard;
     private boolean mUnionPayDebitCard;
 
-    private boolean mPerformedThreeDSecureVerification;
+    private Configuration mConfiguration;
 
     private String mEnrollmentId;
 
@@ -109,17 +88,20 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
 
         enterState(LOADING);
 
-        try {
-            mBraintreeFragment = getBraintreeFragment();
-        } catch (InvalidArgumentException e) {
-            finish(e);
-            return;
-        }
+        getDropInClient().sendAnalyticsEvent("card.selected");
 
-        mBraintreeFragment.sendAnalyticsEvent("card.selected");
+        getDropInClient().getConfiguration(new ConfigurationCallback() {
+            @Override
+            public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
+                if (error != null) {
+                    onError(error);
+                    return;
+                }
+                onConfigurationFetched(configuration);
+            }
+        });
     }
 
-    @Override
     public void onConfigurationFetched(Configuration configuration) {
         mConfiguration = configuration;
 
@@ -208,11 +190,20 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     private int determineNextState(View v) {
         int nextState = mState;
         if (v.getId() == mAddCardView.getId() && !TextUtils.isEmpty(mAddCardView.getCardForm().getCardNumber())) {
-            if (!mConfiguration.getUnionPay().isEnabled() || !mClientTokenPresent) {
+            if (!mConfiguration.isUnionPayEnabled() || !mClientTokenPresent) {
                 mEditCardView.useUnionPay(this, false, false);
                 nextState = DETAILS_ENTRY;
             } else {
-                UnionPay.fetchCapabilities(mBraintreeFragment, mAddCardView.getCardForm().getCardNumber());
+                getDropInClient().fetchUnionPayCapabilities(mAddCardView.getCardForm().getCardNumber(), new UnionPayFetchCapabilitiesCallback() {
+                    @Override
+                    public void onResult(@Nullable UnionPayCapabilities capabilities, @Nullable Exception error) {
+                        if (error != null) {
+                            onError(error);
+                            return;
+                        }
+                        onCapabilitiesFetched(capabilities);
+                    }
+                });
             }
         } else if (v.getId() == mEditCardView.getId()) {
             if (mUnionPayCard) {
@@ -238,74 +229,102 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     }
 
     private void enrollUnionPayCard() {
-        UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
-                .cardNumber(mEditCardView.getCardForm().getCardNumber())
-                .expirationMonth(mEditCardView.getCardForm().getExpirationMonth())
-                .expirationYear(mEditCardView.getCardForm().getExpirationYear())
-                .cvv(mEditCardView.getCardForm().getCvv())
-                .postalCode(mEditCardView.getCardForm().getPostalCode())
-                .mobileCountryCode(mEditCardView.getCardForm().getCountryCode())
-                .mobilePhoneNumber(mEditCardView.getCardForm().getMobileNumber());
+        UnionPayCard unionPayCard = new UnionPayCard();
+        unionPayCard.setNumber(mEditCardView.getCardForm().getCardNumber());
+        unionPayCard.setExpirationMonth(mEditCardView.getCardForm().getExpirationMonth());
+        unionPayCard.setExpirationYear(mEditCardView.getCardForm().getExpirationYear());
+        unionPayCard.setCvv(mEditCardView.getCardForm().getCvv());
+        unionPayCard.setPostalCode(mEditCardView.getCardForm().getPostalCode());
+        unionPayCard.setMobileCountryCode(mEditCardView.getCardForm().getCountryCode());
+        unionPayCard.setMobilePhoneNumber(mEditCardView.getCardForm().getMobileNumber());
 
-        UnionPay.enroll(mBraintreeFragment, unionPayCardBuilder);
+        getDropInClient().enrollUnionPay(unionPayCard, new UnionPayEnrollCallback() {
+            @Override
+            public void onResult(@Nullable UnionPayEnrollment enrollment, @Nullable Exception error) {
+                if (error != null) {
+                    onError(error);
+                    return;
+                }
+               onSmsCodeSent(enrollment.getId(), enrollment.isSmsCodeRequired());
+            }
+        });
     }
 
     protected void createCard() {
         CardForm cardForm = mEditCardView.getCardForm();
 
         if (mUnionPayCard) {
-            UnionPayCardBuilder unionPayCardBuilder = new UnionPayCardBuilder()
-                    .cardholderName(cardForm.getCardholderName())
-                    .cardNumber(cardForm.getCardNumber())
-                    .expirationMonth(cardForm.getExpirationMonth())
-                    .expirationYear(cardForm.getExpirationYear())
-                    .cvv(cardForm.getCvv())
-                    .postalCode(cardForm.getPostalCode())
-                    .mobileCountryCode(cardForm.getCountryCode())
-                    .mobilePhoneNumber(cardForm.getMobileNumber())
-                    .enrollmentId(mEnrollmentId)
-                    .smsCode(mEnrollmentCardView.getSmsCode());
+            UnionPayCard unionPayCard = new UnionPayCard();
+            unionPayCard.setCardholderName(cardForm.getCardholderName());
+            unionPayCard.setNumber(cardForm.getCardNumber());
+            unionPayCard.setExpirationMonth(cardForm.getExpirationMonth());
+            unionPayCard.setExpirationYear(cardForm.getExpirationYear());
+            unionPayCard.setCvv(cardForm.getCvv());
+            unionPayCard.setPostalCode(cardForm.getPostalCode());
+            unionPayCard.setMobileCountryCode(cardForm.getCountryCode());
+            unionPayCard.setMobilePhoneNumber(cardForm.getMobileNumber());
+            unionPayCard.setEnrollmentId(mEnrollmentId);
+            unionPayCard.setSmsCode(mEnrollmentCardView.getSmsCode());
 
-            UnionPay.tokenize(mBraintreeFragment, unionPayCardBuilder);
+            getDropInClient().tokenizeUnionPay(unionPayCard, new UnionPayTokenizeCallback() {
+                @Override
+                public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
+                    if (error != null) {
+                        onError(error);
+                        return;
+                    }
+                    onPaymentMethodNonceCreated(cardNonce);
+                }
+            });
         } else {
             boolean shouldVault = mClientTokenPresent && cardForm.isSaveCardCheckBoxChecked();
 
-            CardBuilder cardBuilder = new CardBuilder()
-                    .cardholderName(cardForm.getCardholderName())
-                    .cardNumber(cardForm.getCardNumber())
-                    .expirationMonth(cardForm.getExpirationMonth())
-                    .expirationYear(cardForm.getExpirationYear())
-                    .cvv(cardForm.getCvv())
-                    .postalCode(cardForm.getPostalCode())
-                    .validate(shouldVault);
+            final Card card = new Card();
+            card.setCardholderName(cardForm.getCardholderName());
+            card.setNumber(cardForm.getCardNumber());
+            card.setExpirationMonth(cardForm.getExpirationMonth());
+            card.setExpirationYear(cardForm.getExpirationYear());
+            card.setCvv(cardForm.getCvv());
+            card.setPostalCode(cardForm.getPostalCode());
+            card.setShouldValidate(shouldVault);
 
-            Card.tokenize(mBraintreeFragment, cardBuilder);
+            getDropInClient().tokenizeCard(this, card, new CardTokenizeCallback() {
+                @Override
+                public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
+                    if (error != null) {
+                        onError(error);
+                        return;
+                    }
+                    onPaymentMethodNonceCreated(cardNonce);
+                }
+            });
         }
     }
 
-    @Override
-    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethod) {
-        if (!mPerformedThreeDSecureVerification && shouldRequestThreeDSecureVerification()) {
-            mPerformedThreeDSecureVerification = true;
-
-            if (mDropInRequest.getThreeDSecureRequest() == null) {
-                ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest().amount(mDropInRequest.getAmount());
-                mDropInRequest.threeDSecureRequest(threeDSecureRequest);
+    public void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
+        getDropInClient().shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
+            @Override
+            public void onResult(boolean shouldRequestThreeDSecureVerification) {
+                if (shouldRequestThreeDSecureVerification) {
+                    getDropInClient().performThreeDSecureVerification(AddCardActivity.this, paymentMethod, new ThreeDSecureResultCallback() {
+                        @Override
+                        public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
+                            if (error != null) {
+                                onError(error);
+                                return;
+                            }
+                            getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+                            finish(threeDSecureResult.getTokenizedCard(), null);
+                        }
+                    });
+                } else {
+                    getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+                    finish(paymentMethod, null);
+                }
             }
-
-            if (mDropInRequest.getThreeDSecureRequest().getAmount() == null && mDropInRequest.getAmount() != null) {
-                mDropInRequest.getThreeDSecureRequest().amount(mDropInRequest.getAmount());
-            }
-
-            mDropInRequest.getThreeDSecureRequest().nonce(paymentMethod.getNonce());
-            ThreeDSecure.performVerification(mBraintreeFragment, mDropInRequest.getThreeDSecureRequest());
-        } else {
-            mBraintreeFragment.sendAnalyticsEvent("sdk.exit.success");
-            finish(paymentMethod, null);
-        }
+        });
     }
 
-    @Override
     public void onCapabilitiesFetched(UnionPayCapabilities capabilities) {
         mUnionPayCard = capabilities.isUnionPay();
         mUnionPayDebitCard = capabilities.isDebit();
@@ -317,7 +336,6 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
         }
     }
 
-    @Override
     public void onSmsCodeSent(String enrollmentId, boolean smsRequired) {
         mEnrollmentId = enrollmentId;
 
@@ -328,18 +346,13 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
         }
     }
 
-    @Override
     public void onCancel(int requestCode) {
         if (requestCode == BraintreeRequestCodes.THREE_D_SECURE) {
-            mPerformedThreeDSecureVerification = false;
             mEditCardView.setVisibility(View.VISIBLE);
         }
     }
 
-    @Override
     public void onError(Exception error) {
-        mPerformedThreeDSecureVerification = false;
-
         if (error instanceof ErrorWithResponse) {
             ErrorWithResponse errorResponse = (ErrorWithResponse) error;
 
@@ -359,13 +372,13 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
         } else {
             if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                     error instanceof UpgradeRequiredException) {
-                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.developer-error");
+                getDropInClient().sendAnalyticsEvent("sdk.exit.developer-error");
             } else if (error instanceof ConfigurationException) {
-                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.configuration-exception");
+                getDropInClient().sendAnalyticsEvent("sdk.exit.configuration-exception");
             } else if (error instanceof ServerException || error instanceof UnexpectedException) {
-                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-error");
-            } else if (error instanceof DownForMaintenanceException) {
-                mBraintreeFragment.sendAnalyticsEvent("sdk.exit.server-unavailable");
+                getDropInClient().sendAnalyticsEvent("sdk.exit.server-error");
+            } else if (error instanceof ServiceUnavailableException) {
+                getDropInClient().sendAnalyticsEvent("sdk.exit.server-unavailable");
             }
             finish(error);
         }
@@ -380,5 +393,27 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == BraintreeRequestCodes.THREE_D_SECURE) {
+            getDropInClient().handleThreeDSecureActivityResult(this, resultCode, data, new DropInResultCallback() {
+                @Override
+                public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                    if (dropInResult != null) {
+                        finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
+                    } else {
+                        // user canceled; show edit card button
+                        // TODO: create user canceled error type to differentiate user cancellations from other errors
+                        mEditCardView.setVisibility(View.VISIBLE);
+                    }
+                }
+            });
+            return;
+        }
+
+        // TODO: remove after migrating add card to fragment
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

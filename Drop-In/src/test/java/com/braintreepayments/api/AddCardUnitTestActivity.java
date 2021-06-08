@@ -5,17 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.exceptions.InvalidArgumentException;
-
-import static com.braintreepayments.api.BraintreeFragmentTestUtils.setHttpClient;
-import static com.braintreepayments.api.BraintreeFragmentTestUtils.waitForConfiguration;
-import static com.braintreepayments.api.test.TestTokenizationKey.TOKENIZATION_KEY;
+import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 
 public class AddCardUnitTestActivity extends AddCardActivity {
 
     public Context context;
-    public BraintreeFragment braintreeFragment;
-    public BraintreeUnitTestHttpClient httpClient;
+    public DropInClient dropInClient;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,24 +26,18 @@ public class AddCardUnitTestActivity extends AddCardActivity {
 
         super.onCreate(savedInstanceState);
 
-        if (braintreeFragment != null) {
-            ConfigurationManagerTestUtils.setFetchingConfiguration(false);
-            waitForConfiguration(braintreeFragment, this);
+    }
+
+    @Override
+    DropInClient getDropInClient() {
+        if (dropInClient == null) {
+            dropInClient = super.getDropInClient();
         }
+        return dropInClient;
     }
 
     public void setDropInRequest(DropInRequest dropInRequest) {
         mDropInRequest = dropInRequest;
-    }
-
-    @Override
-    protected BraintreeFragment getBraintreeFragment() throws InvalidArgumentException {
-        if (braintreeFragment == null) {
-            braintreeFragment = super.getBraintreeFragment();
-            setHttpClient(braintreeFragment, httpClient);
-        }
-
-        return braintreeFragment;
     }
 
     @Override
