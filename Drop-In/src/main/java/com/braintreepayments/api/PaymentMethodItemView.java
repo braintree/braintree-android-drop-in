@@ -11,8 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
 
 public class PaymentMethodItemView extends LinearLayout {
 
@@ -63,7 +61,7 @@ public class PaymentMethodItemView extends LinearLayout {
     public void setPaymentMethod(PaymentMethodNonce paymentMethodNonce, boolean usedInList) {
         mPaymentMethodNonce = paymentMethodNonce;
 
-        PaymentMethodType paymentMethodType = PaymentMethodType.forType(paymentMethodNonce);
+        DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(paymentMethodNonce);
 
         if (usedInList) {
             mIcon.setImageResource(paymentMethodType.getDrawable());

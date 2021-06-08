@@ -1,6 +1,5 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -11,28 +10,18 @@ import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.interfaces.PaymentMethodNonceCreatedListener;
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.List;
 
 class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMethodsAdapter.ViewHolder> {
 
-    private final PaymentMethodNonceCreatedListener mSelectedListener;
-
     private final List<PaymentMethodNonce> mPaymentMethodNonces;
-    private AvailablePaymentMethodNonceList mAvailablePaymentMethodNonces;
 
-    VaultedPaymentMethodsAdapter(PaymentMethodNonceCreatedListener listener, List<PaymentMethodNonce> paymentMethodNonces) {
-        mSelectedListener = listener;
+    private final VaultedPaymentMethodSelectedListener callback;
+
+    VaultedPaymentMethodsAdapter(List<PaymentMethodNonce> paymentMethodNonces, VaultedPaymentMethodSelectedListener callback) {
         mPaymentMethodNonces = paymentMethodNonces;
-    }
-
-    void setup(Context context, Configuration configuration, DropInRequest dropInRequest, boolean googlePayEnabled, boolean unionpaySupported) {
-        mAvailablePaymentMethodNonces = new AvailablePaymentMethodNonceList(
-                context, configuration, mPaymentMethodNonces, dropInRequest, googlePayEnabled);
+        this.callback = callback;
     }
 
     @Override
@@ -43,8 +32,8 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final PaymentMethodNonce paymentMethodNonce = mAvailablePaymentMethodNonces.get(position);
-        PaymentMethodType paymentMethodType = PaymentMethodType.forType(paymentMethodNonce);
+        final PaymentMethodNonce paymentMethodNonce = mPaymentMethodNonces.get(position);
+        DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(paymentMethodNonce);
 
         holder.icon.setImageResource(paymentMethodType.getVaultedDrawable());
         holder.title.setText(paymentMethodType.getLocalizedName());
@@ -58,18 +47,14 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                mSelectedListener.onPaymentMethodNonceCreated(paymentMethodNonce);
+                callback.onVaultedPaymentMethodSelected(paymentMethodNonce);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mAvailablePaymentMethodNonces.size();
-    }
-
-    boolean hasCardNonce() {
-        return mAvailablePaymentMethodNonces.hasCardNonce();
+        return mPaymentMethodNonces.size();
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
