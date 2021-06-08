@@ -229,7 +229,7 @@ public class MockDropInClientBuilder {
                 }
                 return null;
             }
-        }).when(dropInClient).tokenizeCard(any(FragmentActivity.class), any(Card.class), any(CardTokenizeCallback.class));
+        }).when(dropInClient).tokenizeCard(any(Card.class), any(CardTokenizeCallback.class));
 
         doAnswer(new Answer<Void>() {
             @Override

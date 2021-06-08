@@ -145,7 +145,8 @@ public class DropInClient {
     }
 
     void tokenizeVenmoAccount(FragmentActivity activity, VenmoTokenizeAccountCallback callback) {
-        VenmoRequest venmoRequest = new VenmoRequest();
+        // TODO: logic for payment method usage
+        VenmoRequest venmoRequest = new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE);
         venmoRequest.setShouldVault(dropInRequest.shouldVaultVenmo());
         venmoClient.tokenizeVenmoAccount(activity, venmoRequest, callback);
     }
@@ -154,8 +155,8 @@ public class DropInClient {
         paymentMethodClient.deletePaymentMethod(activity, paymentMethodNonce, callback);
     }
 
-    void tokenizeCard(FragmentActivity activity, Card card, CardTokenizeCallback callback) {
-        cardClient.tokenize(activity, card, callback);
+    void tokenizeCard(Card card, CardTokenizeCallback callback) {
+        cardClient.tokenize(card, callback);
     }
 
     void fetchUnionPayCapabilities(String cardNumber, UnionPayFetchCapabilitiesCallback callback) {
@@ -265,14 +266,9 @@ public class DropInClient {
                 if (dropInRequest.isGooglePaymentEnabled()) {
                     googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
                         @Override
-                        public void onResult(Boolean isReadyToPay, Exception error) {
-                            boolean isGooglePayEnabled = false;
-                            if (isReadyToPay != null) {
-                                isGooglePayEnabled = isReadyToPay;
-                            }
-
+                        public void onResult(boolean isReadyToPay, Exception error) {
                             List<DropInPaymentMethodType> availablePaymentMethods =
-                                filterSupportedPaymentMethods(configuration, isGooglePayEnabled);
+                                filterSupportedPaymentMethods(configuration, isReadyToPay);
                             callback.onResult(availablePaymentMethods, null);
                         }
                     });
@@ -348,7 +344,7 @@ public class DropInClient {
         if (lastUsedPaymentMethodType == DropInPaymentMethodType.GOOGLE_PAYMENT) {
             googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
                 @Override
-                public void onResult(Boolean isReadyToPay, Exception error) {
+                public void onResult(boolean isReadyToPay, Exception error) {
                     if (isReadyToPay) {
                         DropInResult result = new DropInResult();
                         result.setPaymentMethodType(lastUsedPaymentMethodType);
@@ -404,14 +400,9 @@ public class DropInClient {
                         if (dropInRequest.isGooglePaymentEnabled()) {
                             googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
                                 @Override
-                                public void onResult(Boolean isReadyToPay, Exception error) {
-                                    boolean isGooglePayEnabled = false;
-                                    if (isReadyToPay != null) {
-                                        isGooglePayEnabled = isReadyToPay;
-                                    }
-
+                                public void onResult(boolean isReadyToPay, Exception error) {
                                     AvailablePaymentMethodNonceList availablePaymentMethodNonceList =
-                                            new AvailablePaymentMethodNonceList(configuration, paymentMethodNonces, dropInRequest, isGooglePayEnabled);
+                                            new AvailablePaymentMethodNonceList(configuration, paymentMethodNonces, dropInRequest, isReadyToPay);
                                     callback.onResult(availablePaymentMethodNonceList.getItems(), null);
                                 }
                             });

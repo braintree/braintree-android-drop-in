@@ -1028,7 +1028,7 @@ public class DropInClientUnitTest {
         CardTokenizeCallback callback = mock(CardTokenizeCallback.class);
 
         DropInClient sut = new DropInClient(params);
-        sut.tokenizeCard(activity, card, callback);
+        sut.tokenizeCard(card, callback);
 
         verify(cardClient).tokenize(activity, card, callback);
     }
