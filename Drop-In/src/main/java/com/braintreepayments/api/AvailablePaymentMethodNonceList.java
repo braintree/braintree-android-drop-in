@@ -1,14 +1,5 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
-
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.models.GooglePaymentCardNonce;
-import com.braintreepayments.api.models.PayPalAccountNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
-import com.braintreepayments.api.models.VenmoAccountNonce;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,19 +7,19 @@ class AvailablePaymentMethodNonceList {
 
     final private List<PaymentMethodNonce> items;
 
-    AvailablePaymentMethodNonceList(Context context, Configuration configuration, List<PaymentMethodNonce> paymentMethodNonces, DropInRequest dropInRequest, boolean googlePayEnabled) {
+    AvailablePaymentMethodNonceList(Configuration configuration, List<PaymentMethodNonce> paymentMethodNonces, DropInRequest dropInRequest, boolean googlePayEnabled) {
         items = new ArrayList<>();
 
         for (PaymentMethodNonce paymentMethodNonce: paymentMethodNonces) {
             boolean shouldAddPaymentMethod = false;
 
-            if (paymentMethodNonce instanceof PayPalAccountNonce) {
+            if (paymentMethodNonce.getType() == PaymentMethodType.PAYPAL) {
                 shouldAddPaymentMethod = dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled();
-            } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
-                shouldAddPaymentMethod = dropInRequest.isVenmoEnabled() && configuration.getPayWithVenmo().isEnabled(context);
-            } else if (paymentMethodNonce instanceof CardNonce) {
-                shouldAddPaymentMethod = dropInRequest.isCardEnabled() && !configuration.getCardConfiguration().getSupportedCardTypes().isEmpty();
-            } else if (paymentMethodNonce instanceof GooglePaymentCardNonce) {
+            } else if (paymentMethodNonce.getType() == PaymentMethodType.VENMO) {
+                shouldAddPaymentMethod = dropInRequest.isVenmoEnabled() && configuration.isVenmoEnabled();
+            } else if (paymentMethodNonce.getType() == PaymentMethodType.CARD) {
+                shouldAddPaymentMethod = dropInRequest.isCardEnabled() && !configuration.getSupportedCardTypes().isEmpty();
+            } else if (paymentMethodNonce.getType() == PaymentMethodType.GOOGLE_PAY) {
                 shouldAddPaymentMethod = googlePayEnabled && dropInRequest.isGooglePaymentEnabled();
             }
 
@@ -46,12 +37,7 @@ class AvailablePaymentMethodNonceList {
         return items.get(index);
     }
 
-    boolean hasCardNonce() {
-        for (PaymentMethodNonce nonce : items) {
-            if (nonce instanceof CardNonce) {
-                return true;
-            }
-        }
-        return false;
+    public List<PaymentMethodNonce> getItems() {
+        return items;
     }
 }

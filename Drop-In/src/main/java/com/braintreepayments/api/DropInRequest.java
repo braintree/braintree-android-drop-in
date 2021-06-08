@@ -5,10 +5,6 @@ import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.braintreepayments.api.models.GooglePaymentRequest;
-import com.braintreepayments.api.models.PayPalRequest;
-import com.braintreepayments.api.models.ThreeDSecurePostalAddress;
-import com.braintreepayments.api.models.ThreeDSecureRequest;
 import com.braintreepayments.cardform.view.CardForm;
 
 /**
@@ -25,7 +21,7 @@ public class DropInRequest implements Parcelable {
     private boolean mRequestThreeDSecureVerification;
     private ThreeDSecureRequest mThreeDSecureRequest;
 
-    private GooglePaymentRequest mGooglePaymentRequest;
+    private GooglePayRequest mGooglePaymentRequest;
     private PayPalRequest mPayPalRequest;
 
     private boolean mGooglePaymentEnabled = true;
@@ -46,7 +42,7 @@ public class DropInRequest implements Parcelable {
     /**
      * Provide authorization allowing this client to communicate with Braintree. Either
      * {@link #clientToken(String)} or {@link #tokenizationKey(String)} must be set or an
-     * {@link com.braintreepayments.api.exceptions.AuthenticationException} will occur.
+     * {@link com.braintreepayments.api.AuthenticationException} will occur.
      *
      * @param clientToken The client token to use for the request.
      */
@@ -58,7 +54,7 @@ public class DropInRequest implements Parcelable {
     /**
      * Provide authorization allowing this client to communicate with Braintree. Either
      * {@link #clientToken(String)} or {@link #tokenizationKey(String)} must be set or an
-     * {@link com.braintreepayments.api.exceptions.AuthenticationException} will occur.
+     * {@link com.braintreepayments.api.AuthenticationException} will occur.
      *
      * @param tokenizationKey The tokenization key to use for the request.
      */
@@ -68,7 +64,7 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
-     * Deprecated. Use {@link ThreeDSecureRequest#amount(String)}
+     * Deprecated. Use {@link ThreeDSecureRequest#setAmount(String)}
      *
      * This method is optional. Amount is only used for 3D Secure verifications.
      *
@@ -98,9 +94,9 @@ public class DropInRequest implements Parcelable {
     /**
      * This method is optional.
      *
-     * @param request The Google Payment Request {@link GooglePaymentRequest} for the transaction.
+     * @param request The Google Payment Request {@link GooglePayRequest} for the transaction.
      */
-    public DropInRequest googlePaymentRequest(GooglePaymentRequest request) {
+    public DropInRequest googlePaymentRequest(GooglePayRequest request) {
         mGooglePaymentRequest = request;
         return this;
     }
@@ -166,8 +162,8 @@ public class DropInRequest implements Parcelable {
      * This method is optional.
      *
      * @param threeDSecureRequest {@link ThreeDSecureRequest} to specify options and additional information for 3D Secure.
-     * To encourage 3DS 2.0 flows, set {@link ThreeDSecureRequest#billingAddress(ThreeDSecurePostalAddress)},
-     * {@link ThreeDSecureRequest#email(String)}, and {@link ThreeDSecureRequest#mobilePhoneNumber(String)} for best results.
+     * To encourage 3DS 2.0 flows, set {@link ThreeDSecureRequest#setBillingAddress(ThreeDSecurePostalAddress)},
+     * {@link ThreeDSecureRequest#setEmail(String)}, and {@link ThreeDSecureRequest#setMobilePhoneNumber(String)} for best results.
      * If no amount is set, the {@link DropInRequest#amount(String)} will be used.
      */
     public DropInRequest threeDSecureRequest(ThreeDSecureRequest threeDSecureRequest) {
@@ -285,7 +281,8 @@ public class DropInRequest implements Parcelable {
         return mCardEnabled;
     }
 
-    public GooglePaymentRequest getGooglePaymentRequest() {
+    // TODO: rename to get GooglePayRequest
+    public GooglePayRequest getGooglePaymentRequest() {
         return mGooglePaymentRequest;
     }
 
@@ -356,7 +353,7 @@ public class DropInRequest implements Parcelable {
         mAuthorization = in.readString();
         mAmount = in.readString();
         mCollectDeviceData = in.readByte() != 0;
-        mGooglePaymentRequest = in.readParcelable(GooglePaymentRequest.class.getClassLoader());
+        mGooglePaymentRequest = in.readParcelable(GooglePayRequest.class.getClassLoader());
         mGooglePaymentEnabled = in.readByte() != 0;
         mPayPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());
         mPayPalEnabled = in.readByte() != 0;

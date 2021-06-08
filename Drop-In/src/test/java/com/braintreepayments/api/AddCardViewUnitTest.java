@@ -5,12 +5,8 @@ import android.text.SpannableString;
 import android.view.View;
 import android.widget.Button;
 
-import com.braintreepayments.api.test.Fixtures;
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.exceptions.ErrorWithResponse;
-import com.braintreepayments.api.models.Configuration;
-import com.braintreepayments.api.test.TestConfigurationBuilder;
-import com.braintreepayments.api.test.TestConfigurationBuilder.TestUnionPayConfigurationBuilder;
+import com.braintreepayments.api.TestConfigurationBuilder.TestUnionPayConfigurationBuilder;
 import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.PaddedImageSpan;
@@ -30,10 +26,10 @@ import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.braintreepayments.api.test.CardNumber.AMEX;
-import static com.braintreepayments.api.test.CardNumber.VISA;
-import static com.braintreepayments.api.test.ReflectionHelper.getField;
-import static com.braintreepayments.api.test.TestConfigurationBuilder.basicConfig;
+import static com.braintreepayments.api.CardNumber.AMEX;
+import static com.braintreepayments.api.CardNumber.VISA;
+import static com.braintreepayments.api.ReflectionHelper.getField;
+import static com.braintreepayments.api.TestConfigurationBuilder.basicConfig;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
@@ -59,7 +55,7 @@ public class AddCardViewUnitTest {
         mView = mActivity.findViewById(R.id.bt_add_card_view);
         mView.setup(mActivity, (Configuration) new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.VISA.getCanonicalName()))
                 .buildConfiguration(), false);
     }
 
@@ -92,11 +88,11 @@ public class AddCardViewUnitTest {
             IllegalAccessException {
         Configuration configuration = new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.AMEX.getCanonicalName(),
-                                PaymentMethodType.VISA.getCanonicalName(),
-                                PaymentMethodType.MASTERCARD.getCanonicalName(),
-                                PaymentMethodType.DISCOVER.getCanonicalName(),
-                                PaymentMethodType.JCB.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.AMEX.getCanonicalName(),
+                                DropInPaymentMethodType.VISA.getCanonicalName(),
+                                DropInPaymentMethodType.MASTERCARD.getCanonicalName(),
+                                DropInPaymentMethodType.DISCOVER.getCanonicalName(),
+                                DropInPaymentMethodType.JCB.getCanonicalName()))
                 .buildConfiguration();
 
         mView.setup(mActivity, configuration, true);
@@ -116,8 +112,8 @@ public class AddCardViewUnitTest {
             throws NoSuchFieldException, IllegalAccessException {
         Configuration configuration = new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.UNIONPAY.getCanonicalName(),
-                                PaymentMethodType.VISA.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.UNIONPAY.getCanonicalName(),
+                                DropInPaymentMethodType.VISA.getCanonicalName()))
                 .buildConfiguration();
 
         mView.setup(mActivity, configuration, true);
@@ -134,8 +130,8 @@ public class AddCardViewUnitTest {
             throws NoSuchFieldException, IllegalAccessException {
         Configuration configuration = new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.UNIONPAY.getCanonicalName(),
-                                PaymentMethodType.VISA.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.UNIONPAY.getCanonicalName(),
+                                DropInPaymentMethodType.VISA.getCanonicalName()))
                 .buildConfiguration();
 
         mView.setup(mActivity, configuration, false);
@@ -151,7 +147,7 @@ public class AddCardViewUnitTest {
             throws NoSuchFieldException, IllegalAccessException {
         Configuration configuration = new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.VISA.getCanonicalName()))
                 .buildConfiguration();
 
         mView.setup(mActivity, configuration, false);
@@ -269,8 +265,8 @@ public class AddCardViewUnitTest {
             IllegalAccessException {
         mView.setup(mActivity, (Configuration) new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName(),
-                                PaymentMethodType.AMEX.getCanonicalName()))
+                        .supportedCardTypes(DropInPaymentMethodType.VISA.getCanonicalName(),
+                                DropInPaymentMethodType.AMEX.getCanonicalName()))
                 .buildConfiguration(), true);
 
         mView.getCardForm().getCardEditText().setText(VISA);

@@ -248,7 +248,6 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void tokenizesPayPal() {
-        uninstallPayPalWallet();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
@@ -262,7 +261,6 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void tokenizesPayPalWithATokenizationKey() {
-        uninstallPayPalWallet();
         useTokenizationKey();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
@@ -291,7 +289,6 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void exitsAfterCancelingAddingAPaymentMethod() {
-        uninstallPayPalWallet();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());

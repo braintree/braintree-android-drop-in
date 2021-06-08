@@ -2,6 +2,11 @@
 
 ## unreleased
 
+* Include `braintree-core`, `three-d-secure`, `paypal`, `venmo`, `google-pay`, `card`, `data-collector`, and `union-pay` as api
+* Add `DropInClient`
+* Add `DropInResultCallback`
+* Add `FetchMostRecentPaymentMethodCallback`
+* Add `VaultedPaymentMethodSelectedListener`
 * Breaking Changes
   * Make `AddPaymentUpdateListener` package-private
   * Make `AnimationFinishedListener` package-private
@@ -9,6 +14,13 @@
   * Make `SupportedPaymentMethodsAdapter` package-private
   * Make `VaultedPaymentMethodsAdapter` package-private
   * Make `VaultManagerPaymentMethodsAdapter` package-private
+  * Bump braintree_android module dependency versions to `4.0.0-beta3`
+  * Remove `ConfigurationListener`, `AddPaymentUpdateListener`, `PaymentMethodNonceCreatedListener`, `BraintreeErrorListener`, `BraintreeCancelListener`, and `UnionPayListener` from `AddCardActivity`
+  * Remove `ConfigurationListener`, `PaymentMethodNonceCreatedListener`, `PaymentMethodNonceUpdatedListener`, `PaymentMethodSelectedListener`, `BraintreeErrorListener`, `BraintreeCancelListener` from `DropInActivity`
+  * Remove `PaymentMethodNonceDeletedListener`, `BraintreeErrorListener` from `VaultManagerActivity`
+  * Rename `PaymentMethodType` to `DropInPaymentMethodType`
+  * Remove `DropInResultListener`
+  * Remove `DropInResult#fetchDropInResult()` 
 
 ## 5.2.2
 

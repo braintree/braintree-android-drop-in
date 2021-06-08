@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.braintreepayments.api.models.ThreeDSecureRequest;
+import com.braintreepayments.api.ThreeDSecureRequest;
 import com.braintreepayments.cardform.view.CardForm;
 
 public class Settings {
