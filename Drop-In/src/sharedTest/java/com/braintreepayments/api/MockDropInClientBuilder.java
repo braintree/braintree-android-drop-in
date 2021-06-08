@@ -221,7 +221,7 @@ public class MockDropInClientBuilder {
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
-                CardTokenizeCallback callback = (CardTokenizeCallback) invocation.getArguments()[2];
+                CardTokenizeCallback callback = (CardTokenizeCallback) invocation.getArguments()[1];
                 if (cardTokenizeSuccess != null) {
                     callback.onResult(cardTokenizeSuccess, null);
                 } else if (cardTokenizeError != null) {

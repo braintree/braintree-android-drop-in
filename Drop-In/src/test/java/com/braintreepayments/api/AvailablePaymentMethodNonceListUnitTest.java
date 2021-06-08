@@ -24,11 +24,8 @@ public class AvailablePaymentMethodNonceListUnitTest {
     @Before
     public void beforeEach() {
         payPalAccountNonce = mock(PaymentMethodNonce.class);
-        when(payPalAccountNonce.getType()).thenReturn(PaymentMethodType.PAYPAL);
         venmoAccountNonce = mock(PaymentMethodNonce.class);
-        when(venmoAccountNonce.getType()).thenReturn(PaymentMethodType.VENMO);
         cardNonce = mock(PaymentMethodNonce.class);
-        when(cardNonce.getType()).thenReturn(PaymentMethodType.CARD);
         googlePaymentCardNonce = mock(PaymentMethodNonce.class);
     }
 

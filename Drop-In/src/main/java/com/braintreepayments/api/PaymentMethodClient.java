@@ -62,6 +62,7 @@ public class PaymentMethodClient {
     }
 
     private static PaymentMethodNonce parsePaymentMethodNonces(JSONObject json, String type) throws JSONException {
+        // TODO: static variables for types and retrieve all nonce types here and filter elsewhere
         switch (type) {
             case "CreditCard":
                 return CardNonce.fromJSON(json);

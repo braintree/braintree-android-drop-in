@@ -1030,7 +1030,7 @@ public class DropInClientUnitTest {
         DropInClient sut = new DropInClient(params);
         sut.tokenizeCard(card, callback);
 
-        verify(cardClient).tokenize(activity, card, callback);
+        verify(cardClient).tokenize(card, callback);
     }
 
     @Test
