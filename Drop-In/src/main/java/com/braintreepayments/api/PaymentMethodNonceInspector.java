@@ -1,17 +1,9 @@
 package com.braintreepayments.api;
 
 // TODO: unit test
-// TODO: create static fromPaymentMethodNonce method
-public class DropInPaymentMethodNonce {
+public class PaymentMethodNonceInspector {
 
-    private PaymentMethodNonce paymentMethodNonce;
-
-    // TODO: Make package private and determine how to display result in demo app for integration tests
-    public DropInPaymentMethodNonce(PaymentMethodNonce paymentMethodNonce) {
-        this.paymentMethodNonce = paymentMethodNonce;
-    }
-
-    public String paymentDescription() {
+    public String getDescription(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             return ((CardNonce) paymentMethodNonce).getLastFour();
         } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
@@ -25,7 +17,7 @@ public class DropInPaymentMethodNonce {
         }
     }
 
-    public String typeLabel() {
+    public String getTypeLabel(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             return ((CardNonce) paymentMethodNonce).getCardType();
         } else if (paymentMethodNonce instanceof PayPalAccountNonce) {

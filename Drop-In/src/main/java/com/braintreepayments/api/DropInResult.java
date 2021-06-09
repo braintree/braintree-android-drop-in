@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
 
 /**
@@ -25,16 +26,23 @@ public class DropInResult implements Parcelable {
 
     private DropInPaymentMethodType mPaymentMethodType;
 
+    private PaymentMethodNonceInspector nonceInspector;
     private PaymentMethodNonce mPaymentMethodNonce;
     private String mDeviceData;
 
-    public DropInResult() {}
+    public DropInResult() {
+        this(new PaymentMethodNonceInspector());
+    }
+
+    @VisibleForTesting
+    public DropInResult(PaymentMethodNonceInspector nonceInspector) {
+        this.nonceInspector = nonceInspector;
+    }
 
     DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce != null) {
-            mPaymentMethodType = DropInPaymentMethodType.forType(new DropInPaymentMethodNonce(paymentMethodNonce).typeLabel());
+            mPaymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
         }
-
         mPaymentMethodNonce = paymentMethodNonce;
 
         return this;
