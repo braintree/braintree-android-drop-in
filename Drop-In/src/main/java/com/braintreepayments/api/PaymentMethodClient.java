@@ -10,13 +10,12 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
  * Class used to retrieve a customer's payment methods.
  */
-public class PaymentMethodClient {
+class PaymentMethodClient {
 
     private static final String PAYMENT_METHOD_NONCE_COLLECTION_KEY = "paymentMethods";
     private static final String PAYMENT_METHOD_TYPE_KEY = "type";
@@ -25,44 +24,31 @@ public class PaymentMethodClient {
     private static final String PAYMENT_METHOD_TYPE_PAYPAL = "PayPalAccount";
     private static final String PAYMENT_METHOD_TYPE_VENMO = "VenmoAccount";
 
-    protected static final String SINGLE_USE_TOKEN_ID = "singleUseTokenId";
-    protected static final String VARIABLES = "variables";
-    protected static final String INPUT = "input";
-    protected static final String CLIENT_SDK_META_DATA = "clientSdkMetadata";
+    private static final String SINGLE_USE_TOKEN_ID = "singleUseTokenId";
+    private static final String VARIABLES = "variables";
+    private static final String INPUT = "input";
+    private static final String CLIENT_SDK_META_DATA = "clientSdkMetadata";
 
     private final BraintreeClient braintreeClient;
 
-    public PaymentMethodClient(BraintreeClient braintreeClient) {
+    PaymentMethodClient(BraintreeClient braintreeClient) {
         this.braintreeClient = braintreeClient;
     }
 
-    /**
-     * Parses a response from the Braintree gateway for a list of payment method nonces.
-     *
-     * @param jsonBody Json-formatted String containing a list of {@link PaymentMethodNonce}s
-     * @return List of {@link PaymentMethodNonce}s contained in jsonBody
-     * @throws JSONException if parsing fails
-     */
-    private static List<PaymentMethodNonce> parseVaultSupportedPaymentMethodNonce(String jsonBody) throws JSONException {
+    private static List<PaymentMethodNonce> parsePaymentMethodNonces(String jsonBody) throws JSONException {
         JSONArray paymentMethods =
                 new JSONObject(jsonBody).getJSONArray(PAYMENT_METHOD_NONCE_COLLECTION_KEY);
 
-        if (paymentMethods == null) {
-            return Collections.emptyList();
-        }
-
-        List<PaymentMethodNonce> paymentMethodNonces = new ArrayList<>();
-        JSONObject json;
-        PaymentMethodNonce paymentMethodNonce;
+        List<PaymentMethodNonce> result = new ArrayList<>();
         for (int i = 0; i < paymentMethods.length(); i++) {
-            json = paymentMethods.getJSONObject(i);
-            paymentMethodNonce = parseVaultSupportedPaymentMethodNonce(json);
+            JSONObject json = paymentMethods.getJSONObject(i);
+            PaymentMethodNonce paymentMethodNonce = parseVaultSupportedPaymentMethodNonce(json);
             if (paymentMethodNonce != null) {
-                paymentMethodNonces.add(paymentMethodNonce);
+                result.add(paymentMethodNonce);
             }
         }
 
-        return paymentMethodNonces;
+        return result;
     }
 
     private static PaymentMethodNonce parseVaultSupportedPaymentMethodNonce(JSONObject json) throws JSONException {
@@ -80,17 +66,7 @@ public class PaymentMethodClient {
         }
     }
 
-    /**
-     * Retrieves the current list of {@link PaymentMethodNonce}s for the current customer.
-     * <p>
-     * When finished, the {@link java.util.List} of {@link PaymentMethodNonce}s will be sent to {@link
-     * GetPaymentMethodNoncesCallback}
-     *
-     * @param defaultFirst when {@code true} the customer's default payment method will be first in the list, otherwise
-     *                     payment methods will be ordered by most recently added.
-     * @param callback     {@link GetPaymentMethodNoncesCallback}
-     */
-    public void getPaymentMethodNonces(boolean defaultFirst, final GetPaymentMethodNoncesCallback callback) {
+    void getPaymentMethodNonces(boolean defaultFirst, final GetPaymentMethodNoncesCallback callback) {
         final Uri uri = Uri.parse(TokenizationClient.versionedPath(TokenizationClient.PAYMENT_METHOD_ENDPOINT))
                 .buildUpon()
                 .appendQueryParameter("default_first", String.valueOf(defaultFirst))
@@ -101,7 +77,7 @@ public class PaymentMethodClient {
             @Override
             public void success(String responseBody) {
                 try {
-                    callback.onResult(parseVaultSupportedPaymentMethodNonce(responseBody), null);
+                    callback.onResult(parsePaymentMethodNonces(responseBody), null);
                     braintreeClient.sendAnalyticsEvent("get-payment-methods.succeeded");
                 } catch (JSONException e) {
                     callback.onResult(null, e);
@@ -117,27 +93,11 @@ public class PaymentMethodClient {
         });
     }
 
-    /**
-     * Retrieves the current list of {@link PaymentMethodNonce}s for the current customer.
-     * <p>
-     * When finished, the {@link java.util.List} of {@link PaymentMethodNonce}s will be sent to {@link
-     * GetPaymentMethodNoncesCallback}
-     *
-     * @param callback {@link GetPaymentMethodNoncesCallback}
-     */
-    public void getPaymentMethodNonces(GetPaymentMethodNoncesCallback callback) {
+    void getPaymentMethodNonces(GetPaymentMethodNoncesCallback callback) {
         getPaymentMethodNonces(false, callback);
     }
 
-    /**
-     * Deletes a payment method that belongs to the current customer.
-     * used to instantiate the {@link BraintreeClient}.
-     *
-     * @param context            Android Context
-     * @param paymentMethodNonce The payment method nonce that references a vaulted payment method.
-     * @param callback           {@link DeletePaymentMethodNonceCallback}
-     */
-    public void deletePaymentMethod(final Context context, final PaymentMethodNonce paymentMethodNonce, final DeletePaymentMethodNonceCallback callback) {
+    void deletePaymentMethod(final Context context, final PaymentMethodNonce paymentMethodNonce, final DeletePaymentMethodNonceCallback callback) {
         boolean usesClientToken = braintreeClient.getAuthorization() instanceof ClientToken;
 
         if (!usesClientToken) {
