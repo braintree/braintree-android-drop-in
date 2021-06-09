@@ -10,7 +10,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -35,6 +34,7 @@ class PaymentMethodClient {
     PaymentMethodClient(BraintreeClient braintreeClient) {
         this.braintreeClient = braintreeClient;
     }
+
     private static List<PaymentMethodNonce> parsePaymentMethodNonces(String jsonBody) throws JSONException {
         JSONArray paymentMethods =
                 new JSONObject(jsonBody).getJSONArray(PAYMENT_METHOD_NONCE_COLLECTION_KEY);
