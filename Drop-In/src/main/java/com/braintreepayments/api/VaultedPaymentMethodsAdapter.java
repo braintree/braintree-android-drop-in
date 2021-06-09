@@ -41,7 +41,7 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
         if (paymentMethodNonce instanceof CardNonce) {
             holder.description.setText("••• ••" + ((CardNonce) paymentMethodNonce).getLastTwo());
         } else {
-//            holder.description.setText(paymentMethodNonce.getDescription());
+            holder.description.setText(new DropInPaymentMethodNonce(paymentMethodNonce).paymentDescription());
         }
 
         holder.itemView.setOnClickListener(new OnClickListener() {
