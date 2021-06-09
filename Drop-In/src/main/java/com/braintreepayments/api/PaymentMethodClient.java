@@ -131,7 +131,6 @@ public class PaymentMethodClient {
      * @param paymentMethodNonce The payment method nonce that references a vaulted payment method.
      * @param callback {@link DeletePaymentMethodNonceCallback}
      */
-    // TODO: Investigate if this feature should be removed from Android or added to iOS for feature parity
     public void deletePaymentMethod(final Context context, final PaymentMethodNonce paymentMethodNonce, final DeletePaymentMethodNonceCallback callback) {
         boolean usesClientToken = braintreeClient.getAuthorization() instanceof ClientToken;
 
