@@ -21,6 +21,10 @@ public class PaymentMethodClient {
     private static final String PAYMENT_METHOD_NONCE_COLLECTION_KEY = "paymentMethods";
     private static final String PAYMENT_METHOD_TYPE_KEY = "type";
 
+    private static final String PAYMENT_METHOD_TYPE_CARD = "CreditCard";
+    private static final String PAYMENT_METHOD_TYPE_PAYPAL = "PayPalAccount";
+    private static final String PAYMENT_METHOD_TYPE_VENMO = "VenmoAccount";
+
     protected static final String SINGLE_USE_TOKEN_ID = "singleUseTokenId";
     protected static final String VARIABLES = "variables";
     protected static final String INPUT = "input";
@@ -39,7 +43,7 @@ public class PaymentMethodClient {
      * @return List of {@link PaymentMethodNonce}s contained in jsonBody
      * @throws JSONException if parsing fails
      */
-    private static List<PaymentMethodNonce> parsePaymentMethodNonces(String jsonBody) throws JSONException {
+    private static List<PaymentMethodNonce> parseVaultSupportedPaymentMethodNonce(String jsonBody) throws JSONException {
         JSONArray paymentMethods =
                 new JSONObject(jsonBody).getJSONArray(PAYMENT_METHOD_NONCE_COLLECTION_KEY);
 
@@ -50,9 +54,9 @@ public class PaymentMethodClient {
         List<PaymentMethodNonce> paymentMethodNonces = new ArrayList<>();
         JSONObject json;
         PaymentMethodNonce paymentMethodNonce;
-        for(int i = 0; i < paymentMethods.length(); i++) {
+        for (int i = 0; i < paymentMethods.length(); i++) {
             json = paymentMethods.getJSONObject(i);
-            paymentMethodNonce = parsePaymentMethodNonces(json, json.getString(PAYMENT_METHOD_TYPE_KEY));
+            paymentMethodNonce = parseVaultSupportedPaymentMethodNonce(json);
             if (paymentMethodNonce != null) {
                 paymentMethodNonces.add(paymentMethodNonce);
             }
@@ -61,14 +65,15 @@ public class PaymentMethodClient {
         return paymentMethodNonces;
     }
 
-    private static PaymentMethodNonce parsePaymentMethodNonces(JSONObject json, String type) throws JSONException {
-        // TODO: static variables for types and retrieve all nonce types here and filter elsewhere
+    private static PaymentMethodNonce parseVaultSupportedPaymentMethodNonce(JSONObject json) throws JSONException {
+        // NOTE: Since 3.x, Card, PayPal, Venmo, and Visa Checkout were the only payment methods supported by the vault manager
+        String type = json.getString(PAYMENT_METHOD_TYPE_KEY);
         switch (type) {
-            case "CreditCard":
+            case PAYMENT_METHOD_TYPE_CARD:
                 return CardNonce.fromJSON(json);
-            case "PayPalAccount":
+            case PAYMENT_METHOD_TYPE_PAYPAL:
                 return PayPalAccountNonce.fromJSON(json);
-            case "VenmoAccount":
+            case PAYMENT_METHOD_TYPE_VENMO:
                 return VenmoAccountNonce.fromJSON(json);
             default:
                 return null;
@@ -80,9 +85,10 @@ public class PaymentMethodClient {
      * <p>
      * When finished, the {@link java.util.List} of {@link PaymentMethodNonce}s will be sent to {@link
      * GetPaymentMethodNoncesCallback}
-     *  @param defaultFirst when {@code true} the customer's default payment method will be first in the list, otherwise
-     *        payment methods will be ordered by most recently added.
-     * @param callback {@link GetPaymentMethodNoncesCallback}
+     *
+     * @param defaultFirst when {@code true} the customer's default payment method will be first in the list, otherwise
+     *                     payment methods will be ordered by most recently added.
+     * @param callback     {@link GetPaymentMethodNoncesCallback}
      */
     public void getPaymentMethodNonces(boolean defaultFirst, final GetPaymentMethodNoncesCallback callback) {
         final Uri uri = Uri.parse(TokenizationClient.versionedPath(TokenizationClient.PAYMENT_METHOD_ENDPOINT))
@@ -95,7 +101,7 @@ public class PaymentMethodClient {
             @Override
             public void success(String responseBody) {
                 try {
-                    callback.onResult(parsePaymentMethodNonces(responseBody), null);
+                    callback.onResult(parseVaultSupportedPaymentMethodNonce(responseBody), null);
                     braintreeClient.sendAnalyticsEvent("get-payment-methods.succeeded");
                 } catch (JSONException e) {
                     callback.onResult(null, e);
@@ -127,9 +133,9 @@ public class PaymentMethodClient {
      * Deletes a payment method that belongs to the current customer.
      * used to instantiate the {@link BraintreeClient}.
      *
-     * @param context Android Context
+     * @param context            Android Context
      * @param paymentMethodNonce The payment method nonce that references a vaulted payment method.
-     * @param callback {@link DeletePaymentMethodNonceCallback}
+     * @param callback           {@link DeletePaymentMethodNonceCallback}
      */
     public void deletePaymentMethod(final Context context, final PaymentMethodNonce paymentMethodNonce, final DeletePaymentMethodNonceCallback callback) {
         boolean usesClientToken = braintreeClient.getAuthorization() instanceof ClientToken;
