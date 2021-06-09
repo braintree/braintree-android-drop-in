@@ -1,6 +1,5 @@
 package com.braintreepayments.api;
 
-// TODO: unit test
 public class PaymentMethodNonceInspector {
 
     public String getDescription(PaymentMethodNonce paymentMethodNonce) {
