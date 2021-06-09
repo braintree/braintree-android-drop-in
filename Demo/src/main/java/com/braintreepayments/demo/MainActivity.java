@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
-import com.braintreepayments.api.PaymentMethodNonceInspector;
 import com.braintreepayments.api.DropInResultCallback;
 import com.braintreepayments.api.DropInActivity;
 import com.braintreepayments.api.DropInClient;
@@ -59,8 +58,6 @@ public class MainActivity extends BaseActivity {
 
     private boolean mShouldMakePurchase = false;
     private boolean mPurchased = false;
-
-    private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
