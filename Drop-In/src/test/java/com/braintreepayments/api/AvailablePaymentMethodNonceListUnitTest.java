@@ -23,10 +23,10 @@ public class AvailablePaymentMethodNonceListUnitTest {
 
     @Before
     public void beforeEach() {
-        payPalAccountNonce = mock(PaymentMethodNonce.class);
-        venmoAccountNonce = mock(PaymentMethodNonce.class);
-        cardNonce = mock(PaymentMethodNonce.class);
-        googlePaymentCardNonce = mock(PaymentMethodNonce.class);
+        payPalAccountNonce = mock(PayPalAccountNonce.class);
+        venmoAccountNonce = mock(VenmoAccountNonce.class);
+        cardNonce = mock(CardNonce.class);
+        googlePaymentCardNonce = mock(GooglePayCardNonce.class);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
     public void cardsAvailableIfEnabledAndSupportedCardTypesPresent() {
         Configuration configuration = getMockConfiguration(false, false, true, false);
 
-        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) cardNonce);
+        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList(cardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
                 configuration, paymentMethodNonces, new DropInRequest(), false);

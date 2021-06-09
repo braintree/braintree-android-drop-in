@@ -1,5 +1,7 @@
 package com.braintreepayments.api;
 
+// TODO: unit test
+// TODO: create static fromPaymentMethodNonce method
 public class DropInPaymentMethodNonce {
 
     private PaymentMethodNonce paymentMethodNonce;

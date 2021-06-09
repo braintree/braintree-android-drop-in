@@ -523,7 +523,6 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
-//        when(paypalNonce.getDescription()).thenReturn("paypal-nonce");
 
         ArrayList<Parcelable> paymentMethodNonces = new ArrayList<>();
         paymentMethodNonces.add(paypalNonce);
