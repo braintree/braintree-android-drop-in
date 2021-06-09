@@ -6,11 +6,12 @@ public class DropInPaymentMethodNonce {
 
     private PaymentMethodNonce paymentMethodNonce;
 
-    DropInPaymentMethodNonce(PaymentMethodNonce paymentMethodNonce) {
+    // TODO: Make package private and determine how to display result in demo app for integration tests
+    public DropInPaymentMethodNonce(PaymentMethodNonce paymentMethodNonce) {
         this.paymentMethodNonce = paymentMethodNonce;
     }
 
-    String paymentDescription() {
+    public String paymentDescription() {
         if (paymentMethodNonce instanceof CardNonce) {
             return ((CardNonce) paymentMethodNonce).getLastFour();
         } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
@@ -24,7 +25,7 @@ public class DropInPaymentMethodNonce {
         }
     }
 
-    String typeLabel() {
+    public String typeLabel() {
         if (paymentMethodNonce instanceof CardNonce) {
             return ((CardNonce) paymentMethodNonce).getCardType();
         } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
