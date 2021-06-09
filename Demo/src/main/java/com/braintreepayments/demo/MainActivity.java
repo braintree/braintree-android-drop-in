@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
-import com.braintreepayments.api.PaymentMethodNonceInspector;
 import com.braintreepayments.api.DropInResultCallback;
 import com.braintreepayments.api.DropInActivity;
 import com.braintreepayments.api.DropInClient;
@@ -59,8 +58,6 @@ public class MainActivity extends BaseActivity {
 
     private boolean mShouldMakePurchase = false;
     private boolean mPurchased = false;
-
-    private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -256,8 +253,8 @@ public class MainActivity extends BaseActivity {
 
         mPaymentMethodIcon.setImageResource(DropInPaymentMethodType.forType(mNonce).getDrawable());
 
-        mPaymentMethodTitle.setText(nonceInspector.getTypeLabel(paymentMethodNonce));
-        mPaymentMethodDescription.setText(nonceInspector.getDescription(paymentMethodNonce));
+        mPaymentMethodTitle.setText(getNonceTypeLabel(paymentMethodNonce));
+        mPaymentMethodDescription.setText(getNonceDescription(paymentMethodNonce));
         mPaymentMethod.setVisibility(VISIBLE);
 
         mNonceString.setText(getString(R.string.nonce) + ": " + mNonce.getString());
@@ -344,4 +341,36 @@ public class MainActivity extends BaseActivity {
             mLoading.dismiss();
         }
     }
+
+    // NOTE: these are duplicated from PaymentMethodNonceInspector, which is package private
+    // we need getNonceDescription and getNonceTypeLabel for our integration test assertions,
+    // but maybe we can refactor the integration test to not need these methods
+    private String getNonceDescription(PaymentMethodNonce paymentMethodNonce) {
+        if (paymentMethodNonce instanceof CardNonce) {
+            return ((CardNonce) paymentMethodNonce).getLastFour();
+        } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
+            return ((PayPalAccountNonce) paymentMethodNonce).getEmail();
+        } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
+            return ((VenmoAccountNonce) paymentMethodNonce).getUsername();
+        } else if (paymentMethodNonce instanceof GooglePayCardNonce) {
+            return ((GooglePayCardNonce) paymentMethodNonce).getLastFour();
+        } else {
+            return "";
+        }
+    }
+
+    private String getNonceTypeLabel(PaymentMethodNonce paymentMethodNonce) {
+        if (paymentMethodNonce instanceof CardNonce) {
+            return ((CardNonce) paymentMethodNonce).getCardType();
+        } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
+            return "PayPal";
+        } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
+            return "Venmo";
+        } else if (paymentMethodNonce instanceof GooglePayCardNonce) {
+            return "Google Pay";
+        } else {
+            return "";
+        }
+    }
+
 }

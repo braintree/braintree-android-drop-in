@@ -30,12 +30,12 @@ public class DropInResult implements Parcelable {
     private PaymentMethodNonce mPaymentMethodNonce;
     private String mDeviceData;
 
-    public DropInResult() {
+    DropInResult() {
         this(new PaymentMethodNonceInspector());
     }
 
     @VisibleForTesting
-    public DropInResult(PaymentMethodNonceInspector nonceInspector) {
+    DropInResult(PaymentMethodNonceInspector nonceInspector) {
         this.nonceInspector = nonceInspector;
     }
 

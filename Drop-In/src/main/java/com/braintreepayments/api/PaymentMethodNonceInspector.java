@@ -1,8 +1,8 @@
 package com.braintreepayments.api;
 
-public class PaymentMethodNonceInspector {
+class PaymentMethodNonceInspector {
 
-    public String getDescription(PaymentMethodNonce paymentMethodNonce) {
+    String getDescription(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             return ((CardNonce) paymentMethodNonce).getLastFour();
         } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
@@ -16,7 +16,7 @@ public class PaymentMethodNonceInspector {
         }
     }
 
-    public String getTypeLabel(PaymentMethodNonce paymentMethodNonce) {
+    String getTypeLabel(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             return ((CardNonce) paymentMethodNonce).getCardType();
         } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
