@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
+import com.braintreepayments.api.DropInPaymentMethodNonce;
 import com.braintreepayments.api.DropInResultCallback;
 import com.braintreepayments.api.DropInActivity;
 import com.braintreepayments.api.DropInClient;
@@ -253,9 +254,9 @@ public class MainActivity extends BaseActivity {
 
         mPaymentMethodIcon.setImageResource(DropInPaymentMethodType.forType(mNonce).getDrawable());
 
-        // TODO: Uncomment this when these PR to make these public is merged into core
-//        mPaymentMethodTitle.setText(paymentMethodNonce.getTypeLabel());
-//        mPaymentMethodDescription.setText(paymentMethodNonce.getDescription());
+        // TODO: Determine another method for displaying result if these methods become package-private
+        mPaymentMethodTitle.setText(new DropInPaymentMethodNonce(paymentMethodNonce).typeLabel());
+        mPaymentMethodDescription.setText(new DropInPaymentMethodNonce(paymentMethodNonce).paymentDescription());
         mPaymentMethod.setVisibility(VISIBLE);
 
         mNonceString.setText(getString(R.string.nonce) + ": " + mNonce.getString());
