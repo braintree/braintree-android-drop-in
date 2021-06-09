@@ -21,7 +21,6 @@ public class PaymentMethodItemView extends LinearLayout {
     private PaymentMethodNonce mPaymentMethodNonce;
     private View mDivider;
 
-    // TODO: inject for unit tests
     private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
 
     public PaymentMethodItemView(Context context) {

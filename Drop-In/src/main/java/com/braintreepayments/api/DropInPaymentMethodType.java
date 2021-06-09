@@ -32,7 +32,6 @@ public enum DropInPaymentMethodType {
     private final String mCanonicalName;
     private final CardType mCardType;
 
-    // TODO: inject for unit testing
     private static final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
 
     DropInPaymentMethodType(int iconDrawable, int vaultedDrawable, int localizedName, String canonicalName, CardType cardType) {

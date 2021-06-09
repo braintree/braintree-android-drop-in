@@ -19,7 +19,6 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
 
     private final VaultedPaymentMethodSelectedListener callback;
 
-    // TODO: inject for unit tests
     private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
 
     VaultedPaymentMethodsAdapter(List<PaymentMethodNonce> paymentMethodNonces, VaultedPaymentMethodSelectedListener callback) {
