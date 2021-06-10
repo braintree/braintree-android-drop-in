@@ -15,6 +15,9 @@ import android.widget.ViewSwitcher;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -48,34 +51,12 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
     // TODO: Remove this and callback a full drop in result from DropInClient methods
     private String mDeviceData;
-
-    private View mBottomSheet;
-    private ViewSwitcher mLoadingViewSwitcher;
-    private TextView mSupportedPaymentMethodsHeader;
-    @VisibleForTesting
-    protected ListView mSupportedPaymentMethodListView;
-    private View mVaultedPaymentMethodsContainer;
-    private RecyclerView mVaultedPaymentMethodsView;
-    private Button mVaultManagerButton;
-
-    private boolean mSheetSlideUpPerformed;
-    private boolean mSheetSlideDownPerformed;
+    private DropInViewModel dropInViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
-
-        mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
-        mLoadingViewSwitcher = findViewById(R.id.bt_loading_view_switcher);
-        mSupportedPaymentMethodsHeader = findViewById(R.id.bt_supported_payment_methods_header);
-        mSupportedPaymentMethodListView = findViewById(R.id.bt_supported_payment_methods);
-        mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
-        mVaultedPaymentMethodsView = findViewById(R.id.bt_vaulted_payment_methods);
-        mVaultManagerButton = findViewById(R.id.bt_vault_edit_button);
-        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false));
-        new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
         if (getDropInClient().getAuthorization() instanceof InvalidAuthorization) {
             finish(new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
@@ -83,12 +64,10 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         }
 
         if (savedInstanceState != null) {
-            mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED,
-                    false);
             mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
         }
 
-        slideUp();
+        dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
 
         getDropInClient().getConfiguration(new ConfigurationCallback() {
             @Override
@@ -99,6 +78,8 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     }
 
     public void onConfigurationFetched() {
+        showSelectPaymentMethodFragment();
+
         if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
             getDropInClient().collectDeviceData(this, new DataCollectorCallback() {
                 @Override
@@ -112,7 +93,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
             @Override
             public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
                 if (paymentMethods != null) {
-                    showSupportedPaymentMethods(paymentMethods);
+                    dropInViewModel.setAvailablePaymentMethods(paymentMethods);
                 } else {
                     onError(error);
                 }
@@ -120,12 +101,19 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         });
     }
 
-    private void showSupportedPaymentMethods(List<DropInPaymentMethodType> supportedPaymentMethods) {
-        SupportedPaymentMethodsAdapter adapter =
-            new SupportedPaymentMethodsAdapter(supportedPaymentMethods, this);
-        mSupportedPaymentMethodListView.setAdapter(adapter);
-        mLoadingViewSwitcher.setDisplayedChild(1);
-        fetchPaymentMethodNonces(false);
+    private void showSelectPaymentMethodFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("SELECT_PAYMENT_METHOD");
+        if (fragment == null) {
+            Bundle args = new Bundle();
+            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+
+            fragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
+                    .commit();
+        }
     }
 
     public void onError(final Exception error) {
@@ -165,8 +153,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
     @Override
     public void onPaymentMethodSelected(DropInPaymentMethodType type) {
-        mLoadingViewSwitcher.setDisplayedChild(0);
-
+        dropInViewModel.setIsLoading(true);
         switch (type) {
             case PAYPAL:
                 getDropInClient().tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {

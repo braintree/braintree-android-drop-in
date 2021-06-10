@@ -266,9 +266,10 @@ public class DropInClient {
                 if (dropInRequest.isGooglePaymentEnabled()) {
                     googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
                         @Override
-                        public void onResult(boolean isReadyToPay, Exception error) {
+                        public void onResult(boolean isReadyToGooglePay, Exception error) {
+
                             List<DropInPaymentMethodType> availablePaymentMethods =
-                                filterSupportedPaymentMethods(configuration, isReadyToPay);
+                                filterSupportedPaymentMethods(configuration, isReadyToGooglePay);
                             callback.onResult(availablePaymentMethods, null);
                         }
                     });
