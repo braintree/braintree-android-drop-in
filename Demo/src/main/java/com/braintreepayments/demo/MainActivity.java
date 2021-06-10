@@ -148,26 +148,11 @@ public class MainActivity extends BaseActivity {
 
             mPaymentMethodIcon.setImageResource(result.getPaymentMethodType().getDrawable());
             if (result.getPaymentMethodNonce() != null) {
-                displayResult(result.getPaymentMethodNonce(), result.getDeviceData());
+                displayResult(result);
             }
 
             mPurchaseButton.setEnabled(true);
         }
-    }
-
-    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-        displayResult(paymentMethodNonce, null);
-        safelyCloseLoadingView();
-
-        if (mShouldMakePurchase) {
-            purchase(null);
-        }
-    }
-
-    public void onCancel(int requestCode) {
-        safelyCloseLoadingView();
-
-        mShouldMakePurchase = false;
     }
 
     @Override
@@ -187,7 +172,7 @@ public class MainActivity extends BaseActivity {
 
         if (resultCode == RESULT_OK) {
             DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-            displayResult(result.getPaymentMethodNonce(), result.getDeviceData());
+            displayResult(result);
             mPurchaseButton.setEnabled(true);
         } else if (resultCode != RESULT_CANCELED) {
             safelyCloseLoadingView();
@@ -247,14 +232,15 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void displayResult(PaymentMethodNonce paymentMethodNonce, String deviceData) {
-        mNonce = paymentMethodNonce;
+    private void displayResult(DropInResult dropInResult) {
+        mNonce = dropInResult.getPaymentMethodNonce();
         mPaymentMethodType = DropInPaymentMethodType.forType(mNonce);
 
         mPaymentMethodIcon.setImageResource(DropInPaymentMethodType.forType(mNonce).getDrawable());
 
-        mPaymentMethodTitle.setText(getNonceTypeLabel(paymentMethodNonce));
-        mPaymentMethodDescription.setText(getNonceDescription(paymentMethodNonce));
+        mPaymentMethodTitle.setText(dropInResult.getPaymentMethodType().getCanonicalName());
+        mPaymentMethodDescription.setText(dropInResult.getPaymentDescription());
+
         mPaymentMethod.setVisibility(VISIBLE);
 
         mNonceString.setText(getString(R.string.nonce) + ": " + mNonce.getString());
@@ -294,7 +280,7 @@ public class MainActivity extends BaseActivity {
         mNonceDetails.setText(details);
         mNonceDetails.setVisibility(VISIBLE);
 
-        mDeviceData.setText("Device Data: " + deviceData);
+        mDeviceData.setText("Device Data: " + dropInResult.getDeviceData());
         mDeviceData.setVisibility(VISIBLE);
 
         mAddPaymentMethodButton.setVisibility(GONE);
@@ -341,36 +327,4 @@ public class MainActivity extends BaseActivity {
             mLoading.dismiss();
         }
     }
-
-    // NOTE: these are duplicated from PaymentMethodNonceInspector, which is package private
-    // we need getNonceDescription and getNonceTypeLabel for our integration test assertions,
-    // but maybe we can refactor the integration test to not need these methods
-    private String getNonceDescription(PaymentMethodNonce paymentMethodNonce) {
-        if (paymentMethodNonce instanceof CardNonce) {
-            return ((CardNonce) paymentMethodNonce).getLastFour();
-        } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
-            return ((PayPalAccountNonce) paymentMethodNonce).getEmail();
-        } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
-            return ((VenmoAccountNonce) paymentMethodNonce).getUsername();
-        } else if (paymentMethodNonce instanceof GooglePayCardNonce) {
-            return ((GooglePayCardNonce) paymentMethodNonce).getLastFour();
-        } else {
-            return "";
-        }
-    }
-
-    private String getNonceTypeLabel(PaymentMethodNonce paymentMethodNonce) {
-        if (paymentMethodNonce instanceof CardNonce) {
-            return ((CardNonce) paymentMethodNonce).getCardType();
-        } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
-            return "PayPal";
-        } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
-            return "Venmo";
-        } else if (paymentMethodNonce instanceof GooglePayCardNonce) {
-            return "Google Pay";
-        } else {
-            return "";
-        }
-    }
-
 }

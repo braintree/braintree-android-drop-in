@@ -20,15 +20,16 @@ public class DropInResult implements Parcelable {
     public static final String EXTRA_DROP_IN_RESULT =
             "com.braintreepayments.api.dropin.EXTRA_DROP_IN_RESULT";
 
-
     static final String LAST_USED_PAYMENT_METHOD_TYPE =
             "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
+
+    private String mDeviceData;
+    private String mPaymentDescription;
 
     private DropInPaymentMethodType mPaymentMethodType;
 
     private PaymentMethodNonceInspector nonceInspector;
     private PaymentMethodNonce mPaymentMethodNonce;
-    private String mDeviceData;
 
     DropInResult() {
         this(new PaymentMethodNonceInspector());
@@ -42,6 +43,7 @@ public class DropInResult implements Parcelable {
     DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce != null) {
             mPaymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
+            mPaymentDescription = nonceInspector.getDescription(paymentMethodNonce);
         }
         mPaymentMethodNonce = paymentMethodNonce;
 
@@ -87,6 +89,10 @@ public class DropInResult implements Parcelable {
         return mDeviceData;
     }
 
+    @Nullable
+    public String getPaymentDescription() {
+        return mPaymentDescription;
+    }
 
     static void setLastUsedPaymentMethodType(Context context,
                                              PaymentMethodNonce paymentMethodNonce) {
