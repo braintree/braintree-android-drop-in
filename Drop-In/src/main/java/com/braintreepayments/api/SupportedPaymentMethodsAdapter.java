@@ -15,22 +15,25 @@ import java.util.List;
 
 class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
-    private final List<DropInPaymentMethodType> supportedPaymentMethods;
-    private final PaymentMethodSelectedListener selectedListener;
+    private final Context mContext;
+    private final List<DropInPaymentMethodType> mAvailablePaymentMethods;
+    private final SupportedPaymentMethodSelectedListener mSupportedPaymentMethodSelectedListener;
 
-    SupportedPaymentMethodsAdapter(List<DropInPaymentMethodType> supportedPaymentMethods, PaymentMethodSelectedListener selectedListener) {
-        this.selectedListener = selectedListener;
-        this.supportedPaymentMethods = supportedPaymentMethods;
+    SupportedPaymentMethodsAdapter(Context context, SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener, List<DropInPaymentMethodType> availablePaymentMethods) {
+        // TODO: remove context variable
+        mContext = context;
+        mSupportedPaymentMethodSelectedListener = supportedPaymentMethodSelectedListener;
+        mAvailablePaymentMethods = availablePaymentMethods;
     }
 
     @Override
     public int getCount() {
-        return supportedPaymentMethods.size();
+        return mAvailablePaymentMethods.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return supportedPaymentMethods.get(position);
+        return mAvailablePaymentMethods.get(position);
     }
 
     @Override
@@ -40,30 +43,25 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Context context = parent.getContext();
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.bt_payment_method_list_item, parent, false);
+            convertView = LayoutInflater.from(mContext).inflate(R.layout.bt_payment_method_list_item, parent, false);
         }
 
-        final DropInPaymentMethodType type = supportedPaymentMethods.get(position);
+        final DropInPaymentMethodType type = mAvailablePaymentMethods.get(position);
 
         ImageView icon = convertView.findViewById(R.id.bt_payment_method_icon);
         icon.setImageResource(type.getDrawable());
 
         ((TextView) convertView.findViewById(R.id.bt_payment_method_type))
-                .setText(context.getString(type.getLocalizedName()));
+                .setText(mContext.getString(type.getLocalizedName()));
 
         convertView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedListener.onPaymentMethodSelected(type);
+                mSupportedPaymentMethodSelectedListener.onPaymentMethodSelected(type);
             }
         });
 
         return convertView;
-    }
-
-    interface PaymentMethodSelectedListener {
-        void onPaymentMethodSelected(DropInPaymentMethodType type);
     }
 }

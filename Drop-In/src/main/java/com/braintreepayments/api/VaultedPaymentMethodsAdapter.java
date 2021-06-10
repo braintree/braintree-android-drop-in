@@ -2,70 +2,44 @@ package com.braintreepayments.api;
 
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMethodsAdapter.ViewHolder> {
+class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<PaymentMethodViewHolder> {
 
-    private final List<PaymentMethodNonce> mPaymentMethodNonces;
+    private final List<PaymentMethodNonce> paymentMethodNonces;
+    private final VaultedPaymentMethodSelectedListener listener;
 
-    private final VaultedPaymentMethodSelectedListener callback;
+    VaultedPaymentMethodsAdapter(List<PaymentMethodNonce> paymentMethodNonces, VaultedPaymentMethodSelectedListener listener) {
+        this.listener = listener;
+        this.paymentMethodNonces = paymentMethodNonces;
+    }
 
-    private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
-
-    VaultedPaymentMethodsAdapter(List<PaymentMethodNonce> paymentMethodNonces, VaultedPaymentMethodSelectedListener callback) {
-        mPaymentMethodNonces = paymentMethodNonces;
-        this.callback = callback;
+    @NonNull
+    @Override
+    public PaymentMethodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        return new PaymentMethodViewHolder(inflater.inflate(R.layout.bt_vaulted_payment_method_card, parent, false));
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.bt_vaulted_payment_method_card,
-                parent, false));
-    }
-
-    @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
-        final PaymentMethodNonce paymentMethodNonce = mPaymentMethodNonces.get(position);
-        DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(paymentMethodNonce);
-
-        holder.icon.setImageResource(paymentMethodType.getVaultedDrawable());
-        holder.title.setText(paymentMethodType.getLocalizedName());
-        holder.description.setText(nonceInspector.getDescription(paymentMethodNonce));
-
-        holder.itemView.setOnClickListener(new OnClickListener() {
+    public void onBindViewHolder(@NonNull PaymentMethodViewHolder holder, int position) {
+        final PaymentMethodNonce paymentMethodNonce = paymentMethodNonces.get(position);
+        holder.bind(paymentMethodNonce);
+        holder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                callback.onVaultedPaymentMethodSelected(paymentMethodNonce);
+                listener.onVaultedPaymentMethodSelected(paymentMethodNonce);
             }
         });
     }
 
     @Override
     public int getItemCount() {
-        return mPaymentMethodNonces.size();
-    }
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-
-        public ImageView icon;
-        public TextView title;
-        public TextView description;
-
-        ViewHolder(View view) {
-            super(view);
-
-            icon = view.findViewById(R.id.bt_payment_method_icon);
-            title = view.findViewById(R.id.bt_payment_method_title);
-            description = view.findViewById(R.id.bt_payment_method_description);
-        }
+        return paymentMethodNonces.size();
     }
 }

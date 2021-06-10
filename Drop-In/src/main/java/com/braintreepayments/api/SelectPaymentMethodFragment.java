@@ -18,8 +18,6 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
 
 import java.util.List;
 
@@ -68,9 +66,9 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
-        dropInViewModel.getAvailablePaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<PaymentMethodType>>() {
+        dropInViewModel.getAvailablePaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<DropInPaymentMethodType>>() {
             @Override
-            public void onChanged(List<PaymentMethodType> paymentMethodTypes) {
+            public void onChanged(List<DropInPaymentMethodType> paymentMethodTypes) {
                 showSupportedPaymentMethods(paymentMethodTypes);
             }
         });
@@ -126,7 +124,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
 //        activity.updateVaultedPaymentMethodNonces(refetch);
     }
 
-    private void showSupportedPaymentMethods(List<PaymentMethodType> availablePaymentMethods) {
+    private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(getActivity(), this, availablePaymentMethods);
         mSupportedPaymentMethodListView.setAdapter(adapter);
         dropInViewModel.setIsLoading(false);
@@ -135,7 +133,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     }
 
     @Override
-    public void onPaymentMethodSelected(PaymentMethodType type) {
+    public void onPaymentMethodSelected(DropInPaymentMethodType type) {
         dropInViewModel.setIsLoading(true);
 
         DropInActivity activity = ((DropInActivity) requireActivity());
@@ -149,7 +147,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         }
 
         DropInActivity activity = ((DropInActivity) requireActivity());
-        activity.onPaymentMethodNonceCreated(paymentMethodNonce);
+        activity.onVaultedPaymentMethodSelected(paymentMethodNonce);
     }
 
     private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {
@@ -158,7 +156,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
 
             VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter =
-                new VaultedPaymentMethodsAdapter(this, paymentMethodNonces);
+                new VaultedPaymentMethodsAdapter(paymentMethodNonces, this);
 
             mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
 

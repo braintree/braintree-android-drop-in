@@ -139,16 +139,9 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     }
 
     private void finishWithPaymentMethodNonce(final PaymentMethodNonce paymentMethodNonce) {
-        slideDown(new AnimationFinishedListener() {
-            @Override
-            public void onAnimationFinished() {
-                getDropInClient().sendAnalyticsEvent("sdk.exit.success");
-
-                DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, paymentMethodNonce);
-
-                finish(paymentMethodNonce, mDeviceData);
-            }
-        });
+        getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+        DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, paymentMethodNonce);
+        finish(paymentMethodNonce, mDeviceData);
     }
 
     @Override
@@ -196,6 +189,17 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     }
 
     void fetchPaymentMethodNonces(final boolean refetch) {
+        getDropInClient().getVaultedPaymentMethods(this, refetch, new GetSupportedPaymentMethodsCallback() {
+            @Override
+            public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
+                if (paymentMethods != null) {
+                    dropInViewModel.setVaultedPaymentMethodNonces(paymentMethods);
+                } else if (error != null) {
+                    onError(error);
+                }
+            }
+        });
+
         if (mClientTokenPresent) {
             new Handler().postDelayed(new Runnable() {
                 @Override
@@ -205,11 +209,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                         getDropInClient().getVaultedPaymentMethods(DropInActivity.this, refetch, new GetPaymentMethodNoncesCallback() {
                             @Override
                             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonces, @Nullable Exception error) {
-                                if (paymentMethodNonces != null) {
-                                    showVaultedPaymentMethods(paymentMethodNonces);
-                                } else if (error != null) {
-                                    onError(error);
-                                }
                             }
                         });
                     }
@@ -221,7 +220,6 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED, mSheetSlideUpPerformed);
         outState.putString(EXTRA_DEVICE_DATA, mDeviceData);
     }
 
@@ -231,16 +229,15 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
         if (resultCode == RESULT_CANCELED) {
             if (requestCode == ADD_CARD_REQUEST_CODE) {
-                mLoadingViewSwitcher.setDisplayedChild(0);
-
+                dropInViewModel.setIsLoading(true);
                 fetchPaymentMethodNonces(true);
             }
+            dropInViewModel.setIsLoading(false);
 
-            mLoadingViewSwitcher.setDisplayedChild(1);
         } else if (requestCode == ADD_CARD_REQUEST_CODE) {
             final Intent response;
             if (resultCode == RESULT_OK) {
-                mLoadingViewSwitcher.setDisplayedChild(0);
+                dropInViewModel.setIsLoading(true);
 
                 DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
                 DropInResult.setLastUsedPaymentMethodType(this, result.getPaymentMethodNonce());
@@ -261,7 +258,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
             });
         } else if (requestCode == DELETE_PAYMENT_METHOD_NONCE_CODE) {
             if (resultCode == RESULT_OK) {
-                mLoadingViewSwitcher.setDisplayedChild(0);
+                dropInViewModel.setIsLoading(true);
 
                 if (data != null) {
                     ArrayList<PaymentMethodNonce> paymentMethodNonces = data
@@ -274,7 +271,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
                 fetchPaymentMethodNonces(true);
             }
-            mLoadingViewSwitcher.setDisplayedChild(1);
+            dropInViewModel.setIsLoading(false);
         }
     }
 
@@ -284,47 +281,9 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
     @Override
     public void onBackPressed() {
-        if (!mSheetSlideDownPerformed) {
-            mSheetSlideDownPerformed = true;
-            getDropInClient().sendAnalyticsEvent("sdk.exit.canceled");
-
-            slideDown(new AnimationFinishedListener() {
-                @Override
-                public void onAnimationFinished() {
-                    setResult(RESULT_CANCELED);
-                    finish();
-                }
-            });
-        }
-    }
-
-    private void slideUp() {
-        if (!mSheetSlideUpPerformed) {
-            getDropInClient().sendAnalyticsEvent("appeared");
-
-            mSheetSlideUpPerformed = true;
-            mBottomSheet.startAnimation(loadAnimation(this, R.anim.bt_slide_in_up));
-        }
-    }
-
-    private void slideDown(final AnimationFinishedListener listener) {
-        Animation slideOutAnimation = loadAnimation(this, R.anim.bt_slide_out_down);
-        slideOutAnimation.setFillAfter(true);
-        if (listener != null) {
-            slideOutAnimation.setAnimationListener(new AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {}
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    listener.onAnimationFinished();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {}
-            });
-        }
-        mBottomSheet.startAnimation(slideOutAnimation);
+        getDropInClient().sendAnalyticsEvent("sdk.exit.canceled");
+        setResult(RESULT_CANCELED);
+        finish();
     }
 
     @Override
