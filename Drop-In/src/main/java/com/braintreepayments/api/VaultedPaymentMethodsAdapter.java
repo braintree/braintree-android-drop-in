@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import com.braintreepayments.api.dropin.R;
+
 class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<PaymentMethodViewHolder> {
 
     private final List<PaymentMethodNonce> paymentMethodNonces;
