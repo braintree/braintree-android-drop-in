@@ -88,6 +88,44 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
         });
     }
 
+    void showVaultManager() {
+        // TODO: consider caching nonces or use a ViewModel for handling nonces
+        getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
+            @Override
+            public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
+                if (paymentMethodNonceList != null) {
+                    Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
+                            .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList))
+                            .putExtra(EXTRA_CHECKOUT_REQUEST, getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
+                            .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
+                            .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
+                    startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
+
+                    getDropInClient().sendAnalyticsEvent("manager.appeared");
+                } else if (error != null) {
+                    onError(error);
+                }
+            }
+        });
+    }
+
+    void sendAnalyticsEvent(String eventFragment) {
+        getDropInClient().sendAnalyticsEvent(eventFragment);
+    }
+
+    void updateVaultedPaymentMethodNonces(boolean refetch) {
+        getDropInClient().getVaultedPaymentMethods(this, refetch, new GetPaymentMethodNoncesCallback() {
+            @Override
+            public void onResult(@Nullable List<PaymentMethodNonce> vaultedPaymentMethods, @Nullable Exception error) {
+                if (vaultedPaymentMethods != null) {
+                    dropInViewModel.setVaultedPaymentMethodNonces(vaultedPaymentMethods);
+                } else if (error != null) {
+                    onError(error);
+                }
+            }
+        });
+    }
+
     private void showSelectPaymentMethodFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag("SELECT_PAYMENT_METHOD");
@@ -170,19 +208,6 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
         }
     }
 
-    void fetchPaymentMethodNonces(final boolean refetch) {
-        getDropInClient().getVaultedPaymentMethods(this, refetch, new GetPaymentMethodNoncesCallback() {
-            @Override
-            public void onResult(@Nullable List<PaymentMethodNonce> vaultedPaymentMethods, @Nullable Exception error) {
-                if (vaultedPaymentMethods != null) {
-                    dropInViewModel.setVaultedPaymentMethodNonces(vaultedPaymentMethods);
-                } else if (error != null) {
-                    onError(error);
-                }
-            }
-        });
-    }
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -196,7 +221,7 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
         if (resultCode == RESULT_CANCELED) {
             if (requestCode == ADD_CARD_REQUEST_CODE) {
                 dropInViewModel.setIsLoading(true);
-                fetchPaymentMethodNonces(true);
+                updateVaultedPaymentMethodNonces(true);
             }
             dropInViewModel.setIsLoading(false);
 
@@ -229,7 +254,7 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                     }
                 }
 
-                fetchPaymentMethodNonces(true);
+                updateVaultedPaymentMethodNonces(true);
             }
             dropInViewModel.setIsLoading(false);
         }
@@ -252,27 +277,6 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    public void onVaultEditButtonClick(View view) {
-        // TODO: consider caching nonces or use a ViewModel for handling nonces
-        getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
-            @Override
-            public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
-                if (paymentMethodNonceList != null) {
-                    Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
-                            .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList))
-                            .putExtra(EXTRA_CHECKOUT_REQUEST, getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
-                            .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
-                            .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
-                    startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
-
-                    getDropInClient().sendAnalyticsEvent("manager.appeared");
-                } else if (error != null) {
-                    onError(error);
-                }
-            }
-        });
-    }
-
     @Override
     public void onVaultedPaymentMethodSelected(final PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
@@ -292,7 +296,7 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                             if (threeDSecureResult != null) {
                                 finishWithPaymentMethodNonce(threeDSecureResult.getTokenizedCard());
                             } else {
-                                fetchPaymentMethodNonces(true);
+                                updateVaultedPaymentMethodNonces(true);
                                 dropInViewModel.setIsLoading(false);
                                 onError(error);
                             }

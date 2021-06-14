@@ -6,19 +6,22 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.braintreepayments.api.dropin.R;
+
 class PaymentMethodViewHolder extends RecyclerView.ViewHolder {
 
-    private ImageView icon;
-    private TextView title;
-    private TextView description;
+    private final ImageView icon;
+    private final TextView title;
+    private final TextView description;
+
+    private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
 
     PaymentMethodViewHolder(View view) {
         super(view);
 
-        // TODO: fix
-//        icon = view.findViewById(R.id.bt_payment_method_icon);
-//        title = view.findViewById(R.id.bt_payment_method_title);
-//        description = view.findViewById(R.id.bt_payment_method_description);
+        icon = view.findViewById(R.id.bt_payment_method_icon);
+        title = view.findViewById(R.id.bt_payment_method_title);
+        description = view.findViewById(R.id.bt_payment_method_description);
     }
 
     void bind(PaymentMethodNonce paymentMethodNonce) {
@@ -26,14 +29,7 @@ class PaymentMethodViewHolder extends RecyclerView.ViewHolder {
 
         title.setText(paymentMethodType.getLocalizedName());
         icon.setImageResource(paymentMethodType.getVaultedDrawable());
-
-        // TODO: Add PaymentMethodNonceInspector here
-        if (paymentMethodNonce instanceof CardNonce) {
-            description.setText("••• ••" + ((CardNonce) paymentMethodNonce).getLastTwo());
-        }
-//        } else {
-//            holder.description.setText(paymentMethodNonce.getDescription());
-//        }
+        description.setText(nonceInspector.getDescription(paymentMethodNonce));
     }
 
     void setOnClickListener(View.OnClickListener listener) {

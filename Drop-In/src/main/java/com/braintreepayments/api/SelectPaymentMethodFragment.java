@@ -110,18 +110,18 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     }
 
     private void showVaultManager() {
-//        DropInActivity activity = ((DropInActivity) requireActivity());
-//        activity.showVaultManager();
+        DropInActivity activity = ((DropInActivity) requireActivity());
+        activity.showVaultManager();
     }
 
     private void sendAnalyticsEvent(String eventFragment) {
-//        DropInActivity activity = ((DropInActivity) requireActivity());
-//        activity.sendAnalyticsEvent(eventFragment);
+        DropInActivity activity = ((DropInActivity) requireActivity());
+        activity.sendAnalyticsEvent(eventFragment);
     }
 
     private void updateVaultedPaymentMethodNonces(boolean refetch) {
-//        DropInActivity activity = ((DropInActivity) requireActivity());
-//        activity.updateVaultedPaymentMethodNonces(refetch);
+        DropInActivity activity = ((DropInActivity) requireActivity());
+        activity.updateVaultedPaymentMethodNonces(refetch);
     }
 
     private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
