@@ -1,5 +1,7 @@
 package com.braintreepayments.api.dropin;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.PhoneNumberUtils;
 import android.text.TextUtils;
@@ -7,6 +9,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ViewSwitcher;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 
 import com.braintreepayments.api.Card;
 import com.braintreepayments.api.ThreeDSecure;
@@ -41,9 +48,7 @@ import com.braintreepayments.cardform.view.CardForm;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import androidx.annotation.IntDef;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
+import cards.pay.paycardsrecognizer.sdk.ScanCardIntent;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
@@ -51,6 +56,8 @@ import static android.view.View.VISIBLE;
 public class AddCardActivity extends BaseActivity implements ConfigurationListener,
         AddPaymentUpdateListener, PaymentMethodNonceCreatedListener, BraintreeErrorListener,
         BraintreeCancelListener, UnionPayListener {
+
+    public static final int REQUEST_CODE_SCAN_CARD = 801;
 
     private static final String EXTRA_STATE = "com.braintreepayments.api.EXTRA_STATE";
     private static final String EXTRA_ENROLLMENT_ID = "com.braintreepayments.api.EXTRA_ENROLLMENT_ID";
@@ -62,7 +69,9 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
             DETAILS_ENTRY,
             ENROLLMENT_ENTRY
     })
-    private @interface State {}
+    private @interface State {
+    }
+
     private static final int LOADING = 1;
     private static final int CARD_ENTRY = 2;
     private static final int DETAILS_ENTRY = 3;
@@ -177,7 +186,7 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     }
 
     private void enterState(int state) {
-        switch(state) {
+        switch (state) {
             case LOADING:
                 mActionBar.setTitle(R.string.bt_card_details);
                 mViewSwitcher.setDisplayedChild(0);
@@ -379,13 +388,36 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.bt_scan, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-       if (item.getItemId() == android.R.id.home) {
+        int itemId = item.getItemId();
+        if (itemId == R.id.scan) {
+            Intent intent = new ScanCardIntent.Builder(this).build();
+            startActivityForResult(intent, REQUEST_CODE_SCAN_CARD);
+            return true;
+        } else if (itemId == android.R.id.home) {
             setResult(RESULT_CANCELED);
             finish();
             return true;
+        } else {
+            return super.onOptionsItemSelected(item);
         }
+    }
 
-        return super.onOptionsItemSelected(item);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == Activity.RESULT_OK &&
+                requestCode == REQUEST_CODE_SCAN_CARD &&
+                data != null) {
+            cards.pay.paycardsrecognizer.sdk.Card card =
+                    data.getParcelableExtra(ScanCardIntent.RESULT_PAYCARDS_CARD);
+        }
     }
 }

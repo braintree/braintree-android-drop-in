@@ -80,3 +80,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
 }
+
+repositories {
+    maven { url "http://pay.cards/maven" }
+}
