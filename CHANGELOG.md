@@ -21,6 +21,10 @@
   * Rename `PaymentMethodType` to `DropInPaymentMethodType`
   * Remove `DropInResultListener`
   * Remove `DropInResult#fetchDropInResult()` 
+  * Bump braintree_android dependency versions to 4.1.0
+  * Make `DropInResult` constructor package-private
+
+**Note:** The credentials for integrating with 3DS have changed. If you are using 3DS please update the credentials in your app-level `build.gradle`
 
 ## 5.2.2
 

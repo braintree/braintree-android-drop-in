@@ -221,7 +221,7 @@ public class MockDropInClientBuilder {
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
-                CardTokenizeCallback callback = (CardTokenizeCallback) invocation.getArguments()[2];
+                CardTokenizeCallback callback = (CardTokenizeCallback) invocation.getArguments()[1];
                 if (cardTokenizeSuccess != null) {
                     callback.onResult(cardTokenizeSuccess, null);
                 } else if (cardTokenizeError != null) {
@@ -229,7 +229,7 @@ public class MockDropInClientBuilder {
                 }
                 return null;
             }
-        }).when(dropInClient).tokenizeCard(any(FragmentActivity.class), any(Card.class), any(CardTokenizeCallback.class));
+        }).when(dropInClient).tokenizeCard(any(Card.class), any(CardTokenizeCallback.class));
 
         doAnswer(new Answer<Void>() {
             @Override

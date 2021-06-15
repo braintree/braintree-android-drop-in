@@ -140,6 +140,85 @@ object Fixtures {
 
     // region Payment Methods
     // language=JSON
+    const val PAYMENT_METHODS_GET_PAYMENT_METHODS_RESPONSE = """
+        {
+          "paymentMethods": [
+            {
+              "type": "CreditCard",
+              "nonce": "123456-12345-12345-a-adfa",
+              "description": "ending in ••11",
+              "default": true,
+              "isLocked": false,
+              "securityQuestions": [],
+              "details":
+              {
+                "cardType": "Visa",
+                "lastTwo": "11",
+                "lastFour": "1111"
+              }
+            },
+            {
+              "type": "PayPalAccount",
+              "nonce": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+              "description": "with email paypalaccount@example.com",
+              "default": false,
+              "isLocked": false,
+              "securityQuestions": [],
+              "details": {
+                "email": "paypalaccount@example.com",
+                "payerInfo": {
+                  "accountAddress": {
+                    "street1": "123 Fake St.",
+                    "street2": "Apt. 3",
+                    "city": "Oakland",
+                    "state": "CA",
+                    "postalCode": "94602",
+                    "country": "US"
+                  }
+                }
+              }
+            },
+            {
+              "type": "AndroidPayCard",
+              "nonce": "fake-google-pay-nonce",
+              "description": "Google Pay",
+              "details": {
+                "cardType": "Visa",
+                "lastTwo": "11",
+                "lastFour": "1111"
+              }
+            },
+            {
+              "type": "VenmoAccount",
+              "nonce": "fake-venmo-nonce",
+              "description": "VenmoAccount",
+              "details": {
+                "cardType": "Visa",
+                "username": "happy-venmo-joe"
+              }
+            }
+          ]
+        }
+    """
+
+    // language=JSON
+    const val PAYMENT_METHODS_GET_PAYMENT_METHODS_GOOGLE_PAY_RESPONSE = """
+        {
+          "paymentMethods": [
+            {
+              "type": "AndroidPayCard",
+              "nonce": "fake-google-pay-nonce",
+              "description": "Google Pay",
+              "details": {
+                "cardType": "Visa",
+                "lastTwo": "11"
+              }
+            }
+          ]
+        }
+    """
+
+    // language=JSON
     const val PAYMENT_METHODS_UNIONPAY_CREDIT_CARD = """
         {
           "type": "CreditCard",
@@ -652,6 +731,13 @@ object Fixtures {
               }
             }
           ]
+        }
+    """
+
+    // language=JSON
+    const val PAYMENT_METHODS_GET_PAYMENT_METHODS_EMPTY_RESPONSE = """
+        {
+          "paymentMethods": []
         }
     """
 }
