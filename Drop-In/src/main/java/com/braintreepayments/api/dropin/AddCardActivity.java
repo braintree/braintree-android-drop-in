@@ -418,6 +418,9 @@ public class AddCardActivity extends BaseActivity implements ConfigurationListen
                 data != null) {
             cards.pay.paycardsrecognizer.sdk.Card card =
                     data.getParcelableExtra(ScanCardIntent.RESULT_PAYCARDS_CARD);
+
+            mAddCardView.getCardForm().getCardEditText().setText(card.getCardNumber());
+            mEditCardView.getCardForm().getExpirationDateEditText().setText(card.getExpirationDate());
         }
     }
 }
