@@ -19,6 +19,8 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
 
     private final VaultedPaymentMethodSelectedListener callback;
 
+    private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
+
     VaultedPaymentMethodsAdapter(List<PaymentMethodNonce> paymentMethodNonces, VaultedPaymentMethodSelectedListener callback) {
         mPaymentMethodNonces = paymentMethodNonces;
         this.callback = callback;
@@ -37,12 +39,7 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
 
         holder.icon.setImageResource(paymentMethodType.getVaultedDrawable());
         holder.title.setText(paymentMethodType.getLocalizedName());
-
-        if (paymentMethodNonce instanceof CardNonce) {
-            holder.description.setText("••• ••" + ((CardNonce) paymentMethodNonce).getLastTwo());
-        } else {
-            holder.description.setText(paymentMethodNonce.getDescription());
-        }
+        holder.description.setText(nonceInspector.getDescription(paymentMethodNonce));
 
         holder.itemView.setOnClickListener(new OnClickListener() {
             @Override

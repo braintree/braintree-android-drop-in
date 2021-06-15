@@ -148,26 +148,11 @@ public class MainActivity extends BaseActivity {
 
             mPaymentMethodIcon.setImageResource(result.getPaymentMethodType().getDrawable());
             if (result.getPaymentMethodNonce() != null) {
-                displayResult(result.getPaymentMethodNonce(), result.getDeviceData());
+                displayResult(result);
             }
 
             mPurchaseButton.setEnabled(true);
         }
-    }
-
-    public void onPaymentMethodNonceCreated(PaymentMethodNonce paymentMethodNonce) {
-        displayResult(paymentMethodNonce, null);
-        safelyCloseLoadingView();
-
-        if (mShouldMakePurchase) {
-            purchase(null);
-        }
-    }
-
-    public void onCancel(int requestCode) {
-        safelyCloseLoadingView();
-
-        mShouldMakePurchase = false;
     }
 
     @Override
@@ -187,7 +172,7 @@ public class MainActivity extends BaseActivity {
 
         if (resultCode == RESULT_OK) {
             DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-            displayResult(result.getPaymentMethodNonce(), result.getDeviceData());
+            displayResult(result);
             mPurchaseButton.setEnabled(true);
         } else if (resultCode != RESULT_CANCELED) {
             safelyCloseLoadingView();
@@ -247,15 +232,15 @@ public class MainActivity extends BaseActivity {
         });
     }
 
-    private void displayResult(PaymentMethodNonce paymentMethodNonce, String deviceData) {
-        mNonce = paymentMethodNonce;
+    private void displayResult(DropInResult dropInResult) {
+        mNonce = dropInResult.getPaymentMethodNonce();
         mPaymentMethodType = DropInPaymentMethodType.forType(mNonce);
 
         mPaymentMethodIcon.setImageResource(DropInPaymentMethodType.forType(mNonce).getDrawable());
 
-        // TODO: Uncomment this when these PR to make these public is merged into core
-//        mPaymentMethodTitle.setText(paymentMethodNonce.getTypeLabel());
-//        mPaymentMethodDescription.setText(paymentMethodNonce.getDescription());
+        mPaymentMethodTitle.setText(dropInResult.getPaymentMethodType().getCanonicalName());
+        mPaymentMethodDescription.setText(dropInResult.getPaymentDescription());
+
         mPaymentMethod.setVisibility(VISIBLE);
 
         mNonceString.setText(getString(R.string.nonce) + ": " + mNonce.getString());
@@ -295,7 +280,7 @@ public class MainActivity extends BaseActivity {
         mNonceDetails.setText(details);
         mNonceDetails.setVisibility(VISIBLE);
 
-        mDeviceData.setText("Device Data: " + deviceData);
+        mDeviceData.setText("Device Data: " + dropInResult.getDeviceData());
         mDeviceData.setVisibility(VISIBLE);
 
         mAddPaymentMethodButton.setVisibility(GONE);

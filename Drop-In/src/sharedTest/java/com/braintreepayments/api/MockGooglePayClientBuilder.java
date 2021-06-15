@@ -34,7 +34,7 @@ public class MockGooglePayClientBuilder {
                 if (isReadyToPaySuccess != null) {
                     callback.onResult(isReadyToPaySuccess, null);
                 } else if (isReadyToPayError != null) {
-                    callback.onResult(null, isReadyToPayError);
+                    callback.onResult(false, isReadyToPayError);
                 }
                 return null;
             }
