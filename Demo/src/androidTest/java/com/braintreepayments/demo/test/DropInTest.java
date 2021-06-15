@@ -1,10 +1,14 @@
 package com.braintreepayments.demo.test;
 
 import android.widget.Button;
+import android.widget.ViewSwitcher;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.RequiresDevice;
 
+import com.braintreepayments.api.DropInClient;
+import com.braintreepayments.api.DropInRequest;
+import com.braintreepayments.api.Fixtures;
 import com.braintreepayments.demo.Settings;
 import com.braintreepayments.demo.test.utilities.ExpirationDate;
 import com.braintreepayments.demo.test.utilities.TestHelper;
@@ -16,14 +20,8 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static androidx.test.InstrumentationRegistry.getTargetContext;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_CHALLENGE_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
-import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
-import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
-import static com.braintreepayments.demo.test.utilities.UiTestActions.clickWebViewText;
 import static com.braintreepayments.AutomatorAction.clearTextField;
 import static com.braintreepayments.AutomatorAction.click;
 import static com.braintreepayments.AutomatorAction.setText;
@@ -34,6 +32,14 @@ import static com.braintreepayments.UiObjectMatcher.withResourceId;
 import static com.braintreepayments.UiObjectMatcher.withText;
 import static com.braintreepayments.UiObjectMatcher.withTextContaining;
 import static com.braintreepayments.UiObjectMatcher.withTextStartingWith;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_CHALLENGE_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
+import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
+import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
+import static com.braintreepayments.demo.test.utilities.UiTestActions.clickWebViewText;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -328,4 +334,104 @@ public class DropInTest extends TestHelper {
         assertFalse(onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_title")).exists());
     }
 
+    @Test
+    public void vaultManager_whenVaultedPaymentEdited_returnsToDropIn() {
+//        String authorization = Fixtures.TOKENIZATION_KEY;
+//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
+//        mActivityController.setup();
+//
+//        PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
+//
+//        ArrayList<Parcelable> paymentMethodNonces = new ArrayList<>();
+//        paymentMethodNonces.add(paypalNonce);
+//
+//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+//
+//        mActivity.onActivityResult(DELETE_PAYMENT_METHOD_NONCE_CODE, RESULT_OK, new Intent()
+//                .putExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES", paymentMethodNonces));
+//
+//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void selectPaymentMethod_whenPaymentMethodSelected_showsLoadingView() {
+//        String authorization = Fixtures.TOKENIZATION_KEY;
+//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+//
+//        DropInClient dropInClient = new MockDropInClientBuilder()
+//                .authorization(Authorization.fromString(authorization))
+//                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+//                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+//                .build();
+//
+//        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+//
+//        mActivityController.setup();
+//
+//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+//
+//        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.UNKNOWN);
+//
+//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void addCard_onSuccess_returnsToApp() {
+//        String authorization = Fixtures.TOKENIZATION_KEY;
+//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+//
+//        DropInClient dropInClient = new MockDropInClientBuilder()
+//                .authorization(Authorization.fromString(authorization))
+//                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+//                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+//                .build();
+//        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+//        mActivityController.setup();
+//
+//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+//
+//        DropInResult result = new DropInResult()
+//                .paymentMethodNonce(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
+//        Intent data = new Intent()
+//                .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+//
+//        mActivity.onActivityResult(ADD_CARD_REQUEST_CODE, RESULT_OK, data);
+//
+//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void vaultManager_whenEditingFinished_removesLoadingIndicator() {
+//        String authorization = Fixtures.TOKENIZATION_KEY;
+//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+//
+//        DropInClient dropInClient = new MockDropInClientBuilder()
+//                .authorization(Authorization.fromString(authorization))
+//                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+//                .build();
+//        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+//        mActivityController.setup();
+//
+//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+//
+//        mActivity.onActivityResult(2, RESULT_OK, null);
+//
+//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void addCard_whenUserCancelsAddCardFlow_removesLoadingIndicator() {
+//        String authorization = Fixtures.TOKENIZATION_KEY;
+//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+//
+//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
+//        mActivityController.setup();
+//
+//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+//
+//        mActivity.onActivityResult(1, RESULT_CANCELED, null);
+//
+//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
 }

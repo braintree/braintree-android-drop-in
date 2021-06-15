@@ -7,8 +7,6 @@ import android.widget.LinearLayout;
 
 import androidx.test.core.app.ApplicationProvider;
 
-import com.braintreepayments.api.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
@@ -28,7 +26,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         Context context = ApplicationProvider.getApplicationContext();
         LinearLayout parent = new LinearLayout(context);
 
-        PaymentMethodSelectedListener listener = mock(PaymentMethodSelectedListener.class);
+        SupportedPaymentMethodSelectedListener listener = mock(SupportedPaymentMethodSelectedListener.class);
         ArrayList<DropInPaymentMethodType> supportedPaymentMethods = new ArrayList<>();
         supportedPaymentMethods.add(DropInPaymentMethodType.PAYPAL);
         supportedPaymentMethods.add(DropInPaymentMethodType.PAY_WITH_VENMO);
@@ -36,7 +34,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         supportedPaymentMethods.add(DropInPaymentMethodType.GOOGLE_PAYMENT);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                supportedPaymentMethods, listener);
+                context, listener, supportedPaymentMethods);
 
         adapter.getView(0, null, parent).callOnClick();
         adapter.getView(1, null, parent).callOnClick();

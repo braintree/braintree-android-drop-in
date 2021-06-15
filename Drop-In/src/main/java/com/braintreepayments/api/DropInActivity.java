@@ -62,6 +62,8 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                 onConfigurationFetched();
             }
         });
+
+        sendAnalyticsEvent("appeared");
     }
 
     public void onConfigurationFetched() {
