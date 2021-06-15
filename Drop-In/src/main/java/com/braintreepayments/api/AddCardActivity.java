@@ -288,7 +288,7 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
             card.setPostalCode(cardForm.getPostalCode());
             card.setShouldValidate(shouldVault);
 
-            getDropInClient().tokenizeCard(this, card, new CardTokenizeCallback() {
+            getDropInClient().tokenizeCard(card, new CardTokenizeCallback() {
                 @Override
                 public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
                     if (error != null) {

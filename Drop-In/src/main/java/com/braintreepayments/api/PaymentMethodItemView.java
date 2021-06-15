@@ -21,6 +21,8 @@ public class PaymentMethodItemView extends LinearLayout {
     private PaymentMethodNonce mPaymentMethodNonce;
     private View mDivider;
 
+    private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
+
     public PaymentMethodItemView(Context context) {
         super(context);
         init();
@@ -74,11 +76,7 @@ public class PaymentMethodItemView extends LinearLayout {
         }
 
         mTitle.setText(paymentMethodType.getLocalizedName());
-        if (paymentMethodNonce instanceof CardNonce) {
-            mDescription.setText("••• ••" + ((CardNonce) paymentMethodNonce).getLastTwo());
-        } else {
-            mDescription.setText(paymentMethodNonce.getDescription());
-        }
+        mDescription.setText(nonceInspector.getDescription(paymentMethodNonce));
     }
 
     public void setOnDeleteIconClick(OnClickListener clickListener) {

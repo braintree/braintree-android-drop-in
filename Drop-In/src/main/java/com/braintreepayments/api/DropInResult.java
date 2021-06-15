@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
 
 /**
@@ -19,22 +20,31 @@ public class DropInResult implements Parcelable {
     public static final String EXTRA_DROP_IN_RESULT =
             "com.braintreepayments.api.dropin.EXTRA_DROP_IN_RESULT";
 
-
     static final String LAST_USED_PAYMENT_METHOD_TYPE =
             "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
 
+    private String mDeviceData;
+    private String mPaymentDescription;
+
     private DropInPaymentMethodType mPaymentMethodType;
 
+    private PaymentMethodNonceInspector nonceInspector;
     private PaymentMethodNonce mPaymentMethodNonce;
-    private String mDeviceData;
 
-    public DropInResult() {}
+    DropInResult() {
+        this(new PaymentMethodNonceInspector());
+    }
+
+    @VisibleForTesting
+    DropInResult(PaymentMethodNonceInspector nonceInspector) {
+        this.nonceInspector = nonceInspector;
+    }
 
     DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce != null) {
-            mPaymentMethodType = DropInPaymentMethodType.forType(paymentMethodNonce.getTypeLabel());
+            mPaymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
+            mPaymentDescription = nonceInspector.getDescription(paymentMethodNonce);
         }
-
         mPaymentMethodNonce = paymentMethodNonce;
 
         return this;
@@ -79,6 +89,10 @@ public class DropInResult implements Parcelable {
         return mDeviceData;
     }
 
+    @Nullable
+    public String getPaymentDescription() {
+        return mPaymentDescription;
+    }
 
     static void setLastUsedPaymentMethodType(Context context,
                                              PaymentMethodNonce paymentMethodNonce) {

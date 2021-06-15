@@ -29,8 +29,10 @@ public enum DropInPaymentMethodType {
     private final int mIconDrawable;
     private final int mVaultedDrawable;
     private final int mLocalizedName;
-    private String mCanonicalName;
-    private CardType mCardType;
+    private final String mCanonicalName;
+    private final CardType mCardType;
+
+    private static final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
 
     DropInPaymentMethodType(int iconDrawable, int vaultedDrawable, int localizedName, String canonicalName, CardType cardType) {
         mIconDrawable = iconDrawable;
@@ -61,7 +63,7 @@ public enum DropInPaymentMethodType {
      * if no match could be made.
      */
     public static DropInPaymentMethodType forType(PaymentMethodNonce paymentMethodNonce) {
-        return forType(paymentMethodNonce.getTypeLabel());
+        return forType(nonceInspector.getTypeLabel(paymentMethodNonce));
     }
 
     /**

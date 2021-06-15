@@ -47,6 +47,15 @@ public class DropInResultUnitTest {
     }
 
     @Test
+    public void paymentMethodNonce_setsPaymentDescription() throws JSONException {
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(cardNonce);
+
+        assertEquals("1111", result.getPaymentDescription());
+    }
+
+    @Test
     public void paymentMethodNonce_isNullable() {
         DropInResult result = new DropInResult()
                 .paymentMethodNonce(null);
@@ -87,5 +96,4 @@ public class DropInResultUnitTest {
         assertEquals(cardNonce.getString(), parceled.getPaymentMethodNonce().getString());
         assertEquals("device_data", parceled.getDeviceData());
     }
-
 }

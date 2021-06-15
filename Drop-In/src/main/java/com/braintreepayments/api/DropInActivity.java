@@ -392,7 +392,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
 
     boolean hasCardNonce(List<PaymentMethodNonce> paymentMethodNonces) {
         for (PaymentMethodNonce nonce : paymentMethodNonces) {
-            if (nonce.getType() == PaymentMethodType.CARD) {
+            if (nonce instanceof CardNonce) {
                 return true;
             }
         }
