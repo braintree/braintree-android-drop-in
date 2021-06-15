@@ -99,66 +99,6 @@ task sourcesJar(type: Jar) {
     from android.sourceSets.main.java.srcDirs
 }
 
-signing {
-    required {
-        !version.endsWith("SNAPSHOT") && !version.endsWith("DEVELOPMENT")
-    }
-    sign publishing.publications
-}
-
-nexusPublishing {
-    // give nexus sonatype more time to initialize the staging repository
-    clientTimeout = Duration.ofMinutes(3)
-    repositories {
-        sonatype()
-    }
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-
-                artifact sourcesJar
-                artifact javadocsJar
-
-                groupId = 'com.braintreepayments.api'
-                artifactId = 'drop-in'
-                version = rootProject.versionName
-
-                pom {
-                    name = 'drop-in'
-                    packaging = 'aar'
-                    description = 'Drop-in payment form for Braintree\'s Android SDK. Integrate this library to add a readymade UI for your payments.'
-                    url = 'https://github.com/braintree/braintree-android-drop-in'
-
-                    scm {
-                        url = 'scm:git@github.com:braintree/braintree-android-drop-in.git'
-                        connection = 'scm:git@github.com:braintree/braintree-android-drop-in.git'
-                        developerConnection = 'scm:git@github.com:braintree/braintree-android-drop-in.git'
-                    }
-
-                    developers {
-                        developer {
-                            id = 'devs'
-                            name = 'Braintree Payments'
-                        }
-                    }
-
-                    licenses {
-                        license {
-                            name = 'MIT'
-                            url = 'http://opensource.org/licenses/MIT'
-                            distribution = 'repo'
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 repositories {
     mavenCentral()
     maven { url "http://pay.cards/maven" }
