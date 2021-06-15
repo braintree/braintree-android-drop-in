@@ -13,7 +13,7 @@ buildscript {
         classpath 'de.marcphilipp.gradle:nexus-publish-plugin:0.4.0'
         classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
     }
 }
 
@@ -34,6 +34,7 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven { url "https://jitpack.io" }
     }
 }
 
