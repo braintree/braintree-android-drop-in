@@ -3,7 +3,6 @@ package com.braintreepayments.api;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import android.view.View;
 
 import androidx.annotation.Nullable;
@@ -32,12 +31,8 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
     public static final int ADD_CARD_REQUEST_CODE = 1;
     public static final int DELETE_PAYMENT_METHOD_NONCE_CODE = 2;
 
-    private static final String EXTRA_SHEET_SLIDE_UP_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_SLIDE_UP_PERFORMED";
-    private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
     static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";
 
-    // TODO: Remove this and callback a full drop in result from DropInClient methods
-    private String mDeviceData;
     private DropInViewModel dropInViewModel;
 
     @Override
@@ -48,10 +43,6 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
         if (getDropInClient().getAuthorization() instanceof InvalidAuthorization) {
             finish(new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
             return;
-        }
-
-        if (savedInstanceState != null) {
-            mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
         }
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
@@ -68,15 +59,6 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
 
     public void onConfigurationFetched() {
         showSelectPaymentMethodFragment();
-
-        if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
-            getDropInClient().collectDeviceData(this, new DataCollectorCallback() {
-                @Override
-                public void onResult(@Nullable String deviceData, @Nullable Exception error) {
-                    mDeviceData = deviceData;
-                }
-            });
-        }
 
         getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
@@ -160,10 +142,10 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
         finish(error);
     }
 
-    private void finishWithPaymentMethodNonce(final PaymentMethodNonce paymentMethodNonce) {
+    private void finishWithDropInResult(DropInResult dropInResult) {
         getDropInClient().sendAnalyticsEvent("sdk.exit.success");
-        DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, paymentMethodNonce);
-        finish(paymentMethodNonce, mDeviceData);
+        DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, dropInResult.getPaymentMethodNonce());
+        finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
     }
 
     @Override
@@ -211,12 +193,6 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(EXTRA_DEVICE_DATA, mDeviceData);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
@@ -235,7 +211,6 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                 DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
                 DropInResult.setLastUsedPaymentMethodType(this, result.getPaymentMethodNonce());
 
-                result.deviceData(mDeviceData);
                 response = new Intent()
                         .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
             } else {
@@ -291,12 +266,11 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                 if (shouldRequestThreeDSecureVerification) {
                     dropInViewModel.setIsLoading(true);
 
-                    getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new ThreeDSecureResultCallback() {
-
+                    getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new DropInResultCallback() {
                         @Override
-                        public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                            if (threeDSecureResult != null) {
-                                finishWithPaymentMethodNonce(threeDSecureResult.getTokenizedCard());
+                        public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                            if (dropInResult != null) {
+                                finishWithDropInResult(dropInResult);
                             } else {
                                 updateVaultedPaymentMethodNonces(true);
                                 dropInViewModel.setIsLoading(false);
@@ -305,7 +279,23 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                         }
                     });
                 } else {
-                    finishWithPaymentMethodNonce(paymentMethodNonce);
+                    // TODO: unit test
+                    getDropInClient().collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
+                        @Override
+                        public void onResult(@Nullable String deviceData, @Nullable Exception error) {
+                            if (deviceData != null) {
+                                DropInResult dropInResult = new DropInResult();
+                                dropInResult.paymentMethodNonce(paymentMethodNonce);
+                                dropInResult.deviceData(deviceData);
+                                finishWithDropInResult(dropInResult);
+                            } else {
+                                // TODO: determine if we should fail when device data collection fails
+                                updateVaultedPaymentMethodNonces(true);
+                                dropInViewModel.setIsLoading(false);
+                                onError(error);
+                            }
+                        }
+                    });
                 }
             }
         });
