@@ -1,5 +1,6 @@
 package com.braintreepayments.api
 
+import androidx.core.os.bundleOf
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
@@ -8,6 +9,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.braintreepayments.api.dropin.R
 import org.hamcrest.Matchers.not
+import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,6 +20,13 @@ import java.util.concurrent.CountDownLatch
 class SelectPaymentMethodFragmentUITest {
 
     private lateinit var countDownLatch: CountDownLatch
+
+    private val supportedPaymentMethods = listOf(
+            DropInPaymentMethodType.PAYPAL,
+            DropInPaymentMethodType.PAY_WITH_VENMO,
+            DropInPaymentMethodType.UNKNOWN,
+            DropInPaymentMethodType.GOOGLE_PAYMENT
+    )
 
     @Before
     fun beforeEach() {
@@ -47,14 +56,8 @@ class SelectPaymentMethodFragmentUITest {
         val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        val paymentMethods = listOf(
-                DropInPaymentMethodType.PAYPAL,
-                DropInPaymentMethodType.PAY_WITH_VENMO,
-                DropInPaymentMethodType.UNKNOWN,
-                DropInPaymentMethodType.GOOGLE_PAYMENT
-        )
         scenario.onFragment { fragment ->
-            fragment.dropInViewModel.setAvailablePaymentMethods(paymentMethods)
+            fragment.dropInViewModel.setAvailablePaymentMethods(supportedPaymentMethods)
         }
 
         onView(withId(R.id.bt_select_payment_method_loader)).check(matches(not(isDisplayed())))
@@ -62,6 +65,36 @@ class SelectPaymentMethodFragmentUITest {
         onView(withText("Venmo")).check(matches(isDisplayed()))
         onView(withText("Credit or Debit Card")).check(matches(isDisplayed()))
         onView(withText("Google Pay")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenSupportedPaymentMethodsLoaded_requestsForVaultedPaymentMethodsToBeLoaded() {
+        // TODO: assert an event is dispatched to load vaulted payment methods
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenVaultedPaymentMethodsLoaded_displaysVaultedPaymentMethods() {
+        val dropInRequest = DropInRequest()
+                .vaultManager(true)
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
+        val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java, bundle)
+
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
+        val payPalNonce = PayPalAccountNonce.fromJSON(JSONObject(Fixtures.PAYPAL_ACCOUNT_JSON))
+        val venmoAccountNonce = VenmoAccountNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VENMO_ACCOUNT_RESPONSE))
+
+        val vaultedPaymentMethodNonces = listOf(cardNonce, payPalNonce, venmoAccountNonce)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setAvailablePaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setVaultedPaymentMethodNonces(vaultedPaymentMethodNonces)
+        }
+
+        onView(isRoot()).perform(waitFor(10000))
     }
 
     @Test
