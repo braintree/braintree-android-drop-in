@@ -1,16 +1,18 @@
 package com.braintreepayments.api
 
-import android.util.Log
 import androidx.fragment.app.testing.FragmentScenario
-import androidx.fragment.app.testing.FragmentScenario.FragmentAction
 import androidx.lifecycle.Lifecycle
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import junit.framework.Assert.assertTrue
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
+
+import com.braintreepayments.api.dropin.R;
 
 // Ref: https://developer.android.com/guide/fragments/test
 @RunWith(AndroidJUnit4::class)
@@ -21,23 +23,24 @@ class SelectPaymentMethodFragmentTest {
     @Before
     fun beforeEach() {
         countDownLatch = CountDownLatch(1)
+
+//        scenario.onFragment { fragment ->
+//            val activity = fragment.requireActivity()
+//            fragment.parentFragmentManager.setFragmentResultListener("event", activity) { requestKey, result ->
+//                assertTrue(true)
+//                countDownLatch.countDown()
+//            }
+//        }
+//
+//        countDownLatch.await()
     }
 
-    @Test(timeout = 1000)
+    @Test
     @Throws(InterruptedException::class)
-    fun onCreate_loaderIsVisible() {
+    fun onResume_loaderIsVisible() {
         val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java)
-        scenario.onFragment { fragment ->
-            val activity = fragment.requireActivity()
-            fragment.parentFragmentManager.setFragmentResultListener("event", activity) { requestKey, result ->
-                assertTrue(true)
-                countDownLatch.countDown()
-            }
-        }
-
-        scenario.moveToState(Lifecycle.State.CREATED)
-        countDownLatch.await()
-        //        onView(withId(R.id.bt_select_payment_method_loader)).check(matches(isDisplayed()));
+        scenario.moveToState(Lifecycle.State.RESUMED)
+        onView(withId(R.id.bt_select_payment_method_loader)).check(matches(isDisplayed()))
     }
 
     @Test
@@ -209,15 +212,5 @@ class SelectPaymentMethodFragmentTest {
 //        assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods_wrapper)).isVisible();
 //        assertEquals(2, Objects.requireNonNull(((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter()).getItemCount());
 //        assertThat((TextView) mActivity.findViewById(R.id.bt_supported_payment_methods_header)).hasText(R.string.bt_other);
-    }
-
-    @Test
-    fun onCreate_showsLoadingIndicatorInitially() {
-//        String authorization = Fixtures.TOKENIZATION_KEY;
-//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
-//        mActivityController.setup();
-//
-//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 }
