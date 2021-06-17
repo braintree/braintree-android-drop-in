@@ -1,14 +1,10 @@
 package com.braintreepayments.demo.test;
 
 import android.widget.Button;
-import android.widget.ViewSwitcher;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.RequiresDevice;
 
-import com.braintreepayments.api.DropInClient;
-import com.braintreepayments.api.DropInRequest;
-import com.braintreepayments.api.Fixtures;
 import com.braintreepayments.demo.Settings;
 import com.braintreepayments.demo.test.utilities.ExpirationDate;
 import com.braintreepayments.demo.test.utilities.TestHelper;
@@ -20,7 +16,6 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 
-import static android.app.Activity.RESULT_CANCELED;
 import static androidx.test.InstrumentationRegistry.getTargetContext;
 import static com.braintreepayments.AutomatorAction.clearTextField;
 import static com.braintreepayments.AutomatorAction.click;
@@ -39,7 +34,6 @@ import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CRED
 import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
 import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
 import static com.braintreepayments.demo.test.utilities.UiTestActions.clickWebViewText;
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -102,9 +96,9 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Added Protection")).waitForExists();
         onDevice().typeText("1234").pressEnter();
 
-        onDevice(withText("Return To App")).waitForExists(5000);
-        if (onDevice(withText("Return To App")).exists()) {
-            clickWebViewText("Return To App");
+        onDevice(withText("RETURN TO APP")).waitForExists(5000);
+        if (onDevice(withText("RETURN TO APP")).exists()) {
+            clickWebViewText("RETURN TO APP");
         }
 
         getNonceDetails().check(text(containsString("Card Last Two: 02")));

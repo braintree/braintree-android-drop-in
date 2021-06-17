@@ -1,5 +1,5 @@
 plugins {
-    id  'com.android.application'
+    id 'com.android.application'
 }
 
 android {
@@ -72,7 +72,7 @@ dependencies {
     implementation project(':Drop-In')
 
     debugImplementation 'com.facebook.stetho:stetho:1.5.0'
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.4'
+//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.4'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.0'
     androidTestImplementation 'com.braintreepayments:device-automator:1.0.0'

@@ -371,7 +371,7 @@ public class DropInClientUnitTest {
 
         PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
                 new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
-        ThreeDSecureResultCallback callback = mock(ThreeDSecureResultCallback.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
 
         DropInClient sut = new DropInClient(params);
         sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
@@ -396,7 +396,7 @@ public class DropInClientUnitTest {
 
         PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
                 new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
-        ThreeDSecureResultCallback callback = mock(ThreeDSecureResultCallback.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
 
         DropInClient sut = new DropInClient(params);
         sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
@@ -422,12 +422,12 @@ public class DropInClientUnitTest {
 
         PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
                 new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
-        ThreeDSecureResultCallback callback = mock(ThreeDSecureResultCallback.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
 
         DropInClient sut = new DropInClient(params);
         sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
 
-        verify(threeDSecureClient).continuePerformVerification(activity, threeDSecureRequest, threeDSecureResult, callback);
+        verify(threeDSecureClient).continuePerformVerification(activity, threeDSecureRequest, threeDSecureResult, any(ThreeDSecureResultCallback.class));
     }
 
     @Test

@@ -3,11 +3,14 @@ package com.braintreepayments.api;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
@@ -47,19 +50,6 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
 
-        getDropInClient().getConfiguration(new ConfigurationCallback() {
-            @Override
-            public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
-                onConfigurationFetched();
-            }
-        });
-
-        sendAnalyticsEvent("appeared");
-    }
-
-    public void onConfigurationFetched() {
-        showSelectPaymentMethodFragment();
-
         getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
             public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
@@ -70,6 +60,16 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                 }
             }
         });
+
+        getSupportFragmentManager().setFragmentResultListener("event", this, new FragmentResultListener() {
+            @Override
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                Log.d("WE HERE THO!", requestKey);
+            }
+        });
+
+        showSelectPaymentMethodFragment();
+        sendAnalyticsEvent("appeared");
     }
 
     void showVaultManager() {
@@ -80,7 +80,7 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                 if (paymentMethodNonceList != null) {
                     Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
                             .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList))
-                            .putExtra(EXTRA_CHECKOUT_REQUEST, getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
+                            .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
                             .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
                             .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
                     startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
@@ -98,16 +98,18 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
     }
 
     void updateVaultedPaymentMethodNonces(boolean refetch) {
-        getDropInClient().getVaultedPaymentMethods(this, refetch, new GetPaymentMethodNoncesCallback() {
-            @Override
-            public void onResult(@Nullable List<PaymentMethodNonce> vaultedPaymentMethods, @Nullable Exception error) {
-                if (vaultedPaymentMethods != null) {
-                    dropInViewModel.setVaultedPaymentMethodNonces(vaultedPaymentMethods);
-                } else if (error != null) {
-                    onError(error);
+        if (mClientTokenPresent) {
+            getDropInClient().getVaultedPaymentMethods(this, refetch, new GetPaymentMethodNoncesCallback() {
+                @Override
+                public void onResult(@Nullable List<PaymentMethodNonce> vaultedPaymentMethods, @Nullable Exception error) {
+                    if (vaultedPaymentMethods != null) {
+                        dropInViewModel.setVaultedPaymentMethodNonces(vaultedPaymentMethods);
+                    } else if (error != null) {
+                        onError(error);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     private void showSelectPaymentMethodFragment() {
@@ -184,7 +186,7 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                 break;
             case UNKNOWN:
                 Intent intent = new Intent(this, AddCardActivity.class)
-                        .putExtra(EXTRA_CHECKOUT_REQUEST, getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
+                        .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
                         .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
                         .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
                 startActivityForResult(intent, ADD_CARD_REQUEST_CODE);

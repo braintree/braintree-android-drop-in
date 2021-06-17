@@ -150,7 +150,7 @@ public class MockDropInClientBuilder {
                 }
                 return null;
             }
-        }).when(dropInClient).performThreeDSecureVerification(any(FragmentActivity.class), any(PaymentMethodNonce.class), any(ThreeDSecureResultCallback.class));
+        }).when(dropInClient).performThreeDSecureVerification(any(FragmentActivity.class), any(PaymentMethodNonce.class), any(DropInResultCallback.class));
 
         doAnswer(new Answer<Void>() {
             @Override

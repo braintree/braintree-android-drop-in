@@ -1,41 +1,47 @@
-package com.braintreepayments.api;
+package com.braintreepayments.api
 
-import android.view.View;
-import android.widget.TextView;
-import android.widget.ViewSwitcher;
+import android.util.Log
+import androidx.fragment.app.testing.FragmentScenario
+import androidx.fragment.app.testing.FragmentScenario.FragmentAction
+import androidx.lifecycle.Lifecycle
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import junit.framework.Assert.assertTrue
+import org.junit.Assert
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import java.util.concurrent.CountDownLatch
 
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+// Ref: https://developer.android.com/guide/fragments/test
+@RunWith(AndroidJUnit4::class)
+class SelectPaymentMethodFragmentTest {
 
-import com.braintreepayments.api.dropin.R;
+    private lateinit var countDownLatch: CountDownLatch
 
-import org.json.JSONObject;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+    @Before
+    fun beforeEach() {
+        countDownLatch = CountDownLatch(1)
+    }
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+    @Test(timeout = 1000)
+    @Throws(InterruptedException::class)
+    fun onCreate_loaderIsVisible() {
+        val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java)
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            fragment.parentFragmentManager.setFragmentResultListener("event", activity) { requestKey, result ->
+                assertTrue(true)
+                countDownLatch.countDown()
+            }
+        }
 
-import static junit.framework.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-
-@RunWith(AndroidJUnit4.class)
-public class SelectPaymentMethodFragmentTest {
-
-    @Test
-    public void onCreate_loaderIsVisible() {
-//        FragmentScenario<SelectPaymentMethodFragment> scenario =
-//                FragmentScenario.launch(SelectPaymentMethodFragment.class);
-//        scenario.moveToState(Lifecycle.State.CREATED);
-//        onView(withId(R.id.bt_select_payment_method_loader)).check(matches(isDisplayed()));
+        scenario.moveToState(Lifecycle.State.CREATED)
+        countDownLatch.await()
+        //        onView(withId(R.id.bt_select_payment_method_loader)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void onCreate_vaultEditButtonIsInvisible() {
+    fun onCreate_vaultEditButtonIsInvisible() {
 //        FragmentScenario<SelectPaymentMethodFragment> scenario =
 //                FragmentScenario.launch(SelectPaymentMethodFragment.class);
 //
@@ -61,7 +67,7 @@ public class SelectPaymentMethodFragmentTest {
     }
 
     @Test
-    public void onCreate_whenVaultManagerEnabled_vaultEditButtonIsVisible() {
+    fun onCreate_whenVaultManagerEnabled_vaultEditButtonIsVisible() {
 //        String authorization = Fixtures.TOKENIZATION_KEY;
 //        DropInRequest dropInRequest = new DropInRequest()
 //                .vaultManager(true)
@@ -77,7 +83,7 @@ public class SelectPaymentMethodFragmentTest {
     }
 
     @Test
-    public void onCreate_whenVaultManagerDisabled_vaultEditButtonIsHidden() {
+    fun onCreate_whenVaultManagerDisabled_vaultEditButtonIsHidden() {
 //        String authorization = Fixtures.TOKENIZATION_KEY;
 //        DropInRequest dropInRequest = new DropInRequest()
 //                .vaultManager(false)
@@ -93,7 +99,7 @@ public class SelectPaymentMethodFragmentTest {
     }
 
     @Test
-    public void onCreate_whenVaultManagerUnspecified_vaultEditButtonIsHidden() {
+    fun onCreate_whenVaultManagerUnspecified_vaultEditButtonIsHidden() {
 //        String authorization = Fixtures.TOKENIZATION_KEY;
 //        DropInRequest dropInRequest = new DropInRequest()
 //                .tokenizationKey(authorization);
@@ -108,7 +114,7 @@ public class SelectPaymentMethodFragmentTest {
     }
 
     @Test
-    public void onCreate_whenVaultedCardExists_sendsAnalyticEvent() {
+    fun onCreate_whenVaultedCardExists_sendsAnalyticEvent() {
 //        String authorization = Fixtures.TOKENIZATION_KEY;
 //        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 //
@@ -126,7 +132,7 @@ public class SelectPaymentMethodFragmentTest {
     }
 
     @Test
-    public void onCreate_whenVaultedCardDoesNotExist_doesNotSendAnalyticEvent() {
+    fun onCreate_whenVaultedCardDoesNotExist_doesNotSendAnalyticEvent() {
 //        String authorization = Fixtures.TOKENIZATION_KEY;
 //        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 //
@@ -145,7 +151,7 @@ public class SelectPaymentMethodFragmentTest {
     }
 
     @Test
-    public void onVaultEditButtonClick_sendsAnalyticEvent() {
+    fun onVaultEditButtonClick_sendsAnalyticEvent() {
 //        String authorization = Fixtures.TOKENIZATION_KEY;
 //        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 //
@@ -161,7 +167,7 @@ public class SelectPaymentMethodFragmentTest {
     }
 
     @Test
-    public void onCreate_whenNoVaultedPaymentMethodsFound_showsNothing() {
+    fun onCreate_whenNoVaultedPaymentMethodsFound_showsNothing() {
 //        String authorization = Fixtures.CLIENT_TOKEN;
 //        DropInRequest dropInRequest = new DropInRequest().clientToken(Fixtures.CLIENT_TOKEN);
 //
@@ -181,7 +187,7 @@ public class SelectPaymentMethodFragmentTest {
     }
 
     @Test
-    public void onCreate_whenVaultedPaymentMethodsFound_showsVaultedPaymentMethods() {
+    fun onCreate_whenVaultedPaymentMethodsFound_showsVaultedPaymentMethods() {
 //        String authorization = Fixtures.TOKENIZATION_KEY;
 //        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 //
@@ -206,7 +212,7 @@ public class SelectPaymentMethodFragmentTest {
     }
 
     @Test
-    public void onCreate_showsLoadingIndicatorInitially() {
+    fun onCreate_showsLoadingIndicatorInitially() {
 //        String authorization = Fixtures.TOKENIZATION_KEY;
 //        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 //        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");

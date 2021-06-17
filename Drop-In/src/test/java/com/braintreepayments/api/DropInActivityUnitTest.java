@@ -2,13 +2,8 @@ package com.braintreepayments.api;
 
 import android.content.Intent;
 import android.os.Parcelable;
-import android.view.View;
-import android.widget.ViewSwitcher;
 
 import androidx.fragment.app.FragmentActivity;
-import androidx.recyclerview.widget.RecyclerView;
-
-import com.braintreepayments.api.dropin.R;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,8 +22,6 @@ import java.util.Objects;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
-import static com.braintreepayments.api.DropInActivity.ADD_CARD_REQUEST_CODE;
-import static com.braintreepayments.api.DropInActivity.DELETE_PAYMENT_METHOD_NONCE_CODE;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
@@ -206,7 +199,7 @@ public class DropInActivityUnitTest {
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         mActivity.onVaultedPaymentMethodSelected(cardNonce);
 
-        verify(dropInClient, never()).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(ThreeDSecureResultCallback.class));
+        verify(dropInClient, never()).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(DropInResultCallback.class));
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_OK, mShadowActivity.getResultCode());
         DropInResult result = mShadowActivity.getResultIntent()
@@ -228,7 +221,7 @@ public class DropInActivityUnitTest {
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         mActivity.onVaultedPaymentMethodSelected(cardNonce);
-        verify(dropInClient).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(ThreeDSecureResultCallback.class));
+        verify(dropInClient).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(DropInResultCallback.class));
     }
 
     @Test
