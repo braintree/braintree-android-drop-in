@@ -4,19 +4,18 @@ import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.braintreepayments.api.dropin.R
+import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 
-import com.braintreepayments.api.dropin.R;
-
 // Ref: https://developer.android.com/guide/fragments/test
 @RunWith(AndroidJUnit4::class)
-class SelectPaymentMethodFragmentTest {
+class SelectPaymentMethodFragmentUITest {
 
     private lateinit var countDownLatch: CountDownLatch
 
@@ -37,10 +36,32 @@ class SelectPaymentMethodFragmentTest {
 
     @Test
     @Throws(InterruptedException::class)
-    fun onResume_loaderIsVisible() {
+    fun whenStateIsRESUMED_loaderIsVisible() {
         val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java)
         scenario.moveToState(Lifecycle.State.RESUMED)
         onView(withId(R.id.bt_select_payment_method_loader)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenSupportedPaymentMethodsLoaded_displaysPaymentMethods() {
+        val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        val paymentMethods = listOf(
+                DropInPaymentMethodType.PAYPAL,
+                DropInPaymentMethodType.PAY_WITH_VENMO,
+                DropInPaymentMethodType.UNKNOWN,
+                DropInPaymentMethodType.GOOGLE_PAYMENT
+        )
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setAvailablePaymentMethods(paymentMethods)
+        }
+
+        onView(withId(R.id.bt_select_payment_method_loader)).check(matches(not(isDisplayed())))
+        onView(withText("PayPal")).check(matches(isDisplayed()))
+        onView(withText("Venmo")).check(matches(isDisplayed()))
+        onView(withText("Credit or Debit Card")).check(matches(isDisplayed()))
+        onView(withText("Google Pay")).check(matches(isDisplayed()))
     }
 
     @Test

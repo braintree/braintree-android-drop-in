@@ -9,13 +9,10 @@ import java.util.List;
 
 public class DropInViewModel extends ViewModel {
 
-    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
-    private final MutableLiveData<List<DropInPaymentMethodType>> availablePaymentMethods =
-        new MutableLiveData<List<DropInPaymentMethodType>>(new ArrayList<DropInPaymentMethodType>());
-
-    private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethodNonces =
-        new MutableLiveData<List<PaymentMethodNonce>>(new ArrayList<PaymentMethodNonce>());
+    private final MutableLiveData<List<DropInPaymentMethodType>> availablePaymentMethods = new MutableLiveData<>();
+    private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethodNonces = new MutableLiveData<>();
 
     public LiveData<Boolean> isLoading() {
         return isLoading;

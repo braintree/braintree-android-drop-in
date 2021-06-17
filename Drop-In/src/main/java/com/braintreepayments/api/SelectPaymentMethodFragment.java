@@ -34,7 +34,9 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     private Button mVaultManagerButton;
 
     private DropInRequest dropInRequest;
-    private DropInViewModel dropInViewModel;
+
+    @VisibleForTesting
+    DropInViewModel dropInViewModel;
 
     public SelectPaymentMethodFragment() {}
 
@@ -46,6 +48,10 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         if (args != null) {
             dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
         }
+
+        Bundle result = new Bundle();
+        result.putString("key", "onCreateCalled");
+        getParentFragmentManager().setFragmentResult("event", result);
     }
 
     @Override
@@ -60,7 +66,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
         mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
 
-        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(getActivity(),
+        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
@@ -102,38 +108,36 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        dropInViewModel.setIsLoading(true);
-    }
-
     private void showVaultManager() {
-        DropInActivity activity = ((DropInActivity) requireActivity());
-        activity.showVaultManager();
+//        DropInActivity activity = ((DropInActivity) requireActivity());
+//        activity.showVaultManager();
     }
 
     private void sendAnalyticsEvent(String eventFragment) {
-        DropInActivity activity = ((DropInActivity) requireActivity());
-        activity.sendAnalyticsEvent(eventFragment);
+//        DropInActivity activity = ((DropInActivity) requireActivity());
+//        activity.sendAnalyticsEvent(eventFragment);
     }
 
     private void updateVaultedPaymentMethodNonces(boolean refetch) {
-        DropInActivity activity = ((DropInActivity) requireActivity());
-        activity.updateVaultedPaymentMethodNonces(refetch);
+//        DropInActivity activity = ((DropInActivity) requireActivity());
+//        activity.updateVaultedPaymentMethodNonces(refetch);
     }
 
     private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(getActivity(), this, availablePaymentMethods);
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
+                requireActivity(), this, availablePaymentMethods);
         mSupportedPaymentMethodListView.setAdapter(adapter);
-        dropInViewModel.setIsLoading(false);
 
+        dropInViewModel.setIsLoading(false);
         updateVaultedPaymentMethodNonces(false);
     }
 
     @Override
     public void onPaymentMethodSelected(DropInPaymentMethodType type) {
+        Bundle result = new Bundle();
+        result.putString("key", "paymentMethodSelected");
+        getParentFragmentManager().setFragmentResult("event", result);
+
         dropInViewModel.setIsLoading(true);
 
         DropInActivity activity = ((DropInActivity) requireActivity());
