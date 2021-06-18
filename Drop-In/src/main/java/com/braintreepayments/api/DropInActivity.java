@@ -281,23 +281,27 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                         }
                     });
                 } else {
-                    // TODO: unit test
-                    getDropInClient().collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
-                        @Override
-                        public void onResult(@Nullable String deviceData, @Nullable Exception error) {
-                            if (deviceData != null) {
-                                DropInResult dropInResult = new DropInResult();
-                                dropInResult.paymentMethodNonce(paymentMethodNonce);
-                                dropInResult.deviceData(deviceData);
-                                finishWithDropInResult(dropInResult);
-                            } else {
-                                // TODO: determine if we should fail when device data collection fails
-                                updateVaultedPaymentMethodNonces(true);
-                                dropInViewModel.setIsLoading(false);
-                                onError(error);
+                    final DropInResult dropInResult = new DropInResult();
+                    dropInResult.paymentMethodNonce(paymentMethodNonce);
+
+                    if (mDropInRequest.shouldCollectDeviceData()) {
+                        getDropInClient().collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
+                            @Override
+                            public void onResult(@Nullable String deviceData, @Nullable Exception error) {
+                                if (deviceData != null) {
+                                    dropInResult.deviceData(deviceData);
+                                    finishWithDropInResult(dropInResult);
+                                } else {
+                                    // TODO: determine if we should fail when device data collection fails
+                                    updateVaultedPaymentMethodNonces(true);
+                                    dropInViewModel.setIsLoading(false);
+                                    onError(error);
+                                }
                             }
-                        }
-                    });
+                        });
+                    } else {
+                        finishWithDropInResult(dropInResult);
+                    }
                 }
             }
         });

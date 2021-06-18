@@ -230,6 +230,7 @@ public class DropInActivityUnitTest {
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
         DropInClient dropInClient = new MockDropInClientBuilder()
+                .collectDeviceDataSuccess("device data")
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
 
@@ -449,7 +450,6 @@ public class DropInActivityUnitTest {
 
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .collectDeviceDataSuccess("device-data")
                 .shouldPerformThreeDSecureVerification(false)
                 .authorization(Authorization.fromString(authorization))
                 .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
@@ -462,6 +462,7 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         DropInResult result = new DropInResult()
+                .deviceData("device-data")
                 .paymentMethodNonce(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
 
         Intent data = new Intent()
