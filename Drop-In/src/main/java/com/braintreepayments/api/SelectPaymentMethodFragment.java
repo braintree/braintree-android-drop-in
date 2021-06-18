@@ -72,14 +72,14 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
-        dropInViewModel.getAvailablePaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<DropInPaymentMethodType>>() {
+        dropInViewModel.getSupportedPaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<DropInPaymentMethodType>>() {
             @Override
             public void onChanged(List<DropInPaymentMethodType> paymentMethodTypes) {
                 showSupportedPaymentMethods(paymentMethodTypes);
             }
         });
 
-        dropInViewModel.getVaultedPaymentMethodNonces().observe(getViewLifecycleOwner(), new Observer<List<PaymentMethodNonce>>() {
+        dropInViewModel.getVaultedPaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<PaymentMethodNonce>>() {
             @Override
             public void onChanged(List<PaymentMethodNonce> paymentMethodNonces) {
                 showVaultedPaymentMethods(paymentMethodNonces);

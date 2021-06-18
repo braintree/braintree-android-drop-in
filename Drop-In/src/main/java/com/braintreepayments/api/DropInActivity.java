@@ -54,7 +54,7 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
             @Override
             public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
                 if (paymentMethods != null) {
-                    dropInViewModel.setAvailablePaymentMethods(paymentMethods);
+                    dropInViewModel.setSupportedPaymentMethods(paymentMethods);
                 } else {
                     onError(error);
                 }
@@ -103,7 +103,7 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                 @Override
                 public void onResult(@Nullable List<PaymentMethodNonce> vaultedPaymentMethods, @Nullable Exception error) {
                     if (vaultedPaymentMethods != null) {
-                        dropInViewModel.setVaultedPaymentMethodNonces(vaultedPaymentMethods);
+                        dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods);
                     } else if (error != null) {
                         onError(error);
                     }
@@ -229,7 +229,7 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
                             .getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES);
 
                     if (paymentMethodNonces != null) {
-                        dropInViewModel.setVaultedPaymentMethodNonces(paymentMethodNonces);
+                        dropInViewModel.setVaultedPaymentMethods(paymentMethodNonces);
                     }
                 }
 

@@ -4,15 +4,14 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class DropInViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
-    private final MutableLiveData<List<DropInPaymentMethodType>> availablePaymentMethods = new MutableLiveData<>();
-    private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethodNonces = new MutableLiveData<>();
+    private final MutableLiveData<List<DropInPaymentMethodType>> supportedPaymentMethods = new MutableLiveData<>();
+    private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethods = new MutableLiveData<>();
 
     public LiveData<Boolean> isLoading() {
         return isLoading;
@@ -22,19 +21,19 @@ public class DropInViewModel extends ViewModel {
         isLoading.setValue(value);
     }
 
-    void setVaultedPaymentMethodNonces(List<PaymentMethodNonce> value) {
-        vaultedPaymentMethodNonces.postValue(value);
+    void setVaultedPaymentMethods(List<PaymentMethodNonce> value) {
+        vaultedPaymentMethods.setValue(value);
     }
 
-    public LiveData<List<PaymentMethodNonce>> getVaultedPaymentMethodNonces() {
-        return vaultedPaymentMethodNonces;
+    public LiveData<List<PaymentMethodNonce>> getVaultedPaymentMethods() {
+        return vaultedPaymentMethods;
     }
 
-    public void setAvailablePaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
-        this.availablePaymentMethods.setValue(availablePaymentMethods);
+    public void setSupportedPaymentMethods(List<DropInPaymentMethodType> supportedPaymentMethods) {
+        this.supportedPaymentMethods.setValue(supportedPaymentMethods);
     }
 
-    public LiveData<List<DropInPaymentMethodType>> getAvailablePaymentMethods() {
-        return availablePaymentMethods;
+    public LiveData<List<DropInPaymentMethodType>> getSupportedPaymentMethods() {
+        return supportedPaymentMethods;
     }
 }

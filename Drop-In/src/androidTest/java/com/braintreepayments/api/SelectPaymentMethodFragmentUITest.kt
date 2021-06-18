@@ -57,7 +57,7 @@ class SelectPaymentMethodFragmentUITest {
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onFragment { fragment ->
-            fragment.dropInViewModel.setAvailablePaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
         }
 
         onView(withId(R.id.bt_select_payment_method_loader)).check(matches(not(isDisplayed())))
@@ -73,28 +73,49 @@ class SelectPaymentMethodFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_whenVaultedPaymentMethodsLoaded_displaysVaultedPaymentMethods() {
+    fun whenStateIsRESUMED_whenVaultManagerIsEnabledAndVaultedPaymentMethodsAreLoaded_displaysVaultedPaymentMethods() {
         val dropInRequest = DropInRequest()
                 .vaultManager(true)
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
 
-//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
         val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java, bundle)
-
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
         val payPalNonce = PayPalAccountNonce.fromJSON(JSONObject(Fixtures.PAYPAL_ACCOUNT_JSON))
         val venmoAccountNonce = VenmoAccountNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VENMO_ACCOUNT_RESPONSE))
 
-        val vaultedPaymentMethodNonces = listOf(cardNonce, payPalNonce, venmoAccountNonce)
+        val vaultedPaymentMethods = listOf(cardNonce, payPalNonce, venmoAccountNonce)
 
         scenario.onFragment { fragment ->
-            fragment.dropInViewModel.setAvailablePaymentMethods(supportedPaymentMethods)
-            fragment.dropInViewModel.setVaultedPaymentMethodNonces(vaultedPaymentMethodNonces)
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
         }
 
-        onView(isRoot()).perform(waitFor(10000))
+        onView(withId(R.id.bt_supported_payment_methods_header)).check(matches(isDisplayed()))
+        onView(withText("paypalaccount@example.com")).check(matches(isDisplayed()))
+        onView(withText("venmojoe")).check(matches(isDisplayed()))
+        onView(withText("1111")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenVaultManagerIsEnabledAndVaultedPaymentMethodsAreLoaded_displaysVaultEditButton() {
+        val dropInRequest = DropInRequest()
+                .vaultManager(true)
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
+        val vaultedPaymentMethods = listOf(cardNonce)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
+        }
+
+        onView(withId(R.id.bt_vault_edit_button)).check(matches(isDisplayed()))
     }
 
     @Test
