@@ -75,6 +75,7 @@
 
                         <TextView
                             style="@style/bt_choose_payment_label"
+                            android:id="@+id/bt_vaulted_payment_methods_header"
                             android:layout_alignTop="@id/bt_vault_edit_button"
                             android:layout_alignBottom="@id/bt_vault_edit_button"
                             android:layout_alignParentStart="true"
