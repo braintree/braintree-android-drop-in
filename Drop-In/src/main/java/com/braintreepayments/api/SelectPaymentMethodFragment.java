@@ -114,8 +114,9 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     }
 
     private void sendAnalyticsEvent(String eventFragment) {
-//        DropInActivity activity = ((DropInActivity) requireActivity());
-//        activity.sendAnalyticsEvent(eventFragment);
+        Bundle result = new Bundle();
+        result.putParcelable("BRAINTREE_EVENT", new DropInAnalyticsEvent(eventFragment));
+        getParentFragmentManager().setFragmentResult("BRAINTREE_RESULT", result);
     }
 
     private void updateVaultedPaymentMethodNonces(boolean refetch) {

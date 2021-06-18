@@ -8,6 +8,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.braintreepayments.api.dropin.R
+import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertTrue
 import org.hamcrest.Matchers.not
 import org.json.JSONObject
 import org.junit.Before
@@ -31,16 +33,6 @@ class SelectPaymentMethodFragmentUITest {
     @Before
     fun beforeEach() {
         countDownLatch = CountDownLatch(1)
-
-//        scenario.onFragment { fragment ->
-//            val activity = fragment.requireActivity()
-//            fragment.parentFragmentManager.setFragmentResultListener("event", activity) { requestKey, result ->
-//                assertTrue(true)
-//                countDownLatch.countDown()
-//            }
-//        }
-//
-//        countDownLatch.await()
     }
 
     @Test
@@ -119,80 +111,48 @@ class SelectPaymentMethodFragmentUITest {
     }
 
     @Test
-    fun onCreate_vaultEditButtonIsInvisible() {
-//        FragmentScenario<SelectPaymentMethodFragment> scenario =
-//                FragmentScenario.launch(SelectPaymentMethodFragment.class);
-//
-//        scenario.moveToState(Lifecycle.State.RESUMED);
-//        scenario.onFragment(new FragmentScenario.FragmentAction<SelectPaymentMethodFragment>() {
-//            @Override
-//            public void perform(@NotNull SelectPaymentMethodFragment selectPaymentMethodFragment) {
-//                DropInViewModel viewModel =
-//                        new ViewModelProvider(selectPaymentMethodFragment.getActivity()).get(DropInViewModel.class);
-//
-//                viewModel.setAvailablePaymentMethods(Collections.<PaymentMethodType>emptyList());
-//
-//                try {
-//                    Thread.sleep(2000);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                onView(withId(R.id.bt_supported_payment_methods_header)).check(doesNotExist());
-//                onView(withId(R.id.bt_vault_edit_button)).check(matches(not(isDisplayed())));
-//            }
-//        });
+    fun whenStateIsRESUMED_whenVaultManagerIsDisabled_hidesVaultEditButton() {
+        val dropInRequest = DropInRequest()
+                .vaultManager(false)
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+        }
+
+        onView(withId(R.id.bt_vault_edit_button)).check(matches(not(isDisplayed())))
     }
 
-    @Test
-    fun onCreate_whenVaultManagerEnabled_vaultEditButtonIsVisible() {
-//        String authorization = Fixtures.TOKENIZATION_KEY;
-//        DropInRequest dropInRequest = new DropInRequest()
-//                .vaultManager(true)
-//                .tokenizationKey(authorization);
-//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
-//
-//        List<PaymentMethodNonce> nonceList = new ArrayList<>();
-//        nonceList.add(mock(CardNonce.class));
-//        mActivityController.setup();
-//        mActivity.showVaultedPaymentMethods(nonceList);
-//
-//        assertEquals(View.VISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
-    }
+    @Test(timeout=5000)
+    fun whenStateIsRESUMED_whenVaultManagerEnabledAndVaultedCardExists_sendsAnalyticEvent() {
+        val dropInRequest = DropInRequest()
+                .vaultManager(true)
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
 
-    @Test
-    fun onCreate_whenVaultManagerDisabled_vaultEditButtonIsHidden() {
-//        String authorization = Fixtures.TOKENIZATION_KEY;
-//        DropInRequest dropInRequest = new DropInRequest()
-//                .vaultManager(false)
-//                .tokenizationKey(authorization);
-//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
-//
-//        List<PaymentMethodNonce> nonceList = new ArrayList<>();
-//        nonceList.add(mock(CardNonce.class));
-//        mActivityController.setup();
-//        mActivity.showVaultedPaymentMethods(nonceList);
-//
-//        assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
-    }
+        val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
 
-    @Test
-    fun onCreate_whenVaultManagerUnspecified_vaultEditButtonIsHidden() {
-//        String authorization = Fixtures.TOKENIZATION_KEY;
-//        DropInRequest dropInRequest = new DropInRequest()
-//                .tokenizationKey(authorization);
-//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
-//
-//        List<PaymentMethodNonce> nonceList = new ArrayList<>();
-//        nonceList.add(mock(CardNonce.class));
-//        mActivityController.setup();
-//        mActivity.showVaultedPaymentMethods(nonceList);
-//
-//        assertEquals(View.INVISIBLE, mActivity.findViewById(R.id.bt_vault_edit_button).getVisibility());
-    }
+        scenario.onFragment { fragment ->
+            val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
+            val vaultedPaymentMethods = listOf(cardNonce)
 
-    @Test
-    fun onCreate_whenVaultedCardExists_sendsAnalyticEvent() {
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
+
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+
+            fragmentManager.setFragmentResultListener("BRAINTREE_RESULT", activity) { requestKey, result ->
+                val event = result.get("BRAINTREE_EVENT") as DropInAnalyticsEvent
+                assertEquals(event.fragment, "vaulted-card.appear")
+                countDownLatch.countDown()
+            }
+        }
+        countDownLatch.await()
+
 //        String authorization = Fixtures.TOKENIZATION_KEY;
 //        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 //
