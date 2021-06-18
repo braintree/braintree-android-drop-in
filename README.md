@@ -135,7 +135,7 @@ DropInResult.fetchDropInResult(activity, clientToken, new DropInResult.DropInRes
 ## Help
 
 * [Read the javadocs](http://javadoc.io/doc/com.braintreepayments.api/drop-in/)
-* [Read the docs](https://developers.braintreepayments.com/guides/drop-in/android/v2)
+* [Read the docs](https://developer.paypal.com/braintree/docs/guides/drop-in/overview/android/v4)
 * Find a bug? [Open an issue](https://github.com/braintree/braintree-android-drop-in/issues)
 * Want to contribute? [Check out contributing guidelines](CONTRIBUTING.md) and [submit a pull request](https://help.github.com/articles/creating-a-pull-request).
 
