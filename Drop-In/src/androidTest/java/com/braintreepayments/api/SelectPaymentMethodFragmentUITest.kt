@@ -8,14 +8,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.braintreepayments.api.dropin.R
-import junit.framework.Assert.assertEquals
-import junit.framework.Assert.assertTrue
 import org.hamcrest.Matchers.not
 import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.*
 import java.util.concurrent.CountDownLatch
 
 // Ref: https://developer.android.com/guide/fragments/test
@@ -182,30 +179,5 @@ class SelectPaymentMethodFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenVaultEditButtonClicked_sendsAnalyticsEvent() {
         // TODO: capture all analytics events within a time interval and assert that the target analytics event is emitted
-    }
-
-    @Test
-    fun onCreate_whenVaultedPaymentMethodsFound_showsVaultedPaymentMethods() {
-//        String authorization = Fixtures.TOKENIZATION_KEY;
-//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-//
-//        ArrayList<PaymentMethodNonce> nonces = new ArrayList<>();
-//        nonces.add(mock(PayPalAccountNonce.class));
-//        nonces.add(mock(CardNonce.class));
-//
-//        DropInClient dropInClient = new MockDropInClientBuilder()
-//                .getVaultedPaymentMethodsSuccess(nonces)
-//                .build();
-//        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-//
-//        mActivity.mClientTokenPresent = true;
-//        mActivityController.setup();
-//
-//        mActivity.fetchPaymentMethodNonces(true);
-//        ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
-//
-//        assertThat(mActivity.findViewById(R.id.bt_vaulted_payment_methods_wrapper)).isVisible();
-//        assertEquals(2, Objects.requireNonNull(((RecyclerView) mActivity.findViewById(R.id.bt_vaulted_payment_methods)).getAdapter()).getItemCount());
-//        assertThat((TextView) mActivity.findViewById(R.id.bt_supported_payment_methods_header)).hasText(R.string.bt_other);
     }
 }

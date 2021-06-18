@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 public class MockDropInClientBuilder {
 
-    private ThreeDSecureResult threeDSecureSuccess;
+    private DropInResult threeDSecureSuccess;
     private Exception threeDSecureError;
     private List<PaymentMethodNonce> paymentMethodNonceListSuccess;
     private Exception getVaultedPaymentMethodsError;
@@ -45,8 +45,8 @@ public class MockDropInClientBuilder {
         return this;
     }
 
-    MockDropInClientBuilder threeDSecureSuccess(ThreeDSecureResult result) {
-        threeDSecureSuccess = result;
+    MockDropInClientBuilder dropInResultCallback(DropInResult dropInResult) {
+        this.threeDSecureSuccess = dropInResult;
         return this;
     }
 
@@ -142,7 +142,7 @@ public class MockDropInClientBuilder {
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
-                ThreeDSecureResultCallback callback = (ThreeDSecureResultCallback) invocation.getArguments()[2];
+                DropInResultCallback callback = (DropInResultCallback) invocation.getArguments()[2];
                 if (threeDSecureSuccess != null) {
                     callback.onResult(threeDSecureSuccess, null);
                 } else if (threeDSecureError != null) {

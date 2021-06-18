@@ -427,7 +427,7 @@ public class DropInClientUnitTest {
         DropInClient sut = new DropInClient(params);
         sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
 
-        verify(threeDSecureClient).continuePerformVerification(activity, threeDSecureRequest, threeDSecureResult, any(ThreeDSecureResultCallback.class));
+        verify(threeDSecureClient).continuePerformVerification(same(activity), same(threeDSecureRequest), same(threeDSecureResult), any(ThreeDSecureResultCallback.class));
     }
 
     @Test
