@@ -3,7 +3,6 @@ package com.braintreepayments.api;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -61,15 +60,36 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
             }
         });
 
-        getSupportFragmentManager().setFragmentResultListener("event", this, new FragmentResultListener() {
+        getSupportFragmentManager().setFragmentResultListener("BRAINTREE_EVENT", this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                Log.d("WE HERE THO!", requestKey);
+                handleBraintreeEventBundle(result);
             }
         });
 
         showSelectPaymentMethodFragment();
         sendAnalyticsEvent("appeared");
+    }
+
+    private void handleBraintreeEventBundle(Bundle bundle) {
+        Parcelable braintreeResult = bundle.getParcelable("BRAINTREE_RESULT");
+        if (braintreeResult instanceof DropInAnalyticsEvent) {
+            DropInAnalyticsEvent event = (DropInAnalyticsEvent) braintreeResult;
+            sendAnalyticsEvent(event.getFragment());
+        } else if (braintreeResult instanceof DropInUIEvent) {
+            DropInUIEvent uiEvent = (DropInUIEvent) braintreeResult;
+            switch (uiEvent.getType()) {
+                case DropInUIEventType.SHOW_VAULT_MANAGER:
+                    showVaultManager();
+                    break;
+                case DropInUIEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
+                    // TODO: "refetch" was previously false in this case, however it isn't
+                    // immediately clear why the refetch parameter exists. We should investigate
+                    // to see if this parameter is necessary
+                    updateVaultedPaymentMethodNonces(false);
+                    break;
+            }
+        }
     }
 
     void showVaultManager() {

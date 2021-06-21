@@ -48,10 +48,6 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         if (args != null) {
             dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
         }
-
-        Bundle result = new Bundle();
-        result.putString("key", "onCreateCalled");
-        getParentFragmentManager().setFragmentResult("event", result);
     }
 
     @Override
@@ -100,7 +96,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showVaultManager();
+                sendUIEvent(DropInUIEventType.SHOW_VAULT_MANAGER);
             }
         });
 
@@ -108,29 +104,25 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         return view;
     }
 
-    private void showVaultManager() {
-//        DropInActivity activity = ((DropInActivity) requireActivity());
-//        activity.showVaultManager();
+    private void sendUIEvent(@DropInUIEventType int eventType) {
+        Bundle result = new Bundle();
+        result.putParcelable("BRAINTREE_RESULT", new DropInUIEvent(eventType));
+        getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
     }
 
     private void sendAnalyticsEvent(String eventFragment) {
         Bundle result = new Bundle();
-        result.putParcelable("BRAINTREE_EVENT", new DropInAnalyticsEvent(eventFragment));
-        getParentFragmentManager().setFragmentResult("BRAINTREE_RESULT", result);
-    }
-
-    private void updateVaultedPaymentMethodNonces(boolean refetch) {
-//        DropInActivity activity = ((DropInActivity) requireActivity());
-//        activity.updateVaultedPaymentMethodNonces(refetch);
+        result.putParcelable("BRAINTREE_RESULT", new DropInAnalyticsEvent(eventFragment));
+        getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
     }
 
     private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 requireActivity(), this, availablePaymentMethods);
         mSupportedPaymentMethodListView.setAdapter(adapter);
-
         dropInViewModel.setIsLoading(false);
-        updateVaultedPaymentMethodNonces(false);
+
+        sendUIEvent(DropInUIEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS);
     }
 
     @Override
