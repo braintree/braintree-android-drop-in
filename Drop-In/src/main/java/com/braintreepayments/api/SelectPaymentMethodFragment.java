@@ -127,14 +127,21 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
 
     @Override
     public void onPaymentMethodSelected(DropInPaymentMethodType type) {
-        Bundle result = new Bundle();
-        result.putString("key", "paymentMethodSelected");
-        getParentFragmentManager().setFragmentResult("event", result);
-
         dropInViewModel.setIsLoading(true);
-
-        DropInActivity activity = ((DropInActivity) requireActivity());
-        activity.onPaymentMethodSelected(type);
+        switch (type) {
+            case GOOGLE_PAYMENT:
+                sendUIEvent(DropInUIEventType.SHOW_GOOGLE_PAYMENT);
+                break;
+            case PAYPAL:
+                sendUIEvent(DropInUIEventType.SHOW_PAYPAL);
+                break;
+            case PAY_WITH_VENMO:
+                sendUIEvent(DropInUIEventType.SHOW_PAY_WITH_VENMO);
+                break;
+            case UNKNOWN:
+                sendUIEvent(DropInUIEventType.SHOW_ADD_CARD);
+                break;
+        }
     }
 
     @Override

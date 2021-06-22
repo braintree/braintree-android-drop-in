@@ -4,12 +4,14 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.braintreepayments.api.dropin.R
 import org.hamcrest.Matchers.not
 import org.json.JSONObject
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -139,6 +141,33 @@ class SelectPaymentMethodFragmentUITest {
         }
 
         onView(withId(R.id.bt_vault_edit_button)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenCreditOrDebitCardSelected_sendsShowAddCardEvent() {
+        val dropInRequest = DropInRequest()
+                .vaultManager(false)
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+        }
+
+        onView(withText("Credit or Debit Card")).perform(click())
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
+                val event = result.get("BRAINTREE_RESULT") as DropInUIEvent
+                assertEquals(event.type, DropInUIEventType.SHOW_ADD_CARD)
+                countDownLatch.countDown()
+            }
+        }
+
+        countDownLatch.await()
     }
 
     @Test(timeout=5000)

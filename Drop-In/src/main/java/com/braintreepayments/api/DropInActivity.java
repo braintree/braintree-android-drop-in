@@ -21,7 +21,7 @@ import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
-public class DropInActivity extends BaseActivity implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
+public class DropInActivity extends BaseActivity implements VaultedPaymentMethodSelectedListener {
 
     /**
      * Errors are returned as the serializable value of this key in the data intent in
@@ -81,6 +81,18 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
             switch (uiEvent.getType()) {
                 case DropInUIEventType.SHOW_VAULT_MANAGER:
                     showVaultManager();
+                    break;
+                case DropInUIEventType.SHOW_ADD_CARD:
+                    showAddCard();
+                    break;
+                case DropInUIEventType.SHOW_GOOGLE_PAYMENT:
+                    showGooglePay();
+                    break;
+                case DropInUIEventType.SHOW_PAYPAL:
+                    showPayPal();
+                    break;
+                case DropInUIEventType.SHOW_PAY_WITH_VENMO:
+                    showVenmo();
                     break;
                 case DropInUIEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
                     // TODO: "refetch" was previously false in this case, however it isn't
@@ -170,48 +182,45 @@ public class DropInActivity extends BaseActivity implements SupportedPaymentMeth
         finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
     }
 
-    @Override
-    public void onPaymentMethodSelected(DropInPaymentMethodType type) {
-        dropInViewModel.setIsLoading(true);
-        switch (type) {
-            case PAYPAL:
-                getDropInClient().tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {
-                    @Override
-                    public void onResult(@Nullable Exception error) {
-                        if (error != null) {
-                            onError(error);
-                        }
-                    }
-                });
-                break;
-            case GOOGLE_PAYMENT:
-                getDropInClient().requestGooglePayPayment(this, new GooglePayRequestPaymentCallback() {
-                    @Override
-                    public void onResult(Exception error) {
-                        if (error != null) {
-                            onError(error);
-                        }
-                    }
-                });
-                break;
-            case PAY_WITH_VENMO:
-                getDropInClient().tokenizeVenmoAccount(this, new VenmoTokenizeAccountCallback() {
-                    @Override
-                    public void onResult(@Nullable Exception error) {
-                        if (error != null) {
-                            onError(error);
-                        }
-                    }
-                });
-                break;
-            case UNKNOWN:
-                Intent intent = new Intent(this, AddCardActivity.class)
-                        .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
-                        .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
-                        .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
-                startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
-                break;
-        }
+    private void showPayPal() {
+        getDropInClient().tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {
+            @Override
+            public void onResult(@Nullable Exception error) {
+                if (error != null) {
+                    onError(error);
+                }
+            }
+        });
+    }
+
+    private void showGooglePay() {
+        getDropInClient().requestGooglePayPayment(this, new GooglePayRequestPaymentCallback() {
+            @Override
+            public void onResult(Exception error) {
+                if (error != null) {
+                    onError(error);
+                }
+            }
+        });
+    }
+
+    private void showVenmo() {
+        getDropInClient().tokenizeVenmoAccount(this, new VenmoTokenizeAccountCallback() {
+            @Override
+            public void onResult(@Nullable Exception error) {
+                if (error != null) {
+                    onError(error);
+                }
+            }
+        });
+    }
+
+    private void showAddCard() {
+        Intent intent = new Intent(this, AddCardActivity.class)
+                .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
+                .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
+                .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
+        startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
     }
 
     @Override
