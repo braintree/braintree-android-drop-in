@@ -774,7 +774,7 @@ public class DropInClientUnitTest {
         List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
 
         assertEquals(1, paymentMethodTypes.size());
-        assertEquals(SupportedPaymentMethodType.CARD, paymentMethodTypes.get(0));
+        assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodTypes.get(0));
     }
 
     @Test
@@ -834,7 +834,7 @@ public class DropInClientUnitTest {
         List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
 
         assertEquals(1, paymentMethodTypes.size());
-        assertEquals(SupportedPaymentMethodType.CARD, paymentMethodTypes.get(0));
+        assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodTypes.get(0));
     }
 
     @Test
