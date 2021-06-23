@@ -72,21 +72,11 @@ public class DropInActivity extends BaseActivity {
 
     private void handleBraintreeEventBundle(Bundle bundle) {
         Parcelable braintreeResult = bundle.getParcelable("BRAINTREE_RESULT");
+
         if (braintreeResult instanceof DropInAnalyticsEvent) {
             onAnalyticsEvent((DropInAnalyticsEvent) braintreeResult);
         } else if (braintreeResult instanceof DropInUIEvent) {
-            DropInUIEvent uiEvent = (DropInUIEvent) braintreeResult;
-            switch (uiEvent.getType()) {
-                case DropInUIEventType.SHOW_VAULT_MANAGER:
-                    showVaultManager();
-                    break;
-                case DropInUIEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
-                    // TODO: "refetch" was previously false in this case, however it isn't
-                    // immediately clear why the refetch parameter exists. We should investigate
-                    // to see if this parameter is necessary
-                    updateVaultedPaymentMethodNonces(false);
-                    break;
-            }
+            onUIEvent((DropInUIEvent) braintreeResult);
         } else if (braintreeResult instanceof SupportedPaymentMethodSelectedEvent) {
             onSupportedPaymentMethodSelectedEvent((SupportedPaymentMethodSelectedEvent) braintreeResult);
         } else if (braintreeResult instanceof VaultedPaymentMethodSelectedEvent) {
@@ -98,10 +88,6 @@ public class DropInActivity extends BaseActivity {
 
     void onAnalyticsEvent(DropInAnalyticsEvent event) {
         sendAnalyticsEvent(event.getFragment());
-    }
-
-    void sendAnalyticsEvent(String eventFragment) {
-        getDropInClient().sendAnalyticsEvent(eventFragment);
     }
 
     void onSupportedPaymentMethodSelectedEvent(SupportedPaymentMethodSelectedEvent event) {
@@ -119,6 +105,24 @@ public class DropInActivity extends BaseActivity {
                 showVenmo();
                 break;
         }
+    }
+
+    void onUIEvent(DropInUIEvent event) {
+        switch (event.getType()) {
+            case DropInUIEventType.SHOW_VAULT_MANAGER:
+                showVaultManager();
+                break;
+            case DropInUIEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
+                // TODO: "refetch" was previously false in this case, however it isn't
+                // immediately clear why the refetch parameter exists. We should investigate
+                // to see if this parameter is necessary
+                updateVaultedPaymentMethodNonces(false);
+                break;
+        }
+    }
+
+    void sendAnalyticsEvent(String eventFragment) {
+        getDropInClient().sendAnalyticsEvent(eventFragment);
     }
 
     void showVaultManager() {
