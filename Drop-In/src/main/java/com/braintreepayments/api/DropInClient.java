@@ -90,7 +90,6 @@ public class DropInClient {
         dataCollector.collectDeviceData(activity, callback);
     }
 
-    // TODO: unit test
     void performThreeDSecureVerification(final FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, final DropInResultCallback callback) {
         final ThreeDSecureRequest threeDSecureRequest = dropInRequest.getThreeDSecureRequest();
         threeDSecureRequest.setNonce(paymentMethodNonce.getString());
