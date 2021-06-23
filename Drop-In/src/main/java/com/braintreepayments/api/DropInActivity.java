@@ -68,14 +68,12 @@ public class DropInActivity extends BaseActivity {
         });
 
         showSelectPaymentMethodFragment();
-        sendAnalyticsEvent("appeared");
     }
 
     private void handleBraintreeEventBundle(Bundle bundle) {
         Parcelable braintreeResult = bundle.getParcelable("BRAINTREE_RESULT");
         if (braintreeResult instanceof DropInAnalyticsEvent) {
-            DropInAnalyticsEvent event = (DropInAnalyticsEvent) braintreeResult;
-            sendAnalyticsEvent(event.getFragment());
+            onAnalyticsEvent((DropInAnalyticsEvent) braintreeResult);
         } else if (braintreeResult instanceof DropInUIEvent) {
             DropInUIEvent uiEvent = (DropInUIEvent) braintreeResult;
             switch (uiEvent.getType()) {
@@ -96,6 +94,14 @@ public class DropInActivity extends BaseActivity {
                     (VaultedPaymentMethodSelectedEvent) braintreeResult;
             onVaultedPaymentMethodSelected(vaultedPaymentMethodSelectedEvent.getPaymentMethodNonce());
         }
+    }
+
+    void onAnalyticsEvent(DropInAnalyticsEvent event) {
+        sendAnalyticsEvent(event.getFragment());
+    }
+
+    void sendAnalyticsEvent(String eventFragment) {
+        getDropInClient().sendAnalyticsEvent(eventFragment);
     }
 
     void onSupportedPaymentMethodSelectedEvent(SupportedPaymentMethodSelectedEvent event) {
@@ -134,10 +140,6 @@ public class DropInActivity extends BaseActivity {
                 }
             }
         });
-    }
-
-    void sendAnalyticsEvent(String eventFragment) {
-        getDropInClient().sendAnalyticsEvent(eventFragment);
     }
 
     void updateVaultedPaymentMethodNonces(boolean refetch) {
@@ -331,7 +333,6 @@ public class DropInActivity extends BaseActivity {
                                     dropInResult.deviceData(deviceData);
                                     finishWithDropInResult(dropInResult);
                                 } else {
-                                    // TODO: determine if we should fail when device data collection fails
                                     updateVaultedPaymentMethodNonces(true);
                                     dropInViewModel.setIsLoading(false);
                                     onError(error);

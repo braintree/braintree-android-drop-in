@@ -96,8 +96,6 @@ public class DropInActivityUnitTest {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
         setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
-
-        mActivity.dropInClient = mock(DropInClient.class);
         mActivityController.setup();
 
         verify(mActivity.dropInClient).sendAnalyticsEvent("appeared");

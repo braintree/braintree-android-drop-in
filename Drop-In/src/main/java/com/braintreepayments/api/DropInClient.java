@@ -112,7 +112,6 @@ public class DropInClient {
                                             dropInResult.deviceData(deviceData);
                                             callback.onResult(dropInResult, null);
                                         } else {
-                                            // TODO: determine if data collection for device data should fail
                                             callback.onResult(null, error);
                                         }
                                     }
