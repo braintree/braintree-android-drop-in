@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 public class DropInClientUnitTest {
 
     @Captor
-    ArgumentCaptor<List<Integer>> paymentMethodTypesCaptor;
+    ArgumentCaptor<List<DropInPaymentMethodType>> paymentMethodTypesCaptor;
 
     @Captor
     ArgumentCaptor<List<PaymentMethodNonce>> paymentMethodNoncesCaptor;
@@ -131,9 +131,9 @@ public class DropInClientUnitTest {
         sut.getSupportedPaymentMethods(activity, callback);
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethods = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethods = paymentMethodTypesCaptor.getValue();
         assertEquals(1, paymentMethods.size());
-        assertEquals(SupportedPaymentMethodType.GOOGLE_PAY, paymentMethods.get(0).intValue());
+        assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, paymentMethods.get(0));
     }
 
     @Test
@@ -156,7 +156,7 @@ public class DropInClientUnitTest {
         sut.getSupportedPaymentMethods(activity, callback);
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethods = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethods = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethods.size());
     }
 
@@ -181,7 +181,7 @@ public class DropInClientUnitTest {
         sut.getSupportedPaymentMethods(activity, callback);
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethods = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethods = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethods.size());
     }
 
@@ -712,7 +712,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -738,13 +738,13 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
 
         assertEquals(4, paymentMethodTypes.size());
-        assertEquals(SupportedPaymentMethodType.PAYPAL, paymentMethodTypes.get(0).intValue());
-        assertEquals(SupportedPaymentMethodType.VENMO, paymentMethodTypes.get(1).intValue());
-        assertEquals(SupportedPaymentMethodType.CARD, paymentMethodTypes.get(2).intValue());
-        assertEquals(SupportedPaymentMethodType.GOOGLE_PAY, paymentMethodTypes.get(3).intValue());
+        assertEquals(DropInPaymentMethodType.PAYPAL, paymentMethodTypes.get(0));
+        assertEquals(DropInPaymentMethodType.PAY_WITH_VENMO, paymentMethodTypes.get(1));
+        assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodTypes.get(2));
+        assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, paymentMethodTypes.get(3));
     }
 
     @Test
@@ -771,10 +771,10 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
 
         assertEquals(1, paymentMethodTypes.size());
-        assertEquals(SupportedPaymentMethodType.CARD, paymentMethodTypes.get(0).intValue());
+        assertEquals(SupportedPaymentMethodType.CARD, paymentMethodTypes.get(0));
     }
 
     @Test
@@ -802,7 +802,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -831,10 +831,10 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
 
         assertEquals(1, paymentMethodTypes.size());
-        assertEquals(SupportedPaymentMethodType.CARD, paymentMethodTypes.get(0).intValue());
+        assertEquals(SupportedPaymentMethodType.CARD, paymentMethodTypes.get(0));
     }
 
     @Test
@@ -862,7 +862,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -891,7 +891,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -920,7 +920,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -949,7 +949,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<Integer> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 

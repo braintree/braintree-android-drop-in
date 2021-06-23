@@ -1,8 +1,6 @@
 package com.braintreepayments.api;
 
 import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -16,7 +14,6 @@ import java.util.ArrayList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 public class SupportedPaymentMethodsAdapterUnitTest {
@@ -27,11 +24,11 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         LinearLayout parent = new LinearLayout(context);
 
         SupportedPaymentMethodSelectedListener listener = mock(SupportedPaymentMethodSelectedListener.class);
-        ArrayList<Integer> supportedPaymentMethods = new ArrayList<>();
-        supportedPaymentMethods.add(SupportedPaymentMethodType.PAYPAL);
-        supportedPaymentMethods.add(SupportedPaymentMethodType.VENMO);
-        supportedPaymentMethods.add(SupportedPaymentMethodType.CARD);
-        supportedPaymentMethods.add(SupportedPaymentMethodType.GOOGLE_PAY);
+        ArrayList<DropInPaymentMethodType> supportedPaymentMethods = new ArrayList<>();
+        supportedPaymentMethods.add(DropInPaymentMethodType.PAYPAL);
+        supportedPaymentMethods.add(DropInPaymentMethodType.PAY_WITH_VENMO);
+        supportedPaymentMethods.add(DropInPaymentMethodType.UNKNOWN);
+        supportedPaymentMethods.add(DropInPaymentMethodType.GOOGLE_PAYMENT);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 context, listener, supportedPaymentMethods);
@@ -41,10 +38,10 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         adapter.getView(2, null, parent).callOnClick();
         adapter.getView(3, null, parent).callOnClick();
 
-        verify(listener).onPaymentMethodSelected(SupportedPaymentMethodType.PAYPAL);
-        verify(listener).onPaymentMethodSelected(SupportedPaymentMethodType.VENMO);
-        verify(listener).onPaymentMethodSelected(SupportedPaymentMethodType.CARD);
-        verify(listener).onPaymentMethodSelected(SupportedPaymentMethodType.GOOGLE_PAY);
+        verify(listener).onPaymentMethodSelected(DropInPaymentMethodType.PAYPAL);
+        verify(listener).onPaymentMethodSelected(DropInPaymentMethodType.PAY_WITH_VENMO);
+        verify(listener).onPaymentMethodSelected(DropInPaymentMethodType.UNKNOWN);
+        verify(listener).onPaymentMethodSelected(DropInPaymentMethodType.GOOGLE_PAYMENT);
         verifyNoMoreInteractions(listener);
     }
 }
