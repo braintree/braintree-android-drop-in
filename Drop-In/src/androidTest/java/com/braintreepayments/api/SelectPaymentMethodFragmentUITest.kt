@@ -53,6 +53,7 @@ class SelectPaymentMethodFragmentUITest {
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
         }
 
+        onView(isRoot()).perform(waitFor(500))
         onView(withId(R.id.bt_select_payment_method_loader)).check(matches(not(isDisplayed())))
         onView(withText("PayPal")).check(matches(isDisplayed()))
         onView(withText("Venmo")).check(matches(isDisplayed()))
@@ -85,6 +86,7 @@ class SelectPaymentMethodFragmentUITest {
             fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
         }
 
+        onView(isRoot()).perform(waitFor(500))
         onView(withId(R.id.bt_vaulted_payment_methods_header)).check(matches(isDisplayed()))
         onView(withText("paypalaccount@example.com")).check(matches(isDisplayed()))
         onView(withText("venmojoe")).check(matches(isDisplayed()))
@@ -157,6 +159,7 @@ class SelectPaymentMethodFragmentUITest {
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
         }
 
+        onView(isRoot()).perform(waitFor(500))
         onView(withText("Credit or Debit Card")).perform(click())
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
@@ -224,6 +227,7 @@ class SelectPaymentMethodFragmentUITest {
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
         }
 
+        onView(isRoot()).perform(waitFor(500))
         onView(withText("Credit or Debit Card")).perform(click())
         scenario.onFragment { fragment ->
             assertTrue(fragment.dropInViewModel.isLoading.value!!)
