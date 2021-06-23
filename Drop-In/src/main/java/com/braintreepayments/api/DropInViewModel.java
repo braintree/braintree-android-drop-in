@@ -10,7 +10,7 @@ public class DropInViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
 
-    private final MutableLiveData<List<Integer>> supportedPaymentMethods = new MutableLiveData<>();
+    private final MutableLiveData<List<DropInPaymentMethodType>> supportedPaymentMethods = new MutableLiveData<>();
     private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethods = new MutableLiveData<>();
 
     public LiveData<Boolean> isLoading() {
@@ -29,11 +29,11 @@ public class DropInViewModel extends ViewModel {
         return vaultedPaymentMethods;
     }
 
-    public void setSupportedPaymentMethods(List<Integer> supportedPaymentMethods) {
+    public void setSupportedPaymentMethods(List<DropInPaymentMethodType> supportedPaymentMethods) {
         this.supportedPaymentMethods.setValue(supportedPaymentMethods);
     }
 
-    public LiveData<List<Integer>> getSupportedPaymentMethods() {
+    public LiveData<List<DropInPaymentMethodType>> getSupportedPaymentMethods() {
         return supportedPaymentMethods;
     }
 }

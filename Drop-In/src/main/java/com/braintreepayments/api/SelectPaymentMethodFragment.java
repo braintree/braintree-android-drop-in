@@ -69,9 +69,9 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
-        dropInViewModel.getSupportedPaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<Integer>>() {
+        dropInViewModel.getSupportedPaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<DropInPaymentMethodType>>() {
             @Override
-            public void onChanged(List<Integer> paymentMethodTypes) {
+            public void onChanged(List<DropInPaymentMethodType> paymentMethodTypes) {
                 showSupportedPaymentMethods(paymentMethodTypes);
             }
         });
@@ -111,7 +111,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
     }
 
-    private void showSupportedPaymentMethods(List<Integer> availablePaymentMethods) {
+    private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 requireActivity(), this, availablePaymentMethods);
         mSupportedPaymentMethodListView.setAdapter(adapter);
@@ -121,7 +121,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     }
 
     @Override
-    public void onPaymentMethodSelected(@SupportedPaymentMethodType int type) {
+    public void onPaymentMethodSelected(DropInPaymentMethodType type) {
         dropInViewModel.setIsLoading(true);
         sendBraintreeEvent(new SupportedPaymentMethodSelectedEvent(type));
     }

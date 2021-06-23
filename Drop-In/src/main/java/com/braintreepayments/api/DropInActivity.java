@@ -19,6 +19,7 @@ import java.util.List;
 
 import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
+import static com.braintreepayments.api.DropInPaymentMethodType.*;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 public class DropInActivity extends BaseActivity {
@@ -51,7 +52,7 @@ public class DropInActivity extends BaseActivity {
 
         getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
-            public void onResult(@Nullable List<Integer> paymentMethods, @Nullable Exception error) {
+            public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
                 if (paymentMethods != null) {
                     dropInViewModel.setSupportedPaymentMethods(paymentMethods);
                 } else {
@@ -92,17 +93,18 @@ public class DropInActivity extends BaseActivity {
 
     void onSupportedPaymentMethodSelectedEvent(SupportedPaymentMethodSelectedEvent event) {
         switch (event.getPaymentMethodType()) {
-            case SupportedPaymentMethodType.CARD:
-                showAddCard();
-                break;
-            case SupportedPaymentMethodType.GOOGLE_PAY:
+            case GOOGLE_PAYMENT:
                 showGooglePay();
                 break;
-            case SupportedPaymentMethodType.PAYPAL:
+            case PAYPAL:
                 showPayPal();
                 break;
-            case SupportedPaymentMethodType.VENMO:
+            case PAY_WITH_VENMO:
                 showVenmo();
+                break;
+            default:
+            case UNKNOWN:
+                showAddCard();
                 break;
         }
     }

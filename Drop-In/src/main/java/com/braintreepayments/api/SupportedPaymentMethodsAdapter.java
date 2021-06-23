@@ -18,10 +18,10 @@ import java.util.List;
 class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
     private final Context mContext;
-    private final List<Integer> mAvailablePaymentMethods;
+    private final List<DropInPaymentMethodType> mAvailablePaymentMethods;
     private final SupportedPaymentMethodSelectedListener mSupportedPaymentMethodSelectedListener;
 
-    SupportedPaymentMethodsAdapter(Context context, SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener, List<Integer> availablePaymentMethods) {
+    SupportedPaymentMethodsAdapter(Context context, SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener, List<DropInPaymentMethodType> availablePaymentMethods) {
         // TODO: remove context variable
         mContext = context;
         mSupportedPaymentMethodSelectedListener = supportedPaymentMethodSelectedListener;
@@ -49,36 +49,13 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(mContext).inflate(R.layout.bt_payment_method_list_item, parent, false);
         }
 
-        final @SupportedPaymentMethodType int type = mAvailablePaymentMethods.get(position);
-
-        int iconDrawableResId;
-        int localizedNameResId;
-
-        switch (type) {
-            case SupportedPaymentMethodType.GOOGLE_PAY:
-                iconDrawableResId = R.drawable.bt_ic_google_pay;
-                localizedNameResId =  R.string.bt_descriptor_google_pay;
-                break;
-            case SupportedPaymentMethodType.PAYPAL:
-                iconDrawableResId = R.drawable.bt_ic_paypal;
-                localizedNameResId = R.string.bt_descriptor_paypal;
-                break;
-            case SupportedPaymentMethodType.VENMO:
-                iconDrawableResId = R.drawable.bt_ic_venmo;
-                localizedNameResId = R.string.bt_descriptor_pay_with_venmo;
-                break;
-            case SupportedPaymentMethodType.CARD:
-            default:
-                iconDrawableResId = CardType.UNKNOWN.getFrontResource();
-                localizedNameResId =  R.string.bt_descriptor_unknown;
-                break;
-        }
+        final DropInPaymentMethodType type = mAvailablePaymentMethods.get(position);
 
         ImageView icon = convertView.findViewById(R.id.bt_payment_method_icon);
-        icon.setImageResource(iconDrawableResId);
+        icon.setImageResource(type.getDrawable());
 
         ((TextView) convertView.findViewById(R.id.bt_payment_method_type))
-                .setText(mContext.getString(localizedNameResId));
+                .setText(mContext.getString(type.getLocalizedName()));
 
         convertView.setOnClickListener(new OnClickListener() {
             @Override

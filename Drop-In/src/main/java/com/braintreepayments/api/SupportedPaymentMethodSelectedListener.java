@@ -1,5 +1,5 @@
 package com.braintreepayments.api;
 
 interface SupportedPaymentMethodSelectedListener {
-    void onPaymentMethodSelected(@SupportedPaymentMethodType int type);
+    void onPaymentMethodSelected(DropInPaymentMethodType type);
 }

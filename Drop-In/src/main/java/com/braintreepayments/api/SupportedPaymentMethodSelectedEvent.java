@@ -5,29 +5,18 @@ import android.os.Parcelable;
 
 class SupportedPaymentMethodSelectedEvent implements Parcelable {
 
-    private @SupportedPaymentMethodType final int paymentMethodType;
+    private final DropInPaymentMethodType paymentMethodType;
 
-    SupportedPaymentMethodSelectedEvent(@SupportedPaymentMethodType int paymentMethodType) {
+    SupportedPaymentMethodSelectedEvent(DropInPaymentMethodType paymentMethodType) {
         this.paymentMethodType = paymentMethodType;
     }
 
-    @SupportedPaymentMethodType
-    public int getPaymentMethodType() {
-        return paymentMethodType;
-    }
-
     SupportedPaymentMethodSelectedEvent(Parcel in) {
-        paymentMethodType = in.readInt();
+        this.paymentMethodType = (DropInPaymentMethodType) in.readSerializable();
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(paymentMethodType);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
+    DropInPaymentMethodType getPaymentMethodType() {
+        return paymentMethodType;
     }
 
     public static final Creator<SupportedPaymentMethodSelectedEvent> CREATOR = new Creator<SupportedPaymentMethodSelectedEvent>() {
@@ -41,4 +30,14 @@ class SupportedPaymentMethodSelectedEvent implements Parcelable {
             return new SupportedPaymentMethodSelectedEvent[size];
         }
     };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeSerializable(paymentMethodType);
+    }
 }
