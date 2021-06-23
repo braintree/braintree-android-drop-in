@@ -965,6 +965,46 @@ public class AddCardActivityUnitTest {
         assertThat(mEditCardView.findViewById(R.id.bt_button)).isVisible();
     }
 
+    @Test
+    public void addCard_onSuccess_returnsToApp() {
+//        String authorization = Fixtures.TOKENIZATION_KEY;
+//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+//
+//        DropInClient dropInClient = new MockDropInClientBuilder()
+//                .authorization(Authorization.fromString(authorization))
+//                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+//                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+//                .build();
+//        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+//        mActivityController.setup();
+//
+//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+//
+//        DropInResult result = new DropInResult()
+//                .paymentMethodNonce(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
+//        Intent data = new Intent()
+//                .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+//
+//        mActivity.onActivityResult(ADD_CARD_REQUEST_CODE, RESULT_OK, data);
+//
+//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void addCard_whenUserCancelsAddCardFlow_removesLoadingIndicator() {
+//        String authorization = Fixtures.TOKENIZATION_KEY;
+//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+//
+//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
+//        mActivityController.setup();
+//
+//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+//
+//        mActivity.onActivityResult(1, RESULT_CANCELED, null);
+//
+//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
     private void setup(DropInClient dropInClient) {
         mActivity.dropInClient = dropInClient;
         mActivityController.setup();
