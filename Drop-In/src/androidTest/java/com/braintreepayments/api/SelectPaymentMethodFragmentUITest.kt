@@ -25,10 +25,10 @@ class SelectPaymentMethodFragmentUITest {
     private lateinit var countDownLatch: CountDownLatch
 
     private val supportedPaymentMethods = listOf(
-            SupportedPaymentMethodType.PAYPAL,
-            SupportedPaymentMethodType.VENMO,
-            SupportedPaymentMethodType.CARD,
-            SupportedPaymentMethodType.GOOGLE_PAY
+            DropInPaymentMethodType.PAYPAL,
+            DropInPaymentMethodType.PAY_WITH_VENMO,
+            DropInPaymentMethodType.UNKNOWN,
+            DropInPaymentMethodType.GOOGLE_PAYMENT
     )
 
     @Before
@@ -163,7 +163,7 @@ class SelectPaymentMethodFragmentUITest {
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
                 val event = result.get("BRAINTREE_RESULT") as SupportedPaymentMethodSelectedEvent
-                assertEquals(SupportedPaymentMethodType.CARD, event.paymentMethodType)
+                assertEquals(DropInPaymentMethodType.UNKNOWN, event.paymentMethodType)
                 countDownLatch.countDown()
             }
         }
