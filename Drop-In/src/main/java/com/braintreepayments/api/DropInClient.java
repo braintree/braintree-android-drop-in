@@ -292,13 +292,13 @@ public class DropInClient {
                         @Override
                         public void onResult(boolean isReadyToGooglePay, Exception error) {
 
-                            List<DropInPaymentMethodType> availablePaymentMethods =
+                            List<Integer> availablePaymentMethods =
                                 filterSupportedPaymentMethods(configuration, isReadyToGooglePay);
                             callback.onResult(availablePaymentMethods, null);
                         }
                     });
                 } else {
-                    List<DropInPaymentMethodType> availablePaymentMethods =
+                    List<Integer> availablePaymentMethods =
                             filterSupportedPaymentMethods(configuration, false);
                     callback.onResult(availablePaymentMethods, null);
                 }
@@ -306,15 +306,15 @@ public class DropInClient {
         });
     }
 
-    private List<DropInPaymentMethodType> filterSupportedPaymentMethods(Configuration configuration, boolean showGooglePay) {
-        List<DropInPaymentMethodType> availablePaymentMethods = new ArrayList<>();
+    private List<Integer> filterSupportedPaymentMethods(Configuration configuration, boolean showGooglePay) {
+        List<Integer> availablePaymentMethods = new ArrayList<>();
 
         if (dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled()) {
-            availablePaymentMethods.add(DropInPaymentMethodType.PAYPAL);
+            availablePaymentMethods.add(SupportedPaymentMethodType.PAYPAL);
         }
 
         if (dropInRequest.isVenmoEnabled() && configuration.isVenmoEnabled()) {
-            availablePaymentMethods.add(DropInPaymentMethodType.PAY_WITH_VENMO);
+            availablePaymentMethods.add(SupportedPaymentMethodType.VENMO);
         }
 
         if (dropInRequest.isCardEnabled()) {
@@ -324,13 +324,13 @@ public class DropInClient {
                 supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
             }
             if (supportedCardTypes.size() > 0) {
-                availablePaymentMethods.add(DropInPaymentMethodType.UNKNOWN);
+                availablePaymentMethods.add(SupportedPaymentMethodType.CARD);
             }
         }
 
         if (showGooglePay) {
             if (dropInRequest.isGooglePaymentEnabled()) {
-                availablePaymentMethods.add(DropInPaymentMethodType.GOOGLE_PAYMENT);
+                availablePaymentMethods.add(SupportedPaymentMethodType.GOOGLE_PAY);
             }
         }
         return availablePaymentMethods;

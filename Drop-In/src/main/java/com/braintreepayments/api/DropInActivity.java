@@ -21,7 +21,7 @@ import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
-public class DropInActivity extends BaseActivity implements VaultedPaymentMethodSelectedListener {
+public class DropInActivity extends BaseActivity {
 
     /**
      * Errors are returned as the serializable value of this key in the data intent in
@@ -51,7 +51,7 @@ public class DropInActivity extends BaseActivity implements VaultedPaymentMethod
 
         getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
-            public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
+            public void onResult(@Nullable List<Integer> paymentMethods, @Nullable Exception error) {
                 if (paymentMethods != null) {
                     dropInViewModel.setSupportedPaymentMethods(paymentMethods);
                 } else {
@@ -82,18 +82,6 @@ public class DropInActivity extends BaseActivity implements VaultedPaymentMethod
                 case DropInUIEventType.SHOW_VAULT_MANAGER:
                     showVaultManager();
                     break;
-                case DropInUIEventType.SHOW_ADD_CARD:
-                    showAddCard();
-                    break;
-                case DropInUIEventType.SHOW_GOOGLE_PAYMENT:
-                    showGooglePay();
-                    break;
-                case DropInUIEventType.SHOW_PAYPAL:
-                    showPayPal();
-                    break;
-                case DropInUIEventType.SHOW_PAY_WITH_VENMO:
-                    showVenmo();
-                    break;
                 case DropInUIEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
                     // TODO: "refetch" was previously false in this case, however it isn't
                     // immediately clear why the refetch parameter exists. We should investigate
@@ -101,6 +89,27 @@ public class DropInActivity extends BaseActivity implements VaultedPaymentMethod
                     updateVaultedPaymentMethodNonces(false);
                     break;
             }
+        } else if (braintreeResult instanceof SupportedPaymentMethodSelectedEvent) {
+            SupportedPaymentMethodSelectedEvent supportedPaymentMethodSelectedEvent =
+                    (SupportedPaymentMethodSelectedEvent) braintreeResult;
+            switch (supportedPaymentMethodSelectedEvent.getPaymentMethodType()) {
+                case SupportedPaymentMethodType.CARD:
+                    showAddCard();
+                    break;
+                case SupportedPaymentMethodType.GOOGLE_PAY:
+                    showGooglePay();
+                    break;
+                case SupportedPaymentMethodType.PAYPAL:
+                    showPayPal();
+                    break;
+                case SupportedPaymentMethodType.VENMO:
+                    showVenmo();
+                    break;
+            }
+        } else if (braintreeResult instanceof VaultedPaymentMethodSelectedEvent) {
+            VaultedPaymentMethodSelectedEvent vaultedPaymentMethodSelectedEvent =
+                    (VaultedPaymentMethodSelectedEvent) braintreeResult;
+            onVaultedPaymentMethodSelected(vaultedPaymentMethodSelectedEvent.getPaymentMethodNonce());
         }
     }
 
@@ -285,7 +294,6 @@ public class DropInActivity extends BaseActivity implements VaultedPaymentMethod
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    @Override
     public void onVaultedPaymentMethodSelected(final PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             getDropInClient().sendAnalyticsEvent("vaulted-card.select");
