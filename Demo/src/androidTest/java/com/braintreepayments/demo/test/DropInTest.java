@@ -329,48 +329,6 @@ public class DropInTest extends TestHelper {
     }
 
     @Test
-    public void vaultManager_whenVaultedPaymentEdited_returnsToDropIn() {
-//        String authorization = Fixtures.TOKENIZATION_KEY;
-//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
-//        mActivityController.setup();
-//
-//        PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
-//
-//        ArrayList<Parcelable> paymentMethodNonces = new ArrayList<>();
-//        paymentMethodNonces.add(paypalNonce);
-//
-//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
-//
-//        mActivity.onActivityResult(DELETE_PAYMENT_METHOD_NONCE_CODE, RESULT_OK, new Intent()
-//                .putExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES", paymentMethodNonces));
-//
-//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
-    }
-
-    @Test
-    public void selectPaymentMethod_whenPaymentMethodSelected_showsLoadingView() {
-//        String authorization = Fixtures.TOKENIZATION_KEY;
-//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-//
-//        DropInClient dropInClient = new MockDropInClientBuilder()
-//                .authorization(Authorization.fromString(authorization))
-//                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
-//                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
-//                .build();
-//
-//        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-//
-//        mActivityController.setup();
-//
-//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
-//
-//        mActivity.onPaymentMethodSelected(DropInPaymentMethodType.UNKNOWN);
-//
-//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
-    }
-
-    @Test
     public void addCard_onSuccess_returnsToApp() {
 //        String authorization = Fixtures.TOKENIZATION_KEY;
 //        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);

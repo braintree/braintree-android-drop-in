@@ -57,7 +57,7 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
         switch (type) {
             case SupportedPaymentMethodType.GOOGLE_PAY:
                 iconDrawableResId = R.drawable.bt_ic_google_pay;
-                localizedNameResId = R.string.bt_descriptor_unknown;
+                localizedNameResId =  R.string.bt_descriptor_google_pay;
                 break;
             case SupportedPaymentMethodType.PAYPAL:
                 iconDrawableResId = R.drawable.bt_ic_paypal;

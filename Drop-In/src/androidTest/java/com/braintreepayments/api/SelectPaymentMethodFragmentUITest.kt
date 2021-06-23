@@ -12,6 +12,7 @@ import com.braintreepayments.api.dropin.R
 import org.hamcrest.Matchers.not
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,10 +25,10 @@ class SelectPaymentMethodFragmentUITest {
     private lateinit var countDownLatch: CountDownLatch
 
     private val supportedPaymentMethods = listOf(
-            DropInPaymentMethodType.PAYPAL,
-            DropInPaymentMethodType.PAY_WITH_VENMO,
-            DropInPaymentMethodType.UNKNOWN,
-            DropInPaymentMethodType.GOOGLE_PAYMENT
+            SupportedPaymentMethodType.PAYPAL,
+            SupportedPaymentMethodType.VENMO,
+            SupportedPaymentMethodType.CARD,
+            SupportedPaymentMethodType.GOOGLE_PAY
     )
 
     @Before
@@ -144,7 +145,7 @@ class SelectPaymentMethodFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_whenCreditOrDebitCardSelected_sendsShowAddCardEvent() {
+    fun whenStateIsRESUMED_whenCreditOrDebitCardSelected_sendsPaymentMethodSelectedEvent() {
         val dropInRequest = DropInRequest()
                 .vaultManager(false)
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
@@ -161,8 +162,8 @@ class SelectPaymentMethodFragmentUITest {
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
-                val event = result.get("BRAINTREE_RESULT") as DropInUIEvent
-                assertEquals(event.type, DropInUIEventType.SHOW_ADD_CARD)
+                val event = result.get("BRAINTREE_RESULT") as SupportedPaymentMethodSelectedEvent
+                assertEquals(SupportedPaymentMethodType.CARD, event.paymentMethodType)
                 countDownLatch.countDown()
             }
         }
@@ -170,7 +171,7 @@ class SelectPaymentMethodFragmentUITest {
         countDownLatch.await()
     }
 
-    @Test(timeout=5000)
+    @Test(timeout = 5000)
     fun whenStateIsRESUMED_whenVaultManagerEnabledAndVaultedCardExists_sendsAnalyticEvent() {
         // TODO: capture all analytics events within a time interval and assert that the target analytics event is emitted
 
@@ -208,5 +209,24 @@ class SelectPaymentMethodFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenVaultEditButtonClicked_sendsAnalyticsEvent() {
         // TODO: capture all analytics events within a time interval and assert that the target analytics event is emitted
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenPaymentMethodSelected_showsLoadingView() {
+        val dropInRequest = DropInRequest()
+                .vaultManager(false)
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+        }
+
+        onView(withText("Credit or Debit Card")).perform(click())
+        scenario.onFragment { fragment ->
+            assertTrue(fragment.dropInViewModel.isLoading.value!!)
+        }
     }
 }

@@ -326,4 +326,24 @@ public class VaultManagerActivityUnitTest {
         // This allows us to return the first (and only) v7 alert dialog
         return (androidx.appcompat.app.AlertDialog) ShadowAlertDialog.getShownDialogs().get(0);
     }
+
+    @Test
+    public void vaultManager_whenVaultedPaymentEdited_returnsToDropIn() {
+//        String authorization = Fixtures.TOKENIZATION_KEY;
+//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
+//        mActivityController.setup();
+//
+//        PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
+//
+//        ArrayList<Parcelable> paymentMethodNonces = new ArrayList<>();
+//        paymentMethodNonces.add(paypalNonce);
+//
+//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+//
+//        mActivity.onActivityResult(DELETE_PAYMENT_METHOD_NONCE_CODE, RESULT_OK, new Intent()
+//                .putExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES", paymentMethodNonces));
+//
+//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
 }

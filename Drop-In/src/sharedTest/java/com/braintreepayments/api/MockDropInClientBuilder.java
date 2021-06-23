@@ -24,7 +24,7 @@ public class MockDropInClientBuilder {
     private Exception getVaultedPaymentMethodsError;
     private Authorization authorization;
     private Configuration configuration;
-    private List<DropInPaymentMethodType> supportedPaymentMethods;
+    private List<Integer> supportedPaymentMethods;
     private String deviceDataSuccess;
     private PaymentMethodNonce deletedNonce;
     private Exception deletePaymentMethodNonceError;
@@ -75,7 +75,7 @@ public class MockDropInClientBuilder {
         return this;
     }
 
-    MockDropInClientBuilder getSupportedPaymentMethodsSuccess(List<DropInPaymentMethodType> supportedPaymentMethods) {
+    MockDropInClientBuilder getSupportedPaymentMethodsSuccess(List<Integer> supportedPaymentMethods) {
         this.supportedPaymentMethods = supportedPaymentMethods;
         return this;
     }
