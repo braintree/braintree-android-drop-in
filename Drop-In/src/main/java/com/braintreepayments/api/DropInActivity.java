@@ -90,26 +90,28 @@ public class DropInActivity extends BaseActivity {
                     break;
             }
         } else if (braintreeResult instanceof SupportedPaymentMethodSelectedEvent) {
-            SupportedPaymentMethodSelectedEvent supportedPaymentMethodSelectedEvent =
-                    (SupportedPaymentMethodSelectedEvent) braintreeResult;
-            switch (supportedPaymentMethodSelectedEvent.getPaymentMethodType()) {
-                case SupportedPaymentMethodType.CARD:
-                    showAddCard();
-                    break;
-                case SupportedPaymentMethodType.GOOGLE_PAY:
-                    showGooglePay();
-                    break;
-                case SupportedPaymentMethodType.PAYPAL:
-                    showPayPal();
-                    break;
-                case SupportedPaymentMethodType.VENMO:
-                    showVenmo();
-                    break;
-            }
+            onSupportedPaymentMethodSelectedEvent((SupportedPaymentMethodSelectedEvent) braintreeResult);
         } else if (braintreeResult instanceof VaultedPaymentMethodSelectedEvent) {
             VaultedPaymentMethodSelectedEvent vaultedPaymentMethodSelectedEvent =
                     (VaultedPaymentMethodSelectedEvent) braintreeResult;
             onVaultedPaymentMethodSelected(vaultedPaymentMethodSelectedEvent.getPaymentMethodNonce());
+        }
+    }
+
+    void onSupportedPaymentMethodSelectedEvent(SupportedPaymentMethodSelectedEvent event) {
+        switch (event.getPaymentMethodType()) {
+            case SupportedPaymentMethodType.CARD:
+                showAddCard();
+                break;
+            case SupportedPaymentMethodType.GOOGLE_PAY:
+                showGooglePay();
+                break;
+            case SupportedPaymentMethodType.PAYPAL:
+                showPayPal();
+                break;
+            case SupportedPaymentMethodType.VENMO:
+                showVenmo();
+                break;
         }
     }
 
