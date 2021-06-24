@@ -20,7 +20,6 @@ public class DemoApplication extends Application {
         if (Settings.getVersion(this) != BuildConfig.VERSION_CODE) {
             Settings.setVersion(this);
         }
-        DeveloperTools.setup(this);
     }
 
     static ApiClient getApiClient(Context context) {

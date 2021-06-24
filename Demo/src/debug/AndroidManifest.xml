@@ -26,7 +26,5 @@
         </activity>
         <activity android:name=".SettingsActivity" android:label="@string/options" />
         <activity android:name=".CreateTransactionActivity" />
-
-<!--        <service android:name=".internal.LeakLoggerService" />-->
     </application>
 </manifest>
