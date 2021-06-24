@@ -2,6 +2,7 @@ package com.braintreepayments.api;
 
 import android.content.Intent;
 import android.os.Parcelable;
+import android.widget.ViewSwitcher;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -22,6 +23,8 @@ import java.util.Objects;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
+import static com.braintreepayments.api.DropInActivity.ADD_CARD_REQUEST_CODE;
+import static com.braintreepayments.api.DropInActivity.DELETE_PAYMENT_METHOD_NONCE_CODE;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
@@ -37,6 +40,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
+
+import com.braintreepayments.api.dropin.R;
 
 @RunWith(RobolectricTestRunner.class)
 public class DropInActivityUnitTest {
@@ -679,6 +684,84 @@ public class DropInActivityUnitTest {
 
         ShadowActivity.IntentForResult intent = mShadowActivity.peekNextStartedActivityForResult();
         assertEquals(AddCardActivity.class.getName(), intent.intent.getComponent().getClassName());
+    }
+
+    @Test
+    public void onActivityResult_whenAddCardReturnsSuccessfully_showsLoader() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .authorization(Authorization.fromString(authorization))
+                .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
+        Intent data = new Intent()
+                .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+
+        mActivity.onActivityResult(ADD_CARD_REQUEST_CODE, RESULT_OK, data);
+
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void onActivityResult_whenAddCardCanceled_removesLoadingIndicator() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+
+        mActivity.onActivityResult(1, RESULT_CANCELED, null);
+
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void onActivityResult_whenPaymentMethodNonceDeleted_removesLoader() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
+
+        ArrayList<Parcelable> paymentMethodNonces = new ArrayList<>();
+        paymentMethodNonces.add(paypalNonce);
+
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+
+        mActivity.onActivityResult(DELETE_PAYMENT_METHOD_NONCE_CODE, RESULT_OK, new Intent()
+                .putExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES", paymentMethodNonces));
+
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+    }
+
+    @Test
+    public void onActivityResult_whenEditingFinished_removesLoadingIndicator() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .authorization(Authorization.fromString(authorization))
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
+
+        mActivity.onActivityResult(2, RESULT_OK, null);
+
+        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
     private void assertExceptionIsReturned(String analyticsEvent, Exception exception) {

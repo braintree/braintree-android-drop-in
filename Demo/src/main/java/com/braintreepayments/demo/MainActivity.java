@@ -192,10 +192,6 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onAuthorizationFetched() {
-        if (dropInClient != null) {
-            return;
-        }
-
         DropInRequest dropInRequest = new DropInRequest()
                 .clientToken(mAuthorization)
                 .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))

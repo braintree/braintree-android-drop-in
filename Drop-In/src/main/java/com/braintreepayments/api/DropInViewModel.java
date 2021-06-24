@@ -29,8 +29,8 @@ public class DropInViewModel extends ViewModel {
         return vaultedPaymentMethods;
     }
 
-    public void setSupportedPaymentMethods(List<DropInPaymentMethodType> supportedPaymentMethods) {
-        this.supportedPaymentMethods.setValue(supportedPaymentMethods);
+    public void setSupportedPaymentMethods(List<DropInPaymentMethodType> value) {
+        this.supportedPaymentMethods.setValue(value);
     }
 
     public LiveData<List<DropInPaymentMethodType>> getSupportedPaymentMethods() {

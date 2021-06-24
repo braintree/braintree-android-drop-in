@@ -52,8 +52,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bt_fragment_select_payment_method, container, false);
 
         mLoadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
@@ -61,6 +60,8 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         mSupportedPaymentMethodListView = view.findViewById(R.id.bt_supported_payment_methods);
         mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
+
+        // TODO: investigate why Settings isn't causing vault manager to be displayed when it's enabled
         mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
 
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(requireActivity(),

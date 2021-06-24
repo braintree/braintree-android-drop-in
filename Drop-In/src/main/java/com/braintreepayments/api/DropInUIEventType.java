@@ -12,5 +12,5 @@ import java.lang.annotation.RetentionPolicy;
 })
 @interface DropInUIEventType {
     int SHOW_VAULT_MANAGER = 0;
-    int DID_DISPLAY_SUPPORTED_PAYMENT_METHODS = 2;
+    int DID_DISPLAY_SUPPORTED_PAYMENT_METHODS = 1;
 }

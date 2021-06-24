@@ -319,45 +319,6 @@ public class VaultManagerActivityUnitTest {
         assertFalse(mActivity.isFinishing());
     }
 
-    @Test
-    public void vaultManager_whenVaultedPaymentEdited_returnsToDropIn() {
-//        String authorization = Fixtures.TOKENIZATION_KEY;
-//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-//        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
-//        mActivityController.setup();
-//
-//        PayPalAccountNonce paypalNonce = mock(PayPalAccountNonce.class);
-//
-//        ArrayList<Parcelable> paymentMethodNonces = new ArrayList<>();
-//        paymentMethodNonces.add(paypalNonce);
-//
-//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
-//
-//        mActivity.onActivityResult(DELETE_PAYMENT_METHOD_NONCE_CODE, RESULT_OK, new Intent()
-//                .putExtra("com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES", paymentMethodNonces));
-//
-//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
-    }
-
-    @Test
-    public void vaultManager_whenEditingFinished_removesLoadingIndicator() {
-//        String authorization = Fixtures.TOKENIZATION_KEY;
-//        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-//
-//        DropInClient dropInClient = new MockDropInClientBuilder()
-//                .authorization(Authorization.fromString(authorization))
-//                .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
-//                .build();
-//        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-//        mActivityController.setup();
-//
-//        assertEquals(0, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
-//
-//        mActivity.onActivityResult(2, RESULT_OK, null);
-//
-//        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(com.braintreepayments.api.dropin.R.id.bt_loading_view_switcher)).getDisplayedChild());
-    }
-
     private static androidx.appcompat.app.AlertDialog getDeleteConfirmationDialog() {
         // ShadowAlertDialog#getLatestDialog does not return
         // the support AlertDialog.

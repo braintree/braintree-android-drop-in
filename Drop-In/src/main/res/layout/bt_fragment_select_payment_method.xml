@@ -17,8 +17,7 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         android:animateLayoutChanges="true"
-        android:background="@color/bt_base_background"
-        tools:targetApi="lollipop">
+        android:background="@color/bt_base_background">
 
         <ViewSwitcher
             android:id="@+id/bt_loading_view_switcher"
