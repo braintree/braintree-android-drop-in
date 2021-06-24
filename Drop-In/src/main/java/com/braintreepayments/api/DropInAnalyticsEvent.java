@@ -5,18 +5,18 @@ import android.os.Parcelable;
 
 class DropInAnalyticsEvent implements Parcelable {
 
-    private final String fragment;
+    private final String name;
 
-    DropInAnalyticsEvent(String fragment) {
-        this.fragment = fragment;
+    DropInAnalyticsEvent(String name) {
+        this.name = name;
     }
 
     DropInAnalyticsEvent(Parcel in) {
-        fragment = in.readString();
+        name = in.readString();
     }
 
-    String getFragment() {
-        return fragment;
+    String getName() {
+        return name;
     }
 
     @Override
@@ -26,7 +26,7 @@ class DropInAnalyticsEvent implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(fragment);
+        dest.writeString(name);
     }
 
     public static final Creator<DropInAnalyticsEvent> CREATOR = new Creator<DropInAnalyticsEvent>() {

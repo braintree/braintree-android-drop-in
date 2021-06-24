@@ -87,7 +87,7 @@ public class DropInActivity extends BaseActivity {
     }
 
     void onAnalyticsEvent(DropInAnalyticsEvent event) {
-        sendAnalyticsEvent(event.getFragment());
+        sendAnalyticsEvent(event.getName());
     }
 
     void onSupportedPaymentMethodSelectedEvent(SupportedPaymentMethodSelectedEvent event) {
