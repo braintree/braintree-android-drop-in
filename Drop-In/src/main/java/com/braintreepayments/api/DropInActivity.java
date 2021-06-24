@@ -19,7 +19,6 @@ import java.util.List;
 
 import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
-import static com.braintreepayments.api.DropInPaymentMethodType.*;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 public class DropInActivity extends BaseActivity {
@@ -94,17 +93,17 @@ public class DropInActivity extends BaseActivity {
     void onSupportedPaymentMethodSelectedEvent(SupportedPaymentMethodSelectedEvent event) {
         switch (event.getPaymentMethodType()) {
             case GOOGLE_PAYMENT:
-                showGooglePay();
+                startGooglePayFlow();
                 break;
             case PAYPAL:
-                showPayPal();
+                startPayPalFlow();
                 break;
             case PAY_WITH_VENMO:
-                showVenmo();
+                startVenmoFlow();
                 break;
             default:
             case UNKNOWN:
-                showAddCard();
+                startAddCardFlow();
                 break;
         }
     }
@@ -201,7 +200,7 @@ public class DropInActivity extends BaseActivity {
         finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
     }
 
-    private void showPayPal() {
+    private void startPayPalFlow() {
         getDropInClient().tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {
             @Override
             public void onResult(@Nullable Exception error) {
@@ -212,7 +211,7 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    private void showGooglePay() {
+    private void startGooglePayFlow() {
         getDropInClient().requestGooglePayPayment(this, new GooglePayRequestPaymentCallback() {
             @Override
             public void onResult(Exception error) {
@@ -223,7 +222,7 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    private void showVenmo() {
+    private void startVenmoFlow() {
         getDropInClient().tokenizeVenmoAccount(this, new VenmoTokenizeAccountCallback() {
             @Override
             public void onResult(@Nullable Exception error) {
@@ -234,7 +233,7 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    private void showAddCard() {
+    private void startAddCardFlow() {
         Intent intent = new Intent(this, AddCardActivity.class)
                 .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
                 .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
