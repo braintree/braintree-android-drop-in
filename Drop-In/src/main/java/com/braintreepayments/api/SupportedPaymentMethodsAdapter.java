@@ -15,13 +15,10 @@ import java.util.List;
 
 class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
-    private final Context context;
     private final List<DropInPaymentMethodType> availablePaymentMethods;
     private final SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener;
 
-    SupportedPaymentMethodsAdapter(Context context, SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener, List<DropInPaymentMethodType> availablePaymentMethods) {
-        // TODO: remove context variable
-        this.context = context;
+    SupportedPaymentMethodsAdapter(List<DropInPaymentMethodType> availablePaymentMethods, SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener) {
         this.supportedPaymentMethodSelectedListener = supportedPaymentMethodSelectedListener;
         this.availablePaymentMethods = availablePaymentMethods;
     }
@@ -43,6 +40,7 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        Context context = parent.getContext();
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.bt_payment_method_list_item, parent, false);
         }

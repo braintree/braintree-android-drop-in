@@ -114,7 +114,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
 
     private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                requireActivity(), this, availablePaymentMethods);
+                availablePaymentMethods, this);
         mSupportedPaymentMethodListView.setAdapter(adapter);
         dropInViewModel.setIsLoading(false);
 

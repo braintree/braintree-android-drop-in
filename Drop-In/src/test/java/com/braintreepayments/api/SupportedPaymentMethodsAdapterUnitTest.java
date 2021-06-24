@@ -31,7 +31,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         supportedPaymentMethods.add(DropInPaymentMethodType.GOOGLE_PAYMENT);
 
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                context, listener, supportedPaymentMethods);
+                supportedPaymentMethods, listener);
 
         adapter.getView(0, null, parent).callOnClick();
         adapter.getView(1, null, parent).callOnClick();
