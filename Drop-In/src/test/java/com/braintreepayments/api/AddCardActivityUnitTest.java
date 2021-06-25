@@ -954,7 +954,7 @@ public class AddCardActivityUnitTest {
         setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
-        verify(dropInClient).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(ThreeDSecureResultCallback.class));
+        verify(dropInClient).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(DropInResultCallback.class));
 
         assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
         assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();

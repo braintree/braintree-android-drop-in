@@ -15,22 +15,22 @@ import java.util.List;
 
 class SupportedPaymentMethodsAdapter extends BaseAdapter {
 
-    private final List<DropInPaymentMethodType> supportedPaymentMethods;
-    private final PaymentMethodSelectedListener selectedListener;
+    private final List<DropInPaymentMethodType> availablePaymentMethods;
+    private final SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener;
 
-    SupportedPaymentMethodsAdapter(List<DropInPaymentMethodType> supportedPaymentMethods, PaymentMethodSelectedListener selectedListener) {
-        this.selectedListener = selectedListener;
-        this.supportedPaymentMethods = supportedPaymentMethods;
+    SupportedPaymentMethodsAdapter(List<DropInPaymentMethodType> availablePaymentMethods, SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener) {
+        this.supportedPaymentMethodSelectedListener = supportedPaymentMethodSelectedListener;
+        this.availablePaymentMethods = availablePaymentMethods;
     }
 
     @Override
     public int getCount() {
-        return supportedPaymentMethods.size();
+        return availablePaymentMethods.size();
     }
 
     @Override
     public Object getItem(int position) {
-        return supportedPaymentMethods.get(position);
+        return availablePaymentMethods.get(position);
     }
 
     @Override
@@ -45,7 +45,7 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.bt_payment_method_list_item, parent, false);
         }
 
-        final DropInPaymentMethodType type = supportedPaymentMethods.get(position);
+        final DropInPaymentMethodType type = availablePaymentMethods.get(position);
 
         ImageView icon = convertView.findViewById(R.id.bt_payment_method_icon);
         icon.setImageResource(type.getDrawable());
@@ -56,14 +56,10 @@ class SupportedPaymentMethodsAdapter extends BaseAdapter {
         convertView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedListener.onPaymentMethodSelected(type);
+                supportedPaymentMethodSelectedListener.onPaymentMethodSelected(type);
             }
         });
 
         return convertView;
-    }
-
-    interface PaymentMethodSelectedListener {
-        void onPaymentMethodSelected(DropInPaymentMethodType type);
     }
 }
