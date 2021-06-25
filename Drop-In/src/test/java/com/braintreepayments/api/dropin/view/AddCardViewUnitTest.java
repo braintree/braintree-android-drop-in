@@ -34,6 +34,7 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.braintreepayments.api.test.CardNumber.AMEX;
+import static com.braintreepayments.api.test.CardNumber.DISCOVER_19;
 import static com.braintreepayments.api.test.CardNumber.VISA;
 import static com.braintreepayments.api.test.ReflectionHelper.getField;
 import static com.braintreepayments.api.test.TestConfigurationBuilder.basicConfig;
@@ -370,7 +371,7 @@ public class AddCardViewUnitTest {
     }
 
     @Test
-    public void onCardFormValid_showLoadingIndicatorAndCallsListenerWhenCardFormIsValid() {
+    public void onCardFormValid_showLoadingIndicatorAndCallsListenerWhenCardFormIsValidAndCardIsMaxLength() {
         AddPaymentUpdateListener listener = mock(AddPaymentUpdateListener.class);
         mView.setAddPaymentUpdatedListener(listener);
 
@@ -378,6 +379,17 @@ public class AddCardViewUnitTest {
 
         assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
         verify(listener).onPaymentUpdated(mView);
+    }
+
+    @Test
+    public void onCardFormValid_doesNothingWhenCardFormIsValidAndCardIsNotMaxLength() {
+        AddPaymentUpdateListener listener = mock(AddPaymentUpdateListener.class);
+        mView.setAddPaymentUpdatedListener(listener);
+
+        mView.getCardForm().getCardEditText().setText(DISCOVER_19);
+
+        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+        verifyZeroInteractions(listener);
     }
 
     @Test

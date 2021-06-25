@@ -182,10 +182,14 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
 
     @Override
     public void onCardFormValid(boolean valid) {
-        if (isValid()) {
+        if (isMaxCardLength() && isValid()) {
             mAnimatedButtonView.showLoading();
             callAddPaymentUpdateListener();
         }
+    }
+
+    private boolean isMaxCardLength() {
+       return mCardForm.getCardEditText().length() == mCardForm.getCardEditText().getCardType().getMaxCardLength();
     }
 
     private boolean isValid() {
