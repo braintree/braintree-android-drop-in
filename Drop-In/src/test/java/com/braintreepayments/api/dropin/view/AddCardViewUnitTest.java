@@ -34,6 +34,7 @@ import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.braintreepayments.api.test.CardNumber.AMEX;
+import static com.braintreepayments.api.test.CardNumber.DISCOVER_16;
 import static com.braintreepayments.api.test.CardNumber.DISCOVER_19;
 import static com.braintreepayments.api.test.CardNumber.VISA;
 import static com.braintreepayments.api.test.ReflectionHelper.getField;
@@ -63,7 +64,7 @@ public class AddCardViewUnitTest {
         mView = mActivity.findViewById(R.id.bt_add_card_view);
         mView.setup(mActivity, (Configuration) new TestConfigurationBuilder()
                 .creditCards(new TestConfigurationBuilder.TestCardConfigurationBuilder()
-                        .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName()))
+                        .supportedCardTypes(PaymentMethodType.VISA.getCanonicalName(), PaymentMethodType.DISCOVER.getCanonicalName()))
                 .buildConfiguration(), false);
     }
 
@@ -375,8 +376,9 @@ public class AddCardViewUnitTest {
         AddPaymentUpdateListener listener = mock(AddPaymentUpdateListener.class);
         mView.setAddPaymentUpdatedListener(listener);
 
-        mView.getCardForm().getCardEditText().setText(VISA);
+        mView.getCardForm().getCardEditText().setText(DISCOVER_19);
 
+        assertTrue(mView.getCardForm().isValid());
         assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
         verify(listener).onPaymentUpdated(mView);
     }
@@ -386,8 +388,9 @@ public class AddCardViewUnitTest {
         AddPaymentUpdateListener listener = mock(AddPaymentUpdateListener.class);
         mView.setAddPaymentUpdatedListener(listener);
 
-        mView.getCardForm().getCardEditText().setText(DISCOVER_19);
+        mView.getCardForm().getCardEditText().setText(DISCOVER_16);
 
+        assertTrue(mView.getCardForm().isValid());
         assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
         verifyZeroInteractions(listener);
     }

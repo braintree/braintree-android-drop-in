@@ -7,6 +7,7 @@ public class CardNumber {
     public static final String INVALID_VISA = "4111111111111112";
     public static final String AMEX = "378282246310005";
     public static final String INVALID_AMEX = "371111111111111";
+    public static final String DISCOVER_16 = "6011000991300009";
     public static final String DISCOVER_19 = "6510000000000000069";
 
     public static final String THREE_D_SECURE_VERIFICATON = "4000000000000002";

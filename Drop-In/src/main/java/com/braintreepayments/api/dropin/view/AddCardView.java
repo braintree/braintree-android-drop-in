@@ -189,7 +189,7 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
     }
 
     private boolean isMaxCardLength() {
-       return mCardForm.getCardEditText().length() == mCardForm.getCardEditText().getCardType().getMaxCardLength();
+        return mCardForm.getCardEditText().length() == mCardForm.getCardEditText().getCardType().getMaxCardLength();
     }
 
     private boolean isValid() {
