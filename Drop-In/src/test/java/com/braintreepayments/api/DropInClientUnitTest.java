@@ -371,7 +371,7 @@ public class DropInClientUnitTest {
 
         PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
                 new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
-        ThreeDSecureResultCallback callback = mock(ThreeDSecureResultCallback.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
 
         DropInClient sut = new DropInClient(params);
         sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
@@ -396,7 +396,7 @@ public class DropInClientUnitTest {
 
         PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
                 new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
-        ThreeDSecureResultCallback callback = mock(ThreeDSecureResultCallback.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
 
         DropInClient sut = new DropInClient(params);
         sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
@@ -406,14 +406,21 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void performThreeDSecureVerification_continuesThreeDSecureVerificationAndForwardsResponseCallback() throws JSONException {
+    public void performThreeDSecureVerification_whenShouldNotCollectDeviceData_continuesThreeDSecureVerificationAndCallsBackResultWithNonce() throws JSONException {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         DropInRequest dropInRequest = new DropInRequest()
+                .collectDeviceData(false)
                 .threeDSecureRequest(threeDSecureRequest);
 
-        ThreeDSecureResult threeDSecureResult = new ThreeDSecureResult();
+        ThreeDSecureResult performVerificationResult = new ThreeDSecureResult();
+
+        ThreeDSecureResult continueVerificationResult = new ThreeDSecureResult();
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+        continueVerificationResult.setTokenizedCard(cardNonce);
+
         ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder()
-                .performVerificationSuccess(threeDSecureResult)
+                .performVerificationSuccess(performVerificationResult)
+                .continueVerificationSuccess(continueVerificationResult)
                 .build();
 
         DropInClientParams params = new DropInClientParams()
@@ -422,12 +429,97 @@ public class DropInClientUnitTest {
 
         PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
                 new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
-        ThreeDSecureResultCallback callback = mock(ThreeDSecureResultCallback.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
 
         DropInClient sut = new DropInClient(params);
         sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
 
-        verify(threeDSecureClient).continuePerformVerification(activity, threeDSecureRequest, threeDSecureResult, callback);
+        ArgumentCaptor<DropInResult> captor = ArgumentCaptor.forClass(DropInResult.class);
+        verify(callback).onResult(captor.capture(), (Exception) isNull());
+
+        DropInResult dropInResult = captor.getValue();
+        assertSame(cardNonce, dropInResult.getPaymentMethodNonce());
+        assertNull(dropInResult.getDeviceData());
+    }
+
+    @Test
+    public void performThreeDSecureVerification_whenShouldCollectDeviceData_includesDeviceDataInResult() throws JSONException {
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        DropInRequest dropInRequest = new DropInRequest()
+                .collectDeviceData(true)
+                .threeDSecureRequest(threeDSecureRequest);
+
+        ThreeDSecureResult performVerificationResult = new ThreeDSecureResult();
+
+        ThreeDSecureResult continueVerificationResult = new ThreeDSecureResult();
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+        continueVerificationResult.setTokenizedCard(cardNonce);
+
+        ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder()
+                .performVerificationSuccess(performVerificationResult)
+                .continueVerificationSuccess(continueVerificationResult)
+                .build();
+
+        DataCollector dataCollector = new MockDataCollectorBuilder()
+                .collectDeviceDataSuccess("device data")
+                .build();
+
+        DropInClientParams params = new DropInClientParams()
+                .dataCollector(dataCollector)
+                .dropInRequest(dropInRequest)
+                .threeDSecureClient(threeDSecureClient);
+
+        PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
+                new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
+
+        ArgumentCaptor<DropInResult> captor = ArgumentCaptor.forClass(DropInResult.class);
+        verify(callback).onResult(captor.capture(), (Exception) isNull());
+
+        DropInResult dropInResult = captor.getValue();
+        assertSame(cardNonce, dropInResult.getPaymentMethodNonce());
+        assertEquals("device data", dropInResult.getDeviceData());
+    }
+
+    @Test
+    public void performThreeDSecureVerification_whenShouldCollectDeviceDataAndDataCollectionFails_callsBackAnError() throws JSONException {
+        ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
+        DropInRequest dropInRequest = new DropInRequest()
+                .collectDeviceData(true)
+                .threeDSecureRequest(threeDSecureRequest);
+
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+        ThreeDSecureResult performVerificationResult = new ThreeDSecureResult();
+
+        ThreeDSecureResult continueVerificationResult = new ThreeDSecureResult();
+        continueVerificationResult.setTokenizedCard(cardNonce);
+
+        ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder()
+                .performVerificationSuccess(performVerificationResult)
+                .continueVerificationSuccess(continueVerificationResult)
+                .build();
+
+        Exception dataCollectionError = new Exception("data collection error");
+        DataCollector dataCollector = new MockDataCollectorBuilder()
+                .collectDeviceDataError(dataCollectionError)
+                .build();
+
+        DropInClientParams params = new DropInClientParams()
+                .dataCollector(dataCollector)
+                .dropInRequest(dropInRequest)
+                .threeDSecureClient(threeDSecureClient);
+
+        PaymentMethodNonce paymentMethodNonce = CardNonce.fromJSON(
+                new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+
+        DropInClient sut = new DropInClient(params);
+        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback);
+
+        verify(callback).onResult(null, dataCollectionError);
     }
 
     @Test
@@ -711,7 +803,6 @@ public class DropInClientUnitTest {
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
         List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
-
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -772,7 +863,6 @@ public class DropInClientUnitTest {
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
         List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
-
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -802,7 +892,6 @@ public class DropInClientUnitTest {
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
         List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
-
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -832,7 +921,6 @@ public class DropInClientUnitTest {
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
         List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
-
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -862,7 +950,6 @@ public class DropInClientUnitTest {
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
         List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
-
         assertEquals(0, paymentMethodTypes.size());
     }
 

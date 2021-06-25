@@ -1,13 +1,9 @@
 package com.braintreepayments.api;
 
 import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.test.core.app.ApplicationProvider;
-
-import com.braintreepayments.api.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +14,6 @@ import java.util.ArrayList;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 public class SupportedPaymentMethodsAdapterUnitTest {
@@ -28,7 +23,7 @@ public class SupportedPaymentMethodsAdapterUnitTest {
         Context context = ApplicationProvider.getApplicationContext();
         LinearLayout parent = new LinearLayout(context);
 
-        PaymentMethodSelectedListener listener = mock(PaymentMethodSelectedListener.class);
+        SupportedPaymentMethodSelectedListener listener = mock(SupportedPaymentMethodSelectedListener.class);
         ArrayList<DropInPaymentMethodType> supportedPaymentMethods = new ArrayList<>();
         supportedPaymentMethods.add(DropInPaymentMethodType.PAYPAL);
         supportedPaymentMethods.add(DropInPaymentMethodType.PAY_WITH_VENMO);

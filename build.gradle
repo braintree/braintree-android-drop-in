@@ -2,7 +2,6 @@ buildscript {
     ext.kotlin_version = '1.4.10'
     repositories {
         google()
-        jcenter()
         maven {
             url = "https://plugins.gradle.org/m2/"
         }

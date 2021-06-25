@@ -90,18 +90,40 @@ public class DropInClient {
         dataCollector.collectDeviceData(activity, callback);
     }
 
-    void performThreeDSecureVerification(final FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, final ThreeDSecureResultCallback callback) {
+    void performThreeDSecureVerification(final FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, final DropInResultCallback callback) {
         final ThreeDSecureRequest threeDSecureRequest = dropInRequest.getThreeDSecureRequest();
         threeDSecureRequest.setNonce(paymentMethodNonce.getString());
 
         threeDSecureClient.performVerification(activity, threeDSecureRequest, new ThreeDSecureResultCallback() {
             @Override
-            public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                if (error != null) {
+            public void onResult(@Nullable ThreeDSecureResult lookupResult, @Nullable Exception error) {
+                if (lookupResult != null) {
+                    threeDSecureClient.continuePerformVerification(activity, threeDSecureRequest, lookupResult, new ThreeDSecureResultCallback() {
+                        @Override
+                        public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
+                            final DropInResult dropInResult = new DropInResult();
+                            dropInResult.paymentMethodNonce(threeDSecureResult.getTokenizedCard());
+
+                            if (dropInRequest.shouldCollectDeviceData()) {
+                                dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
+                                    @Override
+                                    public void onResult(@Nullable String deviceData, @Nullable Exception error) {
+                                        if (deviceData != null) {
+                                            dropInResult.deviceData(deviceData);
+                                            callback.onResult(dropInResult, null);
+                                        } else {
+                                            callback.onResult(null, error);
+                                        }
+                                    }
+                                });
+                            } else {
+                                callback.onResult(dropInResult, null);
+                            }
+                        }
+                    });
+                } else {
                     callback.onResult(null, error);
-                    return;
                 }
-                threeDSecureClient.continuePerformVerification(activity, threeDSecureRequest, threeDSecureResult, callback);
             }
         });
     }
@@ -266,9 +288,10 @@ public class DropInClient {
                 if (dropInRequest.isGooglePaymentEnabled()) {
                     googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
                         @Override
-                        public void onResult(boolean isReadyToPay, Exception error) {
+                        public void onResult(boolean isReadyToGooglePay, Exception error) {
+
                             List<DropInPaymentMethodType> availablePaymentMethods =
-                                filterSupportedPaymentMethods(configuration, isReadyToPay);
+                                filterSupportedPaymentMethods(configuration, isReadyToGooglePay);
                             callback.onResult(availablePaymentMethods, null);
                         }
                     });

@@ -306,15 +306,15 @@ public class AddCardActivity extends BaseActivity implements AddPaymentUpdateLis
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
                 if (shouldRequestThreeDSecureVerification) {
-                    getDropInClient().performThreeDSecureVerification(AddCardActivity.this, paymentMethod, new ThreeDSecureResultCallback() {
+                    getDropInClient().performThreeDSecureVerification(AddCardActivity.this, paymentMethod, new DropInResultCallback() {
                         @Override
-                        public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
+                        public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
                             if (error != null) {
                                 onError(error);
                                 return;
                             }
                             getDropInClient().sendAnalyticsEvent("sdk.exit.success");
-                            finish(threeDSecureResult.getTokenizedCard(), null);
+                            finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
                         }
                     });
                 } else {

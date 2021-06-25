@@ -3,4 +3,4 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:fromYDelta="100%p"
     android:toYDelta="0"
-    android:duration="@android:integer/config_longAnimTime" />
+    android:duration="@integer/bt_bottom_sheet_transition_duration" />

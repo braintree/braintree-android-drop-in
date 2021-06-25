@@ -2,35 +2,26 @@ package com.braintreepayments.api;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.Parcelable;
-import android.text.TextUtils;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
-import android.widget.Button;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
-import androidx.recyclerview.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentResultListener;
+import androidx.lifecycle.ViewModelProvider;
 
-import com.braintreepayments.api.SupportedPaymentMethodsAdapter.PaymentMethodSelectedListener;
 import com.braintreepayments.api.dropin.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static android.view.animation.AnimationUtils.loadAnimation;
 import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
-public class DropInActivity extends BaseActivity implements PaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
+public class DropInActivity extends BaseActivity {
 
     /**
      * Errors are returned as the serializable value of this key in the data intent in
@@ -42,311 +33,100 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
     public static final int ADD_CARD_REQUEST_CODE = 1;
     public static final int DELETE_PAYMENT_METHOD_NONCE_CODE = 2;
 
-    private static final String EXTRA_SHEET_SLIDE_UP_PERFORMED = "com.braintreepayments.api.EXTRA_SHEET_SLIDE_UP_PERFORMED";
-    private static final String EXTRA_DEVICE_DATA = "com.braintreepayments.api.EXTRA_DEVICE_DATA";
     static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";
 
-    // TODO: Remove this and callback a full drop in result from DropInClient methods
-    private String mDeviceData;
-
-    private View mBottomSheet;
-    private ViewSwitcher mLoadingViewSwitcher;
-    private TextView mSupportedPaymentMethodsHeader;
-    @VisibleForTesting
-    protected ListView mSupportedPaymentMethodListView;
-    private View mVaultedPaymentMethodsContainer;
-    private RecyclerView mVaultedPaymentMethodsView;
-    private Button mVaultManagerButton;
-
-    private boolean mSheetSlideUpPerformed;
-    private boolean mSheetSlideDownPerformed;
+    private DropInViewModel dropInViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
 
-        mBottomSheet = findViewById(R.id.bt_dropin_bottom_sheet);
-        mLoadingViewSwitcher = findViewById(R.id.bt_loading_view_switcher);
-        mSupportedPaymentMethodsHeader = findViewById(R.id.bt_supported_payment_methods_header);
-        mSupportedPaymentMethodListView = findViewById(R.id.bt_supported_payment_methods);
-        mVaultedPaymentMethodsContainer = findViewById(R.id.bt_vaulted_payment_methods_wrapper);
-        mVaultedPaymentMethodsView = findViewById(R.id.bt_vaulted_payment_methods);
-        mVaultManagerButton = findViewById(R.id.bt_vault_edit_button);
-        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(this,
-                LinearLayoutManager.HORIZONTAL, false));
-        new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
-
         if (getDropInClient().getAuthorization() instanceof InvalidAuthorization) {
             finish(new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
             return;
         }
 
-        if (savedInstanceState != null) {
-            mSheetSlideUpPerformed = savedInstanceState.getBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED,
-                    false);
-            mDeviceData = savedInstanceState.getString(EXTRA_DEVICE_DATA);
-        }
-
-        slideUp();
-
-        getDropInClient().getConfiguration(new ConfigurationCallback() {
-            @Override
-            public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
-                onConfigurationFetched();
-            }
-        });
-    }
-
-    public void onConfigurationFetched() {
-        if (mDropInRequest.shouldCollectDeviceData() && TextUtils.isEmpty(mDeviceData)) {
-            getDropInClient().collectDeviceData(this, new DataCollectorCallback() {
-                @Override
-                public void onResult(@Nullable String deviceData, @Nullable Exception error) {
-                    mDeviceData = deviceData;
-                }
-            });
-        }
+        dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
 
         getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
             public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
                 if (paymentMethods != null) {
-                    showSupportedPaymentMethods(paymentMethods);
+                    dropInViewModel.setSupportedPaymentMethods(paymentMethods);
                 } else {
                     onError(error);
                 }
             }
         });
-    }
 
-    private void showSupportedPaymentMethods(List<DropInPaymentMethodType> supportedPaymentMethods) {
-        SupportedPaymentMethodsAdapter adapter =
-            new SupportedPaymentMethodsAdapter(supportedPaymentMethods, this);
-        mSupportedPaymentMethodListView.setAdapter(adapter);
-        mLoadingViewSwitcher.setDisplayedChild(1);
-        fetchPaymentMethodNonces(false);
-    }
-
-    public void onError(final Exception error) {
-        slideDown(new AnimationFinishedListener() {
+        getSupportFragmentManager().setFragmentResultListener("BRAINTREE_EVENT", this, new FragmentResultListener() {
             @Override
-            public void onAnimationFinished() {
-                if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
-                        error instanceof UpgradeRequiredException) {
-                    getDropInClient().sendAnalyticsEvent("sdk.exit.developer-error");
-                } else if (error instanceof ConfigurationException) {
-                    getDropInClient().sendAnalyticsEvent("sdk.exit.configuration-exception");
-                } else if (error instanceof ServerException || error instanceof UnexpectedException) {
-                    getDropInClient().sendAnalyticsEvent("sdk.exit.server-error");
-                } else if (error instanceof ServiceUnavailableException) {
-                    getDropInClient().sendAnalyticsEvent("sdk.exit.server-unavailable");
-                } else {
-                    getDropInClient().sendAnalyticsEvent("sdk.exit.sdk-error");
-                }
-
-                finish(error);
+            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
+                handleBraintreeEventBundle(result);
             }
         });
+
+        showSelectPaymentMethodFragment();
     }
 
-    private void finishWithPaymentMethodNonce(final PaymentMethodNonce paymentMethodNonce) {
-        slideDown(new AnimationFinishedListener() {
-            @Override
-            public void onAnimationFinished() {
-                getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+    private void handleBraintreeEventBundle(Bundle bundle) {
+        Parcelable braintreeResult = bundle.getParcelable("BRAINTREE_RESULT");
 
-                DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, paymentMethodNonce);
-
-                finish(paymentMethodNonce, mDeviceData);
-            }
-        });
+        if (braintreeResult instanceof DropInAnalyticsEvent) {
+            onAnalyticsEvent((DropInAnalyticsEvent) braintreeResult);
+        } else if (braintreeResult instanceof DropInUIEvent) {
+            onUIEvent((DropInUIEvent) braintreeResult);
+        } else if (braintreeResult instanceof SupportedPaymentMethodSelectedEvent) {
+            onSupportedPaymentMethodSelectedEvent((SupportedPaymentMethodSelectedEvent) braintreeResult);
+        } else if (braintreeResult instanceof VaultedPaymentMethodSelectedEvent) {
+            VaultedPaymentMethodSelectedEvent vaultedPaymentMethodSelectedEvent =
+                    (VaultedPaymentMethodSelectedEvent) braintreeResult;
+            onVaultedPaymentMethodSelected(vaultedPaymentMethodSelectedEvent.getPaymentMethodNonce());
+        }
     }
 
-    @Override
-    public void onPaymentMethodSelected(DropInPaymentMethodType type) {
-        mLoadingViewSwitcher.setDisplayedChild(0);
+    void onAnalyticsEvent(DropInAnalyticsEvent event) {
+        sendAnalyticsEvent(event.getName());
+    }
 
-        switch (type) {
-            case PAYPAL:
-                getDropInClient().tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {
-                    @Override
-                    public void onResult(@Nullable Exception error) {
-                        if (error != null) {
-                            onError(error);
-                        }
-                    }
-                });
-                break;
+    void onSupportedPaymentMethodSelectedEvent(SupportedPaymentMethodSelectedEvent event) {
+        switch (event.getPaymentMethodType()) {
             case GOOGLE_PAYMENT:
-                getDropInClient().requestGooglePayPayment(this, new GooglePayRequestPaymentCallback() {
-                    @Override
-                    public void onResult(Exception error) {
-                        if (error != null) {
-                            onError(error);
-                        }
-                    }
-                });
+                startGooglePayFlow();
+                break;
+            case PAYPAL:
+                startPayPalFlow();
                 break;
             case PAY_WITH_VENMO:
-                getDropInClient().tokenizeVenmoAccount(this, new VenmoTokenizeAccountCallback() {
-                    @Override
-                    public void onResult(@Nullable Exception error) {
-                        if (error != null) {
-                            onError(error);
-                        }
-                    }
-                });
+                startVenmoFlow();
                 break;
+            default:
             case UNKNOWN:
-                Intent intent = new Intent(this, AddCardActivity.class)
-                        .putExtra(EXTRA_CHECKOUT_REQUEST, getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
-                        .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
-                        .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
-                startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
+                startAddCardFlow();
                 break;
         }
     }
 
-    void fetchPaymentMethodNonces(final boolean refetch) {
-        if (mClientTokenPresent) {
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (!DropInActivity.this.isFinishing()) {
-
-                        getDropInClient().getVaultedPaymentMethods(DropInActivity.this, refetch, new GetPaymentMethodNoncesCallback() {
-                            @Override
-                            public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonces, @Nullable Exception error) {
-                                if (paymentMethodNonces != null) {
-                                    showVaultedPaymentMethods(paymentMethodNonces);
-                                } else if (error != null) {
-                                    onError(error);
-                                }
-                            }
-                        });
-                    }
-                }
-            }, getResources().getInteger(android.R.integer.config_shortAnimTime));
+    void onUIEvent(DropInUIEvent event) {
+        switch (event.getType()) {
+            case DropInUIEventType.SHOW_VAULT_MANAGER:
+                showVaultManager();
+                break;
+            case DropInUIEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
+                // TODO: "refetch" was previously false in this case, however it isn't
+                // immediately clear why the refetch parameter exists. We should investigate
+                // to see if this parameter is necessary
+                updateVaultedPaymentMethodNonces(false);
+                break;
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(EXTRA_SHEET_SLIDE_UP_PERFORMED, mSheetSlideUpPerformed);
-        outState.putString(EXTRA_DEVICE_DATA, mDeviceData);
+    void sendAnalyticsEvent(String eventFragment) {
+        getDropInClient().sendAnalyticsEvent(eventFragment);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_CANCELED) {
-            if (requestCode == ADD_CARD_REQUEST_CODE) {
-                mLoadingViewSwitcher.setDisplayedChild(0);
-
-                fetchPaymentMethodNonces(true);
-            }
-
-            mLoadingViewSwitcher.setDisplayedChild(1);
-        } else if (requestCode == ADD_CARD_REQUEST_CODE) {
-            final Intent response;
-            if (resultCode == RESULT_OK) {
-                mLoadingViewSwitcher.setDisplayedChild(0);
-
-                DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-                DropInResult.setLastUsedPaymentMethodType(this, result.getPaymentMethodNonce());
-
-                result.deviceData(mDeviceData);
-                response = new Intent()
-                        .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
-            } else {
-                response = data;
-            }
-
-            slideDown(new AnimationFinishedListener() {
-                @Override
-                public void onAnimationFinished() {
-                    setResult(resultCode, response);
-                    finish();
-                }
-            });
-        } else if (requestCode == DELETE_PAYMENT_METHOD_NONCE_CODE) {
-            if (resultCode == RESULT_OK) {
-                mLoadingViewSwitcher.setDisplayedChild(0);
-
-                if (data != null) {
-                    ArrayList<PaymentMethodNonce> paymentMethodNonces = data
-                            .getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES);
-
-                    if (paymentMethodNonces != null) {
-                        showVaultedPaymentMethods(paymentMethodNonces);
-                    }
-                }
-
-                fetchPaymentMethodNonces(true);
-            }
-            mLoadingViewSwitcher.setDisplayedChild(1);
-        }
-    }
-
-    public void onBackgroundClicked(View v) {
-        onBackPressed();
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (!mSheetSlideDownPerformed) {
-            mSheetSlideDownPerformed = true;
-            getDropInClient().sendAnalyticsEvent("sdk.exit.canceled");
-
-            slideDown(new AnimationFinishedListener() {
-                @Override
-                public void onAnimationFinished() {
-                    setResult(RESULT_CANCELED);
-                    finish();
-                }
-            });
-        }
-    }
-
-    private void slideUp() {
-        if (!mSheetSlideUpPerformed) {
-            getDropInClient().sendAnalyticsEvent("appeared");
-
-            mSheetSlideUpPerformed = true;
-            mBottomSheet.startAnimation(loadAnimation(this, R.anim.bt_slide_in_up));
-        }
-    }
-
-    private void slideDown(final AnimationFinishedListener listener) {
-        Animation slideOutAnimation = loadAnimation(this, R.anim.bt_slide_out_down);
-        slideOutAnimation.setFillAfter(true);
-        if (listener != null) {
-            slideOutAnimation.setAnimationListener(new AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {}
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    listener.onAnimationFinished();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {}
-            });
-        }
-        mBottomSheet.startAnimation(slideOutAnimation);
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-    }
-
-    public void onVaultEditButtonClick(View view) {
+    void showVaultManager() {
         // TODO: consider caching nonces or use a ViewModel for handling nonces
         getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
             @Override
@@ -354,7 +134,7 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
                 if (paymentMethodNonceList != null) {
                     Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
                             .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList))
-                            .putExtra(EXTRA_CHECKOUT_REQUEST, getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
+                            .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
                             .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
                             .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
                     startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
@@ -367,39 +147,162 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
         });
     }
 
-    void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {
-        if (paymentMethodNonces.size() > 0) {
-            mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
-            mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
-
-            VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter
-                    = new VaultedPaymentMethodsAdapter(paymentMethodNonces, this);
-            mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
-
-            if (mDropInRequest.isVaultManagerEnabled()) {
-                mVaultManagerButton.setVisibility(View.VISIBLE);
-            }
-
-            if (hasCardNonce(paymentMethodNonces)) {
-                getDropInClient().sendAnalyticsEvent("vaulted-card.appear");
-            }
-
-        } else {
-            mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
-            mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
+    void updateVaultedPaymentMethodNonces(boolean refetch) {
+        if (mClientTokenPresent) {
+            getDropInClient().getVaultedPaymentMethods(this, refetch, new GetPaymentMethodNoncesCallback() {
+                @Override
+                public void onResult(@Nullable List<PaymentMethodNonce> vaultedPaymentMethods, @Nullable Exception error) {
+                    if (vaultedPaymentMethods != null) {
+                        dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods);
+                    } else if (error != null) {
+                        onError(error);
+                    }
+                }
+            });
         }
     }
 
-    boolean hasCardNonce(List<PaymentMethodNonce> paymentMethodNonces) {
-        for (PaymentMethodNonce nonce : paymentMethodNonces) {
-            if (nonce instanceof CardNonce) {
-                return true;
-            }
+    private void showSelectPaymentMethodFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("SELECT_PAYMENT_METHOD");
+        if (fragment == null) {
+            Bundle args = new Bundle();
+            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+
+            fragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .add(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
+                    .commit();
         }
-        return false;
+    }
+
+    public void onError(final Exception error) {
+        if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
+                error instanceof UpgradeRequiredException) {
+            getDropInClient().sendAnalyticsEvent("sdk.exit.developer-error");
+        } else if (error instanceof ConfigurationException) {
+            getDropInClient().sendAnalyticsEvent("sdk.exit.configuration-exception");
+        } else if (error instanceof ServerException || error instanceof UnexpectedException) {
+            getDropInClient().sendAnalyticsEvent("sdk.exit.server-error");
+        } else if (error instanceof ServiceUnavailableException) {
+            getDropInClient().sendAnalyticsEvent("sdk.exit.server-unavailable");
+        } else {
+            getDropInClient().sendAnalyticsEvent("sdk.exit.sdk-error");
+        }
+
+        finish(error);
+    }
+
+    private void finishWithDropInResult(DropInResult dropInResult) {
+        getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+        DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, dropInResult.getPaymentMethodNonce());
+        finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
+    }
+
+    private void startPayPalFlow() {
+        getDropInClient().tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {
+            @Override
+            public void onResult(@Nullable Exception error) {
+                if (error != null) {
+                    onError(error);
+                }
+            }
+        });
+    }
+
+    private void startGooglePayFlow() {
+        getDropInClient().requestGooglePayPayment(this, new GooglePayRequestPaymentCallback() {
+            @Override
+            public void onResult(Exception error) {
+                if (error != null) {
+                    onError(error);
+                }
+            }
+        });
+    }
+
+    private void startVenmoFlow() {
+        getDropInClient().tokenizeVenmoAccount(this, new VenmoTokenizeAccountCallback() {
+            @Override
+            public void onResult(@Nullable Exception error) {
+                if (error != null) {
+                    onError(error);
+                }
+            }
+        });
+    }
+
+    private void startAddCardFlow() {
+        Intent intent = new Intent(this, AddCardActivity.class)
+                .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
+                .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
+                .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
+        startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
     }
 
     @Override
+    protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_CANCELED) {
+            if (requestCode == ADD_CARD_REQUEST_CODE) {
+                dropInViewModel.setIsLoading(true);
+                updateVaultedPaymentMethodNonces(true);
+            }
+            dropInViewModel.setIsLoading(false);
+
+        } else if (requestCode == ADD_CARD_REQUEST_CODE) {
+            final Intent response;
+            if (resultCode == RESULT_OK) {
+                dropInViewModel.setIsLoading(true);
+
+                DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+                DropInResult.setLastUsedPaymentMethodType(this, result.getPaymentMethodNonce());
+
+                response = new Intent()
+                        .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
+            } else {
+                response = data;
+            }
+            setResult(resultCode, response);
+            finish();
+        } else if (requestCode == DELETE_PAYMENT_METHOD_NONCE_CODE) {
+            if (resultCode == RESULT_OK) {
+                dropInViewModel.setIsLoading(true);
+
+                if (data != null) {
+                    ArrayList<PaymentMethodNonce> paymentMethodNonces = data
+                            .getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES);
+
+                    if (paymentMethodNonces != null) {
+                        dropInViewModel.setVaultedPaymentMethods(paymentMethodNonces);
+                    }
+                }
+
+                updateVaultedPaymentMethodNonces(true);
+            }
+            dropInViewModel.setIsLoading(false);
+        }
+    }
+
+    public void onBackgroundClicked(View v) {
+        onBackPressed();
+    }
+
+    @Override
+    public void onBackPressed() {
+        getDropInClient().sendAnalyticsEvent("sdk.exit.canceled");
+        setResult(RESULT_CANCELED);
+        finish();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
     public void onVaultedPaymentMethodSelected(final PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             getDropInClient().sendAnalyticsEvent("vaulted-card.select");
@@ -409,23 +312,41 @@ public class DropInActivity extends BaseActivity implements PaymentMethodSelecte
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
                 if (shouldRequestThreeDSecureVerification) {
-                    mLoadingViewSwitcher.setDisplayedChild(0);
+                    dropInViewModel.setIsLoading(true);
 
-                    getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new ThreeDSecureResultCallback() {
-
+                    getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new DropInResultCallback() {
                         @Override
-                        public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                            if (threeDSecureResult != null) {
-                                finishWithPaymentMethodNonce(threeDSecureResult.getTokenizedCard());
+                        public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                            if (dropInResult != null) {
+                                finishWithDropInResult(dropInResult);
                             } else {
-                                fetchPaymentMethodNonces(true);
-                                mLoadingViewSwitcher.setDisplayedChild(1);
+                                updateVaultedPaymentMethodNonces(true);
+                                dropInViewModel.setIsLoading(false);
                                 onError(error);
                             }
                         }
                     });
                 } else {
-                    finishWithPaymentMethodNonce(paymentMethodNonce);
+                    final DropInResult dropInResult = new DropInResult();
+                    dropInResult.paymentMethodNonce(paymentMethodNonce);
+
+                    if (mDropInRequest.shouldCollectDeviceData()) {
+                        getDropInClient().collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
+                            @Override
+                            public void onResult(@Nullable String deviceData, @Nullable Exception error) {
+                                if (deviceData != null) {
+                                    dropInResult.deviceData(deviceData);
+                                    finishWithDropInResult(dropInResult);
+                                } else {
+                                    updateVaultedPaymentMethodNonces(true);
+                                    dropInViewModel.setIsLoading(false);
+                                    onError(error);
+                                }
+                            }
+                        });
+                    } else {
+                        finishWithDropInResult(dropInResult);
+                    }
                 }
             }
         });

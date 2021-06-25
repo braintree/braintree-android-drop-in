@@ -17,13 +17,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 
 import static androidx.test.InstrumentationRegistry.getTargetContext;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_CHALLENGE_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
-import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
-import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
-import static com.braintreepayments.demo.test.utilities.UiTestActions.clickWebViewText;
 import static com.braintreepayments.AutomatorAction.clearTextField;
 import static com.braintreepayments.AutomatorAction.click;
 import static com.braintreepayments.AutomatorAction.setText;
@@ -34,6 +27,13 @@ import static com.braintreepayments.UiObjectMatcher.withResourceId;
 import static com.braintreepayments.UiObjectMatcher.withText;
 import static com.braintreepayments.UiObjectMatcher.withTextContaining;
 import static com.braintreepayments.UiObjectMatcher.withTextStartingWith;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_CHALLENGE_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
+import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
+import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
+import static com.braintreepayments.demo.test.utilities.UiTestActions.clickWebViewText;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -96,9 +96,9 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Added Protection")).waitForExists();
         onDevice().typeText("1234").pressEnter();
 
-        onDevice(withText("Return To App")).waitForExists(5000);
-        if (onDevice(withText("Return To App")).exists()) {
-            clickWebViewText("Return To App");
+        onDevice(withText("RETURN TO APP")).waitForExists(5000);
+        if (onDevice(withText("RETURN TO APP")).exists()) {
+            clickWebViewText("RETURN TO APP");
         }
 
         getNonceDetails().check(text(containsString("Card Last Two: 02")));
@@ -327,5 +327,4 @@ public class DropInTest extends TestHelper {
 
         assertFalse(onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_title")).exists());
     }
-
 }

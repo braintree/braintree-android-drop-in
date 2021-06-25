@@ -740,4 +740,21 @@ object Fixtures {
           "paymentMethods": []
         }
     """
+
+    // language=JSON
+    const val PAYMENT_METHODS_VENMO_ACCOUNT_RESPONSE = """
+        {
+          "venmoAccounts": [{
+            "type": "VenmoAccount",
+            "nonce": "fake-venmo-nonce",
+            "description": "VenmoAccount",
+            "consumed": false,
+            "default": true,
+            "details": {
+              "cardType": "Discover",
+              "username": "venmojoe"
+            }
+          }]
+        }
+    """
 }
