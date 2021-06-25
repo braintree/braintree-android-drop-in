@@ -265,7 +265,7 @@ public class AddCardViewUnitTest {
                 R.id.bt_supported_card_types);
         List<PaddedImageSpan> allSpans = Arrays.asList(new SpannableString(supportedCardTypesView.getText())
                 .getSpans(0, supportedCardTypesView.length(), PaddedImageSpan.class));
-        assertEquals(1, allSpans.size());
+        assertEquals(2, allSpans.size());
         assertFalse((Boolean) getField(allSpans.get(0), "mDisabled"));
     }
 

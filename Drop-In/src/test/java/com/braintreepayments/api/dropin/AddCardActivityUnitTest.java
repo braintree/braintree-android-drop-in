@@ -47,6 +47,7 @@ import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
 import static com.braintreepayments.api.test.Assertions.assertIsANonce;
 import static com.braintreepayments.api.test.CardNumber.AMEX;
+import static com.braintreepayments.api.test.CardNumber.UNIONPAY_19;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_CREDIT;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_DEBIT;
 import static com.braintreepayments.api.test.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
@@ -258,7 +259,7 @@ public class AddCardActivityUnitTest {
                 .clientToken(base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)));
         setup(httpClient);
 
-        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_19);
         assertThat(mEditCardView).isVisible();
         assertThat(mAddCardView).isGone();
 
@@ -266,7 +267,7 @@ public class AddCardActivityUnitTest {
         assertThat(mAddCardView).isVisible();
         assertThat(mEditCardView).isGone();
 
-        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_CREDIT);
+        setText(mAddCardView, R.id.bt_card_form_card_number, UNIONPAY_19);
         mAddCardView.findViewById(R.id.bt_button).performClick();
         assertThat(mEditCardView).isVisible();
         assertThat(mAddCardView).isGone();
