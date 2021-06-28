@@ -1,13 +1,22 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.braintreepayments.api.CardDetailsFragment">
+    xmlns:bt="http://schemas.android.com/apk/res-auto"
+    tools:context="com.braintreepayments.api.CardDetailsFragment"
+    android:layout_margin="16dp"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.braintreepayments.cardform.view.CardForm
+        android:id="@+id/bt_card_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"/>
 
-</FrameLayout>
+    <com.braintreepayments.api.AnimatedButtonView
+        android:id="@+id/bt_animated_button_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        bt:bt_buttonText="@string/bt_add_card"/>
+
+</LinearLayout>

@@ -85,7 +85,6 @@ public class DropInActivity extends BaseActivity {
                     (VaultedPaymentMethodSelectedEvent) braintreeResult;
             onVaultedPaymentMethodSelected(vaultedPaymentMethodSelectedEvent.getPaymentMethodNonce());
         } else if (braintreeResult instanceof AddCardEvent) {
-            // TODO: switch to EditCardFragment
             showCardDetailsFragment(((AddCardEvent) braintreeResult).getCardNumber());
         }
     }
@@ -181,20 +180,31 @@ public class DropInActivity extends BaseActivity {
         }
     }
 
-    private void showCardDetailsFragment(String cardNumber) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag("CARD_DETAILS");
-        if (fragment == null) {
-            Bundle args = new Bundle();
-            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-            args.putString("CARD_NUMBER", cardNumber);
+    private void showCardDetailsFragment(final String cardNumber) {
+        getDropInClient().getConfiguration(new ConfigurationCallback() {
+            @Override
+            public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
+                if (configuration != null) {
+                    CardFormConfiguration cardFormConfiguration = new CardFormConfiguration(configuration.isCvvChallengePresent(), configuration.isPostalCodeChallengePresent());
 
-            fragmentManager
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view, CardDetailsFragment.class, args, "CARD_DETAILS")
-                    .commit();
-        }
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    Fragment fragment = fragmentManager.findFragmentByTag("CARD_DETAILS");
+                    if (fragment == null) {
+                        Bundle args = new Bundle();
+                        args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+                        args.putString("EXTRA_CARD_NUMBER", cardNumber);
+                        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", cardFormConfiguration);
+
+                        fragmentManager
+                                .beginTransaction()
+                                .setReorderingAllowed(true)
+                                .replace(R.id.fragment_container_view, CardDetailsFragment.class, args, "CARD_DETAILS")
+                                .commit();
+                    }
+                }
+            }
+        });
+
     }
 
     public void onError(final Exception error) {
@@ -273,12 +283,6 @@ public class DropInActivity extends BaseActivity {
                     .replace(R.id.fragment_container_view, AddCardFragment.class, args, "ADD_CARD")
                     .commit();
         }
-
-//        Intent intent = new Intent(this, AddCardActivity.class)
-//                .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
-//                .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
-//                .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
-//        startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
     }
 
     @Override
