@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.cardform.view.CardForm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -86,6 +87,8 @@ public class DropInActivity extends BaseActivity {
             onVaultedPaymentMethodSelected(vaultedPaymentMethodSelectedEvent.getPaymentMethodNonce());
         } else if (braintreeResult instanceof AddCardEvent) {
             showCardDetailsFragment(((AddCardEvent) braintreeResult).getCardNumber());
+        } else if (braintreeResult instanceof CardDetailsEvent) {
+            onCardDetailsEvent((CardDetailsEvent) braintreeResult);
         }
     }
 
@@ -395,4 +398,44 @@ public class DropInActivity extends BaseActivity {
             }
         });
     }
+
+
+    void onCardDetailsEvent(CardDetailsEvent cardDetailsEvent) {
+        Card card = cardDetailsEvent.getCard();
+        getDropInClient().tokenizeCard(card, new CardTokenizeCallback() {
+            @Override
+            public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
+                if (error != null) {
+                    onError(error);
+                    return;
+                }
+                onPaymentMethodNonceCreated(cardNonce);
+            }
+        });
+    }
+
+    void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
+        getDropInClient().shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
+            @Override
+            public void onResult(boolean shouldRequestThreeDSecureVerification) {
+                if (shouldRequestThreeDSecureVerification) {
+                    getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethod, new DropInResultCallback() {
+                        @Override
+                        public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                            if (error != null) {
+                                onError(error);
+                                return;
+                            }
+                            getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+                            finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
+                        }
+                    });
+                } else {
+                    getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+                    finish(paymentMethod, null);
+                }
+            }
+        });
+    }
 }
+
