@@ -1,35 +1,27 @@
 package com.braintreepayments.api;
 
 import android.os.Bundle;
-
-import androidx.annotation.VisibleForTesting;
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.cardform.OnCardFormSubmitListener;
-import com.braintreepayments.cardform.OnCardFormValidListener;
 import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Observable;
-import java.util.Set;
 
-public class AddCardFragment extends Fragment implements OnCardFormSubmitListener,
+public class AddCardFragment extends Fragment implements  OnCardFormSubmitListener,
         CardEditText.OnCardTypeChangedListener {
 
     private CardForm cardForm;
@@ -48,12 +40,18 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
         supportedCardTypesView = view.findViewById(R.id.bt_supported_card_types);
         animatedButtonView = view.findViewById(R.id.bt_animated_button_view);
 
+        animatedButtonView.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+               onCardFormSubmit();
+            }
+        });
+
         cardForm.getCardEditText().displayCardTypeIcon(false);
 
         cardForm.cardRequired(true).setup((AppCompatActivity) requireActivity());
         cardForm.setOnCardTypeChangedListener(this);
-//        mCardForm.setOnCardFormValidListener(this);
-//        mCardForm.setOnCardFormSubmitListener(this);
+        cardForm.setOnCardFormSubmitListener(this);
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 

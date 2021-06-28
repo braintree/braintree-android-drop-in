@@ -16,9 +16,7 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
@@ -88,6 +86,7 @@ public class DropInActivity extends BaseActivity {
             onVaultedPaymentMethodSelected(vaultedPaymentMethodSelectedEvent.getPaymentMethodNonce());
         } else if (braintreeResult instanceof AddCardEvent) {
             // TODO: switch to EditCardFragment
+            showCardDetailsFragment(((AddCardEvent) braintreeResult).getCardNumber());
         }
     }
 
@@ -178,6 +177,22 @@ public class DropInActivity extends BaseActivity {
                     .beginTransaction()
                     .setReorderingAllowed(true)
                     .add(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
+                    .commit();
+        }
+    }
+
+    private void showCardDetailsFragment(String cardNumber) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("CARD_DETAILS");
+        if (fragment == null) {
+            Bundle args = new Bundle();
+            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+            args.putString("CARD_NUMBER", cardNumber);
+
+            fragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragment_container_view, CardDetailsFragment.class, args, "CARD_DETAILS")
                     .commit();
         }
     }
