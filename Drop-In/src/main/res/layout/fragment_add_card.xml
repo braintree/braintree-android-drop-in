@@ -2,19 +2,36 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bt_white"
+    xmlns:bt="http://schemas.android.com/apk/res-auto"
     tools:context="com.braintreepayments.api.AddCardFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_margin="16dp">
 
-        <com.braintreepayments.api.AddCardView
-            android:id="@+id/bt_add_card_view"
+        <com.braintreepayments.cardform.view.CardForm
+            android:id="@+id/bt_card_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.braintreepayments.cardform.view.SupportedCardTypesView
+            tools:ignore="RtlCompat"
+            android:id="@+id/bt_supported_card_types"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp" />
+            android:paddingTop="36dp"
+            android:paddingLeft="52dp"
+            android:paddingStart="52dp"
+            android:paddingEnd="0dp"/>
+
+        <com.braintreepayments.api.AnimatedButtonView
+            android:id="@+id/bt_animated_button_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp"
+            bt:bt_buttonText="@string/bt_next"/>
 
     </LinearLayout>
 
