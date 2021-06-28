@@ -15,7 +15,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.cardform.OnCardFormSubmitListener;
+import com.braintreepayments.cardform.OnCardFormValidListener;
 import com.braintreepayments.cardform.utils.CardType;
+import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
@@ -24,7 +27,8 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Set;
 
-public class AddCardFragment extends Fragment {
+public class AddCardFragment extends Fragment implements OnCardFormSubmitListener, OnCardFormValidListener,
+        CardEditText.OnCardTypeChangedListener {
 
     private CardForm cardForm;
     private SupportedCardTypesView supportedCardTypesView;
@@ -43,7 +47,7 @@ public class AddCardFragment extends Fragment {
         cardForm.getCardEditText().displayCardTypeIcon(false);
 
         cardForm.cardRequired(true).setup((AppCompatActivity) requireActivity());
-//        mCardForm.setOnCardTypeChangedListener(this);
+        cardForm.setOnCardTypeChangedListener(this);
 //        mCardForm.setOnCardFormValidListener(this);
 //        mCardForm.setOnCardFormSubmitListener(this);
 
@@ -56,5 +60,24 @@ public class AddCardFragment extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onCardFormSubmit() {
+
+    }
+
+    @Override
+    public void onCardFormValid(boolean b) {
+
+    }
+
+    @Override
+    public void onCardTypeChanged(CardType cardType) {
+        if (cardType == CardType.EMPTY) {
+            supportedCardTypesView.setSupportedCardTypes(dropInViewModel.getSupportedCardTypes().getValue().toArray(new CardType[0]));
+        } else {
+            supportedCardTypesView.setSelected(cardType);
+        }
     }
 }
