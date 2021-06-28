@@ -22,16 +22,18 @@ import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Observable;
 import java.util.Set;
 
-public class AddCardFragment extends Fragment implements OnCardFormSubmitListener, OnCardFormValidListener,
+public class AddCardFragment extends Fragment implements OnCardFormSubmitListener,
         CardEditText.OnCardTypeChangedListener {
 
     private CardForm cardForm;
     private SupportedCardTypesView supportedCardTypesView;
+    private AnimatedButtonView animatedButtonView;
 
     @VisibleForTesting
     DropInViewModel dropInViewModel;
@@ -43,6 +45,7 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
         View view = inflater.inflate(R.layout.fragment_add_card, container, false);
         cardForm = view.findViewById(R.id.bt_card_form);
         supportedCardTypesView = view.findViewById(R.id.bt_supported_card_types);
+        animatedButtonView = view.findViewById(R.id.bt_animated_button_view);
 
         cardForm.getCardEditText().displayCardTypeIcon(false);
 
@@ -62,14 +65,32 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
         return view;
     }
 
-    @Override
-    public void onCardFormSubmit() {
+    private boolean isValid() {
+        return cardForm.isValid() && isCardTypeValid();
+    }
 
+    private boolean isCardTypeValid() {
+        return (dropInViewModel.getSupportedCardTypes().getValue()).contains(cardForm.getCardEditText()
+                .getCardType());
+    }
+
+    public void showCardNotSupportedError() {
+        cardForm.getCardEditText().setError(getContext().getString(R.string.bt_card_not_accepted));
+        animatedButtonView.showButton();
     }
 
     @Override
-    public void onCardFormValid(boolean b) {
-
+    public void onCardFormSubmit() {
+        if (isValid()) {
+            animatedButtonView.showLoading();
+            // TODO: dispatch event to activity to transition to cardDetailsFragment
+        } else {
+            if (!cardForm.isValid()) {
+                cardForm.validate();
+            } else if (!isCardTypeValid()) {
+                showCardNotSupportedError();
+            }
+        }
     }
 
     @Override
