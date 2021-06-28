@@ -234,11 +234,24 @@ public class DropInActivity extends BaseActivity {
     }
 
     private void startAddCardFlow() {
-        Intent intent = new Intent(this, AddCardActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
-                .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
-                .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
-        startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("ADD_CARD");
+        if (fragment == null) {
+            Bundle args = new Bundle();
+            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+
+            fragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragment_container_view, AddCardFragment.class, args, "ADD_CARD")
+                    .commit();
+        }
+
+//        Intent intent = new Intent(this, AddCardActivity.class)
+//                .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
+//                .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
+//                .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
+//        startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
     }
 
     @Override
