@@ -86,6 +86,8 @@ public class DropInActivity extends BaseActivity {
             VaultedPaymentMethodSelectedEvent vaultedPaymentMethodSelectedEvent =
                     (VaultedPaymentMethodSelectedEvent) braintreeResult;
             onVaultedPaymentMethodSelected(vaultedPaymentMethodSelectedEvent.getPaymentMethodNonce());
+        } else if (braintreeResult instanceof AddCardEvent) {
+            // TODO: switch to EditCardFragment
         }
     }
 

@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,16 +75,22 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
                 .getCardType());
     }
 
-    public void showCardNotSupportedError() {
+    private void showCardNotSupportedError() {
         cardForm.getCardEditText().setError(getContext().getString(R.string.bt_card_not_accepted));
         animatedButtonView.showButton();
+    }
+
+    private void sendBraintreeEvent(Parcelable eventResult) {
+        Bundle result = new Bundle();
+        result.putParcelable("BRAINTREE_RESULT", eventResult);
+        getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
     }
 
     @Override
     public void onCardFormSubmit() {
         if (isValid()) {
             animatedButtonView.showLoading();
-            // TODO: dispatch event to activity to transition to cardDetailsFragment
+            sendBraintreeEvent(new AddCardEvent(cardForm.getCardNumber()));
         } else {
             if (!cardForm.isValid()) {
                 cardForm.validate();
