@@ -15,7 +15,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.braintreepayments.api.dropin.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
@@ -234,6 +237,13 @@ public class DropInActivity extends BaseActivity {
     }
 
     private void startAddCardFlow() {
+        getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
+            @Override
+            public void onResult(List<String> supportedCardTypes, Exception error) {
+                 dropInViewModel.setSupportedCardTypes(Arrays.asList(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)));
+            }
+        });
+
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag("ADD_CARD");
         if (fragment == null) {

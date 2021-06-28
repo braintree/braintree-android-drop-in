@@ -2,10 +2,13 @@ package com.braintreepayments.api;
 
 import android.os.Bundle;
 
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +17,20 @@ import android.view.ViewGroup;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.CardForm;
+import com.braintreepayments.cardform.view.SupportedCardTypesView;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Observable;
+import java.util.Set;
 
 public class AddCardFragment extends Fragment {
 
     private CardForm cardForm;
+    private SupportedCardTypesView supportedCardTypesView;
+
+    @VisibleForTesting
+    DropInViewModel dropInViewModel;
 
     public AddCardFragment() {}
 
@@ -25,6 +38,7 @@ public class AddCardFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_add_card, container, false);
         cardForm = view.findViewById(R.id.bt_card_form);
+        supportedCardTypesView = view.findViewById(R.id.bt_supported_card_types);
 
         cardForm.getCardEditText().displayCardTypeIcon(false);
 
@@ -32,6 +46,15 @@ public class AddCardFragment extends Fragment {
 //        mCardForm.setOnCardTypeChangedListener(this);
 //        mCardForm.setOnCardFormValidListener(this);
 //        mCardForm.setOnCardFormSubmitListener(this);
+
+        dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
+
+        dropInViewModel.getSupportedCardTypes().observe(getViewLifecycleOwner(), new Observer<List<CardType>>() {
+            @Override
+            public void onChanged(List<CardType> cardTypes) {
+                supportedCardTypesView.setSupportedCardTypes(cardTypes.toArray(new CardType[cardTypes.size()]));
+            }
+        });
         return view;
     }
 }

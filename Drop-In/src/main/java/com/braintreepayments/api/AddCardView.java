@@ -85,7 +85,7 @@ public class AddCardView extends LinearLayout implements OnCardFormSubmitListene
         if (!unionpaySupported) {
             cardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
         }
-        mSupportedCardTypes = DropInPaymentMethodType.getCardsTypes(cardTypes);
+//        mSupportedCardTypes = DropInPaymentMethodType.getCardsTypes(cardTypes);
         mSupportedCardTypesView.setSupportedCardTypes(mSupportedCardTypes);
 
         mAnimatedButtonView.setVisibility(configuration.isUnionPayEnabled() ? VISIBLE : GONE);
