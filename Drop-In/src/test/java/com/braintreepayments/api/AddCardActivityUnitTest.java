@@ -254,30 +254,6 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void addingACardRemainsOnEditCardView() throws JSONException {
-        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
-                .creditCards(getSupportedCardConfiguration())
-                .build());
-        DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(configuration)
-                .build();
-        setup(dropInClient);
-
-        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
-        mAddCardView.findViewById(R.id.bt_button).performClick();
-        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
-        mEditCardView.findViewById(R.id.bt_button).performClick();
-
-        assertThat(mEditCardView).isVisible();
-        assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
-        assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();
-        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
-                .getDisplayedChild());
-        assertThat(mAddCardView).isGone();
-        assertThat(mEnrollmentCardView).isGone();
-    }
-
-    @Test
     public void addingACardReturnsANonce() throws JSONException {
         Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
                 .creditCards(getSupportedCardConfiguration())
