@@ -58,7 +58,7 @@ public class AddCardFragment extends Fragment implements  OnCardFormSubmitListen
         dropInViewModel.getSupportedCardTypes().observe(getViewLifecycleOwner(), new Observer<List<CardType>>() {
             @Override
             public void onChanged(List<CardType> cardTypes) {
-                supportedCardTypesView.setSupportedCardTypes(cardTypes.toArray(new CardType[cardTypes.size()]));
+                supportedCardTypesView.setSupportedCardTypes(cardTypes.toArray(new CardType[0]));
             }
         });
         return view;
