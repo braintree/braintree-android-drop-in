@@ -74,7 +74,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
         return view;
     }
 
-    public void setErrors(ErrorWithResponse errors) {
+    void setErrors(ErrorWithResponse errors) {
         BraintreeError formErrors = errors.errorFor("unionPayEnrollment");
         if (formErrors == null) {
             formErrors = errors.errorFor("creditCard");

@@ -399,7 +399,6 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-
     void onCardDetailsEvent(CardDetailsEvent cardDetailsEvent) {
         Card card = cardDetailsEvent.getCard();
         getDropInClient().tokenizeCard(card, new CardTokenizeCallback() {
@@ -438,4 +437,3 @@ public class DropInActivity extends BaseActivity {
         });
     }
 }
-

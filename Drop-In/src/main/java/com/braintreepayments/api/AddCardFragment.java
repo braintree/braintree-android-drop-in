@@ -35,7 +35,7 @@ public class AddCardFragment extends Fragment implements  OnCardFormSubmitListen
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_add_card, container, false);
+        View view = inflater.inflate(R.layout.bt_fragment_add_card, container, false);
         cardForm = view.findViewById(R.id.bt_card_form);
         supportedCardTypesView = view.findViewById(R.id.bt_supported_card_types);
         animatedButtonView = view.findViewById(R.id.bt_animated_button_view);
