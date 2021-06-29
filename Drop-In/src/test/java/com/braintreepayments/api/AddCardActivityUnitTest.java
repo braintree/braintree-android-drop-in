@@ -157,25 +157,6 @@ public class AddCardActivityUnitTest {
     }
 
     @Test
-    public void enteringACardNumberGoesToCardDetailsView() throws JSONException {
-        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
-                .creditCards(getSupportedCardConfiguration())
-                .build());
-        DropInClient dropInClient = new MockDropInClientBuilder()
-                .getConfigurationSuccess(configuration)
-                .build();
-        setup(dropInClient);
-
-        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
-
-        assertThat(mEditCardView).isVisible();
-        assertThat(mAddCardView).isGone();
-        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
-                .getDisplayedChild());
-        assertThat(mEnrollmentCardView).isGone();
-    }
-
-    @Test
     @Ignore("Determine what we're testing here. The concept of a configuration change may be different in v4.")
     public void configurationChangeReturnsToEditCardView() {
 //        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
