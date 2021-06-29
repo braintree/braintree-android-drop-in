@@ -49,7 +49,8 @@ public class AddCardFragment extends Fragment implements  OnCardFormSubmitListen
 
         cardForm.getCardEditText().displayCardTypeIcon(false);
 
-        cardForm.cardRequired(true).setup((AppCompatActivity) requireActivity());
+        cardForm.cardRequired(true).setup(requireActivity());
+
         cardForm.setOnCardTypeChangedListener(this);
         cardForm.setOnCardFormSubmitListener(this);
 
