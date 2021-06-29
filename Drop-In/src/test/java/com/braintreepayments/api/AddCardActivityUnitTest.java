@@ -134,52 +134,6 @@ public class AddCardActivityUnitTest {
         assertThat(mEnrollmentCardView).isGone();
     }
 
-    // TODO: test configuration changes
-    @Test
-    @Ignore("Determine what we're testing here. The concept of a configuration change may be different in v4.")
-    public void configurationChangeReturnsToAddCardView() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder().build());
-//        setup(httpClient);
-        assertThat(mAddCardView).isVisible();
-        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
-                .getDisplayedChild());
-        assertThat(mEditCardView).isGone();
-        assertThat(mEnrollmentCardView).isGone();
-
-//        triggerConfigurationChange(httpClient);
-
-        assertThat(mAddCardView).isVisible();
-        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
-                .getDisplayedChild());
-        assertThat(mEditCardView).isGone();
-        assertThat(mEnrollmentCardView).isGone();
-    }
-
-    @Test
-    @Ignore("Determine what we're testing here. The concept of a configuration change may be different in v4.")
-    public void configurationChangeReturnsToEditCardView() {
-//        BraintreeUnitTestHttpClient httpClient = new BraintreeUnitTestHttpClient()
-//                .configuration(new TestConfigurationBuilder()
-//                        .creditCards(getSupportedCardConfiguration())
-//                        .build());
-//        setup(httpClient);
-        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
-        assertThat(mEditCardView).isVisible();
-        assertThat(mAddCardView).isGone();
-        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
-                .getDisplayedChild());
-        assertThat(mEnrollmentCardView).isGone();
-
-//        triggerConfigurationChange(httpClient);
-
-        assertThat(mEditCardView).isVisible();
-        assertThat(mAddCardView).isGone();
-        assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher))
-                .getDisplayedChild());
-        assertThat(mEnrollmentCardView).isGone();
-    }
-
     @Test
     public void editingANonUnionPayCardNumberIsPossible() throws JSONException {
         Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
