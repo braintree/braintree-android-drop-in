@@ -24,7 +24,8 @@ import java.util.List;
 public class AddCardFragment extends Fragment implements  OnCardFormSubmitListener,
         CardEditText.OnCardTypeChangedListener {
 
-    private CardForm cardForm;
+    @VisibleForTesting
+    CardForm cardForm;
     private SupportedCardTypesView supportedCardTypesView;
     private AnimatedButtonView animatedButtonView;
 
@@ -63,6 +64,13 @@ public class AddCardFragment extends Fragment implements  OnCardFormSubmitListen
             }
         });
 
+        dropInViewModel.getCardFormFieldErrors().observe(getViewLifecycleOwner(), new Observer<ErrorWithResponse>() {
+            @Override
+            public void onChanged(ErrorWithResponse errorWithResponse) {
+               setErrors(errorWithResponse);
+            }
+        });
+
         Bundle args = getArguments();
         if (args != null) {
             String cardNumber = args.getString("EXTRA_CARD_NUMBER");
@@ -91,6 +99,18 @@ public class AddCardFragment extends Fragment implements  OnCardFormSubmitListen
         Bundle result = new Bundle();
         result.putParcelable("BRAINTREE_RESULT", eventResult);
         getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
+    }
+
+    void setErrors(ErrorWithResponse errors) {
+        BraintreeError formErrors = errors.errorFor("creditCard");
+
+        if (formErrors != null) {
+            if (formErrors.errorFor("number") != null) {
+                cardForm.setCardNumberError(getContext().getString(R.string.bt_card_number_invalid));
+            }
+        }
+
+        animatedButtonView.showButton();
     }
 
     @Override

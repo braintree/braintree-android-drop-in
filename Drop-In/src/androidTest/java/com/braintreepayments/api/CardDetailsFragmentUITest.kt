@@ -11,6 +11,7 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import com.braintreepayments.api.CardNumber.VISA
 import com.braintreepayments.api.dropin.R
+import com.braintreepayments.cardform.utils.CardType
 import com.braintreepayments.cardform.view.CardForm
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNull
@@ -163,73 +164,27 @@ class CardDetailsFragmentUITest {
         countDownLatch.await()
     }
 
-    @Test
-    fun whenStateIsRESUMED_whenCardNumberValidationErrorsArePresentInViewModel_displaysErrorsInlineToUser() {
-//        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
-//                .creditCards(getSupportedCardConfiguration())
-//                .challenges("cvv", "postal_code")
-//                .build());
-//        DropInClient dropInClient = new MockDropInClientBuilder()
-//                .getConfigurationSuccess(configuration)
-//                .cardTokenizeError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
-//                .build();
-//        setup(dropInClient);
-//
-//        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
-//        mAddCardView.findViewById(R.id.bt_button).performClick();
-//        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
-//        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
-//        setText(mEditCardView, R.id.bt_card_form_postal_code, "12345");
-//        mEditCardView.findViewById(R.id.bt_button).performClick();
-//
-//        assertThat(mAddCardView).isVisible();
-//        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_card_number_invalid),
-//                mAddCardView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
-//
-//        assertThat(mEditCardView).isGone();
-//        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_expiration_invalid),
-//                mEditCardView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
-//        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_cvv_invalid,
-//                ApplicationProvider.getApplicationContext().getString(
-//                        mEditCardView.getCardForm().getCardEditText().getCardType()
-//                                .getSecurityCodeName())),
-//                mEditCardView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
-//        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_postal_code_invalid),
-//                mEditCardView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
-    }
 
     @Test
     fun whenStateIsRESUMED_whenCardValidationErrorsArePresentInViewModel_displaysErrorsInlineToUser() {
-//        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
-//                .creditCards(getSupportedCardConfiguration())
-//                .challenges("cvv", "postal_code")
-//                .build());
-//        DropInClient dropInClient = new MockDropInClientBuilder()
-//                .getConfigurationSuccess(configuration)
-//                .cardTokenizeError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_NON_NUMBER_ERROR_RESPONSE))
-//                .build();
-//        setup(dropInClient);
-//
-//        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
-//        mAddCardView.findViewById(R.id.bt_button).performClick();
-//        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
-//        setText(mEditCardView, R.id.bt_card_form_cvv, "123");
-//        setText(mEditCardView, R.id.bt_card_form_postal_code, "12345");
-//        mEditCardView.findViewById(R.id.bt_button).performClick();
-//
-//        assertThat(mAddCardView).isGone();
-//        assertNull(mAddCardView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
-//
-//        assertThat(mEditCardView).isVisible();
-//        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_expiration_invalid),
-//                mEditCardView.getCardForm().getExpirationDateEditText().getTextInputLayoutParent().getError());
-//        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_cvv_invalid,
-//                ApplicationProvider.getApplicationContext().getString(
-//                        mEditCardView.getCardForm().getCardEditText().getCardType()
-//                                .getSecurityCodeName())),
-//                mEditCardView.getCardForm().getCvvEditText().getTextInputLayoutParent().getError());
-//        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_postal_code_invalid),
-//                mEditCardView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
+            val args = Bundle()
+            args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+            args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(true, true))
+            args.putString("EXTRA_CARD_NUMBER", VISA)
+
+            val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+            scenario.moveToState(Lifecycle.State.RESUMED)
+
+            scenario.onFragment { fragment ->
+                fragment.dropInViewModel.setCardFormFieldErrors(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_NON_NUMBER_ERROR_RESPONSE))
+
+                assertEquals(fragment.context?.getString(R.string.bt_expiration_invalid),
+                        fragment.cardForm.expirationDateEditText.textInputLayoutParent?.error)
+                assertEquals(fragment.context?.getString(R.string.bt_cvv_invalid,
+                        fragment.context?.getString(fragment.cardForm.cardEditText.cardType.securityCodeName)), fragment.cardForm.cvvEditText.textInputLayoutParent?.error)
+                assertEquals(fragment.context?.getString(R.string.bt_postal_code_invalid),
+                        fragment.cardForm.postalCodeEditText.textInputLayoutParent?.error)
+            }
     }
 
     // TODO: Update this test to mock returning a UserCanceledException after change is made in core

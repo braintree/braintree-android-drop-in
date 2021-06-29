@@ -5,6 +5,8 @@ import android.os.Bundle;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -19,15 +21,16 @@ import com.braintreepayments.cardform.view.CardForm;
 
 public class CardDetailsFragment extends Fragment implements OnCardFormSubmitListener, OnCardFormFieldFocusedListener {
 
-    private CardForm cardForm;
+    @VisibleForTesting
+    CardForm cardForm;
     private AnimatedButtonView animatedButtonView;
 
+    private DropInRequest dropInRequest;
+    private CardFormConfiguration configuration;
+    private String cardNumber;
+
     @VisibleForTesting
-    DropInRequest dropInRequest;
-    @VisibleForTesting
-    CardFormConfiguration configuration;
-    @VisibleForTesting
-    String cardNumber;
+    DropInViewModel dropInViewModel;
 
     public CardDetailsFragment() {
     }
@@ -56,6 +59,15 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             @Override
             public void onClick(View view) {
                 onCardFormSubmit();
+            }
+        });
+
+        dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
+
+        dropInViewModel.getCardFormFieldErrors().observe(getViewLifecycleOwner(), new Observer<ErrorWithResponse>() {
+            @Override
+            public void onChanged(ErrorWithResponse errorWithResponse) {
+                setErrors(errorWithResponse);
             }
         });
 

@@ -1,5 +1,6 @@
 package com.braintreepayments.api
 
+import android.os.Bundle
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
@@ -13,6 +14,7 @@ import com.braintreepayments.cardform.utils.CardType
 import org.junit.Test
 import org.junit.runner.RunWith
 import com.braintreepayments.api.dropin.R
+import junit.framework.TestCase
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -72,5 +74,19 @@ class AddCardFragmentUITest {
             }
         }
         countDownLatch.await()
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenCardNumberValidationErrorsArePresentInViewModel_displaysErrorsInlineToUser() {
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
+            fragment.dropInViewModel.setCardFormFieldErrors(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
+
+            TestCase.assertEquals(fragment.context?.getString(R.string.bt_card_number_invalid),
+                    fragment.cardForm.cardEditText.textInputLayoutParent?.error)
+        }
     }
 }

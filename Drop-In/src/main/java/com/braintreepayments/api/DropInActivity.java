@@ -212,7 +212,10 @@ public class DropInActivity extends BaseActivity {
     }
 
     public void onError(final Exception error) {
-        if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
+        if (error instanceof ErrorWithResponse) {
+            ErrorWithResponse errorResponse = (ErrorWithResponse) error;
+            dropInViewModel.setCardFormFieldErrors(errorResponse);
+        } else if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
                 error instanceof UpgradeRequiredException) {
             getDropInClient().sendAnalyticsEvent("sdk.exit.developer-error");
         } else if (error instanceof ConfigurationException) {
