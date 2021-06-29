@@ -120,6 +120,7 @@ public class AddCardFragment extends Fragment implements  OnCardFormSubmitListen
             sendBraintreeEvent(new AddCardEvent(cardForm.getCardNumber()));
         } else {
             if (!cardForm.isValid()) {
+                animatedButtonView.showButton();
                 cardForm.validate();
             } else if (!isCardTypeValid()) {
                 showCardNotSupportedError();

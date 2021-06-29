@@ -1,6 +1,5 @@
 package com.braintreepayments.api
 
-import android.os.Bundle
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
@@ -10,15 +9,13 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.braintreepayments.api.CardNumber.VISA
-import com.braintreepayments.cardform.utils.CardType
-import org.junit.Test
-import org.junit.runner.RunWith
 import com.braintreepayments.api.dropin.R
-import junit.framework.TestCase
+import com.braintreepayments.cardform.utils.CardType
 import org.hamcrest.CoreMatchers.not
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
@@ -85,7 +82,7 @@ class AddCardFragmentUITest {
             fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
             fragment.dropInViewModel.setCardFormFieldErrors(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
 
-            TestCase.assertEquals(fragment.context?.getString(R.string.bt_card_number_invalid),
+            assertEquals(fragment.context?.getString(R.string.bt_card_number_invalid),
                     fragment.cardForm.cardEditText.textInputLayoutParent?.error)
         }
     }

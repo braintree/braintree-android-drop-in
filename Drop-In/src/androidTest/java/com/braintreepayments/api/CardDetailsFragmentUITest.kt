@@ -6,17 +6,15 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.braintreepayments.api.CardNumber.THREE_D_SECURE_VERIFICATON
 import com.braintreepayments.api.CardNumber.VISA
 import com.braintreepayments.api.dropin.R
-import com.braintreepayments.cardform.utils.CardType
 import com.braintreepayments.cardform.view.CardForm
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNull
 import org.junit.Before
-import org.junit.ClassRule
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
 
@@ -164,7 +162,6 @@ class CardDetailsFragmentUITest {
         countDownLatch.await()
     }
 
-
     @Test
     fun whenStateIsRESUMED_whenCardValidationErrorsArePresentInViewModel_displaysErrorsInlineToUser() {
             val args = Bundle()
@@ -187,9 +184,20 @@ class CardDetailsFragmentUITest {
             }
     }
 
-    // TODO: Update this test to mock returning a UserCanceledException after change is made in core
+    // TODO: cancelling from 3DS2 flow is returning RESULT_OK in DropInActivity#onActivityResult - investigate
     @Test
-    fun showsSubmitButtonAgainWhenThreeDSecureIsCanceled() {
+    fun whenStateIsRESUMED_whenThreeDSecureIsCanceled_showsSubmitButtonAgain() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(true, true))
+        args.putString("EXTRA_CARD_NUMBER", THREE_D_SECURE_VERIFICATON)
+
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_card_form_expiration)).perform(typeText(ExpirationDate.VALID_EXPIRATION))
+        onView(withId(R.id.bt_button)).perform(click())
 //        mActivity.setDropInRequest(new DropInRequest()
 //                .tokenizationKey(TOKENIZATION_KEY)
 //                .amount("1.00")
