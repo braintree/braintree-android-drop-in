@@ -62,6 +62,14 @@ public class AddCardFragment extends Fragment implements  OnCardFormSubmitListen
                 supportedCardTypesView.setSupportedCardTypes(cardTypes.toArray(new CardType[0]));
             }
         });
+
+        Bundle args = getArguments();
+        if (args != null) {
+            String cardNumber = args.getString("EXTRA_CARD_NUMBER");
+            if (cardNumber != null) {
+                cardForm.getCardEditText().setText(cardNumber);
+            }
+        }
         return view;
     }
 

@@ -1,56 +1,81 @@
 package com.braintreepayments.api
 
+import android.os.Bundle
+import androidx.fragment.app.testing.FragmentScenario
+import androidx.lifecycle.Lifecycle
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import com.braintreepayments.api.CardNumber.VISA
+import com.braintreepayments.api.dropin.R
+import junit.framework.TestCase.assertEquals
+import org.junit.Before
+import org.junit.ClassRule
 import org.junit.Test
+import java.util.concurrent.CountDownLatch
+
 
 class CardDetailsFragmentUITest {
 
+    private lateinit var countDownLatch: CountDownLatch
+
+    @Before
+    fun beforeEach() {
+        countDownLatch = CountDownLatch(1)
+    }
+
     @Test
     fun whenStateIsRESUMED_onCardNumberFieldFocus_returnsToAddCardFragment() {
-//        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
-//                .creditCards(getSupportedCardConfiguration())
-//                .build());
-//        DropInClient dropInClient = new MockDropInClientBuilder()
-//                .getConfigurationSuccess(configuration)
-//                .build();
-//        setup(dropInClient);
-//
-//        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
-//        assertThat(mEditCardView).isVisible();
-//        assertThat(mAddCardView).isGone();
-//
-//        mEditCardView.findViewById(R.id.bt_card_form_card_number).requestFocus();
-//        assertThat(mAddCardView).isVisible();
-//        assertThat(mEditCardView).isGone();
-//
-//        setText(mAddCardView, R.id.bt_card_form_card_number, "");
-//        setText(mAddCardView, R.id.bt_card_form_card_number, AMEX);
-//        assertThat(mEditCardView).isVisible();
-//        assertThat(mAddCardView).isGone();
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_card_form_card_number)).perform(click())
+
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
+                val event = result.get("BRAINTREE_RESULT") as EditCardNumberEvent
+                assertEquals(VISA, event.cardNumber)
+                countDownLatch.countDown()
+            }
+        }
+        countDownLatch.await()
     }
 
     @Test
     fun whenStateIsRESUMED_onCardFormSubmit_sendsCardDetailsEvent() {
-//        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
-//                .creditCards(getSupportedCardConfiguration())
-//                .build());
-//        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
-//        DropInClient dropInClient = new MockDropInClientBuilder()
-//                .getConfigurationSuccess(configuration)
-//                .cardTokenizeSuccess(cardNonce)
-//                .build();
-//        setup(dropInClient);
-//
-//        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
-//        mAddCardView.findViewById(R.id.bt_button).performClick();
-//        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
-//        mEditCardView.findViewById(R.id.bt_button).performClick();
-//
-//        assertTrue(mActivity.isFinishing());
-//        DropInResult result = mShadowActivity.getResultIntent()
-//                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-//        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
-//        assertIsANonce(result.getPaymentMethodNonce().getString());
-//        assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_card_form_expiration)).perform(typeText(ExpirationDate.VALID_EXPIRATION))
+        onView(withId(R.id.bt_button)).perform(click())
+
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
+                val event = result.get("BRAINTREE_RESULT") as CardDetailsEvent
+                assertEquals(VISA, event.card.number)
+                countDownLatch.countDown()
+            }
+        }
+        countDownLatch.await()
     }
 
     @Test

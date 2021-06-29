@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.cardform.view.CardForm;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,6 +88,8 @@ public class DropInActivity extends BaseActivity {
             showCardDetailsFragment(((AddCardEvent) braintreeResult).getCardNumber());
         } else if (braintreeResult instanceof CardDetailsEvent) {
             onCardDetailsEvent((CardDetailsEvent) braintreeResult);
+        } else if (braintreeResult instanceof EditCardNumberEvent) {
+            startAddCardFlow((EditCardNumberEvent) braintreeResult);
         }
     }
 
@@ -109,7 +110,7 @@ public class DropInActivity extends BaseActivity {
                 break;
             default:
             case UNKNOWN:
-                startAddCardFlow();
+                startAddCardFlow(null);
                 break;
         }
     }
@@ -266,7 +267,7 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    private void startAddCardFlow() {
+    private void startAddCardFlow(EditCardNumberEvent editCardNumberEvent) {
         getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
             @Override
             public void onResult(List<String> supportedCardTypes, Exception error) {
@@ -279,6 +280,9 @@ public class DropInActivity extends BaseActivity {
         if (fragment == null) {
             Bundle args = new Bundle();
             args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+            if (editCardNumberEvent != null) {
+                args.putString("EXTRA_CARD_NUMBER", editCardNumberEvent.getCardNumber());
+            }
 
             fragmentManager
                     .beginTransaction()
