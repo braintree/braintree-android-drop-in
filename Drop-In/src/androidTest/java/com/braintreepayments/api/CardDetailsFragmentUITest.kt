@@ -210,4 +210,41 @@ class CardDetailsFragmentUITest {
 //        assertEquals(ApplicationProvider.getApplicationContext().getString(R.string.bt_postal_code_invalid),
 //                mEditCardView.getCardForm().getPostalCodeEditText().getTextInputLayoutParent().getError());
     }
+
+    // TODO: Update this test to mock returning a UserCanceledException after change is made in core
+    @Test
+    fun showsSubmitButtonAgainWhenThreeDSecureIsCanceled() {
+//        mActivity.setDropInRequest(new DropInRequest()
+//                .tokenizationKey(TOKENIZATION_KEY)
+//                .amount("1.00")
+//                .requestThreeDSecureVerification(true));
+//
+//        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
+//                .creditCards(getSupportedCardConfiguration())
+//                .threeDSecureEnabled(true)
+//                .build());
+//        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
+//        DropInClient dropInClient = new MockDropInClientBuilder()
+//                .getConfigurationSuccess(configuration)
+//                .cardTokenizeSuccess(cardNonce)
+//                .handleThreeDSecureActivityResultError(new Exception("user canceled"))
+//                .shouldPerformThreeDSecureVerification(true)
+//                .build();
+//        setup(dropInClient);
+//
+//        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
+//        mAddCardView.findViewById(R.id.bt_button).performClick();
+//        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
+//        mEditCardView.findViewById(R.id.bt_button).performClick();
+//
+//        verify(dropInClient).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(DropInResultCallback.class));
+//
+//        assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+//        assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();
+//
+//        mActivity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, RESULT_CANCELED, null);
+//
+//        assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+//        assertThat(mEditCardView.findViewById(R.id.bt_button)).isVisible();
+    }
 }
