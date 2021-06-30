@@ -4,15 +4,16 @@ import android.os.Bundle
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.matcher.ViewMatchers.isRoot
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import com.braintreepayments.api.CardNumber.VISA
 import com.braintreepayments.api.dropin.R
+import com.braintreepayments.cardform.utils.CardType
 import com.braintreepayments.cardform.view.CardForm
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertNull
+import com.braintreepayments.cardform.view.CardForm.FIELD_REQUIRED
+import junit.framework.TestCase.*
+import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.CountDownLatch
@@ -25,6 +26,158 @@ class CardDetailsFragmentUITest {
     @Before
     fun beforeEach() {
         countDownLatch = CountDownLatch(1)
+    }
+
+    @Test
+    fun whenStateIsRESUMED_buttonTextIsAddCard() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_button)).check(matches(withText(R.string.bt_add_card)))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_displaysCVVAndPostalCodeWhenPresentInConfiguration() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(true, true))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+
+        onView(withId(R.id.bt_card_form_cvv)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_card_form_postal_code)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_hidesCVVandPostalCodeWhenNotPresentInConfiguration() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+
+        onView(withId(R.id.bt_card_form_cvv)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.bt_card_form_postal_code)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_withDropinRequestRequiringCardholderName_setsCardFormsCardholderNameToRequired() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN).cardholderNameStatus(FIELD_REQUIRED))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+
+        onView(withId(R.id.bt_card_form_expiration)).perform(typeText(ExpirationDate.VALID_EXPIRATION))
+        scenario.onFragment { fragment ->
+            assertFalse(fragment.cardForm.isValid)
+        }
+
+        onView(withId(R.id.bt_card_form_cardholder_name)).perform(typeText("Brian Tree"))
+        scenario.onFragment { fragment ->
+            assertTrue(fragment.cardForm.isValid)
+        }
+    }
+
+    @Test
+    fun whenStateIsRESUMED_withoutSaveCardCheckBoxPropertiesOnDropInRequest_saveCardCheckboxCheckedAndHidden() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+
+        onView(withId(R.id.bt_card_form_save_card_checkbox)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.bt_card_form_save_card_checkbox)).check(matches(isChecked()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_withAllowVaultCardOverrideTrueAndTokenizationKey_hidesSaveCardCheckbox() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().tokenizationKey(Fixtures.TOKENIZATION_KEY).allowVaultCardOverride(true))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+
+        onView(withId(R.id.bt_card_form_save_card_checkbox)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_withAllowVaultCardOverrideTrue_showsSaveCardCheckbox() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN).allowVaultCardOverride(true))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+
+        onView(withId(R.id.bt_card_form_save_card_checkbox)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_withAllowVaultCardOverrideFalse_showsSaveCardCheckbox() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN).allowVaultCardOverride(false))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+
+        onView(withId(R.id.bt_card_form_save_card_checkbox)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_withAllowVaultCardOverrideTrue_andVaultCardTrue_showsSaveCardCheckboxChecked() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN).allowVaultCardOverride(true).vaultCard(true))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+
+        onView(withId(R.id.bt_card_form_save_card_checkbox)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_card_form_save_card_checkbox)).check(matches(isChecked()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_withAllowVaultCardOverrideTrue_andVaultCardFalse_showsSaveCardCheckboxNotChecked() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN).allowVaultCardOverride(true).vaultCard(false))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+
+        onView(withId(R.id.bt_card_form_save_card_checkbox)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_card_form_save_card_checkbox)).check(matches(not(isChecked())))
     }
 
     @Test
