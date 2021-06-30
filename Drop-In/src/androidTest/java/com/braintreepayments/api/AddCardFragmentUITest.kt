@@ -1,5 +1,6 @@
 package com.braintreepayments.api
 
+import android.view.View
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
@@ -11,6 +12,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.braintreepayments.api.CardNumber.VISA
 import com.braintreepayments.api.dropin.R
 import com.braintreepayments.cardform.utils.CardType
+import junit.framework.TestCase.assertNull
+import junit.framework.TestCase.assertTrue
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -26,6 +29,32 @@ class AddCardFragmentUITest {
     @Before
     fun beforeEach() {
         countDownLatch = CountDownLatch(1)
+    }
+
+    @Test
+    fun whenStateIsRESUMED_buttonTextIsAddCard() {
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
+        }
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_button)).check(matches(withText(R.string.bt_next)))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_doesNotShowErrorForNonCardNumberError() {
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
+            fragment.dropInViewModel.setCardFormFieldErrors(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_EXPIRATION_ERROR_RESPONSE))
+
+            assertNull(fragment.cardForm.cardEditText.textInputLayoutParent?.error)
+        }
     }
 
     @Test
@@ -85,5 +114,18 @@ class AddCardFragmentUITest {
             assertEquals(fragment.context?.getString(R.string.bt_card_number_invalid),
                     fragment.cardForm.cardEditText.textInputLayoutParent?.error)
         }
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenCardFromInvalid_showsButton() {
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
+            fragment.dropInViewModel.setCardFormFieldErrors(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
+        }
+
+        onView(withId(R.id.bt_button)).check(matches(isDisplayed()))
     }
 }

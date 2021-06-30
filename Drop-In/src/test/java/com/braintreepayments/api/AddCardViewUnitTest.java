@@ -60,11 +60,6 @@ public class AddCardViewUnitTest {
     }
 
     @Test
-    public void buttonTextIsAddCard() {
-        assertThat((Button) mView.findViewById(R.id.bt_button)).hasText(R.string.bt_next);
-    }
-
-    @Test
     public void setup_hidesNextButtonIfUnionPayIsNotEnabled() {
         mView.setup(mActivity, (Configuration) basicConfig(), true);
 
@@ -212,39 +207,6 @@ public class AddCardViewUnitTest {
         ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE);
 
         assertTrue(mView.isCardNumberError(errorWithResponse));
-    }
-
-    @Test
-    public void setErrors_doesNothingForNonCardNumberError() throws JSONException {
-        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_EXPIRATION_ERROR_RESPONSE);
-
-        mView.getCardForm().getCardEditText().setText(VISA);
-        mView.findViewById(R.id.bt_button).performClick();
-        assertThat(mView.findViewById(R.id.bt_button)).isGone();
-        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
-
-        mView.setErrors(errorWithResponse);
-
-        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
-        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
-        assertNull(mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
-    }
-
-    @Test
-    public void setErrors_displaysError() throws JSONException {
-        ErrorWithResponse errorWithResponse = ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE);
-
-        mView.getCardForm().getCardEditText().setText(VISA);
-        mView.findViewById(R.id.bt_button).performClick();
-        assertThat(mView.findViewById(R.id.bt_button)).isGone();
-        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
-
-        mView.setErrors(errorWithResponse);
-
-        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
-        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
-        assertEquals(RuntimeEnvironment.application.getString(R.string.bt_card_number_invalid),
-                mView.getCardForm().getCardEditText().getTextInputLayoutParent().getError());
     }
 
     @Test
