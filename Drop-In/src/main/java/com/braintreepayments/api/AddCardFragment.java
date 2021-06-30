@@ -83,6 +83,12 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        cardForm.getCardEditText().requestFocus();
+    }
+
     private boolean isValid() {
         return cardForm.isValid() && isCardTypeValid();
     }

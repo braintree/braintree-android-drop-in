@@ -43,6 +43,14 @@ class AddCardFragmentUITest {
     }
 
     @Test
+    fun whenStateIsRESUMED_cardNumberFieldIsFocused() {
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(withId(R.id.bt_card_form_card_number)).check(matches(isFocused()))
+    }
+
+    @Test
     fun whenStateIsRESUMED_doesNotShowErrorForNonCardNumberError() {
         val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
