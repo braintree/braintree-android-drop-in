@@ -23,6 +23,11 @@
   * Remove `DropInResult#fetchDropInResult()` 
   * Bump braintree_android dependency versions to 4.1.0
   * Make `DropInResult` constructor package-private
+  * Replace `AddCardActivity` with `AddCardFragment` and `CardDetailsFragment`
+  * Remove `AddCardView`
+  * Remove `EditCardView`
+  * Change `DropInPaymentMethodType#getCardTypes()` parameter from `Set` to `List`
+  
 
 **Note:** The credentials for integrating with 3DS have changed. If you are using 3DS please update the credentials in your app-level `build.gradle`
 

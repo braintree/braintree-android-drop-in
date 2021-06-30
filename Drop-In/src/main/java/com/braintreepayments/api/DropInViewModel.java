@@ -17,7 +17,7 @@ public class DropInViewModel extends ViewModel {
     private final MutableLiveData<List<CardType>> supportedCardTypes = new MutableLiveData<>();
     private final MutableLiveData<Exception> cardTokenizationError = new MutableLiveData<>();
 
-    public LiveData<Boolean> isLoading() {
+    LiveData<Boolean> isLoading() {
         return isLoading;
     }
 
@@ -29,27 +29,27 @@ public class DropInViewModel extends ViewModel {
         vaultedPaymentMethods.setValue(value);
     }
 
-    public LiveData<List<PaymentMethodNonce>> getVaultedPaymentMethods() {
+    LiveData<List<PaymentMethodNonce>> getVaultedPaymentMethods() {
         return vaultedPaymentMethods;
     }
 
-    public void setSupportedPaymentMethods(List<DropInPaymentMethodType> value) {
+    void setSupportedPaymentMethods(List<DropInPaymentMethodType> value) {
         this.supportedPaymentMethods.setValue(value);
     }
 
-    public LiveData<List<DropInPaymentMethodType>> getSupportedPaymentMethods() {
+    LiveData<List<DropInPaymentMethodType>> getSupportedPaymentMethods() {
         return supportedPaymentMethods;
     }
 
-    public void setSupportedCardTypes(List<CardType> value) {
+    void setSupportedCardTypes(List<CardType> value) {
         supportedCardTypes.postValue(value);
     }
 
-    public LiveData<List<CardType>> getSupportedCardTypes() {
+    LiveData<List<CardType>> getSupportedCardTypes() {
         return supportedCardTypes;
     }
 
-    public LiveData<Exception> getCardTokenizationError() {
+    LiveData<Exception> getCardTokenizationError() {
         return cardTokenizationError;
     }
 
