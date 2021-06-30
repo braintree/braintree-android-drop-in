@@ -153,19 +153,21 @@ public class DropInActivity extends BaseActivity {
 //                            .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
 //                    startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
 //
-//                    getDropInClient().sendAnalyticsEvent("manager.appeared");
                     FragmentManager fragmentManager = getSupportFragmentManager();
 
                     Fragment fragment = fragmentManager.findFragmentByTag("VAULT_MANAGER");
                     if (fragment == null) {
                         Bundle args = new Bundle();
                         args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+                        args.putParcelableArrayList(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList));
+                        args.putString(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
 
                         fragmentManager
                                 .beginTransaction()
                                 .setReorderingAllowed(true)
                                 .replace(R.id.fragment_container_view, VaultManagerFragment.class, args, "VAULT_MANAGER")
                                 .commit();
+                        getDropInClient().sendAnalyticsEvent("manager.appeared");
                     }
                 } else if (error != null) {
                     onError(error);
