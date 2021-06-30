@@ -8,7 +8,6 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import com.braintreepayments.api.CardNumber.THREE_D_SECURE_VERIFICATON
 import com.braintreepayments.api.CardNumber.VISA
 import com.braintreepayments.api.dropin.R
 import com.braintreepayments.cardform.view.CardForm
@@ -173,7 +172,7 @@ class CardDetailsFragmentUITest {
             scenario.moveToState(Lifecycle.State.RESUMED)
 
             scenario.onFragment { fragment ->
-                fragment.dropInViewModel.setCardFormFieldErrors(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_NON_NUMBER_ERROR_RESPONSE))
+                fragment.dropInViewModel.setCardTokenizationError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_NON_NUMBER_ERROR_RESPONSE))
 
                 assertEquals(fragment.context?.getString(R.string.bt_expiration_invalid),
                         fragment.cardForm.expirationDateEditText.textInputLayoutParent?.error)
@@ -184,51 +183,7 @@ class CardDetailsFragmentUITest {
             }
     }
 
-    // TODO: cancelling from 3DS2 flow is returning RESULT_OK in DropInActivity#onActivityResult - investigate
-    @Test
-    fun whenStateIsRESUMED_whenThreeDSecureIsCanceled_showsSubmitButtonAgain() {
-        val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
-        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(true, true))
-        args.putString("EXTRA_CARD_NUMBER", THREE_D_SECURE_VERIFICATON)
-
-        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
-        scenario.moveToState(Lifecycle.State.RESUMED)
-
-        onView(isRoot()).perform(waitFor(500))
-        onView(withId(R.id.bt_card_form_expiration)).perform(typeText(ExpirationDate.VALID_EXPIRATION))
-        onView(withId(R.id.bt_button)).perform(click())
-//        mActivity.setDropInRequest(new DropInRequest()
-//                .tokenizationKey(TOKENIZATION_KEY)
-//                .amount("1.00")
-//                .requestThreeDSecureVerification(true));
-//
-//        Configuration configuration = Configuration.fromJson(new TestConfigurationBuilder()
-//                .creditCards(getSupportedCardConfiguration())
-//                .threeDSecureEnabled(true)
-//                .build());
-//        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
-//        DropInClient dropInClient = new MockDropInClientBuilder()
-//                .getConfigurationSuccess(configuration)
-//                .cardTokenizeSuccess(cardNonce)
-//                .handleThreeDSecureActivityResultError(new Exception("user canceled"))
-//                .shouldPerformThreeDSecureVerification(true)
-//                .build();
-//        setup(dropInClient);
-//
-//        setText(mAddCardView, R.id.bt_card_form_card_number, VISA);
-//        mAddCardView.findViewById(R.id.bt_button).performClick();
-//        setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
-//        mEditCardView.findViewById(R.id.bt_button).performClick();
-//
-//        verify(dropInClient).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(DropInResultCallback.class));
-//
-//        assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
-//        assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();
-//
-//        mActivity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, RESULT_CANCELED, null);
-//
-//        assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
-//        assertThat(mEditCardView.findViewById(R.id.bt_button)).isVisible();
+    fun whenStateIsRESUMED_whenThreeDSecureUserCancelationPresentInViewModel_showsSubmitButtonAgain() {
+        // TODO: observe view model for UserCancelation cardTokenizationError and reset submit button
     }
 }

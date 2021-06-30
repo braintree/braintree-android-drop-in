@@ -1,6 +1,5 @@
 package com.braintreepayments.api
 
-import android.view.View
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
@@ -13,7 +12,6 @@ import com.braintreepayments.api.CardNumber.VISA
 import com.braintreepayments.api.dropin.R
 import com.braintreepayments.cardform.utils.CardType
 import junit.framework.TestCase.assertNull
-import junit.framework.TestCase.assertTrue
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -51,7 +49,7 @@ class AddCardFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
-            fragment.dropInViewModel.setCardFormFieldErrors(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_EXPIRATION_ERROR_RESPONSE))
+            fragment.dropInViewModel.setCardTokenizationError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_EXPIRATION_ERROR_RESPONSE))
 
             assertNull(fragment.cardForm.cardEditText.textInputLayoutParent?.error)
         }
@@ -109,7 +107,7 @@ class AddCardFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
-            fragment.dropInViewModel.setCardFormFieldErrors(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
+            fragment.dropInViewModel.setCardTokenizationError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
 
             assertEquals(fragment.context?.getString(R.string.bt_card_number_invalid),
                     fragment.cardForm.cardEditText.textInputLayoutParent?.error)
@@ -123,7 +121,7 @@ class AddCardFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
-            fragment.dropInViewModel.setCardFormFieldErrors(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
+            fragment.dropInViewModel.setCardTokenizationError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
         }
 
         onView(withId(R.id.bt_button)).check(matches(isDisplayed()))

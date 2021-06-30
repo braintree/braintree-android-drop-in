@@ -214,9 +214,8 @@ public class DropInActivity extends BaseActivity {
     public void onError(final Exception error) {
         if (error instanceof ErrorWithResponse) {
             ErrorWithResponse errorResponse = (ErrorWithResponse) error;
-            dropInViewModel.setCardFormFieldErrors(errorResponse);
-        } else if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
-                error instanceof UpgradeRequiredException) {
+            dropInViewModel.setCardTokenizationError(errorResponse);
+        } else if (error instanceof AuthenticationException || error instanceof AuthorizationException || error instanceof UpgradeRequiredException) {
             getDropInClient().sendAnalyticsEvent("sdk.exit.developer-error");
         } else if (error instanceof ConfigurationException) {
             getDropInClient().sendAnalyticsEvent("sdk.exit.configuration-exception");
@@ -412,7 +411,7 @@ public class DropInActivity extends BaseActivity {
             @Override
             public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
                 if (error != null) {
-                    onError(error);
+                    dropInViewModel.setCardTokenizationError(error);
                     return;
                 }
                 onPaymentMethodNonceCreated(cardNonce);

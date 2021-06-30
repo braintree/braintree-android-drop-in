@@ -3,7 +3,6 @@ package com.braintreepayments.api;
 import android.os.Bundle;
 
 import androidx.annotation.VisibleForTesting;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -64,10 +63,12 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
-        dropInViewModel.getCardFormFieldErrors().observe(getViewLifecycleOwner(), new Observer<ErrorWithResponse>() {
+        dropInViewModel.getCardTokenizationError().observe(getViewLifecycleOwner(), new Observer<Exception>() {
             @Override
-            public void onChanged(ErrorWithResponse errorWithResponse) {
-                setErrors(errorWithResponse);
+            public void onChanged(Exception error) {
+                if (error instanceof ErrorWithResponse) {
+                    setErrors((ErrorWithResponse) error);
+                }
             }
         });
 

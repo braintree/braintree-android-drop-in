@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.VisibleForTesting;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -21,7 +20,7 @@ import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
 import java.util.List;
 
-public class AddCardFragment extends Fragment implements  OnCardFormSubmitListener,
+public class AddCardFragment extends Fragment implements OnCardFormSubmitListener,
         CardEditText.OnCardTypeChangedListener {
 
     @VisibleForTesting
@@ -32,7 +31,8 @@ public class AddCardFragment extends Fragment implements  OnCardFormSubmitListen
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
-    public AddCardFragment() {}
+    public AddCardFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -44,7 +44,7 @@ public class AddCardFragment extends Fragment implements  OnCardFormSubmitListen
         animatedButtonView.setClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               onCardFormSubmit();
+                onCardFormSubmit();
             }
         });
 
@@ -64,10 +64,12 @@ public class AddCardFragment extends Fragment implements  OnCardFormSubmitListen
             }
         });
 
-        dropInViewModel.getCardFormFieldErrors().observe(getViewLifecycleOwner(), new Observer<ErrorWithResponse>() {
+        dropInViewModel.getCardTokenizationError().observe(getViewLifecycleOwner(), new Observer<Exception>() {
             @Override
-            public void onChanged(ErrorWithResponse errorWithResponse) {
-               setErrors(errorWithResponse);
+            public void onChanged(Exception error) {
+                if (error instanceof ErrorWithResponse) {
+                    setErrors((ErrorWithResponse) error);
+                }
             }
         });
 
