@@ -170,7 +170,6 @@ public class TestHelper {
 
     protected void performCardDetailsEntry() {
         onDevice(withText("Expiration Date")).perform(setText("12" + ExpirationDate.VALID_EXPIRATION_YEAR));
-        onDevice().pressBack();
         onDevice(withText("CVV")).perform(setText("123"));
         onDevice(withText("Postal Code")).perform(setText("12345"));
     }
@@ -178,6 +177,7 @@ public class TestHelper {
     protected void tokenizeCard(String cardNumber) {
         onDevice(withText("Credit or Debit Card")).waitForExists().perform(click());
         onDevice(withText("Card Number")).waitForExists().perform(setText(cardNumber));
+        onDevice(withText("Next")).perform(click());
         performCardDetailsEntry();
         onDevice(withTextContaining("Add Card")).perform(click());
     }

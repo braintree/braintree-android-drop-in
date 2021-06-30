@@ -5,8 +5,12 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
@@ -37,11 +41,13 @@ public class DropInActivity extends BaseActivity {
     static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";
 
     private DropInViewModel dropInViewModel;
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
+
 
         if (getDropInClient().getAuthorization() instanceof InvalidAuthorization) {
             finish(new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
@@ -270,6 +276,7 @@ public class DropInActivity extends BaseActivity {
     }
 
     private void startAddCardFlow(EditCardNumberEvent editCardNumberEvent) {
+        setActionBarTitle(R.string.bt_card_details);
         getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
             @Override
             public void onResult(List<String> supportedCardTypes, Exception error) {
@@ -292,6 +299,16 @@ public class DropInActivity extends BaseActivity {
                     .replace(R.id.fragment_container_view, AddCardFragment.class, args, "ADD_CARD")
                     .commit();
         }
+    }
+
+    private void setActionBarTitle(@StringRes int titleResId) {
+        if (actionBar == null) {
+            setSupportActionBar((Toolbar) findViewById(R.id.bt_toolbar));
+            actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        actionBar.setTitle(titleResId);
+        findViewById(R.id.bt_toolbar).setVisibility(View.VISIBLE);
     }
 
     @Override
