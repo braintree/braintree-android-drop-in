@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.braintreepayments.api.ViewManagerFragment">
+    tools:context="com.braintreepayments.api.VaultManagerFragment">
     <ViewSwitcher
         android:id="@+id/bt_loading_view_switcher"
         android:layout_width="@dimen/bt_full_width"

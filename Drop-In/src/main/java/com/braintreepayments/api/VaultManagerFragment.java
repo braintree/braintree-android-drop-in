@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 
 import com.braintreepayments.api.dropin.R;
 
-public class ViewManagerFragment extends Fragment {
+public class VaultManagerFragment extends Fragment {
 
-    public ViewManagerFragment() {
+    public VaultManagerFragment() {
     }
 
     @Override
@@ -23,7 +23,7 @@ public class ViewManagerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bt_fragment_view_manager, container, false);
+        View view = inflater.inflate(R.layout.bt_fragment_vault_manager, container, false);
 
         return view;
     }
