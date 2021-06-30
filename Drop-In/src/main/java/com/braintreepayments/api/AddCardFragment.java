@@ -73,13 +73,6 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
             }
         });
 
-        Bundle args = getArguments();
-        if (args != null) {
-            String cardNumber = args.getString("EXTRA_CARD_NUMBER");
-            if (cardNumber != null) {
-                cardForm.getCardEditText().setText(cardNumber);
-            }
-        }
         return view;
     }
 
@@ -87,6 +80,18 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
     public void onResume() {
         super.onResume();
         cardForm.getCardEditText().requestFocus();
+
+        Bundle args = getArguments();
+        if (args != null) {
+            String cardNumber = args.getString("EXTRA_CARD_NUMBER");
+            if (cardNumber != null) {
+                cardForm.getCardEditText().setText(cardNumber);
+                CardType cardType = cardForm.getCardEditText().getCardType();
+                onCardTypeChanged(cardType);
+            }
+            // prevent card number from overriding existing input
+            setArguments(null);
+        }
     }
 
     private boolean isValid() {
