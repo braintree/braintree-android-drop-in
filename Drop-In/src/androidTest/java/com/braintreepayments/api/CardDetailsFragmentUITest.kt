@@ -1,6 +1,7 @@
 package com.braintreepayments.api
 
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
@@ -39,6 +40,18 @@ class CardDetailsFragmentUITest {
 
         onView(isRoot()).perform(waitFor(500))
         onView(withId(R.id.bt_button)).check(matches(withText(R.string.bt_add_card)))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_expirationDateFieldIsFocused() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(withId(R.id.bt_card_form_expiration)).check(matches(isFocused()))
     }
 
     @Test
@@ -229,6 +242,31 @@ class CardDetailsFragmentUITest {
             }
         }
         countDownLatch.await()
+    }
+
+    @Test
+    fun whenStateIsRESUMED_onCardFormSubmit_whenCardFormNotValid_doesNotSendCardDetailsEventAndShowsButton() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_button)).perform(click())
+
+        val events = mutableListOf<Parcelable>()
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
+                events += result
+            }
+        }
+        assertEquals(0, events.size)
+        onView(withId(R.id.bt_button)).check(matches(isDisplayed()))
     }
 
     @Test

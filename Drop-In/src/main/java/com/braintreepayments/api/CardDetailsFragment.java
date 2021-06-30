@@ -93,6 +93,12 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        cardForm.getExpirationDateEditText().requestFocus();
+    }
+
     void setErrors(ErrorWithResponse errors) {
         BraintreeError formErrors = errors.errorFor("unionPayEnrollment");
         if (formErrors == null) {
