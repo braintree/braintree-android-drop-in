@@ -144,48 +144,20 @@ public class DropInActivity extends BaseActivity {
     }
 
     void onDeleteVaultedPaymentMethodSelected(DeleteVaultedPaymentMethodNonceEvent event) {
-        PaymentMethodItemView dialogView = new PaymentMethodItemView(this);
         final PaymentMethodNonce paymentMethodNonceToDelete = event.getPaymentMethodNonceToDelete();
-        dialogView.setPaymentMethod(paymentMethodNonceToDelete, false);
+        getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.positive");
+        getDropInClient().deletePaymentMethod(DropInActivity.this, paymentMethodNonceToDelete, new DeletePaymentMethodNonceCallback() {
+            @Override
+            public void onResult(@Nullable PaymentMethodNonce deletedNonce, @Nullable Exception error) {
+                if (deletedNonce != null) {
+                    getDropInClient().sendAnalyticsEvent("manager.delete.succeeded");
+                    updateVaultedPaymentMethodNonces(true);
+                } else {
+                    onError(error);
+                }
+            }
+        });
 
-        final AtomicBoolean positiveSelected = new AtomicBoolean(false);
-        new AlertDialog.Builder(this,
-                R.style.Theme_AppCompat_Light_Dialog_Alert)
-                .setTitle(R.string.bt_delete_confirmation_title)
-                .setMessage(R.string.bt_delete_confirmation_description)
-                .setView(dialogView)
-                .setPositiveButton(R.string.bt_delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        positiveSelected.set(true);
-                        getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.positive");
-                        getDropInClient().deletePaymentMethod(DropInActivity.this, paymentMethodNonceToDelete, new DeletePaymentMethodNonceCallback() {
-                            @Override
-                            public void onResult(@Nullable PaymentMethodNonce deletedNonce, @Nullable Exception error) {
-                                if (deletedNonce != null) {
-//                                    onPaymentMethodNonceDeleted(deletedNonce);
-                                } else {
-                                    onError(error);
-                                }
-                            }
-                        });
-                    }
-                })
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        if (!positiveSelected.get()) {
-                            getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.negative");
-                        }
-                    }
-                })
-                .setNegativeButton(R.string.bt_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .create()
-                .show();
     }
 
     void sendAnalyticsEvent(String eventFragment) {
