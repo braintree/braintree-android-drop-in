@@ -1,25 +1,40 @@
 package com.braintreepayments.api
 
+import androidx.core.view.get
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.braintreepayments.api.dropin.R
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertSame
+import org.hamcrest.Matchers
 import org.json.JSONObject
+import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.CountDownLatch
 
 
 @RunWith(AndroidJUnit4::class)
 class VaultManagerFragmentUITest {
 
+    private lateinit var countDownLatch: CountDownLatch
+    private lateinit var cardNonce: CardNonce
+
     val vaultedPaymentMethodNonces = ArrayList<PaymentMethodNonce>()
 
     @Before
     fun beforeEach() {
-        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
-
+        cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         vaultedPaymentMethodNonces.add(cardNonce)
+
+        countDownLatch = CountDownLatch(1)
     }
 
     @Test
@@ -30,5 +45,30 @@ class VaultManagerFragmentUITest {
             fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethodNonces)
             assertEquals(1, fragment.adapter.paymentMethodNonces.size)
         }
+    }
+
+    @Test
+    fun whenStateIsRESUMED_onClick_selectingPositiveButton_sendsDeletePaymentEvent() {
+        val scenario = FragmentScenario.launchInContainer(VaultManagerFragment::class.java)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethodNonces)
+        }
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_payment_method_delete_icon)).perform(click())
+        onView(withText("DELETE")).perform(click())
+
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
+                val event = result.get("BRAINTREE_RESULT") as DeleteVaultedPaymentMethodNonceEvent
+                assertSame(cardNonce, event.paymentMethodNonceToDelete)
+                countDownLatch.countDown()
+            }
+        }
+
+        countDownLatch.await()
     }
 }

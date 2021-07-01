@@ -25,8 +25,9 @@ import static com.braintreepayments.api.DropInUIEventType.DISMISS_VAULT_MANAGER;
 
 public class VaultManagerFragment extends Fragment implements View.OnClickListener {
 
-    private RecyclerView vaultManagerView;
     private ViewSwitcher loadingViewSwitcher;
+    private RecyclerView vaultManagerView;
+
     @VisibleForTesting
     VaultManagerPaymentMethodsAdapter adapter;
     @VisibleForTesting

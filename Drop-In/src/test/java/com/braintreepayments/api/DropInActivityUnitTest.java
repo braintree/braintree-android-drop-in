@@ -764,6 +764,12 @@ public class DropInActivityUnitTest {
         assertEquals(1, ((ViewSwitcher) mActivity.findViewById(R.id.bt_loading_view_switcher)).getDisplayedChild());
     }
 
+    @Test
+    public void onPaymentMethodNonceDeleted_sendsAnalyticCall() {
+        // TODO: test this after determining analytics testing strategy
+//        verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded");
+    }
+
     private void assertExceptionIsReturned(String analyticsEvent, Exception exception) {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);

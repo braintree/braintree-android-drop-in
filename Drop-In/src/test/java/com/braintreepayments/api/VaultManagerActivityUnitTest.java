@@ -76,35 +76,6 @@ public class VaultManagerActivityUnitTest {
     }
 
     @Test
-    public void onCreate_setsPaymentMethodNoncesInAdapter() {
-        VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
-
-        assertEquals(mPaymentMethodNonces.size(), adapter.getItemCount());
-    }
-
-    @Test
-    public void onRestart_setsPaymentMethodNoncesInAdapter() {
-        VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
-        ArrayList<PaymentMethodNonce> nonces = new ArrayList<>();
-        nonces.add(mCardNonce);
-        adapter.setPaymentMethodNonces(nonces);
-
-        mActivityController.pause();
-
-        verify(adapter).setPaymentMethodNonces(nonces);
-    }
-
-    @Test
-    public void onPaymentMethodNonceDeleted_sendsAnalyticCall() {
-        DropInClient dropInClient = new MockDropInClientBuilder()
-                .build();
-        mActivity.dropInClient = dropInClient;
-        mActivity.onPaymentMethodNonceDeleted(mCardNonce);
-
-        verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded");
-    }
-
-    @Test
     public void onPaymentMethodNonceDeleted_setsOkResult() {
         mActivity.onPaymentMethodNonceDeleted(mCardNonce);
 
@@ -206,23 +177,6 @@ public class VaultManagerActivityUnitTest {
         getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
 
         verify(dropInClient).sendAnalyticsEvent("manager.delete.confirmation.positive");
-    }
-
-    @Test
-    public void onClick_selectingPositiveButton_callsDeletePaymentMethod() {
-        VaultManagerPaymentMethodsAdapter adapter = mActivity.mockAdapter();
-        DropInClient dropInClient = new MockDropInClientBuilder()
-                .deletePaymentMethodSuccess(mCardNonce)
-                .build();
-        mActivity.dropInClient = dropInClient;
-
-        mPaymentMethodItemView.setPaymentMethod(mCardNonce, false);
-        mActivity.onClick(mPaymentMethodItemView);
-
-        getDeleteConfirmationDialog().getButton(DialogInterface.BUTTON_POSITIVE).callOnClick();
-
-        verify(dropInClient).deletePaymentMethod(same(mActivity), same(mCardNonce), any(DeletePaymentMethodNonceCallback.class));
-        verify(adapter).paymentMethodDeleted(same(mCardNonce));
     }
 
     @Test
