@@ -48,7 +48,6 @@ public class DropInActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
 
-
         if (getDropInClient().getAuthorization() instanceof InvalidAuthorization) {
             finish(new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
             return;
