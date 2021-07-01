@@ -1,5 +1,6 @@
 package com.braintreepayments.api;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -11,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
@@ -21,6 +23,7 @@ import com.braintreepayments.api.dropin.R;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
@@ -97,6 +100,10 @@ public class DropInActivity extends BaseActivity {
             onCardDetailsEvent((CardDetailsEvent) braintreeResult);
         } else if (braintreeResult instanceof EditCardNumberEvent) {
             startAddCardFlow((EditCardNumberEvent) braintreeResult);
+        } else if (braintreeResult instanceof DeleteVaultedPaymentMethodNonceEvent) {
+            DeleteVaultedPaymentMethodNonceEvent deleteVaultedPaymentMethodNonceEvent =
+                    (DeleteVaultedPaymentMethodNonceEvent) braintreeResult;
+            onDeleteVaultedPaymentMethodSelected(deleteVaultedPaymentMethodNonceEvent);
         }
     }
 
@@ -134,6 +141,51 @@ public class DropInActivity extends BaseActivity {
                 updateVaultedPaymentMethodNonces(false);
                 break;
         }
+    }
+
+    void onDeleteVaultedPaymentMethodSelected(DeleteVaultedPaymentMethodNonceEvent event) {
+        PaymentMethodItemView dialogView = new PaymentMethodItemView(this);
+        final PaymentMethodNonce paymentMethodNonceToDelete = event.getPaymentMethodNonceToDelete();
+        dialogView.setPaymentMethod(paymentMethodNonceToDelete, false);
+
+        final AtomicBoolean positiveSelected = new AtomicBoolean(false);
+        new AlertDialog.Builder(this,
+                R.style.Theme_AppCompat_Light_Dialog_Alert)
+                .setTitle(R.string.bt_delete_confirmation_title)
+                .setMessage(R.string.bt_delete_confirmation_description)
+                .setView(dialogView)
+                .setPositiveButton(R.string.bt_delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        positiveSelected.set(true);
+                        getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.positive");
+                        getDropInClient().deletePaymentMethod(DropInActivity.this, paymentMethodNonceToDelete, new DeletePaymentMethodNonceCallback() {
+                            @Override
+                            public void onResult(@Nullable PaymentMethodNonce deletedNonce, @Nullable Exception error) {
+                                if (deletedNonce != null) {
+//                                    onPaymentMethodNonceDeleted(deletedNonce);
+                                } else {
+                                    onError(error);
+                                }
+                            }
+                        });
+                    }
+                })
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        if (!positiveSelected.get()) {
+                            getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.negative");
+                        }
+                    }
+                })
+                .setNegativeButton(R.string.bt_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .create()
+                .show();
     }
 
     void sendAnalyticsEvent(String eventFragment) {

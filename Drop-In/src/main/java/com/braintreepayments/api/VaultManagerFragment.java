@@ -1,13 +1,17 @@
 package com.braintreepayments.api;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +20,7 @@ import android.widget.ViewSwitcher;
 import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class VaultManagerFragment extends Fragment implements View.OnClickListener {
 
@@ -67,11 +72,24 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        // TODO: send payment delete event to DropInActivity
+        if (v instanceof PaymentMethodItemView) {
+            PaymentMethodItemView paymentMethodItemView = (PaymentMethodItemView) v;
+            final PaymentMethodNonce paymentMethodNonceToDelete = paymentMethodItemView.getPaymentMethodNonce();
+
+            DeleteVaultedPaymentMethodNonceEvent event = new DeleteVaultedPaymentMethodNonceEvent(paymentMethodNonceToDelete);
+            sendBraintreeEvent(event);
+
+        }
     }
 
     private void showVaultedPaymentMethods(List<PaymentMethodNonce> vaultedPaymentMethodNonces) {
         VaultManagerPaymentMethodsAdapter adapter = new VaultManagerPaymentMethodsAdapter(this, vaultedPaymentMethodNonces);
         vaultManagerView.setAdapter(adapter);
+    }
+
+    private void sendBraintreeEvent(Parcelable eventResult) {
+        Bundle result = new Bundle();
+        result.putParcelable("BRAINTREE_RESULT", eventResult);
+        getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
     }
 }
