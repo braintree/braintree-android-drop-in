@@ -46,7 +46,7 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bt_fragment_vault_manager, container, false);
 
-        // TODO: Remove in favor of loading indicator fragment before this fragment is loaded?
+        // TODO: handling switching between fragment and loading
         loadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
         vaultManagerView = view.findViewById(R.id.bt_vault_manager_list);
         vaultManagerView.setLayoutManager(new LinearLayoutManager(
