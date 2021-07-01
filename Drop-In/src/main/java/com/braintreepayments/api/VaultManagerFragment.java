@@ -22,6 +22,8 @@ import com.braintreepayments.api.dropin.R;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static com.braintreepayments.api.DropInUIEventType.DISMISS_VAULT_MANAGER;
+
 public class VaultManagerFragment extends Fragment implements View.OnClickListener {
 
     private RecyclerView vaultManagerView;
@@ -42,8 +44,8 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bt_fragment_vault_manager, container, false);
 
+        // TODO: Remove in favor of loading indicator fragment before this fragment is loaded?
         loadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
-//        loadingViewSwitcher.setDisplayedChild(0);
         vaultManagerView = view.findViewById(R.id.bt_vault_manager_list);
         vaultManagerView.setLayoutManager(new LinearLayoutManager(
                 requireActivity(), RecyclerView.VERTICAL, false));
@@ -56,17 +58,13 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
             }
         });
 
-
-
         View closeButton = view.findViewById(R.id.bt_vault_manager_close);
-
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: send event back to activity to switch fragments
+                sendBraintreeEvent(new DropInUIEvent(DISMISS_VAULT_MANAGER));
             }
         });
-
 
         return view;
     }

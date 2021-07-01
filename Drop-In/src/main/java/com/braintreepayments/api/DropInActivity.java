@@ -140,6 +140,9 @@ public class DropInActivity extends BaseActivity {
                 // to see if this parameter is necessary
                 updateVaultedPaymentMethodNonces(false);
                 break;
+            case DropInUIEventType.DISMISS_VAULT_MANAGER:
+                showSelectPaymentMethodFragment();
+                break;
         }
     }
 
@@ -166,6 +169,7 @@ public class DropInActivity extends BaseActivity {
 
     void showVaultManager() {
         // TODO: consider caching nonces or use a ViewModel for handling nonces
+        // TODO: show loading indicator while fetching vaulted payment methods
         getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
             @Override
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
@@ -226,7 +230,7 @@ public class DropInActivity extends BaseActivity {
             fragmentManager
                     .beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
+                    .replace(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
                     .commit();
         }
     }
