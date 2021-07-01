@@ -2,20 +2,19 @@ package com.braintreepayments.api;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ViewSwitcher;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.os.Parcelable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ViewSwitcher;
 
 import com.braintreepayments.api.dropin.R;
 
@@ -28,8 +27,10 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
 
     private RecyclerView vaultManagerView;
     private ViewSwitcher loadingViewSwitcher;
-    private DropInViewModel dropInViewModel;
-    private VaultManagerPaymentMethodsAdapter adapter;
+    @VisibleForTesting
+    VaultManagerPaymentMethodsAdapter adapter;
+    @VisibleForTesting
+    DropInViewModel dropInViewModel;
 
     public VaultManagerFragment() {
     }
@@ -126,5 +127,19 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
         Bundle result = new Bundle();
         result.putParcelable("BRAINTREE_RESULT", eventResult);
         getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
+    }
+
+    // TODO: error handling
+    public void onError(Exception error) {
+//        if(error instanceof PaymentMethodDeleteException) {
+//            Snackbar.make(findViewById(R.id.bt_base_view), R.string.bt_vault_manager_delete_failure,
+//                    Snackbar.LENGTH_LONG).show();
+//            getDropInClient().sendAnalyticsEvent("manager.delete.failed");
+//
+//            mLoadingViewSwitcher.setDisplayedChild(0);
+//        } else {
+//            getDropInClient().sendAnalyticsEvent("manager.unknown.failed");
+//            finish(error);
+//        }
     }
 }
