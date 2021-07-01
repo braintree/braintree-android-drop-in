@@ -146,6 +146,7 @@ public class DropInActivity extends BaseActivity {
             @Override
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
                 if (paymentMethodNonceList != null) {
+                    dropInViewModel.setVaultedPaymentMethods(paymentMethodNonceList);
 //                    Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
 //                            .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList))
 //                            .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))

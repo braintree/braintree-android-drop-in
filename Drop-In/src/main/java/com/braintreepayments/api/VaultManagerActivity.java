@@ -27,7 +27,7 @@ import static com.braintreepayments.api.DropInActivity.EXTRA_PAYMENT_METHOD_NONC
 public class VaultManagerActivity extends BaseActivity implements View.OnClickListener {
 
     @VisibleForTesting
-    protected VaultManagerPaymentMethodsAdapter mAdapter = new VaultManagerPaymentMethodsAdapter(this);
+    protected VaultManagerPaymentMethodsAdapter mAdapter = new VaultManagerPaymentMethodsAdapter(this, null );
     private ViewSwitcher mLoadingViewSwitcher;
 
     @Override
