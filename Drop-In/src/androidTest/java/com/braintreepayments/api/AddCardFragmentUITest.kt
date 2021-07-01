@@ -64,7 +64,7 @@ class AddCardFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_sendsAnalyticsEventToNotifyAddCardSelected() {
+    fun whenStateIsRESUMED_andAddCardSelected_sendsAnalyticsEvent() {
         // TODO: assert 'card.selected' analytics event sent
     }
 
