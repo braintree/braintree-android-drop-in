@@ -175,30 +175,7 @@ public class DropInActivity extends BaseActivity {
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
                 if (paymentMethodNonceList != null) {
                     dropInViewModel.setVaultedPaymentMethods(paymentMethodNonceList);
-                    // TODO: determine if any of these args are needed
-//                    Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
-//                            .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList))
-//                            .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
-//                            .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
-//                            .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
-//                    startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
-//
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-
-                    Fragment fragment = fragmentManager.findFragmentByTag("VAULT_MANAGER");
-                    if (fragment == null) {
-                        Bundle args = new Bundle();
-                        args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-                        args.putParcelableArrayList(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList));
-                        args.putString(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
-
-                        fragmentManager
-                                .beginTransaction()
-                                .setReorderingAllowed(true)
-                                .replace(R.id.fragment_container_view, VaultManagerFragment.class, args, "VAULT_MANAGER")
-                                .commit();
-                        getDropInClient().sendAnalyticsEvent("manager.appeared");
-                    }
+                    showVaultManagerFragment();
                 } else if (error != null) {
                     onError(error);
                 }
@@ -261,6 +238,23 @@ public class DropInActivity extends BaseActivity {
             }
         });
 
+    }
+
+    private void showVaultManagerFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        Fragment fragment = fragmentManager.findFragmentByTag("VAULT_MANAGER");
+        if (fragment == null) {
+            Bundle args = new Bundle();
+            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+
+            fragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragment_container_view, VaultManagerFragment.class, args, "VAULT_MANAGER")
+                    .commit();
+            getDropInClient().sendAnalyticsEvent("manager.appeared");
+        }
     }
 
     public void onError(final Exception error) {
