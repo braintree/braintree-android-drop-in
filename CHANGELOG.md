@@ -1,5 +1,11 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Bump braintree_android version to 3.17.4
+
+**Note:** The credentials for integrating with 3DS have changed. If you are using 3DS please update the credentials in your app-level `build.gradle` see [3DS Client Side Setup](https://developer.paypal.com/braintree/docs/guides/3d-secure/client-side#generate-a-client-token) 
+
 ## 5.2.1
 
 * Bump card-form version to 5.1.1
