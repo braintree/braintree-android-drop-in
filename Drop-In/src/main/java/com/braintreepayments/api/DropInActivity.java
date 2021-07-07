@@ -22,8 +22,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.braintreepayments.api.dropin.R;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
@@ -421,22 +419,6 @@ public class DropInActivity extends BaseActivity {
             }
             setResult(resultCode, response);
             finish();
-        } else if (requestCode == DELETE_PAYMENT_METHOD_NONCE_CODE) {
-            if (resultCode == RESULT_OK) {
-                dropInViewModel.setIsLoading(true);
-
-                if (data != null) {
-                    ArrayList<PaymentMethodNonce> paymentMethodNonces = data
-                            .getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES);
-
-                    if (paymentMethodNonces != null) {
-                        dropInViewModel.setVaultedPaymentMethods(paymentMethodNonces);
-                    }
-                }
-
-                updateVaultedPaymentMethodNonces(true);
-            }
-            dropInViewModel.setIsLoading(false);
         }
     }
 
