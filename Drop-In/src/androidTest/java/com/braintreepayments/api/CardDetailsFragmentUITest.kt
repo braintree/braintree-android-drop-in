@@ -85,7 +85,7 @@ class CardDetailsFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_withDropinRequestRequiringCardholderName_setsCardFormsCardholderNameToRequired() {
+    fun whenStateIsRESUMED_whenDropInRequestRequiresCardholderName_setsCardFormsCardholderNameToRequired() {
         val args = Bundle()
         args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN).cardholderNameStatus(FIELD_REQUIRED))
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
@@ -107,7 +107,7 @@ class CardDetailsFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_withoutSaveCardCheckBoxPropertiesOnDropInRequest_saveCardCheckboxCheckedAndHidden() {
+    fun whenStateIsRESUMED_whenDropInCardholderNameFieldDisabled_saveCardCheckboxCheckedAndHidden() {
         val args = Bundle()
         args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
