@@ -98,7 +98,7 @@
         android:title="Drop-In">
 
         <CheckBoxPreference
-            android:key="enable_vault_mamanger"
+            android:key="enable_vault_manager"
             android:title="Enable Vault Manager"
             android:summary="Allows deleting vaulted payment methods."
             android:defaultValue="false" />
