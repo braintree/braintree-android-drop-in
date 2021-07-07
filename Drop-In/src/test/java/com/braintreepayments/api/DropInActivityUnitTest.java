@@ -584,29 +584,6 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onVaultEditButtonClick_launchesVaultManagerActivity() {
-        String authorization = Fixtures.TOKENIZATION_KEY;
-        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-
-        DropInClient dropInClient = new MockDropInClientBuilder()
-                .getVaultedPaymentMethodsSuccess(new ArrayList<PaymentMethodNonce>())
-                .build();
-        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
-
-        mActivity.showVaultManager();
-
-        ShadowActivity.IntentForResult intent = mShadowActivity.getNextStartedActivityForResult();
-
-        assertEquals(2, intent.requestCode);
-        assertEquals(mActivity.mDropInRequest, intent.intent.getParcelableExtra(EXTRA_CHECKOUT_REQUEST));
-
-        // TODO: revisit nonce caching
-//        assertEquals(mActivity.mBraintreeFragment.getCachedPaymentMethodNonces(),
-//                intent.intent.getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES));
-    }
-
-    @Test
     public void onSupportedPaymentMethodSelected_withTypePayPal_tokenizesPayPal() throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
