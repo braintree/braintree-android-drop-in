@@ -79,6 +79,8 @@ public class DropInActivity extends BaseActivity {
     private void handleBraintreeEventBundle(Bundle bundle) {
         Parcelable braintreeResult = bundle.getParcelable("BRAINTREE_RESULT");
 
+        // TODO: consider a single event type with a context of type "Object" to prevent having
+        // to create a new event type every time
         if (braintreeResult instanceof DropInAnalyticsEvent) {
             onAnalyticsEvent((DropInAnalyticsEvent) braintreeResult);
         } else if (braintreeResult instanceof DropInUIEvent) {
