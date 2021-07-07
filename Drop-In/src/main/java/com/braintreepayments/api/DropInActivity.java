@@ -14,16 +14,17 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
@@ -45,6 +46,7 @@ public class DropInActivity extends BaseActivity {
 
     private DropInViewModel dropInViewModel;
     ActionBar actionBar;
+    private FragmentContainerView fragmentContainerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class DropInActivity extends BaseActivity {
         }
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
+        fragmentContainerView = findViewById(R.id.fragment_container_view);
 
         getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
@@ -189,10 +192,16 @@ public class DropInActivity extends BaseActivity {
             public void onResult(@Nullable PaymentMethodNonce deletedNonce, @Nullable Exception error) {
                 if (deletedNonce != null) {
                     getDropInClient().sendAnalyticsEvent("manager.delete.succeeded");
+                } else if (error instanceof PaymentMethodDeleteException) {
+                    Snackbar.make(fragmentContainerView, R.string.bt_vault_manager_delete_failure, Snackbar.LENGTH_LONG).show();
+                    getDropInClient().sendAnalyticsEvent("manager.delete.failed");
+                    // TODO: hide loading view switcher
+                    //mLoadingViewSwitcher.setDisplayedChild(0);
                 } else {
-                    onError(error);
+                    getDropInClient().sendAnalyticsEvent("manager.unknown.failed");
                 }
-                // always refetch to keep view model in sync with server
+
+                // always re-fetch to keep view model in sync with server
                 updateVaultedPaymentMethodNonces(true);
             }
         });

@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
 
     private ViewSwitcher loadingViewSwitcher;
     private RecyclerView vaultManagerView;
+    private View baseView;
 
     @VisibleForTesting
     VaultManagerPaymentMethodsAdapter adapter;
@@ -43,6 +45,7 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
         View view = inflater.inflate(R.layout.bt_fragment_vault_manager, container, false);
 
         // TODO: handling switching between fragment and loading
+        baseView = view.findViewById(R.id.bt_base_view);
         loadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
         vaultManagerView = view.findViewById(R.id.bt_vault_manager_list);
         vaultManagerView.setLayoutManager(new LinearLayoutManager(
@@ -87,19 +90,5 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
         Bundle result = new Bundle();
         result.putParcelable("BRAINTREE_RESULT", eventResult);
         getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
-    }
-
-    // TODO: error handling
-    public void onError(Exception error) {
-//        if(error instanceof PaymentMethodDeleteException) {
-//            Snackbar.make(findViewById(R.id.bt_base_view), R.string.bt_vault_manager_delete_failure,
-//                    Snackbar.LENGTH_LONG).show();
-//            getDropInClient().sendAnalyticsEvent("manager.delete.failed");
-//
-//            mLoadingViewSwitcher.setDisplayedChild(0);
-//        } else {
-//            getDropInClient().sendAnalyticsEvent("manager.unknown.failed");
-//            finish(error);
-//        }
     }
 }
