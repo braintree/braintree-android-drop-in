@@ -125,7 +125,7 @@ class AddCardFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_whenCardFromInvalid_showsButton() {
+    fun whenStateIsRESUMED_whenCardFromInvalid_showsSubmitButton() {
         val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
