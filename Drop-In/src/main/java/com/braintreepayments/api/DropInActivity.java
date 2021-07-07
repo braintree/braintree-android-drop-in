@@ -148,19 +148,54 @@ public class DropInActivity extends BaseActivity {
 
     void onDeleteVaultedPaymentMethodSelected(DeleteVaultedPaymentMethodNonceEvent event) {
         final PaymentMethodNonce paymentMethodNonceToDelete = event.getPaymentMethodNonceToDelete();
-        getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.positive");
+
+        PaymentMethodItemView dialogView = new PaymentMethodItemView(this);
+        dialogView.setPaymentMethod(paymentMethodNonceToDelete, false);
+
+        new AlertDialog.Builder(this,
+                R.style.Theme_AppCompat_Light_Dialog_Alert)
+                .setTitle(R.string.bt_delete_confirmation_title)
+                .setMessage(R.string.bt_delete_confirmation_description)
+                .setView(dialogView)
+                .setPositiveButton(R.string.bt_delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.positive");
+                        removePaymentMethodNonce(paymentMethodNonceToDelete);
+                    }
+                })
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        // TODO: Is this analytics event important? It requires another event to be dispatched and handled in DropInActivity
+                        getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.negative");
+                    }
+                })
+                .setNegativeButton(R.string.bt_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    private void removePaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
+        // proactively remove from view model
+        dropInViewModel.removeVaultedPaymentMethodNonce(paymentMethodNonceToDelete);
+
         getDropInClient().deletePaymentMethod(DropInActivity.this, paymentMethodNonceToDelete, new DeletePaymentMethodNonceCallback() {
             @Override
             public void onResult(@Nullable PaymentMethodNonce deletedNonce, @Nullable Exception error) {
                 if (deletedNonce != null) {
                     getDropInClient().sendAnalyticsEvent("manager.delete.succeeded");
-                    updateVaultedPaymentMethodNonces(true);
                 } else {
                     onError(error);
                 }
+                // always refetch to keep view model in sync with server
+                updateVaultedPaymentMethodNonces(true);
             }
         });
-
     }
 
     void sendAnalyticsEvent(String eventFragment) {

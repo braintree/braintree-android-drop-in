@@ -6,7 +6,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.braintreepayments.cardform.utils.CardType;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class DropInViewModel extends ViewModel {
 
@@ -57,4 +60,22 @@ public class DropInViewModel extends ViewModel {
         cardTokenizationError.setValue(value);
     }
 
+
+    public void removeVaultedPaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
+        List<PaymentMethodNonce> currentPaymentMethods = vaultedPaymentMethods.getValue();
+        if (currentPaymentMethods != null) {
+            List<PaymentMethodNonce> updatedPaymentMethods = new ArrayList<>(currentPaymentMethods);
+
+            // find nonce by string and remove it
+            Iterator<PaymentMethodNonce> iterator = updatedPaymentMethods.iterator();
+            while (iterator.hasNext()) {
+                PaymentMethodNonce nonce = iterator.next();
+                if (nonce.getString().equals(paymentMethodNonceToDelete.getString())) {
+                    iterator.remove();
+                    break;
+                }
+            }
+            vaultedPaymentMethods.setValue(updatedPaymentMethods);
+        }
+    }
 }
