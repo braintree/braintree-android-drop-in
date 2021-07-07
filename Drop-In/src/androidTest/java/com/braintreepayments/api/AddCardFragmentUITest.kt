@@ -39,6 +39,8 @@ class AddCardFragmentUITest {
         }
 
         onView(isRoot()).perform(waitFor(500))
+
+        // TODO: migrate assertions to use plain text instead of internal view ids
         onView(withId(R.id.bt_button)).check(matches(withText(R.string.bt_next)))
     }
 
