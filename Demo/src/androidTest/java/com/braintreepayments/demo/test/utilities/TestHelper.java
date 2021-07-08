@@ -44,7 +44,6 @@ public class TestHelper {
                 .commit();
 
         onDevice().onHomeScreen().launchApp("com.braintreepayments.demo");
-        onDevice().acceptRuntimePermission(Manifest.permission.WRITE_EXTERNAL_STORAGE);
         ensureEnvironmentIs("Sandbox");
     }
 
