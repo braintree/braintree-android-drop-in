@@ -168,7 +168,6 @@ public class DropInActivity extends BaseActivity {
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        // TODO: Is this analytics event important? It requires another event to be dispatched and handled in DropInActivity
                         getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.negative");
                     }
                 })
@@ -198,9 +197,6 @@ public class DropInActivity extends BaseActivity {
                 } else {
                     getDropInClient().sendAnalyticsEvent("manager.unknown.failed");
                 }
-
-                // always re-fetch to keep view model in sync with server
-                updateVaultedPaymentMethodNonces(true);
             }
         });
     }
