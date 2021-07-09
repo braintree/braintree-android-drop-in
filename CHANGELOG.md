@@ -7,6 +7,7 @@
 * Add `DropInResultCallback`
 * Add `FetchMostRecentPaymentMethodCallback`
 * Add `VaultedPaymentMethodSelectedListener`
+* Bump `card-form` to `5.2.0`
 * Breaking Changes
   * Make `AddPaymentUpdateListener` package-private
   * Make `AnimationFinishedListener` package-private
