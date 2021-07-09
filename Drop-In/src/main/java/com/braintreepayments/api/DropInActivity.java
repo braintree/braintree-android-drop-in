@@ -197,6 +197,7 @@ public class DropInActivity extends BaseActivity {
                     //mLoadingViewSwitcher.setDisplayedChild(0);
                 } else {
                     getDropInClient().sendAnalyticsEvent("manager.unknown.failed");
+                    // TODO: determine how to handle unexpected error when deleting payment method (previously finished drop in)
                 }
             }
         });
