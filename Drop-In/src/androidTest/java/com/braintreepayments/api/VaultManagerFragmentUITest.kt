@@ -9,6 +9,7 @@ import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.braintreepayments.api.DropInUIEventType.DISMISS_VAULT_MANAGER
 import com.braintreepayments.api.dropin.R
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertSame
@@ -48,7 +49,7 @@ class VaultManagerFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_onClick_selectingPositiveButton_sendsDeletePaymentEvent() {
+    fun whenStateIsRESUMED_onDeleteIconClick_sendsDeletePaymentEvent() {
         val scenario = FragmentScenario.launchInContainer(VaultManagerFragment::class.java)
         scenario.moveToState(Lifecycle.State.RESUMED)
         scenario.onFragment { fragment ->
@@ -57,7 +58,6 @@ class VaultManagerFragmentUITest {
 
         onView(isRoot()).perform(waitFor(500))
         onView(withId(R.id.bt_payment_method_delete_icon)).perform(click())
-        onView(withText("DELETE")).perform(click())
 
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
@@ -65,6 +65,30 @@ class VaultManagerFragmentUITest {
             fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
                 val event = result.get("BRAINTREE_RESULT") as DeleteVaultedPaymentMethodNonceEvent
                 assertSame(cardNonce, event.paymentMethodNonceToDelete)
+                countDownLatch.countDown()
+            }
+        }
+
+        countDownLatch.await()
+    }
+
+    @Test
+    fun whenStateIsRESUMED_onCloseButtonClick_sendsDismissUIEvent() {
+        val scenario = FragmentScenario.launchInContainer(VaultManagerFragment::class.java)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethodNonces)
+        }
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_vault_manager_close)).perform(click())
+
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
+                val event = result.get("BRAINTREE_RESULT") as DropInUIEvent
+                assertSame(DISMISS_VAULT_MANAGER, event.type)
                 countDownLatch.countDown()
             }
         }
