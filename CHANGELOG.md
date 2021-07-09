@@ -28,7 +28,7 @@
   * Remove `AddCardView`
   * Remove `EditCardView`
   * Change `DropInPaymentMethodType#getCardTypes()` parameter from `Set` to `List`
-  
+  * Replace `VaultManagerActivity` with `VaultManagerFragment`
 
 **Note:** The credentials for integrating with 3DS have changed. If you are using 3DS please update the credentials in your app-level `build.gradle`
 

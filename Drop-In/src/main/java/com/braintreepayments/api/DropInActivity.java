@@ -28,6 +28,7 @@ import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
+// TODO: unit test after all fragments have been extracted
 public class DropInActivity extends BaseActivity {
 
     /**
