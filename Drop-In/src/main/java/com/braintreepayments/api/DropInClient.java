@@ -9,7 +9,11 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
+import com.braintreepayments.cardform.utils.CardType;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -332,6 +336,23 @@ public class DropInClient {
             }
         }
         return availablePaymentMethods;
+    }
+
+    void getSupportedCardTypes(final GetSupportedCardTypesCallback callback) {
+        braintreeClient.getConfiguration(new ConfigurationCallback() {
+            @Override
+            public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
+                if (configuration != null) {
+                    List<String> supportedCardTypes = new ArrayList<>(configuration.getSupportedCardTypes());
+                    if (!configuration.isUnionPayEnabled()) {
+                        supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
+                    }
+                    callback.onResult(supportedCardTypes, null);
+                } else {
+                    callback.onResult(null, error);
+                }
+            }
+        });
     }
 
     public void launchDropInForResult(FragmentActivity activity, int requestCode) {

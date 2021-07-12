@@ -5,8 +5,12 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
@@ -15,6 +19,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.braintreepayments.api.dropin.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
@@ -36,6 +41,7 @@ public class DropInActivity extends BaseActivity {
     static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";
 
     private DropInViewModel dropInViewModel;
+    ActionBar actionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +79,8 @@ public class DropInActivity extends BaseActivity {
     private void handleBraintreeEventBundle(Bundle bundle) {
         Parcelable braintreeResult = bundle.getParcelable("BRAINTREE_RESULT");
 
+        // TODO: consider a single event type with a context of type "Object" to prevent having
+        // to create a new event type every time
         if (braintreeResult instanceof DropInAnalyticsEvent) {
             onAnalyticsEvent((DropInAnalyticsEvent) braintreeResult);
         } else if (braintreeResult instanceof DropInUIEvent) {
@@ -83,6 +91,12 @@ public class DropInActivity extends BaseActivity {
             VaultedPaymentMethodSelectedEvent vaultedPaymentMethodSelectedEvent =
                     (VaultedPaymentMethodSelectedEvent) braintreeResult;
             onVaultedPaymentMethodSelected(vaultedPaymentMethodSelectedEvent.getPaymentMethodNonce());
+        } else if (braintreeResult instanceof AddCardEvent) {
+            showCardDetailsFragment(((AddCardEvent) braintreeResult).getCardNumber());
+        } else if (braintreeResult instanceof CardDetailsEvent) {
+            onCardDetailsEvent((CardDetailsEvent) braintreeResult);
+        } else if (braintreeResult instanceof EditCardNumberEvent) {
+            startAddCardFlow((EditCardNumberEvent) braintreeResult);
         }
     }
 
@@ -103,7 +117,7 @@ public class DropInActivity extends BaseActivity {
                 break;
             default:
             case UNKNOWN:
-                startAddCardFlow();
+                startAddCardFlow(null);
                 break;
         }
     }
@@ -177,9 +191,38 @@ public class DropInActivity extends BaseActivity {
         }
     }
 
+    private void showCardDetailsFragment(final String cardNumber) {
+        getDropInClient().getConfiguration(new ConfigurationCallback() {
+            @Override
+            public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
+                if (configuration != null) {
+                    CardFormConfiguration cardFormConfiguration = new CardFormConfiguration(configuration.isCvvChallengePresent(), configuration.isPostalCodeChallengePresent());
+
+                    FragmentManager fragmentManager = getSupportFragmentManager();
+                    Fragment fragment = fragmentManager.findFragmentByTag("CARD_DETAILS");
+                    if (fragment == null) {
+                        Bundle args = new Bundle();
+                        args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+                        args.putString("EXTRA_CARD_NUMBER", cardNumber);
+                        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", cardFormConfiguration);
+
+                        fragmentManager
+                                .beginTransaction()
+                                .setReorderingAllowed(true)
+                                .replace(R.id.fragment_container_view, CardDetailsFragment.class, args, "CARD_DETAILS")
+                                .commit();
+                    }
+                }
+            }
+        });
+
+    }
+
     public void onError(final Exception error) {
-        if (error instanceof AuthenticationException || error instanceof AuthorizationException ||
-                error instanceof UpgradeRequiredException) {
+        if (error instanceof ErrorWithResponse) {
+            ErrorWithResponse errorResponse = (ErrorWithResponse) error;
+            dropInViewModel.setCardTokenizationError(errorResponse);
+        } else if (error instanceof AuthenticationException || error instanceof AuthorizationException || error instanceof UpgradeRequiredException) {
             getDropInClient().sendAnalyticsEvent("sdk.exit.developer-error");
         } else if (error instanceof ConfigurationException) {
             getDropInClient().sendAnalyticsEvent("sdk.exit.configuration-exception");
@@ -233,12 +276,40 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    private void startAddCardFlow() {
-        Intent intent = new Intent(this, AddCardActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
-                .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
-                .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
-        startActivityForResult(intent, ADD_CARD_REQUEST_CODE);
+    private void startAddCardFlow(EditCardNumberEvent editCardNumberEvent) {
+        setActionBarTitle(R.string.bt_card_details);
+        getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
+            @Override
+            public void onResult(List<String> supportedCardTypes, Exception error) {
+                 dropInViewModel.setSupportedCardTypes(Arrays.asList(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)));
+            }
+        });
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("ADD_CARD");
+        if (fragment == null) {
+            Bundle args = new Bundle();
+            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+            if (editCardNumberEvent != null) {
+                args.putString("EXTRA_CARD_NUMBER", editCardNumberEvent.getCardNumber());
+            }
+
+            fragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragment_container_view, AddCardFragment.class, args, "ADD_CARD")
+                    .commit();
+        }
+    }
+
+    private void setActionBarTitle(@StringRes int titleResId) {
+        if (actionBar == null) {
+            setSupportActionBar((Toolbar) findViewById(R.id.bt_toolbar));
+            actionBar = getSupportActionBar();
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        actionBar.setTitle(titleResId);
+        findViewById(R.id.bt_toolbar).setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -347,6 +418,44 @@ public class DropInActivity extends BaseActivity {
                     } else {
                         finishWithDropInResult(dropInResult);
                     }
+                }
+            }
+        });
+    }
+
+    void onCardDetailsEvent(CardDetailsEvent cardDetailsEvent) {
+        Card card = cardDetailsEvent.getCard();
+        getDropInClient().tokenizeCard(card, new CardTokenizeCallback() {
+            @Override
+            public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
+                if (error != null) {
+                    dropInViewModel.setCardTokenizationError(error);
+                    return;
+                }
+                onPaymentMethodNonceCreated(cardNonce);
+            }
+        });
+    }
+
+    void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
+        getDropInClient().shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
+            @Override
+            public void onResult(boolean shouldRequestThreeDSecureVerification) {
+                if (shouldRequestThreeDSecureVerification) {
+                    getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethod, new DropInResultCallback() {
+                        @Override
+                        public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                            if (error != null) {
+                                onError(error);
+                                return;
+                            }
+                            getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+                            finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
+                        }
+                    });
+                } else {
+                    getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+                    finish(paymentMethod, null);
                 }
             }
         });

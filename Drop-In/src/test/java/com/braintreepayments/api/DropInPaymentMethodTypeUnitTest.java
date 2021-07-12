@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -49,8 +49,8 @@ public class DropInPaymentMethodTypeUnitTest {
     }
 
     @Test
-    public void getCardTypes_returnsCorrectCardTypeArray() throws JSONException {
-        Set<String> supportedCardTypes = new LinkedHashSet<>();
+    public void getCardTypes_returnsCorrectCardTypeArray() {
+        List<String> supportedCardTypes = new LinkedList<>();
         supportedCardTypes.add(DropInPaymentMethodType.VISA.getCanonicalName());
         supportedCardTypes.add(DropInPaymentMethodType.MASTERCARD.getCanonicalName());
         supportedCardTypes.add(DropInPaymentMethodType.DISCOVER.getCanonicalName());
