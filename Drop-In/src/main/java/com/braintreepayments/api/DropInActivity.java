@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.braintreepayments.api.dropin.R;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
