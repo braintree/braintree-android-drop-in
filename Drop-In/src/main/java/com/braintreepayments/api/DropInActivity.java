@@ -392,35 +392,6 @@ public class DropInActivity extends BaseActivity {
         findViewById(R.id.bt_toolbar).setVisibility(View.VISIBLE);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_CANCELED) {
-            if (requestCode == ADD_CARD_REQUEST_CODE) {
-                dropInViewModel.setIsLoading(true);
-                updateVaultedPaymentMethodNonces(true);
-            }
-            dropInViewModel.setIsLoading(false);
-
-        } else if (requestCode == ADD_CARD_REQUEST_CODE) {
-            final Intent response;
-            if (resultCode == RESULT_OK) {
-                dropInViewModel.setIsLoading(true);
-
-                DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-                DropInResult.setLastUsedPaymentMethodType(this, result.getPaymentMethodNonce());
-
-                response = new Intent()
-                        .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
-            } else {
-                response = data;
-            }
-            setResult(resultCode, response);
-            finish();
-        }
-    }
-
     public void onBackgroundClicked(View v) {
         onBackPressed();
     }
