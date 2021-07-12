@@ -31,6 +31,7 @@ import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClie
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
@@ -666,7 +667,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onSupportedPaymentMethodSelected_withTypeUnknown_startsAddCardActivity() throws JSONException {
+    public void onSupportedPaymentMethodSelected_withTypeUnknown_showsAddCardFragment() throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
@@ -682,8 +683,7 @@ public class DropInActivityUnitTest {
                 new SupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.UNKNOWN);
         mActivity.onSupportedPaymentMethodSelectedEvent(event);
 
-        ShadowActivity.IntentForResult intent = mShadowActivity.peekNextStartedActivityForResult();
-        assertEquals(AddCardActivity.class.getName(), intent.intent.getComponent().getClassName());
+        assertNotNull(mActivity.getSupportFragmentManager().findFragmentByTag("ADD_CARD"));
     }
 
     @Test

@@ -72,7 +72,7 @@ public enum DropInPaymentMethodType {
      * @return a {@link CardType[]} containing the mapped {@link CardType}s from the supplied
      * supportedCardTypes.
      */
-    public static CardType[] getCardsTypes(Set<String> supportedCardTypes) {
+    public static CardType[] getCardsTypes(List<String> supportedCardTypes) {
         List<CardType> convertedCardTypes = new ArrayList<>();
         for (String cardType : supportedCardTypes) {
             DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(cardType);
