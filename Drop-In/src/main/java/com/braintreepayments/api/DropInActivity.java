@@ -1,5 +1,6 @@
 package com.braintreepayments.api;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -11,14 +12,16 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
+import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +29,7 @@ import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
 import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
+// TODO: unit test after all fragments have been extracted
 public class DropInActivity extends BaseActivity {
 
     /**
@@ -42,6 +46,7 @@ public class DropInActivity extends BaseActivity {
 
     private DropInViewModel dropInViewModel;
     ActionBar actionBar;
+    private FragmentContainerView fragmentContainerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +59,7 @@ public class DropInActivity extends BaseActivity {
         }
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
+        fragmentContainerView = findViewById(R.id.fragment_container_view);
 
         getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
@@ -97,6 +103,10 @@ public class DropInActivity extends BaseActivity {
             onCardDetailsEvent((CardDetailsEvent) braintreeResult);
         } else if (braintreeResult instanceof EditCardNumberEvent) {
             startAddCardFlow((EditCardNumberEvent) braintreeResult);
+        } else if (braintreeResult instanceof DeleteVaultedPaymentMethodNonceEvent) {
+            DeleteVaultedPaymentMethodNonceEvent deleteVaultedPaymentMethodNonceEvent =
+                    (DeleteVaultedPaymentMethodNonceEvent) braintreeResult;
+            onDeleteVaultedPaymentMethodSelected(deleteVaultedPaymentMethodNonceEvent);
         }
     }
 
@@ -133,7 +143,61 @@ public class DropInActivity extends BaseActivity {
                 // to see if this parameter is necessary
                 updateVaultedPaymentMethodNonces(false);
                 break;
+            case DropInUIEventType.DISMISS_VAULT_MANAGER:
+                showSelectPaymentMethodFragment();
+                break;
         }
+    }
+
+    void onDeleteVaultedPaymentMethodSelected(DeleteVaultedPaymentMethodNonceEvent event) {
+        final PaymentMethodNonce paymentMethodNonceToDelete = event.getPaymentMethodNonceToDelete();
+
+        PaymentMethodItemView dialogView = new PaymentMethodItemView(this);
+        dialogView.setPaymentMethod(paymentMethodNonceToDelete, false);
+
+        new AlertDialog.Builder(this,
+                R.style.Theme_AppCompat_Light_Dialog_Alert)
+                .setTitle(R.string.bt_delete_confirmation_title)
+                .setMessage(R.string.bt_delete_confirmation_description)
+                .setView(dialogView)
+                .setPositiveButton(R.string.bt_delete, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.positive");
+                        removePaymentMethodNonce(paymentMethodNonceToDelete);
+                    }
+                })
+                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.negative");
+                    }
+                })
+                .setNegativeButton(R.string.bt_cancel, null)
+                .create()
+                .show();
+    }
+
+    private void removePaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
+        // proactively remove from view model
+        dropInViewModel.removeVaultedPaymentMethodNonce(paymentMethodNonceToDelete);
+
+        getDropInClient().deletePaymentMethod(DropInActivity.this, paymentMethodNonceToDelete, new DeletePaymentMethodNonceCallback() {
+            @Override
+            public void onResult(@Nullable PaymentMethodNonce deletedNonce, @Nullable Exception error) {
+                if (deletedNonce != null) {
+                    getDropInClient().sendAnalyticsEvent("manager.delete.succeeded");
+                } else if (error instanceof PaymentMethodDeleteException) {
+                    Snackbar.make(fragmentContainerView, R.string.bt_vault_manager_delete_failure, Snackbar.LENGTH_LONG).show();
+                    getDropInClient().sendAnalyticsEvent("manager.delete.failed");
+                    // TODO: hide loading view switcher
+                    //mLoadingViewSwitcher.setDisplayedChild(0);
+                } else {
+                    getDropInClient().sendAnalyticsEvent("manager.unknown.failed");
+                    // TODO: determine how to handle unexpected error when deleting payment method (previously finished drop in)
+                }
+            }
+        });
     }
 
     void sendAnalyticsEvent(String eventFragment) {
@@ -142,18 +206,13 @@ public class DropInActivity extends BaseActivity {
 
     void showVaultManager() {
         // TODO: consider caching nonces or use a ViewModel for handling nonces
+        // TODO: show loading indicator while fetching vaulted payment methods
         getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
             @Override
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
                 if (paymentMethodNonceList != null) {
-                    Intent intent = new Intent(DropInActivity.this, VaultManagerActivity.class)
-                            .putParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES, new ArrayList<Parcelable>(paymentMethodNonceList))
-                            .putExtra(EXTRA_CHECKOUT_REQUEST, (DropInRequest) getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST))
-                            .putExtra(EXTRA_AUTHORIZATION, getIntent().getStringExtra(EXTRA_AUTHORIZATION))
-                            .putExtra(EXTRA_SESSION_ID, getIntent().getStringExtra(EXTRA_SESSION_ID));
-                    startActivityForResult(intent, DELETE_PAYMENT_METHOD_NONCE_CODE);
-
-                    getDropInClient().sendAnalyticsEvent("manager.appeared");
+                    dropInViewModel.setVaultedPaymentMethods(paymentMethodNonceList);
+                    showVaultManagerFragment();
                 } else if (error != null) {
                     onError(error);
                 }
@@ -186,7 +245,7 @@ public class DropInActivity extends BaseActivity {
             fragmentManager
                     .beginTransaction()
                     .setReorderingAllowed(true)
-                    .add(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
+                    .replace(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
                     .commit();
         }
     }
@@ -216,6 +275,23 @@ public class DropInActivity extends BaseActivity {
             }
         });
 
+    }
+
+    private void showVaultManagerFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+        Fragment fragment = fragmentManager.findFragmentByTag("VAULT_MANAGER");
+        if (fragment == null) {
+            Bundle args = new Bundle();
+            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+
+            fragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragment_container_view, VaultManagerFragment.class, args, "VAULT_MANAGER")
+                    .commit();
+            getDropInClient().sendAnalyticsEvent("manager.appeared");
+        }
     }
 
     public void onError(final Exception error) {
@@ -310,51 +386,6 @@ public class DropInActivity extends BaseActivity {
         }
         actionBar.setTitle(titleResId);
         findViewById(R.id.bt_toolbar).setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, final int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_CANCELED) {
-            if (requestCode == ADD_CARD_REQUEST_CODE) {
-                dropInViewModel.setIsLoading(true);
-                updateVaultedPaymentMethodNonces(true);
-            }
-            dropInViewModel.setIsLoading(false);
-
-        } else if (requestCode == ADD_CARD_REQUEST_CODE) {
-            final Intent response;
-            if (resultCode == RESULT_OK) {
-                dropInViewModel.setIsLoading(true);
-
-                DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-                DropInResult.setLastUsedPaymentMethodType(this, result.getPaymentMethodNonce());
-
-                response = new Intent()
-                        .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result);
-            } else {
-                response = data;
-            }
-            setResult(resultCode, response);
-            finish();
-        } else if (requestCode == DELETE_PAYMENT_METHOD_NONCE_CODE) {
-            if (resultCode == RESULT_OK) {
-                dropInViewModel.setIsLoading(true);
-
-                if (data != null) {
-                    ArrayList<PaymentMethodNonce> paymentMethodNonces = data
-                            .getParcelableArrayListExtra(EXTRA_PAYMENT_METHOD_NONCES);
-
-                    if (paymentMethodNonces != null) {
-                        dropInViewModel.setVaultedPaymentMethods(paymentMethodNonces);
-                    }
-                }
-
-                updateVaultedPaymentMethodNonces(true);
-            }
-            dropInViewModel.setIsLoading(false);
-        }
     }
 
     public void onBackgroundClicked(View v) {
