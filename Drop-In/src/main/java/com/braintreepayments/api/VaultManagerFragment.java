@@ -35,11 +35,6 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bt_fragment_vault_manager, container, false);
 

@@ -27,6 +27,7 @@ class VaultManagerFragmentUITest {
 
     private lateinit var countDownLatch: CountDownLatch
     private lateinit var cardNonce: CardNonce
+    private lateinit var scenario: FragmentScenario<VaultManagerFragment>
 
     val vaultedPaymentMethodNonces = ArrayList<PaymentMethodNonce>()
 
@@ -36,12 +37,13 @@ class VaultManagerFragmentUITest {
         vaultedPaymentMethodNonces.add(cardNonce)
 
         countDownLatch = CountDownLatch(1)
+
+        scenario = FragmentScenario.launchInContainer(VaultManagerFragment::class.java)
+        scenario.moveToState(Lifecycle.State.RESUMED)
     }
 
     @Test
     fun whenStateIsRESUMED_setsVaultedPaymentMethodNoncesInAdapter() {
-        val scenario = FragmentScenario.launchInContainer(VaultManagerFragment::class.java)
-        scenario.moveToState(Lifecycle.State.RESUMED)
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethodNonces)
             assertEquals(1, fragment.adapter.paymentMethodNonces.size)
@@ -50,8 +52,6 @@ class VaultManagerFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_onDeleteIconClick_sendsDeletePaymentEvent() {
-        val scenario = FragmentScenario.launchInContainer(VaultManagerFragment::class.java)
-        scenario.moveToState(Lifecycle.State.RESUMED)
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethodNonces)
         }
@@ -74,8 +74,6 @@ class VaultManagerFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_onCloseButtonClick_sendsDismissUIEvent() {
-        val scenario = FragmentScenario.launchInContainer(VaultManagerFragment::class.java)
-        scenario.moveToState(Lifecycle.State.RESUMED)
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethodNonces)
         }

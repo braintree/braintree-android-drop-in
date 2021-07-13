@@ -173,11 +173,7 @@ public class DropInActivity extends BaseActivity {
                         getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.negative");
                     }
                 })
-                .setNegativeButton(R.string.bt_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
+                .setNegativeButton(R.string.bt_cancel, null)
                 .create()
                 .show();
     }
