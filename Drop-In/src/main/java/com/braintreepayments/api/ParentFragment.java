@@ -67,13 +67,13 @@ public class ParentFragment extends Fragment {
                     } else if (event.getType() == DropInUIEventType.DISMISS_VAULT_MANAGER) {
                         didHandleEvent = true;
 
-                        ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
-                        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                        viewPager.setLayoutParams(layoutParams);
-
                         fragments.remove(1);
                         viewPagerAdapter.notifyDataSetChanged();
                         viewPager.setCurrentItem(0, true);
+
+                        ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
+                        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                        viewPager.setLayoutParams(layoutParams);
                     }
                 }
 
