@@ -61,7 +61,6 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
 
-        // TODO: investigate why Settings isn't causing vault manager to be displayed when it's enabled
         mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
 
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(requireActivity(),
