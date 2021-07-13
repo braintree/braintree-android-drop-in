@@ -42,4 +42,6 @@
     <string name="bt_delete_confirmation_description">You will no longer be able to use this payment method in this app.</string>
     <string name="bt_done">Done</string>
     <string name="bt_vault_manager_delete_failure">We couldn\'t delete your payment method right now, try again later</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

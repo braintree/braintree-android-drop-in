@@ -93,7 +93,7 @@ public class DropInActivity extends BaseActivity {
             }
         });
 
-        showSelectPaymentMethodFragment();
+        showParentFragment();
     }
 
     public void onDropInEvent(DropInEvent event) {
@@ -283,6 +283,21 @@ public class DropInActivity extends BaseActivity {
     private void onAddCardSubmit(DropInEvent event) {
         String cardNumber = event.getString(DropInEventProperty.CARD_NUMBER);
         showCardDetailsFragment(cardNumber);
+    }
+
+    private void showParentFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag("PARENT_FRAGMENT");
+        if (fragment == null) {
+            Bundle args = new Bundle();
+            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+
+            fragmentManager
+                    .beginTransaction()
+                    .setReorderingAllowed(true)
+                    .replace(R.id.fragment_container_view, ParentFragment.class, args, "PARENT_FRAGMENT")
+                    .commit();
+        }
     }
 
     private void showCardDetailsFragment(final String cardNumber) {
