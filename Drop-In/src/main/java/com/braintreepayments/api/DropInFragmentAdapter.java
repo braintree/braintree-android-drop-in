@@ -1,34 +1,49 @@
 package com.braintreepayments.api;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.List;
 
 public class DropInFragmentAdapter extends FragmentStateAdapter {
 
+    private final DropInRequest dropInRequest;
     private final List<FragmentType> fragments;
 
-    public DropInFragmentAdapter(@NonNull FragmentActivity fragmentActivity, List<FragmentType> fragments) {
-        super(fragmentActivity);
+    public DropInFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, List<FragmentType> fragments, DropInRequest dropInRequest) {
+        super(fragmentManager, lifecycle);
         this.fragments = fragments;
+        this.dropInRequest = dropInRequest;
     }
+
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
         FragmentType fragmentType = fragments.get(position);
+
+        Bundle args = new Bundle();
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);
+
         switch (fragmentType) {
             case PROGRESS_INDICATOR:
                 return null;
 //                return new ProgressFragment();
             case VAULT_MANAGER:
-                return new VaultManagerFragment();
+                VaultManagerFragment vaultManagerFragment = new VaultManagerFragment();
+                vaultManagerFragment.setArguments(args);
+                return vaultManagerFragment;
             default:
             case SELECT_PAYMENT_METHOD:
-                return new SelectPaymentMethodFragment();
+                SelectPaymentMethodFragment fragment = new SelectPaymentMethodFragment();
+                fragment.setArguments(args);
+                return fragment;
         }
     }
 
