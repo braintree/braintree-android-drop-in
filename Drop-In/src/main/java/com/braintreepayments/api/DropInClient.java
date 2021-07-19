@@ -363,6 +363,14 @@ public class DropInClient {
         activity.startActivityForResult(intent, requestCode);
     }
 
+    public void launchDropInForResult(FragmentActivity activity, int requestCode, LaunchDropInCallback callback) {
+        Intent intent = new Intent(activity, DropInActivity.class)
+                .putExtra(EXTRA_CHECKOUT_REQUEST, dropInRequest)
+                .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
+                .putExtra(EXTRA_AUTHORIZATION, braintreeClient.getAuthorization().toString());
+        activity.startActivityForResult(intent, requestCode);
+    }
+
     /**
      * Called to get a user's existing payment method, if any. If your user already has an existing
      * payment method, you may not need to show Drop-In.

@@ -20,6 +20,7 @@ import com.braintreepayments.api.DropInResult;
 import com.braintreepayments.api.FetchMostRecentPaymentMethodCallback;
 import com.braintreepayments.api.GooglePayCardNonce;
 import com.braintreepayments.api.GooglePayRequest;
+import com.braintreepayments.api.LaunchDropInCallback;
 import com.braintreepayments.api.PayPalAccountNonce;
 import com.braintreepayments.api.PaymentMethodNonce;
 import com.braintreepayments.api.DropInPaymentMethodType;
@@ -101,7 +102,13 @@ public class MainActivity extends BaseActivity {
     }
 
     public void launchDropIn(View v) {
-        dropInClient.launchDropInForResult(this, DROP_IN_REQUEST);
+//        dropInClient.launchDropInForResult(this, DROP_IN_REQUEST);
+        dropInClient.launchDropInForResult(this, DROP_IN_REQUEST, new LaunchDropInCallback() {
+            @Override
+            public void onResult(DropInResult result, Exception error) {
+                displayResult(result);
+            }
+        });
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {
@@ -220,16 +227,16 @@ public class MainActivity extends BaseActivity {
             }
         });
 
-        dropInClient.deliverBrowserSwitchResult(this, new DropInResultCallback() {
-            @Override
-            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                if (dropInResult != null) {
-                    handleDropInResult(dropInResult);
-                } else {
-                    onError(error);
-                }
-            }
-        });
+//        dropInClient.deliverBrowserSwitchResult(this, new DropInResultCallback() {
+//            @Override
+//            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+//                if (dropInResult != null) {
+//                    handleDropInResult(dropInResult);
+//                } else {
+//                    onError(error);
+//                }
+//            }
+//        });
     }
 
     private void displayResult(DropInResult dropInResult) {

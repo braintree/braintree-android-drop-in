@@ -82,6 +82,17 @@ public class DropInActivity extends BaseActivity {
         showSelectPaymentMethodFragment();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getDropInClient().deliverBrowserSwitchResult(this, new DropInResultCallback() {
+            @Override
+            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                finishWithDropInResult(dropInResult);
+            }
+        });
+    }
+
     private void handleBraintreeEventBundle(Bundle bundle) {
         Parcelable braintreeResult = bundle.getParcelable("BRAINTREE_RESULT");
 
@@ -399,11 +410,11 @@ public class DropInActivity extends BaseActivity {
         finish();
     }
 
-    @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-    }
+//    @Override
+//    public void finish() {
+//        super.finish();
+//        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//    }
 
     public void onVaultedPaymentMethodSelected(final PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
