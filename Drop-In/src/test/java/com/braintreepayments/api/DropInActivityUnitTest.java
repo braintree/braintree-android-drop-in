@@ -86,6 +86,16 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void onResume_handlesBrowserSwitchResultsWithDropInClient() {
+        // TODO: 3DS testing
+    }
+
+    @Test
+    public void onActivityResult_handlesActivityResultsWithDropInClient() {
+        // TODO: 3DS testing
+    }
+
+    @Test
     public void setsIntegrationTypeToDropinForDropinActivity() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
