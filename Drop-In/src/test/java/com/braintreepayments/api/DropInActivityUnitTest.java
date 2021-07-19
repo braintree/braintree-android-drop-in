@@ -96,6 +96,16 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void onActivityResult_whenThreeDSecureCanceled_restoresCardDetailsFragment() {
+        // TODO: 3DS testing
+    }
+
+    @Test
+    public void onResume_whenThreeDSecureCanceled_restoresCardDetailsFragment() {
+        // TODO: 3DS testing
+    }
+
+    @Test
     public void setsIntegrationTypeToDropinForDropinActivity() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);

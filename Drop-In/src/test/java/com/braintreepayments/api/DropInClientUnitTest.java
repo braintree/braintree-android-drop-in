@@ -1390,7 +1390,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void handleThreeDSecureResult_withoutDataCollection_tokenizesResult() throws JSONException {
+    public void handleThreeDSecureActivityResult_withoutDataCollection_tokenizesResult() throws JSONException {
         CardNonce cardNonce = CardNonce.fromJSON(
                 new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
         ThreeDSecureResult threeDSecureResult = new ThreeDSecureResult();
@@ -1431,7 +1431,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void handleThreeDSecureResult_withDataCollection_tokenizesResultAndCollectsData() throws JSONException {
+    public void handleThreeDSecureActivityResult_withDataCollection_tokenizesResultAndCollectsData() throws JSONException {
         CardNonce cardNonce = CardNonce.fromJSON(
                 new JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD));
         ThreeDSecureResult threeDSecureResult = new ThreeDSecureResult();
@@ -1471,7 +1471,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void handleThreeDSecureResult_whenTokenizationFails_callbackError() {
+    public void handleThreeDSecureActivityResult_whenTokenizationFails_callbackError() {
         Exception activityResultError = new Exception("activity result error");
         ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder()
                 .activityResultError(activityResultError)
@@ -1496,6 +1496,16 @@ public class DropInClientUnitTest {
         sut.handleThreeDSecureActivityResult(activity, 123, intent, callback);
 
         verify(callback).onResult(null, activityResultError);
+    }
+
+    @Test
+    public void handleThreeDSecureActivityResult_onUserCanceledException_callsBackCanceledError() {
+        // TODO: 3DS testing
+    }
+
+    @Test
+    public void deliverBrowserSwitchResult_onUserCanceledException_callsBackCanceledError() {
+        // TODO: 3DS testing
     }
 
     @Test
