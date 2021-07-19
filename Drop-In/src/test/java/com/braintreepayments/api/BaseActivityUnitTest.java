@@ -34,6 +34,11 @@ public class BaseActivityUnitTest {
     }
 
     @Test
+    public void onCreate_setsDropInRequest_fromSavedInstanceState() {
+        // TODO: 3DS testing
+    }
+
+    @Test
     public void onCreate_setsDropInRequest() {
         Intent intent = new DropInRequest()
                 .tokenizationKey(TOKENIZATION_KEY)
