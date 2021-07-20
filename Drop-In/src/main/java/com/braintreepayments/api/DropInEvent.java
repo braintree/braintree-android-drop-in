@@ -9,6 +9,12 @@ class DropInEvent implements Parcelable {
     private final DropInEventType type;
     private final Bundle payload;
 
+    static DropInEvent createSendAnalytics(String eventName) {
+        DropInEvent event = new DropInEvent(DropInEventType.SEND_ANALYTICS);
+        event.putString(DropInEventProperty.ANALYTICS_EVENT_NAME, eventName);
+        return event;
+    }
+
     DropInEvent(DropInEventType type) {
         this.type = type;
         this.payload = new Bundle();
@@ -22,6 +28,10 @@ class DropInEvent implements Parcelable {
 
     void put(DropInEventProperty property, Parcelable parcelable) {
         payload.putParcelable(property.getBundleKey(), parcelable);
+    }
+
+    private void putString(DropInEventProperty property, String value) {
+        payload.putString(property.getBundleKey(), value);
     }
 
     String getString(DropInEventProperty property) {

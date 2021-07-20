@@ -103,7 +103,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             }
         });
 
-        sendBraintreeEvent(new DropInAnalyticsEvent("appeared"));
+        sendBraintreeEvent(DropInEvent.createSendAnalytics("appeared"));
         return view;
     }
 
@@ -131,7 +131,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     @Override
     public void onVaultedPaymentMethodSelected(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
-            sendBraintreeEvent(new DropInAnalyticsEvent("vaulted-card.select"));
+            sendBraintreeEvent(DropInEvent.createSendAnalytics("vaulted-card.select"));
         }
         sendBraintreeEvent(new VaultedPaymentMethodSelectedEvent(paymentMethodNonce));
     }
@@ -151,7 +151,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             }
 
             if (containsCardNonce(paymentMethodNonces)) {
-                sendBraintreeEvent(new DropInAnalyticsEvent("vaulted-card.appear"));
+                sendBraintreeEvent(DropInEvent.createSendAnalytics("vaulted-card.appear"));
             }
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
