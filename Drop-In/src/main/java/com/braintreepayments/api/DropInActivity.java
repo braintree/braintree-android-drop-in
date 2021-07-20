@@ -53,7 +53,7 @@ public class DropInActivity extends BaseActivity {
                 if (dropInResult != null) {
                     finishWithDropInResult(dropInResult);
                 } else if (error instanceof UserCanceledException) {
-                    // TODO: handle cancel
+                    dropInViewModel.setIsLoading(false);
                 } else {
                     onError(error);
                 }
