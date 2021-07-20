@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.Mock;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
@@ -24,6 +25,7 @@ import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClie
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -81,7 +83,6 @@ public class DropInActivityUnitTest {
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
         DropInClient dropInClient = mock(DropInClient.class);
-        when(dropInClient.getAuthorization()).thenReturn(mock(InvalidAuthorization.class));
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
@@ -91,12 +92,10 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onResume_whenBrowserSwitchResultExists_finishesWithResult() {
-
     }
 
     @Test
     public void onResume_whenBrowserSwitchReturnsUserCanceledException_restores() {
-
     }
 
     @Test
@@ -110,7 +109,6 @@ public class DropInActivityUnitTest {
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
         DropInClient dropInClient = mock(DropInClient.class);
-        when(dropInClient.getAuthorization()).thenReturn(mock(InvalidAuthorization.class));
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
@@ -128,12 +126,40 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_whenResultIsUserCanceledException_restores() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
+        Exception error = new UserCanceledException("User canceled 3DS.");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .handleThreeDSecureActivityResultError(error)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onActivityResult(100, 1, mock(Intent.class));
+
+        assertFalse(mActivity.isFinishing());
+        // TODO: assert cancel behavior
     }
 
     @Test
-    public void onActivityResult_whenError_forwardsError() {
+    public void onActivityResult_whenError_handlesError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
+        Exception error = new Exception("A 3DS error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .handleThreeDSecureActivityResultError(error)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onActivityResult(100, 1, mock(Intent.class));
+
+        assertTrue(mActivity.isFinishing());
+        verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error");
     }
 
     @Test
