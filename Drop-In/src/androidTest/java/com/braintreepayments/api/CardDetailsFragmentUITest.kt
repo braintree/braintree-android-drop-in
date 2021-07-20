@@ -388,5 +388,6 @@ class CardDetailsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenThreeDSecureUserCancelationPresentInViewModel_showsSubmitButtonAgain() {
         // TODO: observe view model for UserCancelation cardTokenizationError and reset submit button
+        // TODO: is storing 3DS canceled in a view model necessary?
     }
 }

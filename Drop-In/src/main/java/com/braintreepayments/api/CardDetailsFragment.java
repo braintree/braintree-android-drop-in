@@ -142,7 +142,6 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
         }
 
         dropInViewModel.setIsLoading(false);
-//        animatedButtonView.showButton();
     }
 
     private void sendDropInEvent(DropInEvent event) {
@@ -153,7 +152,6 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
     public void onCardFormSubmit() {
         if (cardForm.isValid()) {
             dropInViewModel.setIsLoading(true);
-//            animatedButtonView.showLoading();
 
             boolean shouldVault = Authorization.fromString(dropInRequest.getAuthorization()) instanceof ClientToken && cardForm.isSaveCardCheckBoxChecked();
 
@@ -169,7 +167,6 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             sendDropInEvent(DropInEvent.createCardDetailsSubmitEvent(card));
         } else {
             dropInViewModel.setIsLoading(false);
-//            animatedButtonView.showButton();
             cardForm.validate();
         }
     }
