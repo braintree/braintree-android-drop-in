@@ -77,7 +77,16 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onResume_deliversBrowserSwitchResult() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
+        DropInClient dropInClient = mock(DropInClient.class);
+        when(dropInClient.getAuthorization()).thenReturn(mock(InvalidAuthorization.class));
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        verify(dropInClient).deliverBrowserSwitchResult(same(mActivity), any(DropInResultCallback.class));
     }
 
     @Test
@@ -97,7 +106,19 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_handlesThreeDSecureActivityResult() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
+        DropInClient dropInClient = mock(DropInClient.class);
+        when(dropInClient.getAuthorization()).thenReturn(mock(InvalidAuthorization.class));
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        Intent intent = mock(Intent.class);
+        mActivity.onActivityResult(100, 1, intent);
+
+        verify(dropInClient).handleThreeDSecureActivityResult(same(mActivity), eq(1), same(intent), any(DropInResultCallback.class));
     }
 
     @Test
