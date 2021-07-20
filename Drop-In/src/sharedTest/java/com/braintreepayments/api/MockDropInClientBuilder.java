@@ -38,6 +38,8 @@ public class MockDropInClientBuilder {
     private Exception unionPayTokenizeError;
     private Exception handleThreeDSecureActivityResultError;
     private DropInResult handleThreeDSecureActivityResultSuccess;
+    private Exception deliverBrowserSwitchResultError;
+    private DropInResult deliverBrowserSwitchResultSuccess;
 
     private boolean shouldPerformThreeDSecureVerification;
 
@@ -138,6 +140,16 @@ public class MockDropInClientBuilder {
 
     MockDropInClientBuilder handleThreeDSecureActivityResultSuccess(DropInResult result) {
         this.handleThreeDSecureActivityResultSuccess = result;
+        return this;
+    }
+
+    MockDropInClientBuilder deliverBrowseSwitchResultError(Exception error) {
+        this.deliverBrowserSwitchResultError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder deliverBrowserSwitchResultSuccess(DropInResult result) {
+        this.deliverBrowserSwitchResultSuccess = result;
         return this;
     }
 
@@ -288,6 +300,19 @@ public class MockDropInClientBuilder {
                 return null;
             }
         }).when(dropInClient).handleThreeDSecureActivityResult(any(FragmentActivity.class), anyInt(), any(Intent.class), any(DropInResultCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                DropInResultCallback callback = (DropInResultCallback) invocation.getArguments()[1];
+                if (deliverBrowserSwitchResultError != null) {
+                    callback.onResult(null, deliverBrowserSwitchResultError);
+                } else if (deliverBrowserSwitchResultSuccess != null) {
+                    callback.onResult(deliverBrowserSwitchResultSuccess, null);
+                }
+                return null;
+            }
+        }).when(dropInClient).deliverBrowserSwitchResult(any(FragmentActivity.class), any(DropInResultCallback.class));
 
         return dropInClient;
     }

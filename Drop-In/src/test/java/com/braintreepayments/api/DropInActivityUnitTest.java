@@ -92,15 +92,61 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onResume_whenBrowserSwitchResultExists_finishesWithResult() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        DropInResult result = mock(DropInResult.class);
+        PaymentMethodNonce nonce = mock(PaymentMethodNonce.class);
+        when(result.getPaymentMethodNonce()).thenReturn(nonce);
+        when(result.getDeviceData()).thenReturn("device data");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .handleThreeDSecureActivityResultSuccess(result)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        assertFalse(mActivity.isFinishing());
+        // TODO assert finished with result
     }
 
     @Test
     public void onResume_whenBrowserSwitchReturnsUserCanceledException_restores() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        Exception error = new UserCanceledException("User canceled 3DS.");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .deliverBrowseSwitchResultError(error)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onActivityResult(100, 1, mock(Intent.class));
+
+        assertFalse(mActivity.isFinishing());
+        assertFalse(mActivity.dropInViewModel.isLoading().getValue());
     }
 
     @Test
     public void onResume_whenBrowserSwitchError_forwardsError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
+        Exception error = new Exception("A 3DS error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .deliverBrowseSwitchResultError(error)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onActivityResult(100, 1, mock(Intent.class));
+
+        assertTrue(mActivity.isFinishing());
+        verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error");
     }
 
     @Test
