@@ -121,11 +121,27 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onActivityResult_whenDropInResultExists_finishesWithResult() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
+        DropInResult result = mock(DropInResult.class);
+        PaymentMethodNonce nonce = mock(PaymentMethodNonce.class);
+        when(result.getPaymentMethodNonce()).thenReturn(nonce);
+        when(result.getDeviceData()).thenReturn("device data");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .handleThreeDSecureActivityResultSuccess(result)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onActivityResult(100, 1, mock(Intent.class));
+        assertTrue(mActivity.isFinishing());
+        // TODO assert finished with result
     }
 
     @Test
-    public void onActivityResult_whenResultIsUserCanceledException_restores() {
+    public void onActivityResult_whenResultIsUserCanceledException_setsIsLoadingFalse() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
@@ -140,7 +156,7 @@ public class DropInActivityUnitTest {
         mActivity.onActivityResult(100, 1, mock(Intent.class));
 
         assertFalse(mActivity.isFinishing());
-        // TODO: assert cancel behavior
+        assertFalse(mActivity.dropInViewModel.isLoading().getValue());
     }
 
     @Test

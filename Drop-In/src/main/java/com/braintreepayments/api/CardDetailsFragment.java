@@ -71,6 +71,17 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             }
         });
 
+        dropInViewModel.isLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean isLoading) {
+                if (isLoading) {
+                    animatedButtonView.showLoading();
+                } else {
+                    animatedButtonView.showButton();
+                }
+            }
+        });
+
         boolean showCardCheckbox = !Authorization.isTokenizationKey(dropInRequest.getAuthorization())
                 && dropInRequest.isSaveCardCheckBoxShown();
 
@@ -130,7 +141,8 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             }
         }
 
-        animatedButtonView.showButton();
+        dropInViewModel.setIsLoading(false);
+//        animatedButtonView.showButton();
     }
 
     private void sendDropInEvent(DropInEvent event) {
@@ -140,7 +152,8 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
     @Override
     public void onCardFormSubmit() {
         if (cardForm.isValid()) {
-            animatedButtonView.showLoading();
+            dropInViewModel.setIsLoading(true);
+//            animatedButtonView.showLoading();
 
             boolean shouldVault = Authorization.fromString(dropInRequest.getAuthorization()) instanceof ClientToken && cardForm.isSaveCardCheckBoxChecked();
 
@@ -155,7 +168,8 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
 
             sendDropInEvent(DropInEvent.createCardDetailsSubmitEvent(card));
         } else {
-            animatedButtonView.showButton();
+            dropInViewModel.setIsLoading(false);
+//            animatedButtonView.showButton();
             cardForm.validate();
         }
     }

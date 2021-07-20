@@ -37,6 +37,7 @@ public class MockDropInClientBuilder {
     private CardNonce unionPayTokenizeSuccess;
     private Exception unionPayTokenizeError;
     private Exception handleThreeDSecureActivityResultError;
+    private DropInResult handleThreeDSecureActivityResultSuccess;
 
     private boolean shouldPerformThreeDSecureVerification;
 
@@ -132,6 +133,11 @@ public class MockDropInClientBuilder {
 
     MockDropInClientBuilder handleThreeDSecureActivityResultError(Exception error) {
         this.handleThreeDSecureActivityResultError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder handleThreeDSecureActivityResultSuccess(DropInResult result) {
+        this.handleThreeDSecureActivityResultSuccess = result;
         return this;
     }
 
@@ -276,6 +282,8 @@ public class MockDropInClientBuilder {
                 DropInResultCallback callback = (DropInResultCallback) invocation.getArguments()[3];
                 if (handleThreeDSecureActivityResultError != null) {
                     callback.onResult(null, handleThreeDSecureActivityResultError);
+                } else if (handleThreeDSecureActivityResultSuccess != null) {
+                    callback.onResult(handleThreeDSecureActivityResultSuccess, null);
                 }
                 return null;
             }

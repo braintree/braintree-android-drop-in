@@ -38,7 +38,8 @@ public class DropInActivity extends BaseActivity {
 
     static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";
 
-    private DropInViewModel dropInViewModel;
+    @VisibleForTesting
+    DropInViewModel dropInViewModel;
     ActionBar actionBar;
     private FragmentContainerView fragmentContainerView;
 
@@ -303,6 +304,7 @@ public class DropInActivity extends BaseActivity {
                                 .setReorderingAllowed(true)
                                 .replace(R.id.fragment_container_view, CardDetailsFragment.class, args, "CARD_DETAILS")
                                 .commit();
+                        dropInViewModel.setIsLoading(false);
                     }
                 }
             }
@@ -451,7 +453,7 @@ public class DropInActivity extends BaseActivity {
                 if (dropInResult != null) {
                     finishWithDropInResult(dropInResult);
                 } else if (error instanceof UserCanceledException) {
-                    // TODO: handle cancel
+                    dropInViewModel.setIsLoading(false);
                 } else {
                     onError(error);
                 }
