@@ -133,7 +133,9 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         if (paymentMethodNonce instanceof CardNonce) {
             sendBraintreeEvent(DropInEvent.createSendAnalytics("vaulted-card.select"));
         }
-        sendBraintreeEvent(new VaultedPaymentMethodSelectedEvent(paymentMethodNonce));
+
+        sendBraintreeEvent(
+                DropInEvent.createVaultedPaymentMethodSelectedEvent(paymentMethodNonce));
     }
 
     private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {
