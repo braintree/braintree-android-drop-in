@@ -535,11 +535,6 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    void onCardDetailsEvent(CardDetailsEvent cardDetailsEvent) {
-        Card card = cardDetailsEvent.getCard();
-        tokenizeCard(card);
-    }
-
     void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
         getDropInClient().shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
             @Override

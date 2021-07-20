@@ -15,6 +15,18 @@ class DropInEvent implements Parcelable {
         return event;
     }
 
+    static DropInEvent createAddCardSubmitEvent(String cardNumber) {
+        DropInEvent event = new DropInEvent(DropInEventType.ADD_CARD_SUBMIT);
+        event.putString(DropInEventProperty.CARD_NUMBER, cardNumber);
+        return event;
+    }
+
+    static DropInEvent createCardDetailsSubmitEvent(Card card) {
+        DropInEvent event = new DropInEvent(DropInEventType.CARD_DETAILS_SUBMIT);
+        event.putParcelable(DropInEventProperty.CARD_DETAILS, card);
+        return null;
+    }
+
     DropInEvent(DropInEventType type) {
         this.type = type;
         this.payload = new Bundle();
@@ -26,7 +38,7 @@ class DropInEvent implements Parcelable {
         this.payload = in.readBundle(getClass().getClassLoader());
     }
 
-    void put(DropInEventProperty property, Parcelable parcelable) {
+    void putParcelable(DropInEventProperty property, Parcelable parcelable) {
         payload.putParcelable(property.getBundleKey(), parcelable);
     }
 

@@ -156,7 +156,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             card.setPostalCode(cardForm.getPostalCode());
             card.setShouldValidate(shouldVault);
 
-            sendBraintreeEvent(new CardDetailsEvent(card));
+            sendBraintreeEvent(DropInEvent.createCardDetailsSubmitEvent(card));
         } else {
             animatedButtonView.showButton();
             cardForm.validate();
