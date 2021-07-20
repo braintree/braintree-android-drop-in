@@ -99,7 +99,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendBraintreeEvent(new DropInUIEvent(DropInUIEventType.SHOW_VAULT_MANAGER));
+                sendBraintreeEvent(new DropInEvent(DropInEventType.SHOW_VAULT_MANAGER));
             }
         });
 
@@ -119,7 +119,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         mSupportedPaymentMethodListView.setAdapter(adapter);
         dropInViewModel.setIsLoading(false);
 
-        sendBraintreeEvent(new DropInUIEvent(DropInUIEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS));
+        sendBraintreeEvent(new DropInEvent(DropInEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS));
     }
 
     @Override

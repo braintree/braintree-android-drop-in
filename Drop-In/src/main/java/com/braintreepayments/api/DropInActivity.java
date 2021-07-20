@@ -154,23 +154,6 @@ public class DropInActivity extends BaseActivity {
         }
     }
 
-    void onUIEvent(DropInUIEvent event) {
-        switch (event.getType()) {
-            case DropInUIEventType.SHOW_VAULT_MANAGER:
-                showVaultManager();
-                break;
-            case DropInUIEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
-                // TODO: "refetch" was previously false in this case, however it isn't
-                // immediately clear why the refetch parameter exists. We should investigate
-                // to see if this parameter is necessary
-                updateVaultedPaymentMethodNonces(false);
-                break;
-            case DropInUIEventType.DISMISS_VAULT_MANAGER:
-                showSelectPaymentMethodFragment();
-                break;
-        }
-    }
-
     void onDeleteVaultedPaymentMethodSelected(DeleteVaultedPaymentMethodNonceEvent event) {
         final PaymentMethodNonce paymentMethodNonceToDelete = event.getPaymentMethodNonceToDelete();
         deleteVaultedPaymentMethod(paymentMethodNonceToDelete);

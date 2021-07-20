@@ -18,8 +18,6 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-import static com.braintreepayments.api.DropInUIEventType.DISMISS_VAULT_MANAGER;
-
 public class VaultManagerFragment extends Fragment implements View.OnClickListener {
 
     private ViewSwitcher loadingViewSwitcher;
@@ -57,7 +55,7 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendBraintreeEvent(new DropInUIEvent(DISMISS_VAULT_MANAGER));
+                sendBraintreeEvent(new DropInEvent(DropInEventType.DISMISS_VAULT_MANAGER));
             }
         });
 
