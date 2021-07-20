@@ -43,6 +43,24 @@ public class DropInActivity extends BaseActivity {
     private FragmentContainerView fragmentContainerView;
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        getDropInClient().deliverBrowserSwitchResult(this, new DropInResultCallback() {
+            @Override
+            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                if (dropInResult != null) {
+                    finishWithDropInResult(dropInResult);
+                } else if (error instanceof UserCanceledException) {
+                    // TODO: handle cancel
+                } else {
+                    onError(error);
+                }
+            }
+        });
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
@@ -422,6 +440,23 @@ public class DropInActivity extends BaseActivity {
     public void finish() {
         super.finish();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getDropInClient().handleThreeDSecureActivityResult(this, resultCode, data, new DropInResultCallback() {
+            @Override
+            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                if (dropInResult != null) {
+                    finishWithDropInResult(dropInResult);
+                } else if (error instanceof UserCanceledException) {
+                    // TODO: handle cancel
+                } else {
+                    onError(error);
+                }
+            }
+        });
     }
 
     @VisibleForTesting
