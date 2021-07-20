@@ -22,6 +22,8 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
+import static com.braintreepayments.api.DropInEventType.SHOW_VAULT_MANAGER;
+
 public class SelectPaymentMethodFragment extends Fragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
 
     private ViewSwitcher mLoadingViewSwitcher;

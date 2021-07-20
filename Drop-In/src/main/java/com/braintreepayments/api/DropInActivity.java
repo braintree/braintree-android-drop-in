@@ -1,12 +1,10 @@
 package com.braintreepayments.api;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.View;
 
-import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -24,10 +22,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
-import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
-import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 
 // TODO: unit test after all fragments have been extracted
 public class DropInActivity extends BaseActivity {
@@ -82,6 +76,47 @@ public class DropInActivity extends BaseActivity {
         showSelectPaymentMethodFragment();
     }
 
+    public void onDropInEvent(DropInEvent event) {
+        switch(event.getType()) {
+            case ADD_CARD_SUBMIT:
+                String cardNumber = event.getString(DropInEventProperty.CARD_NUMBER);
+                showCardDetailsFragment(cardNumber);
+                break;
+            case CARD_DETAILS_SUBMIT:
+                Card card = event.getCard(DropInEventProperty.CARD_DETAILS);
+                tokenizeCard(card);
+                break;
+            case DELETE_VAULTED_PAYMENT_METHOD:
+                deleteVaultedPaymentMethod(
+                        event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION));
+                break;
+            case DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
+                updateVaultedPaymentMethodNonces(false);
+                break;
+            case DISMISS_VAULT_MANAGER:
+                showSelectPaymentMethodFragment();
+                break;
+            case EDIT_CARD:
+                startAddCardFlow(event.getString(DropInEventProperty.CARD_NUMBER));
+                break;
+            case SEND_ANALYTICS:
+                String eventName = event.getString(DropInEventProperty.ANALYTICS_EVENT_NAME);
+                sendAnalyticsEvent(eventName);
+                break;
+            case SHOW_VAULT_MANAGER:
+                showVaultManager();
+                break;
+            case SUPPORTED_PAYMENT_METHOD_SELECTED:
+                DropInPaymentMethodType paymentMethodType =
+                    event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD_SELECTION);
+                startPaymentFlow(paymentMethodType);
+                break;
+            case VAULTED_PAYMENT_METHOD_SELECTED:
+                onVaultedPaymentMethodSelected(event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION));
+                break;
+        }
+    }
+
     private void handleBraintreeEventBundle(Bundle bundle) {
         Parcelable braintreeResult = bundle.getParcelable("BRAINTREE_RESULT");
 
@@ -102,7 +137,7 @@ public class DropInActivity extends BaseActivity {
         } else if (braintreeResult instanceof CardDetailsEvent) {
             onCardDetailsEvent((CardDetailsEvent) braintreeResult);
         } else if (braintreeResult instanceof EditCardNumberEvent) {
-            startAddCardFlow((EditCardNumberEvent) braintreeResult);
+            startAddCardFlow(((EditCardNumberEvent) braintreeResult).getCardNumber());
         } else if (braintreeResult instanceof DeleteVaultedPaymentMethodNonceEvent) {
             DeleteVaultedPaymentMethodNonceEvent deleteVaultedPaymentMethodNonceEvent =
                     (DeleteVaultedPaymentMethodNonceEvent) braintreeResult;
@@ -112,6 +147,24 @@ public class DropInActivity extends BaseActivity {
 
     void onAnalyticsEvent(DropInAnalyticsEvent event) {
         sendAnalyticsEvent(event.getName());
+    }
+
+    void startPaymentFlow(DropInPaymentMethodType paymentMethodType) {
+        switch (paymentMethodType) {
+            case GOOGLE_PAYMENT:
+                startGooglePayFlow();
+                break;
+            case PAYPAL:
+                startPayPalFlow();
+                break;
+            case PAY_WITH_VENMO:
+                startVenmoFlow();
+                break;
+            default:
+            case UNKNOWN:
+                startAddCardFlow(null);
+                break;
+        }
     }
 
     void onSupportedPaymentMethodSelectedEvent(SupportedPaymentMethodSelectedEvent event) {
@@ -151,7 +204,10 @@ public class DropInActivity extends BaseActivity {
 
     void onDeleteVaultedPaymentMethodSelected(DeleteVaultedPaymentMethodNonceEvent event) {
         final PaymentMethodNonce paymentMethodNonceToDelete = event.getPaymentMethodNonceToDelete();
+        deleteVaultedPaymentMethod(paymentMethodNonceToDelete);
+    }
 
+    private void deleteVaultedPaymentMethod(final PaymentMethodNonce paymentMethodNonceToDelete) {
         PaymentMethodItemView dialogView = new PaymentMethodItemView(this);
         dialogView.setPaymentMethod(paymentMethodNonceToDelete, false);
 
@@ -200,8 +256,8 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    void sendAnalyticsEvent(String eventFragment) {
-        getDropInClient().sendAnalyticsEvent(eventFragment);
+    void sendAnalyticsEvent(String eventName) {
+        getDropInClient().sendAnalyticsEvent(eventName);
     }
 
     void showVaultManager() {
@@ -352,7 +408,7 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    private void startAddCardFlow(EditCardNumberEvent editCardNumberEvent) {
+    private void startAddCardFlow(@Nullable String cardNumber) {
         setActionBarTitle(R.string.bt_card_details);
         getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
             @Override
@@ -366,8 +422,8 @@ public class DropInActivity extends BaseActivity {
         if (fragment == null) {
             Bundle args = new Bundle();
             args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-            if (editCardNumberEvent != null) {
-                args.putString("EXTRA_CARD_NUMBER", editCardNumberEvent.getCardNumber());
+            if (cardNumber != null) {
+                args.putString("EXTRA_CARD_NUMBER", cardNumber);
             }
 
             fragmentManager
@@ -454,8 +510,7 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    void onCardDetailsEvent(CardDetailsEvent cardDetailsEvent) {
-        Card card = cardDetailsEvent.getCard();
+    void tokenizeCard(Card card) {
         getDropInClient().tokenizeCard(card, new CardTokenizeCallback() {
             @Override
             public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
@@ -466,6 +521,11 @@ public class DropInActivity extends BaseActivity {
                 onPaymentMethodNonceCreated(cardNonce);
             }
         });
+    }
+
+    void onCardDetailsEvent(CardDetailsEvent cardDetailsEvent) {
+        Card card = cardDetailsEvent.getCard();
+        tokenizeCard(card);
     }
 
     void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
