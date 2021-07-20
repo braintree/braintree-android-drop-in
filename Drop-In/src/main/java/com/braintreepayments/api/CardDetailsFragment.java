@@ -166,7 +166,8 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
     @Override
     public void onCardFormFieldFocused(View view) {
         if (view instanceof CardEditText) {
-            sendBraintreeEvent(new EditCardNumberEvent(cardForm.getCardNumber()));
+            String cardNumber = cardForm.getCardNumber();
+            sendBraintreeEvent(DropInEvent.createEditCardEvent(cardNumber));
         }
     }
 }

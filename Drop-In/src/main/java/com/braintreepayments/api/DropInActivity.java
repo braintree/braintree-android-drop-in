@@ -154,11 +154,6 @@ public class DropInActivity extends BaseActivity {
         }
     }
 
-    void onDeleteVaultedPaymentMethodSelected(DeleteVaultedPaymentMethodNonceEvent event) {
-        final PaymentMethodNonce paymentMethodNonceToDelete = event.getPaymentMethodNonceToDelete();
-        deleteVaultedPaymentMethod(paymentMethodNonceToDelete);
-    }
-
     private void onDeleteVaultedPaymentMethod(DropInEvent event) {
         deleteVaultedPaymentMethod(
                 event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION));

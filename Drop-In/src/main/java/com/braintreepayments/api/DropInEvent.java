@@ -24,7 +24,19 @@ class DropInEvent implements Parcelable {
     static DropInEvent createCardDetailsSubmitEvent(Card card) {
         DropInEvent event = new DropInEvent(DropInEventType.CARD_DETAILS_SUBMIT);
         event.putParcelable(DropInEventProperty.CARD_DETAILS, card);
-        return null;
+        return event;
+    }
+
+    static DropInEvent createEditCardEvent(String cardNumber) {
+        DropInEvent event = new DropInEvent(DropInEventType.EDIT_CARD);
+        event.putString(DropInEventProperty.CARD_NUMBER, cardNumber);
+        return event;
+    }
+
+    static DropInEvent createDeleteVaultedPaymentMethodNonceEvent(PaymentMethodNonce paymentMethodNonceToDelete) {
+        DropInEvent event = new DropInEvent(DropInEventType.DELETE_VAULTED_PAYMENT_METHOD);
+        event.putParcelable(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION, paymentMethodNonceToDelete);
+        return event;
     }
 
     DropInEvent(DropInEventType type) {

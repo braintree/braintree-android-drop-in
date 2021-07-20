@@ -68,8 +68,8 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
             PaymentMethodItemView paymentMethodItemView = (PaymentMethodItemView) v;
             final PaymentMethodNonce paymentMethodNonceToDelete = paymentMethodItemView.getPaymentMethodNonce();
 
-            DeleteVaultedPaymentMethodNonceEvent event = new DeleteVaultedPaymentMethodNonceEvent(paymentMethodNonceToDelete);
-            sendBraintreeEvent(event);
+            sendBraintreeEvent(
+                    DropInEvent.createDeleteVaultedPaymentMethodNonceEvent(paymentMethodNonceToDelete));
         }
     }
 
