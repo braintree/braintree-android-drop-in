@@ -76,6 +76,46 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void onResume_deliversBrowserSwitchResult() {
+
+    }
+
+    @Test
+    public void onResume_whenBrowserSwitchResultExists_finishesWithResult() {
+
+    }
+
+    @Test
+    public void onResume_whenBrowserSwitchReturnsUserCanceledException_restores() {
+
+    }
+
+    @Test
+    public void onResume_whenBrowserSwitchError_forwardsError() {
+
+    }
+
+    @Test
+    public void onActivityResult_handlesThreeDSecureActivityResult() {
+
+    }
+
+    @Test
+    public void onActivityResult_whenDropInResultExists_finishesWithResult() {
+
+    }
+
+    @Test
+    public void onActivityResult_whenResultIsUserCanceledException_restores() {
+
+    }
+
+    @Test
+    public void onActivityResult_whenError_forwardsError() {
+
+    }
+
+    @Test
     public void setsIntegrationTypeToDropinForDropinActivity() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
