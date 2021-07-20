@@ -125,7 +125,8 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     @Override
     public void onPaymentMethodSelected(DropInPaymentMethodType type) {
         dropInViewModel.setIsLoading(true);
-        sendBraintreeEvent(new SupportedPaymentMethodSelectedEvent(type));
+        sendBraintreeEvent(
+                DropInEvent.createSupportedPaymentMethodSelectedEvent(type));
     }
 
     @Override

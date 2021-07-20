@@ -136,24 +136,6 @@ public class DropInActivity extends BaseActivity {
         }
     }
 
-    void onSupportedPaymentMethodSelectedEvent(SupportedPaymentMethodSelectedEvent event) {
-        switch (event.getPaymentMethodType()) {
-            case GOOGLE_PAYMENT:
-                startGooglePayFlow();
-                break;
-            case PAYPAL:
-                startPayPalFlow();
-                break;
-            case PAY_WITH_VENMO:
-                startVenmoFlow();
-                break;
-            default:
-            case UNKNOWN:
-                startAddCardFlow(null);
-                break;
-        }
-    }
-
     private void onDeleteVaultedPaymentMethod(DropInEvent event) {
         deleteVaultedPaymentMethod(
                 event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION));

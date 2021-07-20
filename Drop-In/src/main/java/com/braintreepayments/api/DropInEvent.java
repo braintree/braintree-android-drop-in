@@ -42,7 +42,13 @@ class DropInEvent implements Parcelable {
     static DropInEvent createVaultedPaymentMethodSelectedEvent(PaymentMethodNonce paymentMethodNonce) {
         DropInEvent event = new DropInEvent(DropInEventType.VAULTED_PAYMENT_METHOD_SELECTED);
         event.putParcelable(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION, paymentMethodNonce);
-        return null;
+        return event;
+    }
+
+    static DropInEvent createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType type) {
+        DropInEvent event = new DropInEvent(DropInEventType.SUPPORTED_PAYMENT_METHOD_SELECTED);
+        event.putString(DropInEventProperty.SUPPORTED_PAYMENT_METHOD_SELECTION, type.name());
+        return event;
     }
 
     DropInEvent(DropInEventType type) {
