@@ -1,0 +1,14 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    package="com.braintreepayments.api.dropin">
+
+    <application
+        android:supportsRtl="true"
+        tools:ignore="UnusedAttribute">
+
+        <activity android:name="com.braintreepayments.api.DropInUnitTestActivity"
+            android:theme="@style/bt_drop_in_activity_theme"/>
+    </application>
+
+</manifest>
+

@@ -34,14 +34,14 @@ public class DropInUnitTestActivity extends DropInActivity {
         return dropInClient;
     }
 
-    @Override
-    public Resources getResources() {
-        Resources resources = spy(super.getResources());
-        when(resources.getInteger(android.R.integer.config_longAnimTime)).thenReturn(0);
-        when(resources.getInteger(android.R.integer.config_mediumAnimTime)).thenReturn(0);
-        when(resources.getInteger(android.R.integer.config_shortAnimTime)).thenReturn(0);
-        return resources;
-    }
+//    @Override
+//    public Resources getResources() {
+//        Resources resources = spy(super.getResources());
+//        when(resources.getInteger(android.R.integer.config_longAnimTime)).thenReturn(0);
+//        when(resources.getInteger(android.R.integer.config_mediumAnimTime)).thenReturn(0);
+//        when(resources.getInteger(android.R.integer.config_shortAnimTime)).thenReturn(0);
+//        return resources;
+//    }
 
     @Override
     public Context getApplicationContext() {
