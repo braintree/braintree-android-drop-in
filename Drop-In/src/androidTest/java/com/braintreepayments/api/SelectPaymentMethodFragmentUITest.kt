@@ -164,9 +164,13 @@ class SelectPaymentMethodFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
-                val event = result.get("BRAINTREE_RESULT") as SupportedPaymentMethodSelectedEvent
-                assertEquals(DropInPaymentMethodType.UNKNOWN, event.paymentMethodType)
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
+                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+                assertEquals(DropInEventType.SUPPORTED_PAYMENT_METHOD_SELECTED, event.type)
+
+                val paymentMethodType =
+                    event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD_SELECTION)
+                assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodType)
                 countDownLatch.countDown()
             }
         }

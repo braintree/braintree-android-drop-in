@@ -1,10 +1,6 @@
 package com.braintreepayments.api;
 
 import android.content.Intent;
-import android.os.Parcelable;
-import android.widget.ViewSwitcher;
-
-import androidx.fragment.app.FragmentActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,9 +19,6 @@ import java.util.Objects;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
-import static com.braintreepayments.api.DropInActivity.ADD_CARD_REQUEST_CODE;
-import static com.braintreepayments.api.DropInActivity.DELETE_PAYMENT_METHOD_NONCE_CODE;
-import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static junit.framework.Assert.assertEquals;
@@ -33,7 +26,6 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -41,8 +33,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
-
-import com.braintreepayments.api.dropin.R;
 
 @RunWith(RobolectricTestRunner.class)
 public class DropInActivityUnitTest {

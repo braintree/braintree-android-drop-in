@@ -209,9 +209,10 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
-                val event = result.get("BRAINTREE_RESULT") as EditCardNumberEvent
-                assertEquals(VISA, event.cardNumber)
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
+                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+                assertEquals(DropInEventType.EDIT_CARD, event.type)
+                assertEquals(VISA, event.getString(DropInEventProperty.CARD_NUMBER))
                 countDownLatch.countDown()
             }
         }
@@ -235,9 +236,10 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
-                val event = result.get("BRAINTREE_RESULT") as CardDetailsEvent
-                assertEquals(VISA, event.card.number)
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
+                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+                assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
+                assertEquals(VISA, event.getCard(DropInEventProperty.CARD_DETAILS).number)
                 countDownLatch.countDown()
             }
         }
@@ -261,7 +263,7 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
                 events += result
             }
         }
@@ -286,10 +288,13 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
-                val event = result.get("BRAINTREE_RESULT") as CardDetailsEvent
-                assertEquals(VISA, event.card.number)
-                assertNull(event.card.cardholderName)
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
+                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+                assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
+
+                val card = event.getCard(DropInEventProperty.CARD_DETAILS)
+                assertEquals(VISA, card.number)
+                assertNull(card.cardholderName)
                 countDownLatch.countDown()
             }
         }
@@ -314,10 +319,13 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
-                val event = result.get("BRAINTREE_RESULT") as CardDetailsEvent
-                assertEquals(VISA, event.card.number)
-                assertEquals("Brian Tree", event.card.cardholderName)
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
+                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+                assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
+
+                val card = event.getCard(DropInEventProperty.CARD_DETAILS)
+                assertEquals(VISA, card.number)
+                assertEquals("Brian Tree", card.cardholderName)
                 countDownLatch.countDown()
             }
         }
@@ -327,7 +335,7 @@ class CardDetailsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_onCardFormSubmit_whenCardholderNameRequired_sendsCardDetailsEventWithCardholderName() {
         val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN).cardholderNameStatus(CardForm.FIELD_REQUIRED))
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN).cardholderNameStatus(FIELD_REQUIRED))
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
         args.putString("EXTRA_CARD_NUMBER", VISA)
 
@@ -342,10 +350,13 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
-                val event = result.get("BRAINTREE_RESULT") as CardDetailsEvent
-                assertEquals(VISA, event.card.number)
-                assertEquals("Brian Tree", event.card.cardholderName)
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
+                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+                assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
+
+                val card = event.getCard(DropInEventProperty.CARD_DETAILS)
+                assertEquals(VISA, card.number)
+                assertEquals("Brian Tree", card.cardholderName)
                 countDownLatch.countDown()
             }
         }
@@ -374,6 +385,7 @@ class CardDetailsFragmentUITest {
             }
     }
 
+    @Test
     fun whenStateIsRESUMED_whenThreeDSecureUserCancelationPresentInViewModel_showsSubmitButtonAgain() {
         // TODO: observe view model for UserCancelation cardTokenizationError and reset submit button
     }

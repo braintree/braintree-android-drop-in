@@ -1,21 +1,16 @@
 package com.braintreepayments.api
 
-import androidx.core.view.get
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isRoot
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.braintreepayments.api.DropInUIEventType.DISMISS_VAULT_MANAGER
 import com.braintreepayments.api.dropin.R
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertSame
-import org.hamcrest.Matchers
 import org.json.JSONObject
-import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -29,7 +24,7 @@ class VaultManagerFragmentUITest {
     private lateinit var cardNonce: CardNonce
     private lateinit var scenario: FragmentScenario<VaultManagerFragment>
 
-    val vaultedPaymentMethodNonces = ArrayList<PaymentMethodNonce>()
+    private val vaultedPaymentMethodNonces = ArrayList<PaymentMethodNonce>()
 
     @Before
     fun beforeEach() {
@@ -62,9 +57,13 @@ class VaultManagerFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
-                val event = result.get("BRAINTREE_RESULT") as DeleteVaultedPaymentMethodNonceEvent
-                assertSame(cardNonce, event.paymentMethodNonceToDelete)
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
+                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+                assertEquals(DropInEventType.DELETE_VAULTED_PAYMENT_METHOD, event.type)
+
+                val paymentMethodNonceToDelete =
+                        event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION)
+                assertSame(cardNonce, paymentMethodNonceToDelete)
                 countDownLatch.countDown()
             }
         }
@@ -84,9 +83,9 @@ class VaultManagerFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
-                val event = result.get("BRAINTREE_RESULT") as DropInUIEvent
-                assertSame(DISMISS_VAULT_MANAGER, event.type)
+            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
+                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+                assertEquals(DropInEventType.DISMISS_VAULT_MANAGER, event.type)
                 countDownLatch.countDown()
             }
         }
