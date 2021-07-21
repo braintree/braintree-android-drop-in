@@ -60,7 +60,6 @@ public class DropInViewModel extends ViewModel {
         cardTokenizationError.setValue(value);
     }
 
-
     public void removeVaultedPaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
         List<PaymentMethodNonce> currentPaymentMethods = vaultedPaymentMethods.getValue();
         if (currentPaymentMethods != null) {

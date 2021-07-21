@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,17 +69,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
                 if (error instanceof ErrorWithResponse) {
                     setErrors((ErrorWithResponse) error);
                 }
-            }
-        });
-
-        dropInViewModel.isLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isLoading) {
-                if (isLoading) {
-                    animatedButtonView.showLoading();
-                } else {
-                    animatedButtonView.showButton();
-                }
+                animatedButtonView.showButton();
             }
         });
 
@@ -140,8 +131,6 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
                 cardForm.setMobileNumberError(getContext().getString(R.string.bt_mobile_number_invalid));
             }
         }
-
-        dropInViewModel.setIsLoading(false);
     }
 
     private void sendDropInEvent(DropInEvent event) {
@@ -151,7 +140,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
     @Override
     public void onCardFormSubmit() {
         if (cardForm.isValid()) {
-            dropInViewModel.setIsLoading(true);
+            animatedButtonView.showLoading();
 
             boolean shouldVault = Authorization.fromString(dropInRequest.getAuthorization()) instanceof ClientToken && cardForm.isSaveCardCheckBoxChecked();
 
@@ -165,8 +154,10 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             card.setShouldValidate(shouldVault);
 
             sendDropInEvent(DropInEvent.createCardDetailsSubmitEvent(card));
+            animatedButtonView.showLoading();
+
         } else {
-            dropInViewModel.setIsLoading(false);
+            animatedButtonView.showButton();
             cardForm.validate();
         }
     }
