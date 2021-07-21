@@ -412,9 +412,9 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        SupportedPaymentMethodSelectedEvent event =
-            new SupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAYPAL);
-        mActivity.onSupportedPaymentMethodSelectedEvent(event);
+        DropInEvent event =
+                DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAYPAL);
+        mActivity.onSupportedPaymentMethodSelected(event);
 
         verify(dropInClient).tokenizePayPalRequest(same(mActivity), any(PayPalFlowStartedCallback.class));
     }
@@ -432,9 +432,9 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        SupportedPaymentMethodSelectedEvent event =
-                new SupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAY_WITH_VENMO);
-        mActivity.onSupportedPaymentMethodSelectedEvent(event);
+        DropInEvent event =
+                DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAY_WITH_VENMO);
+        mActivity.onSupportedPaymentMethodSelected(event);
 
         verify(dropInClient).tokenizeVenmoAccount(same(mActivity), any(VenmoTokenizeAccountCallback.class));
     }
@@ -452,9 +452,9 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        SupportedPaymentMethodSelectedEvent event =
-                new SupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.GOOGLE_PAYMENT);
-        mActivity.onSupportedPaymentMethodSelectedEvent(event);
+        DropInEvent event =
+                DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.GOOGLE_PAYMENT);
+        mActivity.onSupportedPaymentMethodSelected(event);
 
         verify(dropInClient).requestGooglePayPayment(same(mActivity), any(GooglePayRequestPaymentCallback.class));
     }
@@ -472,9 +472,9 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        SupportedPaymentMethodSelectedEvent event =
-                new SupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.UNKNOWN);
-        mActivity.onSupportedPaymentMethodSelectedEvent(event);
+        DropInEvent event =
+                DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.UNKNOWN);
+        mActivity.onSupportedPaymentMethodSelected(event);
 
         assertNotNull(mActivity.getSupportFragmentManager().findFragmentByTag("ADD_CARD"));
     }

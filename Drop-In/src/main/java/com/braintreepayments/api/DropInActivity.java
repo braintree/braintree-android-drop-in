@@ -8,6 +8,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AlertDialog;
@@ -112,7 +113,8 @@ public class DropInActivity extends BaseActivity {
         }
     }
 
-    private void onSupportedPaymentMethodSelected(DropInEvent event) {
+    @VisibleForTesting
+    void onSupportedPaymentMethodSelected(DropInEvent event) {
         DropInPaymentMethodType paymentMethodType =
                 event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD_SELECTION);
         startPaymentFlow(paymentMethodType);
