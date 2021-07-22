@@ -426,10 +426,9 @@ public class DropInActivity extends BaseActivity {
     }
 
     private void onVaultedPaymentMethodSelected(DropInEvent event) {
-        onVaultedPaymentMethodSelected(event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION));
-    }
+        final PaymentMethodNonce paymentMethodNonce =
+                event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION);
 
-    public void onVaultedPaymentMethodSelected(final PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             getDropInClient().sendAnalyticsEvent("vaulted-card.select");
         }
