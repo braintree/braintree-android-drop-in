@@ -86,11 +86,11 @@ class DropInEvent implements Parcelable {
         return (PaymentMethodNonce) payload.getParcelable(property.getBundleKey());
     }
 
-    public Card getCard(DropInEventProperty property) {
+    Card getCard(DropInEventProperty property) {
         return (Card) payload.getParcelable(property.getBundleKey());
     }
 
-    public DropInEventType getType() {
+    DropInEventType getType() {
         return type;
     }
 
