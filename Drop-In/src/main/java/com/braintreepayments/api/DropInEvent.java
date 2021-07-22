@@ -28,7 +28,7 @@ class DropInEvent {
         return event;
     }
 
-    static DropInEvent createEditCardEvent(String cardNumber) {
+    static DropInEvent createEditCardNumberEvent(String cardNumber) {
         DropInEvent event = new DropInEvent(DropInEventType.EDIT_CARD_NUMBER);
         event.putString(DropInEventProperty.CARD_NUMBER, cardNumber);
         return event;

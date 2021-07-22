@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -165,7 +164,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
     public void onCardFormFieldFocused(View view) {
         if (view instanceof CardEditText) {
             String cardNumber = cardForm.getCardNumber();
-            sendDropInEvent(DropInEvent.createEditCardEvent(cardNumber));
+            sendDropInEvent(DropInEvent.createEditCardNumberEvent(cardNumber));
         }
     }
 }
