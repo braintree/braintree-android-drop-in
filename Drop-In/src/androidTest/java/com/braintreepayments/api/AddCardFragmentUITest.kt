@@ -102,7 +102,7 @@ class AddCardFragmentUITest {
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { requestKey, result ->
-                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
+                val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.ADD_CARD_SUBMIT, event.type)
                 assertEquals(VISA, event.getString(DropInEventProperty.CARD_NUMBER))
                 countDownLatch.countDown()

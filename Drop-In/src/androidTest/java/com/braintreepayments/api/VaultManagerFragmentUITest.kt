@@ -58,7 +58,7 @@ class VaultManagerFragmentUITest {
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
-                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
+                val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.DELETE_VAULTED_PAYMENT_METHOD, event.type)
 
                 val paymentMethodNonceToDelete =
@@ -84,7 +84,7 @@ class VaultManagerFragmentUITest {
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
-                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
+                val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.DISMISS_VAULT_MANAGER, event.type)
                 countDownLatch.countDown()
             }

@@ -210,7 +210,7 @@ class CardDetailsFragmentUITest {
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
-                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
+                val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.EDIT_CARD_NUMBER, event.type)
                 assertEquals(VISA, event.getString(DropInEventProperty.CARD_NUMBER))
                 countDownLatch.countDown()
@@ -237,7 +237,7 @@ class CardDetailsFragmentUITest {
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
-                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
+                val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
                 assertEquals(VISA, event.getCard(DropInEventProperty.CARD).number)
                 countDownLatch.countDown()
@@ -289,7 +289,7 @@ class CardDetailsFragmentUITest {
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
-                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
+                val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
 
                 val card = event.getCard(DropInEventProperty.CARD)
@@ -320,7 +320,7 @@ class CardDetailsFragmentUITest {
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
-                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
+                val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
 
                 val card = event.getCard(DropInEventProperty.CARD)
@@ -351,7 +351,7 @@ class CardDetailsFragmentUITest {
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
-                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
+                val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
 
                 val card = event.getCard(DropInEventProperty.CARD)

@@ -165,7 +165,7 @@ class SelectPaymentMethodFragmentUITest {
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
-                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
+                val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.SUPPORTED_PAYMENT_METHOD_SELECTED, event.type)
 
                 val paymentMethodType =
