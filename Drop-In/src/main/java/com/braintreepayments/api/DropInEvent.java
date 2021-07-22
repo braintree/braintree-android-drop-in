@@ -12,7 +12,7 @@ class DropInEvent implements Parcelable {
     private final DropInEventType type;
     private final Bundle payload;
 
-    static DropInEvent createSendAnalytics(String eventName) {
+    static DropInEvent createSendAnalyticsEvent(String eventName) {
         DropInEvent event = new DropInEvent(DropInEventType.SEND_ANALYTICS);
         event.putString(DropInEventProperty.ANALYTICS_EVENT_NAME, eventName);
         return event;

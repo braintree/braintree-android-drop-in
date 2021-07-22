@@ -22,8 +22,6 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-import static com.braintreepayments.api.DropInEventType.SHOW_VAULT_MANAGER;
-
 public class SelectPaymentMethodFragment extends Fragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
 
     private ViewSwitcher mLoadingViewSwitcher;
@@ -103,7 +101,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             }
         });
 
-        sendBraintreeEvent(DropInEvent.createSendAnalytics("appeared"));
+        sendBraintreeEvent(DropInEvent.createSendAnalyticsEvent("appeared"));
         return view;
     }
 
@@ -132,7 +130,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     @Override
     public void onVaultedPaymentMethodSelected(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
-            sendBraintreeEvent(DropInEvent.createSendAnalytics("vaulted-card.select"));
+            sendBraintreeEvent(DropInEvent.createSendAnalyticsEvent("vaulted-card.select"));
         }
 
         sendBraintreeEvent(
@@ -154,7 +152,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             }
 
             if (containsCardNonce(paymentMethodNonces)) {
-                sendBraintreeEvent(DropInEvent.createSendAnalytics("vaulted-card.appear"));
+                sendBraintreeEvent(DropInEvent.createSendAnalyticsEvent("vaulted-card.appear"));
             }
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
