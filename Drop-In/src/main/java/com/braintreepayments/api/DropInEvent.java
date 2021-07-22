@@ -26,7 +26,7 @@ class DropInEvent implements Parcelable {
 
     static DropInEvent createCardDetailsSubmitEvent(Card card) {
         DropInEvent event = new DropInEvent(DropInEventType.CARD_DETAILS_SUBMIT);
-        event.putParcelable(DropInEventProperty.CARD_DETAILS, card);
+        event.putParcelable(DropInEventProperty.CARD, card);
         return event;
     }
 
@@ -38,19 +38,19 @@ class DropInEvent implements Parcelable {
 
     static DropInEvent createDeleteVaultedPaymentMethodNonceEvent(PaymentMethodNonce paymentMethodNonceToDelete) {
         DropInEvent event = new DropInEvent(DropInEventType.DELETE_VAULTED_PAYMENT_METHOD);
-        event.putParcelable(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION, paymentMethodNonceToDelete);
+        event.putParcelable(DropInEventProperty.VAULTED_PAYMENT_METHOD, paymentMethodNonceToDelete);
         return event;
     }
 
     static DropInEvent createVaultedPaymentMethodSelectedEvent(PaymentMethodNonce paymentMethodNonce) {
         DropInEvent event = new DropInEvent(DropInEventType.VAULTED_PAYMENT_METHOD_SELECTED);
-        event.putParcelable(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION, paymentMethodNonce);
+        event.putParcelable(DropInEventProperty.VAULTED_PAYMENT_METHOD, paymentMethodNonce);
         return event;
     }
 
     static DropInEvent createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType type) {
         DropInEvent event = new DropInEvent(DropInEventType.SUPPORTED_PAYMENT_METHOD_SELECTED);
-        event.putString(DropInEventProperty.SUPPORTED_PAYMENT_METHOD_SELECTION, type.name());
+        event.putString(DropInEventProperty.SUPPORTED_PAYMENT_METHOD, type.name());
         return event;
     }
 

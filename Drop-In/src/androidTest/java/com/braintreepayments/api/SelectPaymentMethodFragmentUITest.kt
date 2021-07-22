@@ -169,7 +169,7 @@ class SelectPaymentMethodFragmentUITest {
                 assertEquals(DropInEventType.SUPPORTED_PAYMENT_METHOD_SELECTED, event.type)
 
                 val paymentMethodType =
-                    event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD_SELECTION)
+                    event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD)
                 assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodType)
                 countDownLatch.countDown()
             }

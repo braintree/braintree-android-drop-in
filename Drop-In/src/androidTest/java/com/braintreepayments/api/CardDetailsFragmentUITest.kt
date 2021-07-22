@@ -239,7 +239,7 @@ class CardDetailsFragmentUITest {
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
                 val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
-                assertEquals(VISA, event.getCard(DropInEventProperty.CARD_DETAILS).number)
+                assertEquals(VISA, event.getCard(DropInEventProperty.CARD).number)
                 countDownLatch.countDown()
             }
         }
@@ -292,7 +292,7 @@ class CardDetailsFragmentUITest {
                 val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
 
-                val card = event.getCard(DropInEventProperty.CARD_DETAILS)
+                val card = event.getCard(DropInEventProperty.CARD)
                 assertEquals(VISA, card.number)
                 assertNull(card.cardholderName)
                 countDownLatch.countDown()
@@ -323,7 +323,7 @@ class CardDetailsFragmentUITest {
                 val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
 
-                val card = event.getCard(DropInEventProperty.CARD_DETAILS)
+                val card = event.getCard(DropInEventProperty.CARD)
                 assertEquals(VISA, card.number)
                 assertEquals("Brian Tree", card.cardholderName)
                 countDownLatch.countDown()
@@ -354,7 +354,7 @@ class CardDetailsFragmentUITest {
                 val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
 
-                val card = event.getCard(DropInEventProperty.CARD_DETAILS)
+                val card = event.getCard(DropInEventProperty.CARD)
                 assertEquals(VISA, card.number)
                 assertEquals("Brian Tree", card.cardholderName)
                 countDownLatch.countDown()

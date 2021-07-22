@@ -62,7 +62,7 @@ class VaultManagerFragmentUITest {
                 assertEquals(DropInEventType.DELETE_VAULTED_PAYMENT_METHOD, event.type)
 
                 val paymentMethodNonceToDelete =
-                        event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION)
+                        event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD)
                 assertSame(cardNonce, paymentMethodNonceToDelete)
                 countDownLatch.countDown()
             }

@@ -115,7 +115,7 @@ public class DropInActivity extends BaseActivity {
     @VisibleForTesting
     void onSupportedPaymentMethodSelected(DropInEvent event) {
         DropInPaymentMethodType paymentMethodType =
-                event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD_SELECTION);
+                event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD);
         startPaymentFlow(paymentMethodType);
     }
 
@@ -139,7 +139,7 @@ public class DropInActivity extends BaseActivity {
 
     private void onDeleteVaultedPaymentMethod(DropInEvent event) {
         deleteVaultedPaymentMethod(
-                event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION));
+                event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD));
     }
 
     private void deleteVaultedPaymentMethod(final PaymentMethodNonce paymentMethodNonceToDelete) {
@@ -427,7 +427,7 @@ public class DropInActivity extends BaseActivity {
 
     private void onVaultedPaymentMethodSelected(DropInEvent event) {
         final PaymentMethodNonce paymentMethodNonce =
-                event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD_SELECTION);
+                event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD);
 
         if (paymentMethodNonce instanceof CardNonce) {
             getDropInClient().sendAnalyticsEvent("vaulted-card.select");
@@ -478,7 +478,7 @@ public class DropInActivity extends BaseActivity {
     }
 
     private void onCardDetailsSubmit(DropInEvent event) {
-        Card card = event.getCard(DropInEventProperty.CARD_DETAILS);
+        Card card = event.getCard(DropInEventProperty.CARD);
         tokenizeCard(card);
     }
 
