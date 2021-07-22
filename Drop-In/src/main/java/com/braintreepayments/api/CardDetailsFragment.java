@@ -136,8 +136,8 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
 
     private void sendBraintreeEvent(Parcelable eventResult) {
         Bundle result = new Bundle();
-        result.putParcelable("BRAINTREE_RESULT", eventResult);
-        getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
+        result.putParcelable(DropInEvent.RESULT_KEY, eventResult);
+        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, result);
     }
 
     @Override

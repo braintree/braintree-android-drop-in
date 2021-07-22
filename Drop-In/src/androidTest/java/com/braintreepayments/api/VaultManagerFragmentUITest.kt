@@ -57,8 +57,8 @@ class VaultManagerFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
-                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.DELETE_VAULTED_PAYMENT_METHOD, event.type)
 
                 val paymentMethodNonceToDelete =
@@ -83,8 +83,8 @@ class VaultManagerFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
-                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.DISMISS_VAULT_MANAGER, event.type)
                 countDownLatch.countDown()
             }

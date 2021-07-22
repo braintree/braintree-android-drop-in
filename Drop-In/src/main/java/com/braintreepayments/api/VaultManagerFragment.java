@@ -80,7 +80,7 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
 
     private void sendBraintreeEvent(Parcelable eventResult) {
         Bundle result = new Bundle();
-        result.putParcelable("BRAINTREE_RESULT", eventResult);
-        getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
+        result.putParcelable(DropInEvent.RESULT_KEY, eventResult);
+        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, result);
     }
 }

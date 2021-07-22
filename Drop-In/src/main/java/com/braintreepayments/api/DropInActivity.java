@@ -66,10 +66,10 @@ public class DropInActivity extends BaseActivity {
             }
         });
 
-        getSupportFragmentManager().setFragmentResultListener("BRAINTREE_EVENT", this, new FragmentResultListener() {
+        getSupportFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                DropInEvent event = result.getParcelable("BRAINTREE_RESULT");
+                DropInEvent event = result.getParcelable(DropInEvent.RESULT_KEY);
                 onDropInEvent(event);
             }
         });

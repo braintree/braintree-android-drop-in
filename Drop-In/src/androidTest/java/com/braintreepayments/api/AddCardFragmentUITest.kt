@@ -101,8 +101,8 @@ class AddCardFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
-                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { requestKey, result ->
+                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.ADD_CARD_SUBMIT, event.type)
                 assertEquals(VISA, event.getString(DropInEventProperty.CARD_NUMBER))
                 countDownLatch.countDown()

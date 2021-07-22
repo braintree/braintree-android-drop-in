@@ -209,8 +209,8 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
-                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.EDIT_CARD_NUMBER, event.type)
                 assertEquals(VISA, event.getString(DropInEventProperty.CARD_NUMBER))
                 countDownLatch.countDown()
@@ -236,8 +236,8 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
-                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
                 assertEquals(VISA, event.getCard(DropInEventProperty.CARD_DETAILS).number)
                 countDownLatch.countDown()
@@ -263,7 +263,7 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
                 events += result
             }
         }
@@ -288,8 +288,8 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
-                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
 
                 val card = event.getCard(DropInEventProperty.CARD_DETAILS)
@@ -319,8 +319,8 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
-                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
 
                 val card = event.getCard(DropInEventProperty.CARD_DETAILS)
@@ -350,8 +350,8 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
-                val event = result.get("BRAINTREE_RESULT") as DropInEvent
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = result.get(DropInEvent.RESULT_KEY) as DropInEvent
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
 
                 val card = event.getCard(DropInEventProperty.CARD_DETAILS)

@@ -6,6 +6,9 @@ import android.os.Parcelable;
 
 class DropInEvent implements Parcelable {
 
+    static final String REQUEST_KEY = "DROP_IN_EVENT_REQUEST_KEY";
+    static final String RESULT_KEY = "DROP_IN_EVENT_RESULT_KEY";
+
     private final DropInEventType type;
     private final Bundle payload;
 
