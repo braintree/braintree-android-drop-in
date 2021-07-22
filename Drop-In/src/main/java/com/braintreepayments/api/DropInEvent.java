@@ -9,8 +9,9 @@ class DropInEvent implements Parcelable {
     static final String REQUEST_KEY = "DROP_IN_EVENT_REQUEST_KEY";
     static final String RESULT_KEY = "DROP_IN_EVENT_RESULT_KEY";
 
-    private final DropInEventType type;
-    private final Bundle payload;
+    private static final String TYPE_KEY = "DROP_IN_EVENT_TYPE";
+
+    private final Bundle bundle;
 
     static DropInEvent createSendAnalyticsEvent(String eventName) {
         DropInEvent event = new DropInEvent(DropInEventType.SEND_ANALYTICS);
@@ -54,50 +55,60 @@ class DropInEvent implements Parcelable {
         return event;
     }
 
+    static DropInEvent fromBundle(Bundle bundle) {
+        return new DropInEvent(bundle);
+    }
+
     DropInEvent(DropInEventType type) {
-        this.type = type;
-        this.payload = new Bundle();
-        this.payload.setClassLoader(getClass().getClassLoader());
+        this(new Bundle());
+        bundle.putString(TYPE_KEY, type.name());
+    }
+
+    private DropInEvent(Bundle bundle) {
+        this.bundle = bundle;
+        this.bundle.setClassLoader(getClass().getClassLoader());
     }
 
     protected DropInEvent(Parcel in) {
-        this.type = DropInEventType.valueOf(in.readString());
-        this.payload = in.readBundle(getClass().getClassLoader());
+        bundle = in.readBundle(getClass().getClassLoader());
     }
 
     void putParcelable(DropInEventProperty property, Parcelable parcelable) {
-        payload.putParcelable(property.getBundleKey(), parcelable);
+        bundle.putParcelable(property.getBundleKey(), parcelable);
     }
 
     private void putString(DropInEventProperty property, String value) {
-        payload.putString(property.getBundleKey(), value);
+        bundle.putString(property.getBundleKey(), value);
     }
 
     String getString(DropInEventProperty property) {
-        return payload.getString(property.getBundleKey());
+        return bundle.getString(property.getBundleKey());
     }
 
     DropInPaymentMethodType getDropInPaymentMethodType(DropInEventProperty property) {
-        String paymentMethodTypeString = payload.getString(property.getBundleKey());
+        String paymentMethodTypeString = bundle.getString(property.getBundleKey());
         return DropInPaymentMethodType.valueOf(paymentMethodTypeString);
     }
 
     PaymentMethodNonce getPaymentMethodNonce(DropInEventProperty property) {
-        return (PaymentMethodNonce) payload.getParcelable(property.getBundleKey());
+        return (PaymentMethodNonce) bundle.getParcelable(property.getBundleKey());
     }
 
     Card getCard(DropInEventProperty property) {
-        return (Card) payload.getParcelable(property.getBundleKey());
+        return (Card) bundle.getParcelable(property.getBundleKey());
     }
 
     DropInEventType getType() {
-        return type;
+        return DropInEventType.valueOf(bundle.getString(TYPE_KEY));
+    }
+
+    Bundle toBundle() {
+        return bundle;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(type.name());
-        dest.writeBundle(payload);
+        dest.writeBundle(bundle);
     }
 
     @Override
