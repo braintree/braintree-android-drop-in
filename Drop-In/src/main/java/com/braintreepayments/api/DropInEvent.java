@@ -28,7 +28,7 @@ class DropInEvent implements Parcelable {
     }
 
     static DropInEvent createEditCardEvent(String cardNumber) {
-        DropInEvent event = new DropInEvent(DropInEventType.EDIT_CARD);
+        DropInEvent event = new DropInEvent(DropInEventType.EDIT_CARD_NUMBER);
         event.putString(DropInEventProperty.CARD_NUMBER, cardNumber);
         return event;
     }

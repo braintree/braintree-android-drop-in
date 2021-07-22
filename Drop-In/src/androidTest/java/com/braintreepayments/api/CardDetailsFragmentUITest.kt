@@ -211,7 +211,7 @@ class CardDetailsFragmentUITest {
             val fragmentManager = fragment.parentFragmentManager
             fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { _, result ->
                 val event = result.get("BRAINTREE_RESULT") as DropInEvent
-                assertEquals(DropInEventType.EDIT_CARD, event.type)
+                assertEquals(DropInEventType.EDIT_CARD_NUMBER, event.type)
                 assertEquals(VISA, event.getString(DropInEventProperty.CARD_NUMBER))
                 countDownLatch.countDown()
             }

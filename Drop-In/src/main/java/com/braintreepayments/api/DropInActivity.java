@@ -2,7 +2,6 @@ package com.braintreepayments.api;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -95,8 +94,8 @@ public class DropInActivity extends BaseActivity {
             case DISMISS_VAULT_MANAGER:
                 onDismissVaultManager(event);
                 break;
-            case EDIT_CARD:
-                onEditCard(event);
+            case EDIT_CARD_NUMBER:
+                onEditCardNumber(event);
                 break;
             case SEND_ANALYTICS:
                 onSendAnalytics(event);
@@ -369,7 +368,7 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    private void onEditCard(DropInEvent event) {
+    private void onEditCardNumber(DropInEvent event) {
         startAddCardFlow(event.getString(DropInEventProperty.CARD_NUMBER));
     }
 
