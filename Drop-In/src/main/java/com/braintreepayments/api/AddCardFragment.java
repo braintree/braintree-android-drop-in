@@ -109,10 +109,8 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
         animatedButtonView.showButton();
     }
 
-    private void sendBraintreeEvent(Parcelable eventResult) {
-        Bundle result = new Bundle();
-        result.putParcelable(DropInEvent.RESULT_KEY, eventResult);
-        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, result);
+    private void sendDropInEvent(DropInEvent event) {
+        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
 
     void setErrors(ErrorWithResponse errors) {
@@ -132,7 +130,7 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
         if (isValid()) {
             animatedButtonView.showLoading();
             String cardNumber = cardForm.getCardNumber();
-            sendBraintreeEvent(DropInEvent.createAddCardSubmitEvent(cardNumber));
+            sendDropInEvent(DropInEvent.createAddCardSubmitEvent(cardNumber));
         } else {
             if (!cardForm.isValid()) {
                 animatedButtonView.showButton();

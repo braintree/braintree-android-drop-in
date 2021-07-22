@@ -55,7 +55,7 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendBraintreeEvent(new DropInEvent(DropInEventType.DISMISS_VAULT_MANAGER));
+                sendDropInEvent(new DropInEvent(DropInEventType.DISMISS_VAULT_MANAGER));
             }
         });
 
@@ -68,7 +68,7 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
             PaymentMethodItemView paymentMethodItemView = (PaymentMethodItemView) v;
             final PaymentMethodNonce paymentMethodNonceToDelete = paymentMethodItemView.getPaymentMethodNonce();
 
-            sendBraintreeEvent(
+            sendDropInEvent(
                     DropInEvent.createDeleteVaultedPaymentMethodNonceEvent(paymentMethodNonceToDelete));
         }
     }
@@ -78,9 +78,7 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
         vaultManagerView.setAdapter(adapter);
     }
 
-    private void sendBraintreeEvent(Parcelable eventResult) {
-        Bundle result = new Bundle();
-        result.putParcelable(DropInEvent.RESULT_KEY, eventResult);
-        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, result);
+    private void sendDropInEvent(DropInEvent event) {
+        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
 }

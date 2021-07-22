@@ -134,10 +134,8 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
         animatedButtonView.showButton();
     }
 
-    private void sendBraintreeEvent(Parcelable eventResult) {
-        Bundle result = new Bundle();
-        result.putParcelable(DropInEvent.RESULT_KEY, eventResult);
-        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, result);
+    private void sendDropInEvent(DropInEvent event) {
+        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
 
     @Override
@@ -156,7 +154,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             card.setPostalCode(cardForm.getPostalCode());
             card.setShouldValidate(shouldVault);
 
-            sendBraintreeEvent(DropInEvent.createCardDetailsSubmitEvent(card));
+            sendDropInEvent(DropInEvent.createCardDetailsSubmitEvent(card));
         } else {
             animatedButtonView.showButton();
             cardForm.validate();
@@ -167,7 +165,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
     public void onCardFormFieldFocused(View view) {
         if (view instanceof CardEditText) {
             String cardNumber = cardForm.getCardNumber();
-            sendBraintreeEvent(DropInEvent.createEditCardEvent(cardNumber));
+            sendDropInEvent(DropInEvent.createEditCardEvent(cardNumber));
         }
     }
 }

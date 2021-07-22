@@ -4,14 +4,11 @@ import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-class DropInEvent implements Parcelable {
+class DropInEvent {
 
     static final String REQUEST_KEY = "DROP_IN_EVENT_REQUEST_KEY";
-    static final String RESULT_KEY = "DROP_IN_EVENT_RESULT_KEY";
 
     private static final String TYPE_KEY = "DROP_IN_EVENT_TYPE";
-
-    private final Bundle bundle;
 
     static DropInEvent createSendAnalyticsEvent(String eventName) {
         DropInEvent event = new DropInEvent(DropInEventType.SEND_ANALYTICS);
@@ -59,6 +56,8 @@ class DropInEvent implements Parcelable {
         return new DropInEvent(bundle);
     }
 
+    private final Bundle bundle;
+
     DropInEvent(DropInEventType type) {
         this(new Bundle());
         bundle.putString(TYPE_KEY, type.name());
@@ -105,26 +104,4 @@ class DropInEvent implements Parcelable {
     Bundle toBundle() {
         return bundle;
     }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeBundle(bundle);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<DropInEvent> CREATOR = new Creator<DropInEvent>() {
-        @Override
-        public DropInEvent createFromParcel(Parcel in) {
-            return new DropInEvent(in);
-        }
-
-        @Override
-        public DropInEvent[] newArray(int size) {
-            return new DropInEvent[size];
-        }
-    };
 }

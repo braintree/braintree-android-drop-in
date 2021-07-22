@@ -69,8 +69,7 @@ public class DropInActivity extends BaseActivity {
         getSupportFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                DropInEvent event = result.getParcelable(DropInEvent.RESULT_KEY);
-                onDropInEvent(event);
+                onDropInEvent(DropInEvent.fromBundle(result));
             }
         });
 
