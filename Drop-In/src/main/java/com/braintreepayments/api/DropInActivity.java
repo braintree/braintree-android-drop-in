@@ -424,7 +424,8 @@ public class DropInActivity extends BaseActivity {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
-    private void onVaultedPaymentMethodSelected(DropInEvent event) {
+    @VisibleForTesting
+    void onVaultedPaymentMethodSelected(DropInEvent event) {
         final PaymentMethodNonce paymentMethodNonce =
                 event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD);
 
