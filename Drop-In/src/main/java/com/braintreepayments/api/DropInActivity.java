@@ -196,7 +196,7 @@ public class DropInActivity extends BaseActivity {
         sendAnalyticsEvent(eventName);
     }
 
-    void sendAnalyticsEvent(String eventName) {
+    private void sendAnalyticsEvent(String eventName) {
         getDropInClient().sendAnalyticsEvent(eventName);
     }
 
