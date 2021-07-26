@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="0dp"
-    android:onClick="onBackgroundClicked"
     android:background="@color/bt_black_54"
     tools:context="com.braintreepayments.api.DropInActivity">
 
