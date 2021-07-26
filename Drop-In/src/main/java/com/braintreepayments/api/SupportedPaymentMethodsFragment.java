@@ -72,6 +72,13 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
+        List<DropInPaymentMethodType> paymentMethodTypes =
+            dropInViewModel.getSupportedPaymentMethods().getValue();
+        if (paymentMethodTypes != null) {
+            showSupportedPaymentMethods(paymentMethodTypes);
+            hideLoader();
+        }
+
         dropInViewModel.getSupportedPaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<DropInPaymentMethodType>>() {
             @Override
             public void onChanged(List<DropInPaymentMethodType> paymentMethodTypes) {
@@ -90,9 +97,9 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
             @Override
             public void onChanged(Boolean isLoading) {
                 if (isLoading) {
-                    mLoadingViewSwitcher.setDisplayedChild(0);
+                    showLoader();
                 } else {
-                    mLoadingViewSwitcher.setDisplayedChild(1);
+                    hideLoader();
                 }
             }
         });
@@ -106,6 +113,14 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
 
         sendDropInEvent(DropInEvent.createSendAnalyticsEvent("appeared"));
         return view;
+    }
+
+    private void showLoader() {
+        mLoadingViewSwitcher.setDisplayedChild(0);
+    }
+
+    private void hideLoader() {
+        mLoadingViewSwitcher.setDisplayedChild(1);
     }
 
     private void sendDropInEvent(DropInEvent event) {
