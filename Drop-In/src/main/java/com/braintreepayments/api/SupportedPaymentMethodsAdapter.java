@@ -11,12 +11,12 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-class SupportedPaymentMethodsAdapter2 extends RecyclerView.Adapter<SupportedPaymentMethodViewHolder> {
+class SupportedPaymentMethodsAdapter extends RecyclerView.Adapter<SupportedPaymentMethodViewHolder> {
 
     private final List<DropInPaymentMethodType> supportedPaymentMethods;
     private final SupportedPaymentMethodSelectedListener listener;
 
-    SupportedPaymentMethodsAdapter2(List<DropInPaymentMethodType> supportedPaymentMethods, SupportedPaymentMethodSelectedListener listener) {
+    SupportedPaymentMethodsAdapter(List<DropInPaymentMethodType> supportedPaymentMethods, SupportedPaymentMethodSelectedListener listener) {
         this.listener = listener;
         this.supportedPaymentMethods = supportedPaymentMethods;
     }

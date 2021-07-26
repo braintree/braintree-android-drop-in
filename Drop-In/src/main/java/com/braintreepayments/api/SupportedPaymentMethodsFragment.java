@@ -120,7 +120,7 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
     }
 
     private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
-        SupportedPaymentMethodsAdapter2 adapter = new SupportedPaymentMethodsAdapter2(
+        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 availablePaymentMethods, this);
         mSupportedPaymentMethodsView.setAdapter(adapter);
         dropInViewModel.setIsLoading(false);
