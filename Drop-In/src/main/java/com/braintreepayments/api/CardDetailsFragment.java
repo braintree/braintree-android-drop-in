@@ -73,6 +73,13 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             }
         });
 
+        dropInViewModel.getUserCanceledError().observe(getViewLifecycleOwner(), new Observer<Exception>() {
+            @Override
+            public void onChanged(Exception e) {
+                animatedButtonView.showButton();
+            }
+        });
+
         boolean showCardCheckbox = !Authorization.isTokenizationKey(dropInRequest.getAuthorization())
                 && dropInRequest.isSaveCardCheckBoxShown();
 

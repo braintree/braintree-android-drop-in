@@ -54,7 +54,7 @@ public class DropInActivity extends BaseActivity {
                 if (dropInResult != null) {
                     finishWithDropInResult(dropInResult);
                 } else if (error instanceof UserCanceledException) {
-                    dropInViewModel.setCardTokenizationError(error);
+                    dropInViewModel.setUserCanceledError(error);
                     dropInViewModel.setIsLoading(false);
                 } else {
                     onError(error);
@@ -455,7 +455,7 @@ public class DropInActivity extends BaseActivity {
                 if (dropInResult != null) {
                     finishWithDropInResult(dropInResult);
                 } else if (error instanceof UserCanceledException) {
-                    dropInViewModel.setIsLoading(false);
+                    dropInViewModel.setUserCanceledError(error);
                 } else {
                     onError(error);
                 }
