@@ -22,7 +22,7 @@ import java.util.List;
 
 public class SupportedPaymentMethodsFragment extends Fragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
 
-    private ViewSwitcher mLoadingViewSwitcher;
+    private View mLoadingIndicatorWrapper;
     private TextView mSupportedPaymentMethodsHeader;
 
     @VisibleForTesting
@@ -55,7 +55,7 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bt_fragment_supported_payment_methods, container, false);
 
-        mLoadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
+        mLoadingIndicatorWrapper = view.findViewById(R.id.bt_select_payment_method_loader_wrapper);
         mSupportedPaymentMethodsHeader = view.findViewById(R.id.bt_supported_payment_methods_header);
         mSupportedPaymentMethodsView = view.findViewById(R.id.bt_supported_payment_methods);
         mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
@@ -116,11 +116,11 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
     }
 
     private void showLoader() {
-        mLoadingViewSwitcher.setDisplayedChild(0);
+        mLoadingIndicatorWrapper.setVisibility(View.VISIBLE);
     }
 
     private void hideLoader() {
-        mLoadingViewSwitcher.setDisplayedChild(1);
+        mLoadingIndicatorWrapper.setVisibility(View.GONE);
     }
 
     private void sendDropInEvent(DropInEvent event) {
