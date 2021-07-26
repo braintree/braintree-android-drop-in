@@ -25,7 +25,9 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<PaymentMethodVie
     @Override
     public PaymentMethodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        return new PaymentMethodViewHolder(inflater.inflate(R.layout.bt_vaulted_payment_method_card, parent, false));
+        View view =
+            inflater.inflate(R.layout.bt_vaulted_payment_method_card, parent, false);
+        return new PaymentMethodViewHolder(view);
     }
 
     @Override
