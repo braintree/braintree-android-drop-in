@@ -96,7 +96,8 @@ public class DropInActivity extends BaseActivity {
         showParentFragment();
     }
 
-    public void onDropInEvent(DropInEvent event) {
+    @VisibleForTesting
+    void onDropInEvent(DropInEvent event) {
         switch (event.getType()) {
             case ADD_CARD_SUBMIT:
                 onAddCardSubmit(event);
