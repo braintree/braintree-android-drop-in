@@ -269,7 +269,7 @@ public class DropInActivity extends BaseActivity {
             fragmentManager
                     .beginTransaction()
                     .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view, ParentFragment.class, args, "PARENT_FRAGMENT")
+                    .replace(R.id.fragment_container_view, SelectPaymentMethodParentFragment.class, args, "PARENT_FRAGMENT")
                     .commit();
         }
     }

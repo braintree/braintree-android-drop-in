@@ -18,7 +18,7 @@ import com.braintreepayments.api.dropin.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ParentFragment extends Fragment {
+public class SelectPaymentMethodParentFragment extends Fragment {
 
     private ViewPager2 viewPager;
     private DropInFragmentAdapter viewPagerAdapter;
