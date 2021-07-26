@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,10 +133,8 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
         animatedButtonView.showButton();
     }
 
-    private void sendBraintreeEvent(Parcelable eventResult) {
-        Bundle result = new Bundle();
-        result.putParcelable("BRAINTREE_RESULT", eventResult);
-        getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
+    private void sendDropInEvent(DropInEvent event) {
+        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
 
     @Override
@@ -156,7 +153,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             card.setPostalCode(cardForm.getPostalCode());
             card.setShouldValidate(shouldVault);
 
-            sendBraintreeEvent(new CardDetailsEvent(card));
+            sendDropInEvent(DropInEvent.createCardDetailsSubmitEvent(card));
         } else {
             animatedButtonView.showButton();
             cardForm.validate();
@@ -166,7 +163,8 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
     @Override
     public void onCardFormFieldFocused(View view) {
         if (view instanceof CardEditText) {
-            sendBraintreeEvent(new EditCardNumberEvent(cardForm.getCardNumber()));
+            String cardNumber = cardForm.getCardNumber();
+            sendDropInEvent(DropInEvent.createEditCardNumberEvent(cardNumber));
         }
     }
 }

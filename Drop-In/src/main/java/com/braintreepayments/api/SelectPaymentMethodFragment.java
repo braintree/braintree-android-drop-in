@@ -1,7 +1,6 @@
 package com.braintreepayments.api;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,18 +96,16 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sendBraintreeEvent(new DropInUIEvent(DropInUIEventType.SHOW_VAULT_MANAGER));
+                sendDropInEvent(new DropInEvent(DropInEventType.SHOW_VAULT_MANAGER));
             }
         });
 
-        sendBraintreeEvent(new DropInAnalyticsEvent("appeared"));
+        sendDropInEvent(DropInEvent.createSendAnalyticsEvent("appeared"));
         return view;
     }
 
-    private void sendBraintreeEvent(Parcelable eventResult) {
-        Bundle result = new Bundle();
-        result.putParcelable("BRAINTREE_RESULT", eventResult);
-        getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
+    private void sendDropInEvent(DropInEvent event) {
+        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
 
     private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
@@ -117,21 +114,24 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         mSupportedPaymentMethodListView.setAdapter(adapter);
         dropInViewModel.setIsLoading(false);
 
-        sendBraintreeEvent(new DropInUIEvent(DropInUIEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS));
+        sendDropInEvent(new DropInEvent(DropInEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS));
     }
 
     @Override
     public void onPaymentMethodSelected(DropInPaymentMethodType type) {
         dropInViewModel.setIsLoading(true);
-        sendBraintreeEvent(new SupportedPaymentMethodSelectedEvent(type));
+        sendDropInEvent(
+                DropInEvent.createSupportedPaymentMethodSelectedEvent(type));
     }
 
     @Override
     public void onVaultedPaymentMethodSelected(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
-            sendBraintreeEvent(new DropInAnalyticsEvent("vaulted-card.select"));
+            sendDropInEvent(DropInEvent.createSendAnalyticsEvent("vaulted-card.select"));
         }
-        sendBraintreeEvent(new VaultedPaymentMethodSelectedEvent(paymentMethodNonce));
+
+        sendDropInEvent(
+                DropInEvent.createVaultedPaymentMethodSelectedEvent(paymentMethodNonce));
     }
 
     private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {
@@ -149,7 +149,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             }
 
             if (containsCardNonce(paymentMethodNonces)) {
-                sendBraintreeEvent(new DropInAnalyticsEvent("vaulted-card.appear"));
+                sendDropInEvent(DropInEvent.createSendAnalyticsEvent("vaulted-card.appear"));
             }
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);

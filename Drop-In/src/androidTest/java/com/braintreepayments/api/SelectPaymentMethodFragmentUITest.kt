@@ -164,9 +164,13 @@ class SelectPaymentMethodFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener("BRAINTREE_EVENT", activity) { requestKey, result ->
-                val event = result.get("BRAINTREE_RESULT") as SupportedPaymentMethodSelectedEvent
-                assertEquals(DropInPaymentMethodType.UNKNOWN, event.paymentMethodType)
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = DropInEvent.fromBundle(result)
+                assertEquals(DropInEventType.SUPPORTED_PAYMENT_METHOD_SELECTED, event.type)
+
+                val paymentMethodType =
+                    event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD)
+                assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodType)
                 countDownLatch.countDown()
             }
         }
@@ -195,8 +199,8 @@ class SelectPaymentMethodFragmentUITest {
 //            val activity = fragment.requireActivity()
 //            val fragmentManager = fragment.parentFragmentManager
 //
-//            fragmentManager.setFragmentResultListener("BRAINTREE_RESULT", activity) { requestKey, result ->
-//                val event = result.get("BRAINTREE_EVENT") as DropInAnalyticsEvent
+//            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { requestKey, result ->
+//                val event = result.get(DropInEvent.RESULT_KEY) as DropInAnalyticsEvent
 //                assertEquals(event.fragment, "vaulted-card.appear")
 //                countDownLatch.countDown()
 //            }

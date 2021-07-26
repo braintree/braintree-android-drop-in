@@ -1,10 +1,6 @@
 package com.braintreepayments.api;
 
 import android.content.Intent;
-import android.os.Parcelable;
-import android.widget.ViewSwitcher;
-
-import androidx.fragment.app.FragmentActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,9 +19,6 @@ import java.util.Objects;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
-import static com.braintreepayments.api.DropInActivity.ADD_CARD_REQUEST_CODE;
-import static com.braintreepayments.api.DropInActivity.DELETE_PAYMENT_METHOD_NONCE_CODE;
-import static com.braintreepayments.api.DropInRequest.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static junit.framework.Assert.assertEquals;
@@ -33,7 +26,6 @@ import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
@@ -41,8 +33,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
-
-import com.braintreepayments.api.dropin.R;
 
 @RunWith(RobolectricTestRunner.class)
 public class DropInActivityUnitTest {
@@ -128,7 +118,9 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-        mActivity.onVaultedPaymentMethodSelected(cardNonce);
+
+        DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
+        mActivity.onVaultedPaymentMethodSelected(event);
 
         verify(dropInClient).getVaultedPaymentMethods(same(mActivity), eq(true), any(GetPaymentMethodNoncesCallback.class));
     }
@@ -201,7 +193,8 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-        mActivity.onVaultedPaymentMethodSelected(cardNonce);
+        DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
+        mActivity.onVaultedPaymentMethodSelected(event);
 
         verify(dropInClient, never()).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(DropInResultCallback.class));
         assertTrue(mActivity.isFinishing());
@@ -224,7 +217,9 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-        mActivity.onVaultedPaymentMethodSelected(cardNonce);
+        DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
+        mActivity.onVaultedPaymentMethodSelected(event);
+
         verify(dropInClient).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(DropInResultCallback.class));
     }
 
@@ -240,7 +235,10 @@ public class DropInActivityUnitTest {
 
         mActivityController.setup();
 
-        mActivity.onVaultedPaymentMethodSelected(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+        DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
+        mActivity.onVaultedPaymentMethodSelected(event);
+
         verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.success");
     }
 
@@ -258,7 +256,9 @@ public class DropInActivityUnitTest {
         assertNull(BraintreeSharedPreferences.getSharedPreferences(mActivity)
                 .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
 
-        mActivity.onVaultedPaymentMethodSelected(CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)));
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+        DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
+        mActivity.onVaultedPaymentMethodSelected(event);
 
         assertEquals(DropInPaymentMethodType.VISA.getCanonicalName(),
                 BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -284,8 +284,8 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-
-        mActivity.onVaultedPaymentMethodSelected(cardNonce);
+        DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
+        mActivity.onVaultedPaymentMethodSelected(event);
 
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_OK, mShadowActivity.getResultCode());
@@ -310,7 +310,8 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        mActivity.onVaultedPaymentMethodSelected(paymentMethodNonce);
+        DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(paymentMethodNonce);
+        mActivity.onVaultedPaymentMethodSelected(event);
 
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_OK, mShadowActivity.getResultCode());
@@ -323,7 +324,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onVaultedPaymentMethodSelected_whenCard_sendsAnalyticEvent() {
+    public void onVaultedPaymentMethodSelected_whenCard_sendsAnalyticEvent() throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
@@ -332,13 +333,15 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        mActivity.onVaultedPaymentMethodSelected(mock(CardNonce.class));
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+        DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
+        mActivity.onVaultedPaymentMethodSelected(event);
 
         verify(dropInClient).sendAnalyticsEvent("vaulted-card.select");
     }
 
     @Test
-    public void onVaultedPaymentMethodSelected_whenPayPal_doesNotSendAnalyticEvent() {
+    public void onVaultedPaymentMethodSelected_whenPayPal_doesNotSendAnalyticEvent() throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
@@ -347,7 +350,10 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        mActivity.onVaultedPaymentMethodSelected(mock(PayPalAccountNonce.class));
+        PayPalAccountNonce payPalAccountNonce =
+            PayPalAccountNonce.fromJSON(new JSONObject(Fixtures.PAYPAL_ACCOUNT_JSON));
+        DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(payPalAccountNonce);
+        mActivity.onVaultedPaymentMethodSelected(event);
 
         verify(dropInClient, never()).sendAnalyticsEvent("vaulted-card.select");
     }
@@ -412,9 +418,9 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        SupportedPaymentMethodSelectedEvent event =
-            new SupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAYPAL);
-        mActivity.onSupportedPaymentMethodSelectedEvent(event);
+        DropInEvent event =
+                DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAYPAL);
+        mActivity.onSupportedPaymentMethodSelected(event);
 
         verify(dropInClient).tokenizePayPalRequest(same(mActivity), any(PayPalFlowStartedCallback.class));
     }
@@ -432,9 +438,9 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        SupportedPaymentMethodSelectedEvent event =
-                new SupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAY_WITH_VENMO);
-        mActivity.onSupportedPaymentMethodSelectedEvent(event);
+        DropInEvent event =
+                DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAY_WITH_VENMO);
+        mActivity.onSupportedPaymentMethodSelected(event);
 
         verify(dropInClient).tokenizeVenmoAccount(same(mActivity), any(VenmoTokenizeAccountCallback.class));
     }
@@ -452,9 +458,9 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        SupportedPaymentMethodSelectedEvent event =
-                new SupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.GOOGLE_PAYMENT);
-        mActivity.onSupportedPaymentMethodSelectedEvent(event);
+        DropInEvent event =
+                DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.GOOGLE_PAYMENT);
+        mActivity.onSupportedPaymentMethodSelected(event);
 
         verify(dropInClient).requestGooglePayPayment(same(mActivity), any(GooglePayRequestPaymentCallback.class));
     }
@@ -472,9 +478,9 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        SupportedPaymentMethodSelectedEvent event =
-                new SupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.UNKNOWN);
-        mActivity.onSupportedPaymentMethodSelectedEvent(event);
+        DropInEvent event =
+                DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.UNKNOWN);
+        mActivity.onSupportedPaymentMethodSelected(event);
 
         assertNotNull(mActivity.getSupportFragmentManager().findFragmentByTag("ADD_CARD"));
     }

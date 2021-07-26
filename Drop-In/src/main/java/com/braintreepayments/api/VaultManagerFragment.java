@@ -18,8 +18,6 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-import static com.braintreepayments.api.DropInUIEventType.DISMISS_VAULT_MANAGER;
-
 public class VaultManagerFragment extends Fragment implements View.OnClickListener {
 
     private ViewSwitcher loadingViewSwitcher;
@@ -57,7 +55,7 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendBraintreeEvent(new DropInUIEvent(DISMISS_VAULT_MANAGER));
+                sendDropInEvent(new DropInEvent(DropInEventType.DISMISS_VAULT_MANAGER));
             }
         });
 
@@ -70,8 +68,8 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
             PaymentMethodItemView paymentMethodItemView = (PaymentMethodItemView) v;
             final PaymentMethodNonce paymentMethodNonceToDelete = paymentMethodItemView.getPaymentMethodNonce();
 
-            DeleteVaultedPaymentMethodNonceEvent event = new DeleteVaultedPaymentMethodNonceEvent(paymentMethodNonceToDelete);
-            sendBraintreeEvent(event);
+            sendDropInEvent(
+                    DropInEvent.createDeleteVaultedPaymentMethodNonceEvent(paymentMethodNonceToDelete));
         }
     }
 
@@ -80,9 +78,7 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
         vaultManagerView.setAdapter(adapter);
     }
 
-    private void sendBraintreeEvent(Parcelable eventResult) {
-        Bundle result = new Bundle();
-        result.putParcelable("BRAINTREE_RESULT", eventResult);
-        getParentFragmentManager().setFragmentResult("BRAINTREE_EVENT", result);
+    private void sendDropInEvent(DropInEvent event) {
+        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
 }
