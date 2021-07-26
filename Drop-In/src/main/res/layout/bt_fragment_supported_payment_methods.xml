@@ -101,12 +101,13 @@
                     android:paddingTop="@dimen/bt_choose_new_payment_label_padding_top"
                     android:paddingBottom="@dimen/bt_payment_label_padding_bottom"/>
 
-                <ListView
+                <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/bt_supported_payment_methods"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:divider="@drawable/bt_list_view_divider"
-                    android:dividerHeight="1dp"/>
+                    android:paddingLeft="4dp"
+                    android:paddingRight="4dp"
+                    />
 
             </LinearLayout>
 

@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -27,10 +26,12 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
     private TextView mSupportedPaymentMethodsHeader;
 
     @VisibleForTesting
-    protected ListView mSupportedPaymentMethodListView;
+    RecyclerView mSupportedPaymentMethodsView;
+
+    @VisibleForTesting
+    RecyclerView mVaultedPaymentMethodsView;
 
     private View mVaultedPaymentMethodsContainer;
-    private RecyclerView mVaultedPaymentMethodsView;
     private Button mVaultManagerButton;
 
     private DropInRequest dropInRequest;
@@ -56,14 +57,17 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
 
         mLoadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
         mSupportedPaymentMethodsHeader = view.findViewById(R.id.bt_supported_payment_methods_header);
-        mSupportedPaymentMethodListView = view.findViewById(R.id.bt_supported_payment_methods);
+        mSupportedPaymentMethodsView = view.findViewById(R.id.bt_supported_payment_methods);
         mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
 
         mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
 
+        mSupportedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(requireActivity(),
+                LinearLayoutManager.VERTICAL, false));
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
+
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
@@ -109,9 +113,9 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
     }
 
     private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
+        SupportedPaymentMethodsAdapter2 adapter = new SupportedPaymentMethodsAdapter2(
                 availablePaymentMethods, this);
-        mSupportedPaymentMethodListView.setAdapter(adapter);
+        mSupportedPaymentMethodsView.setAdapter(adapter);
         dropInViewModel.setIsLoading(false);
 
         sendDropInEvent(new DropInEvent(DropInEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS));
