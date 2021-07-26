@@ -73,22 +73,24 @@ public class ParentFragment extends Fragment {
     private void onShowVaultManager(DropInEvent event) {
         fragments.add(FragmentType.VAULT_MANAGER);
         viewPagerAdapter.notifyDataSetChanged();
-        viewPager.setCurrentItem(1, false);
+        viewPager.setCurrentItem(1, true);
 
         int targetHeight = dpToPixels(400);
         ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
         layoutParams.height = targetHeight;
         viewPager.setLayoutParams(layoutParams);
+        viewPager.invalidate();
     }
 
     private void onDismissVaultManager(DropInEvent event) {
         fragments.remove(1);
         viewPagerAdapter.notifyDataSetChanged();
-        viewPager.setCurrentItem(0, false);
+        viewPager.setCurrentItem(0, true);
 
         ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         viewPager.setLayoutParams(layoutParams);
+        viewPager.invalidate();
     }
 
     private void sendDropInEvent(DropInEvent event) {
