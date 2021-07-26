@@ -72,13 +72,6 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
-        List<DropInPaymentMethodType> paymentMethodTypes =
-            dropInViewModel.getSupportedPaymentMethods().getValue();
-        if (paymentMethodTypes != null) {
-            showSupportedPaymentMethods(paymentMethodTypes);
-            hideLoader();
-        }
-
         dropInViewModel.getSupportedPaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<DropInPaymentMethodType>>() {
             @Override
             public void onChanged(List<DropInPaymentMethodType> paymentMethodTypes) {
