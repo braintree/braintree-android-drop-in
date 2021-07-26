@@ -5,7 +5,6 @@
     android:layout_margin="0dp"
     android:onClick="onBackgroundClicked"
     android:background="@color/bt_black_54"
-    android:layoutAnimation="@anim/bt_bottom_sheet_layout_animation"
     tools:context="com.braintreepayments.api.DropInActivity">
 
     <LinearLayout
