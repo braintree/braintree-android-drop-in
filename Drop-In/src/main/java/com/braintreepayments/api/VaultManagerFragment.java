@@ -20,6 +20,7 @@ import java.util.List;
 
 public class VaultManagerFragment extends Fragment implements View.OnClickListener {
 
+    private ViewSwitcher loadingViewSwitcher;
     private RecyclerView vaultManagerView;
     private View baseView;
 
@@ -37,6 +38,7 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
 
         // TODO: handling switching between fragment and loading
         baseView = view.findViewById(R.id.bt_base_view);
+        loadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
         vaultManagerView = view.findViewById(R.id.bt_vault_manager_list);
         vaultManagerView.setLayoutManager(new LinearLayoutManager(
                 requireActivity(), RecyclerView.VERTICAL, false));
