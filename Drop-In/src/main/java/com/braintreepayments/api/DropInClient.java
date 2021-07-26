@@ -86,8 +86,8 @@ public class DropInClient {
         braintreeClient.getConfiguration(callback);
     }
 
-    void sendAnalyticsEvent(String eventFragment) {
-        braintreeClient.sendAnalyticsEvent(eventFragment);
+    void sendAnalyticsEvent(String eventName) {
+        braintreeClient.sendAnalyticsEvent(eventName);
     }
 
     void collectDeviceData(FragmentActivity activity, DataCollectorCallback callback) {
