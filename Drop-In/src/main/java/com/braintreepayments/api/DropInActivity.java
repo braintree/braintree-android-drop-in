@@ -55,7 +55,6 @@ public class DropInActivity extends BaseActivity {
                     finishWithDropInResult(dropInResult);
                 } else if (error instanceof UserCanceledException) {
                     dropInViewModel.setUserCanceledError(error);
-                    dropInViewModel.setIsLoading(false);
                 } else {
                     onError(error);
                 }
@@ -306,7 +305,6 @@ public class DropInActivity extends BaseActivity {
                                 .setReorderingAllowed(true)
                                 .replace(R.id.fragment_container_view, CardDetailsFragment.class, args, "CARD_DETAILS")
                                 .commit();
-                        dropInViewModel.setIsLoading(false);
                     }
                 }
             }
