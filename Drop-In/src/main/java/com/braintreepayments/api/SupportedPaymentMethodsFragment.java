@@ -22,7 +22,6 @@ import java.util.List;
 
 public class SupportedPaymentMethodsFragment extends Fragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
 
-    private ViewSwitcher mLoadingViewSwitcher;
     private TextView mSupportedPaymentMethodsHeader;
 
     @VisibleForTesting
@@ -31,7 +30,7 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
     @VisibleForTesting
     RecyclerView mVaultedPaymentMethodsView;
 
-    private View mVaultedPaymentMethodsContainer;
+//    private View mVaultedPaymentMethodsContainer;
     private Button mVaultManagerButton;
 
     private DropInRequest dropInRequest;
@@ -55,10 +54,9 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bt_fragment_supported_payment_methods, container, false);
 
-        mLoadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
         mSupportedPaymentMethodsHeader = view.findViewById(R.id.bt_supported_payment_methods_header);
         mSupportedPaymentMethodsView = view.findViewById(R.id.bt_supported_payment_methods);
-        mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
+//        mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
 
         mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
@@ -89,11 +87,12 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
         dropInViewModel.isLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean isLoading) {
-                if (isLoading) {
-                    mLoadingViewSwitcher.setDisplayedChild(0);
-                } else {
-                    mLoadingViewSwitcher.setDisplayedChild(1);
-                }
+                // TODO: show / hide loader
+//                if (isLoading) {
+//                    mLoadingViewSwitcher.setDisplayedChild(0);
+//                } else {
+//                    mLoadingViewSwitcher.setDisplayedChild(1);
+//                }
             }
         });
 
@@ -141,7 +140,7 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
     private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {
         if (paymentMethodNonces.size() > 0) {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
-            mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
+//            mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
 
             VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter =
                 new VaultedPaymentMethodsAdapter(paymentMethodNonces, this);
@@ -157,7 +156,7 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
             }
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
-            mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
+//            mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
         }
     }
 
