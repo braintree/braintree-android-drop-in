@@ -6,14 +6,17 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.json.JSONObject
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class DropInActivityUITest {
 
+    @Ignore("Ignoring this test until Activity testing approach is finalized")
     @Test
     fun onResume_whenBrowserSwitchResultExists_finishesWithResult() {
+        // TODO: Investigate Activity testing strategy
         val authorization = Authorization.fromString(Fixtures.TOKENIZATION_KEY)
         val dropInRequest = DropInRequest()
                 .clientToken(authorization.toString())
