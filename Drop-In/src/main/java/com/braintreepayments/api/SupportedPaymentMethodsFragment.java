@@ -21,7 +21,7 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-public class SelectPaymentMethodFragment extends Fragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
+public class SupportedPaymentMethodsFragment extends Fragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
 
     private ViewSwitcher mLoadingViewSwitcher;
     private TextView mSupportedPaymentMethodsHeader;
@@ -38,7 +38,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
-    public SelectPaymentMethodFragment() {}
+    public SupportedPaymentMethodsFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,7 +52,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bt_fragment_select_payment_method, container, false);
+        View view = inflater.inflate(R.layout.bt_fragment_supported_payment_methods, container, false);
 
         mLoadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
         mSupportedPaymentMethodsHeader = view.findViewById(R.id.bt_supported_payment_methods_header);
