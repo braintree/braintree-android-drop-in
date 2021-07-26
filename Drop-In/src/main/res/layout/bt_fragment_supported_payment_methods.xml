@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/bt_base_background"
+    android:minHeight="200dp"
     tools:context="com.braintreepayments.api.DropInActivity">
 
     <LinearLayout
@@ -77,7 +78,7 @@
         android:id="@+id/bt_select_payment_method_loader_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/bt_base_background_translucent"
+        android:background="@color/bt_base_background"
         android:gravity="center"
         android:orientation="vertical">
 
