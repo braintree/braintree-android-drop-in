@@ -93,7 +93,7 @@ public class DropInActivity extends BaseActivity {
             }
         });
 
-        showParentFragment();
+        showSelectPaymentMethodParentFragment();
     }
 
     @VisibleForTesting
@@ -259,7 +259,7 @@ public class DropInActivity extends BaseActivity {
         showCardDetailsFragment(cardNumber);
     }
 
-    private void showParentFragment() {
+    private void showSelectPaymentMethodParentFragment() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag("PARENT_FRAGMENT");
         if (fragment == null) {
