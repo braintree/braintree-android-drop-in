@@ -28,7 +28,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_parent, container, false);
+        View view = inflater.inflate(R.layout.bt_fragment_select_payment_method_parent, container, false);
 
         viewPager = view.findViewById(R.id.view_pager);
         viewPager.setUserInputEnabled(false);
