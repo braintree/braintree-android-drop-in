@@ -22,7 +22,9 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
 
     @VisibleForTesting
     CardForm cardForm;
-    private AnimatedButtonView animatedButtonView;
+
+    @VisibleForTesting
+    AnimatedButtonView animatedButtonView;
 
     private DropInRequest dropInRequest;
     private CardFormConfiguration configuration;
