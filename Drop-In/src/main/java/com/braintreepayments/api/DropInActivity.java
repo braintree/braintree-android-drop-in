@@ -111,9 +111,6 @@ public class DropInActivity extends BaseActivity {
             case DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
                 onDidDisplaySupportedPaymentMethods(event);
                 break;
-            case DISMISS_VAULT_MANAGER:
-                onDismissVaultManager(event);
-                break;
             case EDIT_CARD_NUMBER:
                 onEditCardNumber(event);
                 break;
@@ -121,7 +118,7 @@ public class DropInActivity extends BaseActivity {
                 onSendAnalytics(event);
                 break;
             case SHOW_VAULT_MANAGER:
-                onShowVaultManager(event);
+                refreshVaultedPaymentMethods();
                 break;
             case SUPPORTED_PAYMENT_METHOD_SELECTED:
                 onSupportedPaymentMethodSelected(event);
@@ -220,11 +217,7 @@ public class DropInActivity extends BaseActivity {
         getDropInClient().sendAnalyticsEvent(eventName);
     }
 
-    private void onShowVaultManager(DropInEvent event) {
-        showVaultManager();
-    }
-
-    void showVaultManager() {
+    void refreshVaultedPaymentMethods() {
         // TODO: consider caching nonces or use a ViewModel for handling nonces
         // TODO: show loading indicator while fetching vaulted payment methods
         getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
@@ -232,7 +225,6 @@ public class DropInActivity extends BaseActivity {
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
                 if (paymentMethodNonceList != null) {
                     dropInViewModel.setVaultedPaymentMethods(paymentMethodNonceList);
-                    showVaultManagerFragment();
                 } else if (error != null) {
                     onError(error);
                 }
@@ -259,25 +251,6 @@ public class DropInActivity extends BaseActivity {
                     }
                 }
             });
-        }
-    }
-
-    private void onDismissVaultManager(DropInEvent event) {
-        showSelectPaymentMethodFragment();
-    }
-
-    private void showSelectPaymentMethodFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag("SELECT_PAYMENT_METHOD");
-        if (fragment == null) {
-            Bundle args = new Bundle();
-            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-
-            fragmentManager
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
-                    .commit();
         }
     }
 
@@ -326,23 +299,6 @@ public class DropInActivity extends BaseActivity {
             }
         });
 
-    }
-
-    private void showVaultManagerFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        Fragment fragment = fragmentManager.findFragmentByTag("VAULT_MANAGER");
-        if (fragment == null) {
-            Bundle args = new Bundle();
-            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-
-            fragmentManager
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view, VaultManagerFragment.class, args, "VAULT_MANAGER")
-                    .commit();
-            getDropInClient().sendAnalyticsEvent("manager.appeared");
-        }
     }
 
     public void onError(final Exception error) {

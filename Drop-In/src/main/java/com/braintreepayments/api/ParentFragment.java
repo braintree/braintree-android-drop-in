@@ -57,29 +57,23 @@ public class ParentFragment extends Fragment {
 
     @VisibleForTesting
     void onDropInEvent(DropInEvent event) {
-        boolean didHandleEvent = false;
-
         switch (event.getType()) {
             case SHOW_VAULT_MANAGER:
-                didHandleEvent = true;
                 onShowVaultManager(event);
                 break;
             case DISMISS_VAULT_MANAGER:
-                didHandleEvent = true;
                 onDismissVaultManager(event);
                 break;
         }
 
-        if (!didHandleEvent) {
-            // "bubble up" event up to the parent activity
-            sendDropInEvent(event);
-        }
+        // propagate event up to the parent activity
+        sendDropInEvent(event);
     }
 
     private void onShowVaultManager(DropInEvent event) {
         fragments.add(FragmentType.VAULT_MANAGER);
         viewPagerAdapter.notifyDataSetChanged();
-        viewPager.setCurrentItem(1, true);
+        viewPager.setCurrentItem(1, false);
 
         int targetHeight = dpToPixels(400);
         ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
@@ -90,7 +84,7 @@ public class ParentFragment extends Fragment {
     private void onDismissVaultManager(DropInEvent event) {
         fragments.remove(1);
         viewPagerAdapter.notifyDataSetChanged();
-        viewPager.setCurrentItem(0, true);
+        viewPager.setCurrentItem(0, false);
 
         ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
