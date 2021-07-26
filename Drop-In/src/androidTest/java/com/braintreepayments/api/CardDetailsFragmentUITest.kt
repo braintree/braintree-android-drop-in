@@ -386,8 +386,19 @@ class CardDetailsFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_whenThreeDSecureUserCancelationPresentInViewModel_showsSubmitButtonAgain() {
-        // TODO: observe view model for UserCancelation cardTokenizationError and reset submit button
-        // TODO: is storing 3DS canceled in a view model necessary?
+    fun whenStateIsRESUMED_whenUserCanceledErrorPresentInViewModel_showsSubmitButtonAgain() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(true, true))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setUserCanceledError(UserCanceledException("User canceled 3DS."))
+        }
+
+        onView(withId(R.id.bt_button)).check(matches(isDisplayed()))
     }
 }

@@ -91,7 +91,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onResume_whenBrowserSwitchResultExists_finishesWithResult() {
+    public void onResume_whenBrowserSwitchResultExists_finishesActivity() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
@@ -108,11 +108,10 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         assertFalse(mActivity.isFinishing());
-        // TODO assert finished with result
     }
 
     @Test
-    public void onResume_whenBrowserSwitchReturnsUserCanceledException_restores() {
+    public void onResume_whenBrowserSwitchReturnsUserCanceledException_setsUserCanceledErrorInViewModel() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
@@ -127,7 +126,7 @@ public class DropInActivityUnitTest {
         mActivity.onActivityResult(100, 1, mock(Intent.class));
 
         assertFalse(mActivity.isFinishing());
-        assertFalse(mActivity.dropInViewModel.isLoading().getValue());
+        assertEquals(error, mActivity.dropInViewModel.getUserCanceledError().getValue());
     }
 
     @Test
@@ -166,7 +165,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onActivityResult_whenDropInResultExists_finishesWithResult() {
+    public void onActivityResult_whenDropInResultExists_finishesActivity() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
@@ -183,11 +182,10 @@ public class DropInActivityUnitTest {
 
         mActivity.onActivityResult(100, 1, mock(Intent.class));
         assertTrue(mActivity.isFinishing());
-        // TODO assert finished with result
     }
 
     @Test
-    public void onActivityResult_whenResultIsUserCanceledException_setsIsLoadingFalse() {
+    public void onActivityResult_whenResultIsUserCanceledException_setsUserCanceledErrorInViewModel() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
@@ -202,7 +200,7 @@ public class DropInActivityUnitTest {
         mActivity.onActivityResult(100, 1, mock(Intent.class));
 
         assertFalse(mActivity.isFinishing());
-        assertFalse(mActivity.dropInViewModel.isLoading().getValue());
+        assertEquals(error, mActivity.dropInViewModel.getUserCanceledError().getValue());
     }
 
     @Test
