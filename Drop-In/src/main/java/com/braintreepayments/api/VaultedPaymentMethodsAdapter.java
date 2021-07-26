@@ -11,7 +11,7 @@ import java.util.List;
 
 import com.braintreepayments.api.dropin.R;
 
-class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<PaymentMethodViewHolder> {
+class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMethodViewHolder> {
 
     private final List<PaymentMethodNonce> paymentMethodNonces;
     private final VaultedPaymentMethodSelectedListener listener;
@@ -23,15 +23,15 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<PaymentMethodVie
 
     @NonNull
     @Override
-    public PaymentMethodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public VaultedPaymentMethodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view =
             inflater.inflate(R.layout.bt_vaulted_payment_method_card, parent, false);
-        return new PaymentMethodViewHolder(view);
+        return new VaultedPaymentMethodViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PaymentMethodViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull VaultedPaymentMethodViewHolder holder, int position) {
         final PaymentMethodNonce paymentMethodNonce = paymentMethodNonces.get(position);
         holder.bind(paymentMethodNonce);
         holder.setOnClickListener(new View.OnClickListener() {
