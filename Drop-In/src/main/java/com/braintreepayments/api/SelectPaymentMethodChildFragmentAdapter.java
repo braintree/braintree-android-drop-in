@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-public class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapter {
+class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapter {
 
     private final DropInRequest dropInRequest;
     private final SelectPaymentMethodChildFragmentList childFragmentList;
 
-    public SelectPaymentMethodChildFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, SelectPaymentMethodChildFragmentList childFragmentList, DropInRequest dropInRequest) {
+    SelectPaymentMethodChildFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, SelectPaymentMethodChildFragmentList childFragmentList, DropInRequest dropInRequest) {
         super(fragmentManager, lifecycle);
         this.dropInRequest = dropInRequest;
         this.childFragmentList = childFragmentList;
