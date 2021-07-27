@@ -11,6 +11,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -62,11 +63,16 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
 
         mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
 
-        mSupportedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(requireActivity(),
-                LinearLayoutManager.VERTICAL, false));
+        LinearLayoutManager supportedPaymentMethodsLayoutManager =
+                new LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false);
+        mSupportedPaymentMethodsView.setLayoutManager(supportedPaymentMethodsLayoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                requireActivity(), supportedPaymentMethodsLayoutManager.getOrientation());
+        mSupportedPaymentMethodsView.addItemDecoration(dividerItemDecoration);
+
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
-
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
