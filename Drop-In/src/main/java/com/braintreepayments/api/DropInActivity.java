@@ -38,10 +38,6 @@ public class DropInActivity extends BaseActivity {
      * {@link #RESULT_CANCELED}.
      */
     public static final String EXTRA_ERROR = "com.braintreepayments.api.dropin.EXTRA_ERROR";
-    public static final int ADD_CARD_REQUEST_CODE = 1;
-    public static final int DELETE_PAYMENT_METHOD_NONCE_CODE = 2;
-
-    static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";
 
     @VisibleForTesting
     DropInViewModel dropInViewModel;
