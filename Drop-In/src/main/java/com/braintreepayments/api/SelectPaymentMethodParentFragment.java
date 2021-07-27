@@ -75,7 +75,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
         layoutParams.height = targetHeight;
         viewPager.setLayoutParams(layoutParams);
-        forceRelayout();
+        requestLayout();
 
         fragments.add(FragmentType.VAULT_MANAGER);
         viewPagerAdapter.notifyDataSetChanged();
@@ -86,17 +86,17 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         viewPager.setLayoutParams(layoutParams);
-        forceRelayout();
+        requestLayout();
 
         fragments.remove(1);
         viewPagerAdapter.notifyDataSetChanged();
         viewPager.setCurrentItem(0, false);
     }
 
-    private void forceRelayout() {
+    private void requestLayout() {
         View rootView = getView();
         if (rootView != null) {
-            rootView.invalidate();
+            rootView.requestLayout();
         }
     }
 
