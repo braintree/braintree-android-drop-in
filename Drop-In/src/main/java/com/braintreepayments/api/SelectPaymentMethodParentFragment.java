@@ -21,7 +21,7 @@ import java.util.List;
 public class SelectPaymentMethodParentFragment extends Fragment {
 
     private ViewPager2 viewPager;
-    private DropInFragmentAdapter viewPagerAdapter;
+    private SelectPaymentMethodChildFragmentAdapter viewPagerAdapter;
     private List<FragmentType> fragments;
 
     private DropInRequest dropInRequest;
@@ -49,7 +49,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
             }
         });
 
-        viewPagerAdapter = new DropInFragmentAdapter(childFragmentManager, getLifecycle(), fragments, dropInRequest);
+        viewPagerAdapter = new SelectPaymentMethodChildFragmentAdapter(childFragmentManager, getLifecycle(), fragments, dropInRequest);
         viewPager.setAdapter(viewPagerAdapter);
 
         // disable animation for now

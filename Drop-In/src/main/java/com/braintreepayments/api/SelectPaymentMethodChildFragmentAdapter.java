@@ -10,12 +10,12 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import java.util.List;
 
-public class DropInFragmentAdapter extends FragmentStateAdapter {
+public class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapter {
 
     private final DropInRequest dropInRequest;
     private final List<FragmentType> fragments;
 
-    public DropInFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, List<FragmentType> fragments, DropInRequest dropInRequest) {
+    public SelectPaymentMethodChildFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, List<FragmentType> fragments, DropInRequest dropInRequest) {
         super(fragmentManager, lifecycle);
         this.fragments = fragments;
         this.dropInRequest = dropInRequest;
