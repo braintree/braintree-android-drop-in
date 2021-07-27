@@ -265,11 +265,10 @@ public class DropInActivity extends BaseActivity {
         return (fragment == null);
     }
 
-    private void addFragment(Class <? extends Fragment> fragmentClass, String tag, Bundle args) {
+    private void replaceExistingFragment(Class <? extends Fragment> fragmentClass, String tag, Bundle args) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager
                 .beginTransaction()
-                .setReorderingAllowed(true)
                 .replace(R.id.fragment_container_view, fragmentClass, args, tag)
                 .commit();
     }
@@ -278,7 +277,7 @@ public class DropInActivity extends BaseActivity {
         if (shouldAddFragment(SELECT_PAYMENT_METHOD_TAG)) {
             Bundle args = new Bundle();
             args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-            addFragment(SelectPaymentMethodParentFragment.class, SELECT_PAYMENT_METHOD_TAG, args);
+            replaceExistingFragment(SelectPaymentMethodParentFragment.class, SELECT_PAYMENT_METHOD_TAG, args);
         }
     }
 
@@ -296,7 +295,7 @@ public class DropInActivity extends BaseActivity {
                         args.putString("EXTRA_CARD_NUMBER", cardNumber);
                         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", cardFormConfiguration);
 
-                        addFragment(CardDetailsFragment.class, CARD_DETAILS_TAG, args);
+                        replaceExistingFragment(CardDetailsFragment.class, CARD_DETAILS_TAG, args);
                     }
                 }
             }
@@ -381,7 +380,7 @@ public class DropInActivity extends BaseActivity {
             if (cardNumber != null) {
                 args.putString("EXTRA_CARD_NUMBER", cardNumber);
             }
-            addFragment(AddCardFragment.class, ADD_CARD_TAG, args);
+            replaceExistingFragment(AddCardFragment.class, ADD_CARD_TAG, args);
         }
     }
 
