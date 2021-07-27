@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 public class SelectPaymentMethodParentFragment extends Fragment {
 
+    static final String TAG = "SELECT_PAYMENT_METHOD_PARENT_FRAGMENT";
+
     private ViewPager2 viewPager;
     private SelectPaymentMethodChildFragmentAdapter viewPagerAdapter;
     private SelectPaymentMethodChildFragmentList childFragmentList;

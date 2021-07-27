@@ -20,6 +20,8 @@ import com.braintreepayments.cardform.view.CardForm;
 
 public class CardDetailsFragment extends Fragment implements OnCardFormSubmitListener, OnCardFormFieldFocusedListener {
 
+    static final String TAG = "CARD_DETAILS";
+
     @VisibleForTesting
     CardForm cardForm;
 

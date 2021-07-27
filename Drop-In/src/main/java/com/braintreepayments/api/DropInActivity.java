@@ -27,6 +27,10 @@ import java.util.List;
 // TODO: unit test after all fragments have been extracted
 public class DropInActivity extends BaseActivity {
 
+    private static final String ADD_CARD_TAG = "ADD_CARD";
+    private static final String CARD_DETAILS_TAG = "CARD_DETAILS";
+    private static final String SELECT_PAYMENT_METHOD_TAG = "SELECT_PAYMENT_METHOD_PARENT_FRAGMENT";
+
     /**
      * Errors are returned as the serializable value of this key in the data intent in
      * {@link #onActivityResult(int, int, android.content.Intent)} if
@@ -259,18 +263,26 @@ public class DropInActivity extends BaseActivity {
         showCardDetailsFragment(cardNumber);
     }
 
-    private void showSelectPaymentMethodParentFragment() {
+    private boolean shouldAddFragment(String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag("PARENT_FRAGMENT");
-        if (fragment == null) {
+        Fragment fragment = fragmentManager.findFragmentByTag(tag);
+        return (fragment == null);
+    }
+
+    private void addFragment(Class <? extends Fragment> fragmentClass, String tag, Bundle args) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager
+                .beginTransaction()
+                .setReorderingAllowed(true)
+                .replace(R.id.fragment_container_view, fragmentClass, args, tag)
+                .commit();
+    }
+
+    private void showSelectPaymentMethodParentFragment() {
+        if (shouldAddFragment(SELECT_PAYMENT_METHOD_TAG)) {
             Bundle args = new Bundle();
             args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-
-            fragmentManager
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view, SelectPaymentMethodParentFragment.class, args, "PARENT_FRAGMENT")
-                    .commit();
+            addFragment(SelectPaymentMethodParentFragment.class, SELECT_PAYMENT_METHOD_TAG, args);
         }
     }
 
@@ -279,21 +291,16 @@ public class DropInActivity extends BaseActivity {
             @Override
             public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
                 if (configuration != null) {
-                    CardFormConfiguration cardFormConfiguration = new CardFormConfiguration(configuration.isCvvChallengePresent(), configuration.isPostalCodeChallengePresent());
+                    CardFormConfiguration cardFormConfiguration =
+                        new CardFormConfiguration(configuration.isCvvChallengePresent(), configuration.isPostalCodeChallengePresent());
 
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    Fragment fragment = fragmentManager.findFragmentByTag("CARD_DETAILS");
-                    if (fragment == null) {
+                    if (shouldAddFragment(CARD_DETAILS_TAG)) {
                         Bundle args = new Bundle();
                         args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
                         args.putString("EXTRA_CARD_NUMBER", cardNumber);
                         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", cardFormConfiguration);
 
-                        fragmentManager
-                                .beginTransaction()
-                                .setReorderingAllowed(true)
-                                .replace(R.id.fragment_container_view, CardDetailsFragment.class, args, "CARD_DETAILS")
-                                .commit();
+                        addFragment(CardDetailsFragment.class, CARD_DETAILS_TAG, args);
                     }
                 }
             }
@@ -372,20 +379,13 @@ public class DropInActivity extends BaseActivity {
             }
         });
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag("ADD_CARD");
-        if (fragment == null) {
+        if (shouldAddFragment(ADD_CARD_TAG)) {
             Bundle args = new Bundle();
             args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
             if (cardNumber != null) {
                 args.putString("EXTRA_CARD_NUMBER", cardNumber);
             }
-
-            fragmentManager
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view, AddCardFragment.class, args, "ADD_CARD")
-                    .commit();
+            addFragment(AddCardFragment.class, ADD_CARD_TAG, args);
         }
     }
 
