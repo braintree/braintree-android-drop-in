@@ -2,11 +2,9 @@ package com.braintreepayments.api
 
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
-import junit.framework.Assert.assertEquals
 import junit.framework.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
