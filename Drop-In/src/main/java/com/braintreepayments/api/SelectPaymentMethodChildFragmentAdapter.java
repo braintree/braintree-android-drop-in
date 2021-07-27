@@ -8,35 +8,32 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import java.util.List;
-
 public class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapter {
 
     private final DropInRequest dropInRequest;
-    private final List<FragmentType> fragments;
+    private final SelectPaymentMethodChildFragmentList childFragmentList;
 
-    public SelectPaymentMethodChildFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, List<FragmentType> fragments, DropInRequest dropInRequest) {
+    public SelectPaymentMethodChildFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, SelectPaymentMethodChildFragmentList childFragmentList, DropInRequest dropInRequest) {
         super(fragmentManager, lifecycle);
-        this.fragments = fragments;
         this.dropInRequest = dropInRequest;
+        this.childFragmentList = childFragmentList;
     }
-
 
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        FragmentType fragmentType = fragments.get(position);
+        SelectPaymentMethodChildFragment childFragment = childFragmentList.getItem(position);
 
         Bundle args = new Bundle();
         args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);
 
-        switch (fragmentType) {
+        switch (childFragment) {
             case VAULT_MANAGER:
                 VaultManagerFragment vaultManagerFragment = new VaultManagerFragment();
                 vaultManagerFragment.setArguments(args);
                 return vaultManagerFragment;
             default:
-            case SELECT_PAYMENT_METHOD:
+            case SUPPORTED_PAYMENT_METHODS:
                 SupportedPaymentMethodsFragment fragment = new SupportedPaymentMethodsFragment();
                 fragment.setArguments(args);
                 return fragment;
@@ -45,35 +42,16 @@ public class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapte
 
     @Override
     public int getItemCount() {
-        return fragments.size();
+        return childFragmentList.size();
     }
 
     @Override
     public long getItemId(int position) {
-        FragmentType fragmentType = fragments.get(position);
-        switch (fragmentType) {
-            case VAULT_MANAGER:
-                return 1;
-            default:
-            case SELECT_PAYMENT_METHOD:
-                return 0;
-        }
+        return childFragmentList.getItemId(position);
     }
 
     @Override
     public boolean containsItem(long itemId) {
-        for (FragmentType fragment: fragments) {
-            switch ((int) itemId) {
-                case 1:
-                    if (fragment == FragmentType.VAULT_MANAGER) {
-                        return true;
-                    }
-                case 0:
-                    if (fragment == FragmentType.SELECT_PAYMENT_METHOD) {
-                        return true;
-                    }
-            }
-        }
-        return false;
+        return childFragmentList.containsItem(itemId);
     }
 }

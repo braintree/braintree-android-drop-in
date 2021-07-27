@@ -16,13 +16,12 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.braintreepayments.api.dropin.R;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SelectPaymentMethodParentFragment extends Fragment {
 
     private ViewPager2 viewPager;
     private SelectPaymentMethodChildFragmentAdapter viewPagerAdapter;
-    private List<FragmentType> fragments;
+    private SelectPaymentMethodChildFragmentList childFragmentList;
 
     private DropInRequest dropInRequest;
 
@@ -33,8 +32,8 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         viewPager = view.findViewById(R.id.view_pager);
         viewPager.setUserInputEnabled(false);
 
-        fragments = new ArrayList<>();
-        fragments.add(FragmentType.SELECT_PAYMENT_METHOD);
+        childFragmentList = new SelectPaymentMethodChildFragmentList(
+                SelectPaymentMethodChildFragment.SUPPORTED_PAYMENT_METHODS);
 
         Bundle args = getArguments();
         if (args != null) {
@@ -49,7 +48,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
             }
         });
 
-        viewPagerAdapter = new SelectPaymentMethodChildFragmentAdapter(childFragmentManager, getLifecycle(), fragments, dropInRequest);
+        viewPagerAdapter = new SelectPaymentMethodChildFragmentAdapter(childFragmentManager, getLifecycle(), childFragmentList, dropInRequest);
         viewPager.setAdapter(viewPagerAdapter);
 
         // disable animation for now
@@ -91,7 +90,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         viewPager.setLayoutParams(layoutParams);
         requestLayout();
 
-        fragments.add(FragmentType.VAULT_MANAGER);
+        childFragmentList.add(SelectPaymentMethodChildFragment.VAULT_MANAGER);
         viewPagerAdapter.notifyDataSetChanged();
         viewPager.setCurrentItem(1, false);
     }
@@ -102,7 +101,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         viewPager.setLayoutParams(layoutParams);
         requestLayout();
 
-        fragments.remove(1);
+        childFragmentList.remove(1);
         viewPagerAdapter.notifyDataSetChanged();
         viewPager.setCurrentItem(0, false);
     }
