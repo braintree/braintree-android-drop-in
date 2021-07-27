@@ -2,6 +2,7 @@ package com.braintreepayments.api
 
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.core.view.isVisible
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
@@ -17,6 +18,7 @@ import junit.framework.TestCase.*
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
+import org.mockito.internal.matchers.Not
 import java.util.concurrent.CountDownLatch
 
 
@@ -386,7 +388,20 @@ class CardDetailsFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_whenThreeDSecureUserCancelationPresentInViewModel_showsSubmitButtonAgain() {
-        // TODO: observe view model for UserCancelation cardTokenizationError and reset submit button
+    fun whenStateIsRESUMED_whenUserCanceledErrorPresentInViewModel_showsSubmitButtonAgain() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().clientToken(Fixtures.CLIENT_TOKEN))
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(true, true))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.animatedButtonView.showLoading()
+            fragment.dropInViewModel.setUserCanceledError(UserCanceledException("User canceled 3DS."))
+        }
+        onView(withId(R.id.bt_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_animated_button_loading_indicator)).check(matches(not(isDisplayed())))
     }
 }

@@ -1,6 +1,7 @@
 package com.braintreepayments.api;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -38,9 +39,28 @@ public class DropInActivity extends BaseActivity {
 
     static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";
 
-    private DropInViewModel dropInViewModel;
+    @VisibleForTesting
+    DropInViewModel dropInViewModel;
     ActionBar actionBar;
     private FragmentContainerView fragmentContainerView;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        getDropInClient().deliverBrowserSwitchResult(this, new DropInResultCallback() {
+            @Override
+            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                if (dropInResult != null) {
+                    finishWithDropInResult(dropInResult);
+                } else if (error instanceof UserCanceledException) {
+                    dropInViewModel.setUserCanceledError(error);
+                } else {
+                    onError(error);
+                }
+            }
+        });
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -422,6 +442,23 @@ public class DropInActivity extends BaseActivity {
     public void finish() {
         super.finish();
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        getDropInClient().handleThreeDSecureActivityResult(this, resultCode, data, new DropInResultCallback() {
+            @Override
+            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                if (dropInResult != null) {
+                    finishWithDropInResult(dropInResult);
+                } else if (error instanceof UserCanceledException) {
+                    dropInViewModel.setUserCanceledError(error);
+                } else {
+                    onError(error);
+                }
+            }
+        });
     }
 
     @VisibleForTesting

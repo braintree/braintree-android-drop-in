@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,9 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
 
     @VisibleForTesting
     CardForm cardForm;
-    private AnimatedButtonView animatedButtonView;
+
+    @VisibleForTesting
+    AnimatedButtonView animatedButtonView;
 
     private DropInRequest dropInRequest;
     private CardFormConfiguration configuration;
@@ -68,6 +71,14 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
                 if (error instanceof ErrorWithResponse) {
                     setErrors((ErrorWithResponse) error);
                 }
+                animatedButtonView.showButton();
+            }
+        });
+
+        dropInViewModel.getUserCanceledError().observe(getViewLifecycleOwner(), new Observer<Exception>() {
+            @Override
+            public void onChanged(Exception e) {
+                animatedButtonView.showButton();
             }
         });
 
@@ -129,8 +140,6 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
                 cardForm.setMobileNumberError(getContext().getString(R.string.bt_mobile_number_invalid));
             }
         }
-
-        animatedButtonView.showButton();
     }
 
     private void sendDropInEvent(DropInEvent event) {
@@ -154,6 +163,8 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             card.setShouldValidate(shouldVault);
 
             sendDropInEvent(DropInEvent.createCardDetailsSubmitEvent(card));
+            animatedButtonView.showLoading();
+
         } else {
             animatedButtonView.showButton();
             cardForm.validate();

@@ -37,6 +37,9 @@ public class MockDropInClientBuilder {
     private CardNonce unionPayTokenizeSuccess;
     private Exception unionPayTokenizeError;
     private Exception handleThreeDSecureActivityResultError;
+    private DropInResult handleThreeDSecureActivityResultSuccess;
+    private Exception deliverBrowserSwitchResultError;
+    private DropInResult deliverBrowserSwitchResultSuccess;
 
     private boolean shouldPerformThreeDSecureVerification;
 
@@ -132,6 +135,21 @@ public class MockDropInClientBuilder {
 
     MockDropInClientBuilder handleThreeDSecureActivityResultError(Exception error) {
         this.handleThreeDSecureActivityResultError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder handleThreeDSecureActivityResultSuccess(DropInResult result) {
+        this.handleThreeDSecureActivityResultSuccess = result;
+        return this;
+    }
+
+    MockDropInClientBuilder deliverBrowseSwitchResultError(Exception error) {
+        this.deliverBrowserSwitchResultError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder deliverBrowserSwitchResultSuccess(DropInResult result) {
+        this.deliverBrowserSwitchResultSuccess = result;
         return this;
     }
 
@@ -276,10 +294,25 @@ public class MockDropInClientBuilder {
                 DropInResultCallback callback = (DropInResultCallback) invocation.getArguments()[3];
                 if (handleThreeDSecureActivityResultError != null) {
                     callback.onResult(null, handleThreeDSecureActivityResultError);
+                } else if (handleThreeDSecureActivityResultSuccess != null) {
+                    callback.onResult(handleThreeDSecureActivityResultSuccess, null);
                 }
                 return null;
             }
         }).when(dropInClient).handleThreeDSecureActivityResult(any(FragmentActivity.class), anyInt(), any(Intent.class), any(DropInResultCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                DropInResultCallback callback = (DropInResultCallback) invocation.getArguments()[1];
+                if (deliverBrowserSwitchResultError != null) {
+                    callback.onResult(null, deliverBrowserSwitchResultError);
+                } else if (deliverBrowserSwitchResultSuccess != null) {
+                    callback.onResult(deliverBrowserSwitchResultSuccess, null);
+                }
+                return null;
+            }
+        }).when(dropInClient).deliverBrowserSwitchResult(any(FragmentActivity.class), any(DropInResultCallback.class));
 
         return dropInClient;
     }
