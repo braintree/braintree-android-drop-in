@@ -19,6 +19,7 @@ public class DropInViewModel extends ViewModel {
     private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethods = new MutableLiveData<>();
     private final MutableLiveData<List<CardType>> supportedCardTypes = new MutableLiveData<>();
     private final MutableLiveData<Exception> cardTokenizationError = new MutableLiveData<>();
+    private final MutableLiveData<Exception> userCanceledError = new MutableLiveData<>();
 
     LiveData<Boolean> isLoading() {
         return isLoading;
@@ -60,6 +61,13 @@ public class DropInViewModel extends ViewModel {
         cardTokenizationError.setValue(value);
     }
 
+    LiveData<Exception> getUserCanceledError() {
+        return userCanceledError;
+    }
+
+    void setUserCanceledError(Exception value) {
+        userCanceledError.setValue(value);
+    }
 
     public void removeVaultedPaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
         List<PaymentMethodNonce> currentPaymentMethods = vaultedPaymentMethods.getValue();

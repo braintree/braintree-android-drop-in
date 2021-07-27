@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.Mock;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
@@ -24,6 +25,7 @@ import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClie
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -73,6 +75,151 @@ public class DropInActivityUnitTest {
                 .getSerializableExtra(DropInActivity.EXTRA_ERROR);
         assertTrue(exception instanceof InvalidArgumentException);
         assertEquals("Tokenization Key or Client Token was invalid.", exception.getMessage());
+    }
+
+    @Test
+    public void onResume_deliversBrowserSwitchResult() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        DropInClient dropInClient = mock(DropInClient.class);
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        verify(dropInClient).deliverBrowserSwitchResult(same(mActivity), any(DropInResultCallback.class));
+    }
+
+    @Test
+    public void onResume_whenBrowserSwitchResultExists_finishesActivity() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        DropInResult result = mock(DropInResult.class);
+        PaymentMethodNonce nonce = mock(PaymentMethodNonce.class);
+        when(result.getPaymentMethodNonce()).thenReturn(nonce);
+        when(result.getDeviceData()).thenReturn("device data");
+
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .handleThreeDSecureActivityResultSuccess(result)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        assertFalse(mActivity.isFinishing());
+    }
+
+    @Test
+    public void onResume_whenBrowserSwitchReturnsUserCanceledException_setsUserCanceledErrorInViewModel() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        Exception error = new UserCanceledException("User canceled 3DS.");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .deliverBrowseSwitchResultError(error)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onActivityResult(100, 1, mock(Intent.class));
+
+        assertFalse(mActivity.isFinishing());
+        assertEquals(error, mActivity.dropInViewModel.getUserCanceledError().getValue());
+    }
+
+    @Test
+    public void onResume_whenBrowserSwitchError_forwardsError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        Exception error = new Exception("A 3DS error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .deliverBrowseSwitchResultError(error)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onActivityResult(100, 1, mock(Intent.class));
+
+        assertTrue(mActivity.isFinishing());
+        verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error");
+    }
+
+    @Test
+    public void onActivityResult_handlesThreeDSecureActivityResult() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        DropInClient dropInClient = mock(DropInClient.class);
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        Intent intent = mock(Intent.class);
+        mActivity.onActivityResult(100, 1, intent);
+
+        verify(dropInClient).handleThreeDSecureActivityResult(same(mActivity), eq(1), same(intent), any(DropInResultCallback.class));
+    }
+
+    @Test
+    public void onActivityResult_whenDropInResultExists_finishesActivity() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        DropInResult result = mock(DropInResult.class);
+        PaymentMethodNonce nonce = mock(PaymentMethodNonce.class);
+        when(result.getPaymentMethodNonce()).thenReturn(nonce);
+        when(result.getDeviceData()).thenReturn("device data");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .handleThreeDSecureActivityResultSuccess(result)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onActivityResult(100, 1, mock(Intent.class));
+        assertTrue(mActivity.isFinishing());
+    }
+
+    @Test
+    public void onActivityResult_whenResultIsUserCanceledException_setsUserCanceledErrorInViewModel() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        Exception error = new UserCanceledException("User canceled 3DS.");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .handleThreeDSecureActivityResultError(error)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onActivityResult(100, 1, mock(Intent.class));
+
+        assertFalse(mActivity.isFinishing());
+        assertEquals(error, mActivity.dropInViewModel.getUserCanceledError().getValue());
+    }
+
+    @Test
+    public void onActivityResult_whenError_handlesError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        Exception error = new Exception("A 3DS error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .handleThreeDSecureActivityResultError(error)
+                .build();
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.onActivityResult(100, 1, mock(Intent.class));
+
+        assertTrue(mActivity.isFinishing());
+        verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error");
     }
 
     @Test
