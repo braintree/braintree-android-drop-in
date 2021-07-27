@@ -18,7 +18,6 @@ class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapter {
         this.dropInRequest = dropInRequest;
         this.childFragmentList = childFragmentList;
     }
-
     @NonNull
     @Override
     public Fragment createFragment(int position) {
