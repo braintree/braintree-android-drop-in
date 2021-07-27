@@ -31,9 +31,6 @@ public class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapte
         args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);
 
         switch (fragmentType) {
-            case PROGRESS_INDICATOR:
-                return null;
-//                return new ProgressFragment();
             case VAULT_MANAGER:
                 VaultManagerFragment vaultManagerFragment = new VaultManagerFragment();
                 vaultManagerFragment.setArguments(args);
@@ -57,8 +54,6 @@ public class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapte
         switch (fragmentType) {
             case VAULT_MANAGER:
                 return 1;
-            case PROGRESS_INDICATOR:
-                return 2;
             default:
             case SELECT_PAYMENT_METHOD:
                 return 0;
@@ -71,10 +66,6 @@ public class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapte
             switch ((int) itemId) {
                 case 1:
                     if (fragment == FragmentType.VAULT_MANAGER) {
-                        return true;
-                    }
-                case 2:
-                    if (fragment == FragmentType.PROGRESS_INDICATOR) {
                         return true;
                     }
                 case 0:
