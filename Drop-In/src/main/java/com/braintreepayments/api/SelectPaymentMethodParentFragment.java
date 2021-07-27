@@ -52,6 +52,20 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         viewPagerAdapter = new DropInFragmentAdapter(childFragmentManager, getLifecycle(), fragments, dropInRequest);
         viewPager.setAdapter(viewPagerAdapter);
 
+        // disable animation for now
+        viewPager.setPageTransformer(new ViewPager2.PageTransformer() {
+            @Override
+            public void transformPage(@NonNull View page, float position) {
+                if (position < -1 || position > 1) {
+                    // page is either offscreen to the left or offscreen to the right
+                    page.setAlpha(0.0f);
+                } else {
+                    // page is visible
+                    page.setAlpha(1.0f);
+                }
+            }
+        });
+
         return view;
     }
 
