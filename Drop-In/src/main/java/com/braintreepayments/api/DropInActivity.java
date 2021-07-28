@@ -27,6 +27,10 @@ import java.util.List;
 // TODO: unit test after all fragments have been extracted
 public class DropInActivity extends BaseActivity {
 
+    private static final String ADD_CARD_TAG = "ADD_CARD";
+    private static final String CARD_DETAILS_TAG = "CARD_DETAILS";
+    private static final String SELECT_PAYMENT_METHOD_TAG = "SELECT_PAYMENT_METHOD_PARENT_FRAGMENT";
+
     /**
      * Errors are returned as the serializable value of this key in the data intent in
      * {@link #onActivityResult(int, int, android.content.Intent)} if
@@ -34,10 +38,6 @@ public class DropInActivity extends BaseActivity {
      * {@link #RESULT_CANCELED}.
      */
     public static final String EXTRA_ERROR = "com.braintreepayments.api.dropin.EXTRA_ERROR";
-    public static final int ADD_CARD_REQUEST_CODE = 1;
-    public static final int DELETE_PAYMENT_METHOD_NONCE_CODE = 2;
-
-    static final String EXTRA_PAYMENT_METHOD_NONCES = "com.braintreepayments.api.EXTRA_PAYMENT_METHOD_NONCES";
 
     @VisibleForTesting
     DropInViewModel dropInViewModel;
@@ -93,10 +93,11 @@ public class DropInActivity extends BaseActivity {
             }
         });
 
-        showSelectPaymentMethodFragment();
+        showSelectPaymentMethodParentFragment();
     }
 
-    public void onDropInEvent(DropInEvent event) {
+    @VisibleForTesting
+    void onDropInEvent(DropInEvent event) {
         switch (event.getType()) {
             case ADD_CARD_SUBMIT:
                 onAddCardSubmit(event);
@@ -110,9 +111,6 @@ public class DropInActivity extends BaseActivity {
             case DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
                 onDidDisplaySupportedPaymentMethods(event);
                 break;
-            case DISMISS_VAULT_MANAGER:
-                onDismissVaultManager(event);
-                break;
             case EDIT_CARD_NUMBER:
                 onEditCardNumber(event);
                 break;
@@ -120,7 +118,7 @@ public class DropInActivity extends BaseActivity {
                 onSendAnalytics(event);
                 break;
             case SHOW_VAULT_MANAGER:
-                onShowVaultManager(event);
+                refreshVaultedPaymentMethods();
                 break;
             case SUPPORTED_PAYMENT_METHOD_SELECTED:
                 onSupportedPaymentMethodSelected(event);
@@ -219,11 +217,7 @@ public class DropInActivity extends BaseActivity {
         getDropInClient().sendAnalyticsEvent(eventName);
     }
 
-    private void onShowVaultManager(DropInEvent event) {
-        showVaultManager();
-    }
-
-    void showVaultManager() {
+    void refreshVaultedPaymentMethods() {
         // TODO: consider caching nonces or use a ViewModel for handling nonces
         // TODO: show loading indicator while fetching vaulted payment methods
         getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
@@ -231,7 +225,6 @@ public class DropInActivity extends BaseActivity {
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
                 if (paymentMethodNonceList != null) {
                     dropInViewModel.setVaultedPaymentMethods(paymentMethodNonceList);
-                    showVaultManagerFragment();
                 } else if (error != null) {
                     onError(error);
                 }
@@ -261,28 +254,31 @@ public class DropInActivity extends BaseActivity {
         }
     }
 
-    private void onDismissVaultManager(DropInEvent event) {
-        showSelectPaymentMethodFragment();
-    }
-
-    private void showSelectPaymentMethodFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag("SELECT_PAYMENT_METHOD");
-        if (fragment == null) {
-            Bundle args = new Bundle();
-            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-
-            fragmentManager
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view, SelectPaymentMethodFragment.class, args, "SELECT_PAYMENT_METHOD")
-                    .commit();
-        }
-    }
-
     private void onAddCardSubmit(DropInEvent event) {
         String cardNumber = event.getString(DropInEventProperty.CARD_NUMBER);
         showCardDetailsFragment(cardNumber);
+    }
+
+    private boolean shouldAddFragment(String tag) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag(tag);
+        return (fragment == null);
+    }
+
+    private void replaceExistingFragment(Class <? extends Fragment> fragmentClass, String tag, Bundle args) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container_view, fragmentClass, args, tag)
+                .commit();
+    }
+
+    private void showSelectPaymentMethodParentFragment() {
+        if (shouldAddFragment(SELECT_PAYMENT_METHOD_TAG)) {
+            Bundle args = new Bundle();
+            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
+            replaceExistingFragment(SelectPaymentMethodParentFragment.class, SELECT_PAYMENT_METHOD_TAG, args);
+        }
     }
 
     private void showCardDetailsFragment(final String cardNumber) {
@@ -290,43 +286,21 @@ public class DropInActivity extends BaseActivity {
             @Override
             public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
                 if (configuration != null) {
-                    CardFormConfiguration cardFormConfiguration = new CardFormConfiguration(configuration.isCvvChallengePresent(), configuration.isPostalCodeChallengePresent());
+                    CardFormConfiguration cardFormConfiguration =
+                        new CardFormConfiguration(configuration.isCvvChallengePresent(), configuration.isPostalCodeChallengePresent());
 
-                    FragmentManager fragmentManager = getSupportFragmentManager();
-                    Fragment fragment = fragmentManager.findFragmentByTag("CARD_DETAILS");
-                    if (fragment == null) {
+                    if (shouldAddFragment(CARD_DETAILS_TAG)) {
                         Bundle args = new Bundle();
                         args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
                         args.putString("EXTRA_CARD_NUMBER", cardNumber);
                         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", cardFormConfiguration);
 
-                        fragmentManager
-                                .beginTransaction()
-                                .setReorderingAllowed(true)
-                                .replace(R.id.fragment_container_view, CardDetailsFragment.class, args, "CARD_DETAILS")
-                                .commit();
+                        replaceExistingFragment(CardDetailsFragment.class, CARD_DETAILS_TAG, args);
                     }
                 }
             }
         });
 
-    }
-
-    private void showVaultManagerFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-
-        Fragment fragment = fragmentManager.findFragmentByTag("VAULT_MANAGER");
-        if (fragment == null) {
-            Bundle args = new Bundle();
-            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-
-            fragmentManager
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view, VaultManagerFragment.class, args, "VAULT_MANAGER")
-                    .commit();
-            getDropInClient().sendAnalyticsEvent("manager.appeared");
-        }
     }
 
     public void onError(final Exception error) {
@@ -400,20 +374,13 @@ public class DropInActivity extends BaseActivity {
             }
         });
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag("ADD_CARD");
-        if (fragment == null) {
+        if (shouldAddFragment(ADD_CARD_TAG)) {
             Bundle args = new Bundle();
             args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
             if (cardNumber != null) {
                 args.putString("EXTRA_CARD_NUMBER", cardNumber);
             }
-
-            fragmentManager
-                    .beginTransaction()
-                    .setReorderingAllowed(true)
-                    .replace(R.id.fragment_container_view, AddCardFragment.class, args, "ADD_CARD")
-                    .commit();
+            replaceExistingFragment(AddCardFragment.class, ADD_CARD_TAG, args);
         }
     }
 

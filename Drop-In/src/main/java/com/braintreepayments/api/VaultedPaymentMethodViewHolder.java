@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
 
-class PaymentMethodViewHolder extends RecyclerView.ViewHolder {
+class VaultedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
 
     private final ImageView icon;
     private final TextView title;
@@ -16,7 +16,7 @@ class PaymentMethodViewHolder extends RecyclerView.ViewHolder {
 
     private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
 
-    PaymentMethodViewHolder(View view) {
+    VaultedPaymentMethodViewHolder(View view) {
         super(view);
 
         icon = view.findViewById(R.id.bt_payment_method_icon);
