@@ -1,65 +1,49 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-class SupportedPaymentMethodsAdapter extends BaseAdapter {
+class SupportedPaymentMethodsAdapter extends RecyclerView.Adapter<SupportedPaymentMethodViewHolder> {
 
-    private final List<DropInPaymentMethodType> availablePaymentMethods;
-    private final SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener;
+    private final List<DropInPaymentMethodType> supportedPaymentMethods;
+    private final SupportedPaymentMethodSelectedListener listener;
 
-    SupportedPaymentMethodsAdapter(List<DropInPaymentMethodType> availablePaymentMethods, SupportedPaymentMethodSelectedListener supportedPaymentMethodSelectedListener) {
-        this.supportedPaymentMethodSelectedListener = supportedPaymentMethodSelectedListener;
-        this.availablePaymentMethods = availablePaymentMethods;
+    SupportedPaymentMethodsAdapter(List<DropInPaymentMethodType> supportedPaymentMethods, SupportedPaymentMethodSelectedListener listener) {
+        this.listener = listener;
+        this.supportedPaymentMethods = supportedPaymentMethods;
+    }
+
+    @NonNull
+    @Override
+    public SupportedPaymentMethodViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        View view =
+                inflater.inflate(R.layout.bt_payment_method_list_item, parent, false);
+        return new SupportedPaymentMethodViewHolder(view);
     }
 
     @Override
-    public int getCount() {
-        return availablePaymentMethods.size();
-    }
-
-    @Override
-    public Object getItem(int position) {
-        return availablePaymentMethods.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        Context context = parent.getContext();
-        if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.bt_payment_method_list_item, parent, false);
-        }
-
-        final DropInPaymentMethodType type = availablePaymentMethods.get(position);
-
-        ImageView icon = convertView.findViewById(R.id.bt_payment_method_icon);
-        icon.setImageResource(type.getDrawable());
-
-        ((TextView) convertView.findViewById(R.id.bt_payment_method_type))
-                .setText(context.getString(type.getLocalizedName()));
-
-        convertView.setOnClickListener(new OnClickListener() {
+    public void onBindViewHolder(@NonNull SupportedPaymentMethodViewHolder holder, int position) {
+        final DropInPaymentMethodType paymentMethodType = supportedPaymentMethods.get(position);
+        holder.bind(paymentMethodType);
+        holder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                supportedPaymentMethodSelectedListener.onPaymentMethodSelected(type);
+                listener.onPaymentMethodSelected(paymentMethodType);
             }
         });
+    }
 
-        return convertView;
+    @Override
+    public int getItemCount() {
+        return supportedPaymentMethods.size();
     }
 }

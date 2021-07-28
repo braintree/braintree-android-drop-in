@@ -5,14 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.ViewSwitcher;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -21,16 +20,18 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-public class SelectPaymentMethodFragment extends Fragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
+public class SupportedPaymentMethodsFragment extends Fragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
 
-    private ViewSwitcher mLoadingViewSwitcher;
+    private View mLoadingIndicatorWrapper;
     private TextView mSupportedPaymentMethodsHeader;
 
     @VisibleForTesting
-    protected ListView mSupportedPaymentMethodListView;
+    RecyclerView mSupportedPaymentMethodsView;
+
+    @VisibleForTesting
+    RecyclerView mVaultedPaymentMethodsView;
 
     private View mVaultedPaymentMethodsContainer;
-    private RecyclerView mVaultedPaymentMethodsView;
     private Button mVaultManagerButton;
 
     private DropInRequest dropInRequest;
@@ -38,7 +39,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
-    public SelectPaymentMethodFragment() {}
+    public SupportedPaymentMethodsFragment() {}
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -52,15 +53,23 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bt_fragment_select_payment_method, container, false);
+        View view = inflater.inflate(R.layout.bt_fragment_supported_payment_methods, container, false);
 
-        mLoadingViewSwitcher = view.findViewById(R.id.bt_loading_view_switcher);
+        mLoadingIndicatorWrapper = view.findViewById(R.id.bt_select_payment_method_loader_wrapper);
         mSupportedPaymentMethodsHeader = view.findViewById(R.id.bt_supported_payment_methods_header);
-        mSupportedPaymentMethodListView = view.findViewById(R.id.bt_supported_payment_methods);
+        mSupportedPaymentMethodsView = view.findViewById(R.id.bt_supported_payment_methods);
         mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
 
         mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
+
+        LinearLayoutManager supportedPaymentMethodsLayoutManager =
+                new LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false);
+        mSupportedPaymentMethodsView.setLayoutManager(supportedPaymentMethodsLayoutManager);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                requireActivity(), supportedPaymentMethodsLayoutManager.getOrientation());
+        mSupportedPaymentMethodsView.addItemDecoration(dividerItemDecoration);
 
         mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
@@ -86,9 +95,9 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
             @Override
             public void onChanged(Boolean isLoading) {
                 if (isLoading) {
-                    mLoadingViewSwitcher.setDisplayedChild(0);
+                    showLoader();
                 } else {
-                    mLoadingViewSwitcher.setDisplayedChild(1);
+                    hideLoader();
                 }
             }
         });
@@ -104,6 +113,14 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
         return view;
     }
 
+    private void showLoader() {
+        mLoadingIndicatorWrapper.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoader() {
+        mLoadingIndicatorWrapper.setVisibility(View.GONE);
+    }
+
     private void sendDropInEvent(DropInEvent event) {
         getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
@@ -111,7 +128,7 @@ public class SelectPaymentMethodFragment extends Fragment implements SupportedPa
     private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 availablePaymentMethods, this);
-        mSupportedPaymentMethodListView.setAdapter(adapter);
+        mSupportedPaymentMethodsView.setAdapter(adapter);
         dropInViewModel.setIsLoading(false);
 
         sendDropInEvent(new DropInEvent(DropInEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS));
