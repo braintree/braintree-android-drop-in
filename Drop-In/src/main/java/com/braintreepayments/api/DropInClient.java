@@ -249,6 +249,15 @@ public class DropInClient {
         });
     }
 
+    void handleVenmoActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
+        venmoClient.onActivityResult(activity, resultCode, data, new VenmoOnActivityResultCallback() {
+            @Override
+            public void onResult(@Nullable VenmoAccountNonce venmoAccountNonce, @Nullable Exception error) {
+                notifyDropInResult(activity, venmoAccountNonce, error, callback);
+            }
+        });
+    }
+
     private void notifyDropInResult(FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, Exception dropInResultError, final DropInResultCallback callback) {
         if (dropInResultError != null) {
             callback.onResult(null, dropInResultError);

@@ -419,6 +419,8 @@ public class DropInActivity extends BaseActivity {
                 handleThreeDSecureActivityResult(resultCode, data);
             case BraintreeRequestCodes.GOOGLE_PAY:
                 handleGooglePayActivityResult(resultCode, data);
+            case BraintreeRequestCodes.VENMO:
+                handleVenmoActivityResult(resultCode, data);
         }
     }
 
@@ -439,6 +441,21 @@ public class DropInActivity extends BaseActivity {
 
     private void handleGooglePayActivityResult(int resultCode, Intent data) {
         getDropInClient().handleGooglePayActivityResult(this, resultCode, data, new DropInResultCallback() {
+            @Override
+            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                if (dropInResult != null) {
+                    finishWithDropInResult(dropInResult);
+                } else if (error instanceof UserCanceledException) {
+                    dropInViewModel.setUserCanceledError(error);
+                } else {
+                    onError(error);
+                }
+            }
+        });
+    }
+
+    private void handleVenmoActivityResult(int resultCode, Intent data) {
+        getDropInClient().handleVenmoActivityResult(this, resultCode, data, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
                 if (dropInResult != null) {
