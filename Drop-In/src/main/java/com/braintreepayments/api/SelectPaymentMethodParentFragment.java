@@ -3,7 +3,6 @@ package com.braintreepayments.api;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -141,19 +140,10 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         sendDropInEvent(event);
     }
 
-    private int getViewPagerMeasuredHeight() {
-        ViewGroup.LayoutParams viewPagerLayoutParams = viewPager.getLayoutParams();
-        viewPager.measure(viewPagerLayoutParams.width, viewPagerLayoutParams.height);
-        return viewPager.getMeasuredHeight();
-    }
-
     private void onShowVaultManager(DropInEvent event) {
         // keep the same height when transitioning to vault manager
         int currentHeight = getViewPagerMeasuredHeight();
-
-        ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
-        layoutParams.height = currentHeight;
-        viewPager.setLayoutParams(layoutParams);
+        setViewPagerHeight(currentHeight);
         requestLayout();
 
         childFragmentList.add(VAULT_MANAGER);
@@ -169,9 +159,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
             public void onPageScrollStateChanged(int state) {
                 if (state == ViewPager2.SCROLL_STATE_IDLE) {
                     // revert layout height to wrap content
-                    ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
-                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-                    viewPager.setLayoutParams(layoutParams);
+                    setViewPagerHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
                     requestLayout();
 
                     // remove vault manager fragment
@@ -183,6 +171,18 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         });
     }
 
+    private int getViewPagerMeasuredHeight() {
+        ViewGroup.LayoutParams viewPagerLayoutParams = viewPager.getLayoutParams();
+        viewPager.measure(viewPagerLayoutParams.width, viewPagerLayoutParams.height);
+        return viewPager.getMeasuredHeight();
+    }
+
+    private void setViewPagerHeight(int newHeight) {
+        ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
+        layoutParams.height = newHeight;
+        viewPager.setLayoutParams(layoutParams);
+    }
+
     private void requestLayout() {
         View rootView = getView();
         if (rootView != null) {
@@ -192,9 +192,5 @@ public class SelectPaymentMethodParentFragment extends Fragment {
 
     private void sendDropInEvent(DropInEvent event) {
         getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
-    }
-
-    private int dpToPixels(int dpValue) {
-        return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpValue, getResources().getDisplayMetrics());
     }
 }
