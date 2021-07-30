@@ -1,6 +1,9 @@
 package com.braintreepayments.api;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.VisibleForTesting;
@@ -8,11 +11,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
-
-import android.os.Parcelable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.cardform.OnCardFormFieldFocusedListener;
@@ -31,8 +29,6 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
     private DropInRequest dropInRequest;
     private CardFormConfiguration configuration;
     private String cardNumber;
-
-    private Toolbar toolbar;
 
     @VisibleForTesting
     DropInViewModel dropInViewModel;
@@ -94,7 +90,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             }
         });
 
-        toolbar = view.findViewById(R.id.bt_toolbar);
+        Toolbar toolbar = view.findViewById(R.id.bt_toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
