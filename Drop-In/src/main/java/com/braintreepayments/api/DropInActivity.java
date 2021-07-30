@@ -408,41 +408,33 @@ public class DropInActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        handleActivityResult(requestCode, resultCode, data);
+    }
+
+    private void handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         switch (requestCode) {
             case BraintreeRequestCodes.THREE_D_SECURE:
-                handleThreeDSecureActivityResult(resultCode, data);
+                getDropInClient().handleThreeDSecureActivityResult(this, resultCode, data, new DropInResultCallback() {
+                    @Override
+                    public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                        onDropInResult(dropInResult, error);
+                    }
+                });
             case BraintreeRequestCodes.GOOGLE_PAY:
-                handleGooglePayActivityResult(resultCode, data);
+                getDropInClient().handleGooglePayActivityResult(this, resultCode, data, new DropInResultCallback() {
+                    @Override
+                    public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                        onDropInResult(dropInResult, error);
+                    }
+                });
             case BraintreeRequestCodes.VENMO:
-                handleVenmoActivityResult(resultCode, data);
+                getDropInClient().handleVenmoActivityResult(this, resultCode, data, new DropInResultCallback() {
+                    @Override
+                    public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                        onDropInResult(dropInResult, error);
+                    }
+                });
         }
-    }
-
-    private void handleThreeDSecureActivityResult(int resultCode, Intent data) {
-        getDropInClient().handleThreeDSecureActivityResult(this, resultCode, data, new DropInResultCallback() {
-            @Override
-            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                onDropInResult(dropInResult, error);
-            }
-        });
-    }
-
-    private void handleGooglePayActivityResult(int resultCode, Intent data) {
-        getDropInClient().handleGooglePayActivityResult(this, resultCode, data, new DropInResultCallback() {
-            @Override
-            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                onDropInResult(dropInResult, error);
-            }
-        });
-    }
-
-    private void handleVenmoActivityResult(int resultCode, Intent data) {
-        getDropInClient().handleVenmoActivityResult(this, resultCode, data, new DropInResultCallback() {
-            @Override
-            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                onDropInResult(dropInResult, error);
-            }
-        });
     }
 
     private void onDropInResult(DropInResult dropInResult, Exception error) {
