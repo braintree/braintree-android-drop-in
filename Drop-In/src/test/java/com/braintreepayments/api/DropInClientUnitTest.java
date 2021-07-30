@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import androidx.fragment.app.FragmentActivity;
 
+import org.apache.tools.ant.types.Commandline;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -1672,6 +1673,62 @@ public class DropInClientUnitTest {
 
         List<PaymentMethodNonce> paymentMethodNonces = paymentMethodNoncesCaptor.getValue();
         assertEquals(0, paymentMethodNonces.size());
+    }
+
+    @Test
+    public void handleGooglePayActivityResult_withPaymentMethodNonce_callsBackDropInResult() {
+        PaymentMethodNonce paymentMethodNonce = mock(PaymentMethodNonce.class);
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .onActivityResultSuccess(paymentMethodNonce)
+                .build();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configuration(mockConfiguration(true, true, true, true, true))
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        Intent data = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleGooglePayActivityResult(activity, 1, data, callback);
+
+        ArgumentCaptor<DropInResult> captor = ArgumentCaptor.forClass(DropInResult.class);
+        verify(callback).onResult(captor.capture(), (Exception) isNull());
+
+        DropInResult result = captor.getValue();
+        assertEquals(paymentMethodNonce, result.getPaymentMethodNonce());
+    }
+
+    @Test
+    public void handleGooglePayActivityResult_withError_callsBackError() {
+        Exception error = new Exception("Google Pay error");
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .onActivityResultError(error)
+                .build();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .configuration(mockConfiguration(true, true, true, true, true))
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        Intent data = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleGooglePayActivityResult(activity, 1, data, callback);
+
+        verify(callback).onResult((DropInResult) isNull(), same(error));
     }
 
     private Configuration mockConfiguration(boolean paypalEnabled, boolean venmoEnabled,
