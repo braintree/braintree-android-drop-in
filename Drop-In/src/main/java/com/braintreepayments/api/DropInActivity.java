@@ -51,13 +51,7 @@ public class DropInActivity extends BaseActivity {
         getDropInClient().deliverBrowserSwitchResult(this, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                if (dropInResult != null) {
-                    finishWithDropInResult(dropInResult);
-                } else if (error instanceof UserCanceledException) {
-                    dropInViewModel.setUserCanceledError(error);
-                } else {
-                    onError(error);
-                }
+                onDropInResult(dropInResult, error);
             }
         });
     }
