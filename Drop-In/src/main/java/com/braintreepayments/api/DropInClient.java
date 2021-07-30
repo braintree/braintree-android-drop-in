@@ -240,7 +240,6 @@ public class DropInClient {
         });
     }
 
-    // TODO: unit test
     void handleGooglePayActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
         googlePayClient.onActivityResult(resultCode, data, new GooglePayOnActivityResultCallback() {
             @Override

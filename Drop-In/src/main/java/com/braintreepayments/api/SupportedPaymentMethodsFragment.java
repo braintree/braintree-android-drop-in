@@ -24,7 +24,9 @@ import java.util.List;
 
 public class SupportedPaymentMethodsFragment extends Fragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
 
-    private View mLoadingIndicatorWrapper;
+    @VisibleForTesting
+    View mLoadingIndicatorWrapper;
+
     private TextView mSupportedPaymentMethodsHeader;
 
     @VisibleForTesting
