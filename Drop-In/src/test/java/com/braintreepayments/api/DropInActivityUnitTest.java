@@ -159,7 +159,7 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         Intent intent = mock(Intent.class);
-        mActivity.onActivityResult(100, 1, intent);
+        mActivity.onActivityResult(13487, 1, intent);
 
         verify(dropInClient).handleThreeDSecureActivityResult(same(mActivity), eq(1), same(intent), any(DropInResultCallback.class));
     }
@@ -180,7 +180,7 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        mActivity.onActivityResult(100, 1, mock(Intent.class));
+        mActivity.onActivityResult(13487, 1, mock(Intent.class));
         assertTrue(mActivity.isFinishing());
     }
 
@@ -197,7 +197,7 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        mActivity.onActivityResult(100, 1, mock(Intent.class));
+        mActivity.onActivityResult(13487, 1, mock(Intent.class));
 
         assertFalse(mActivity.isFinishing());
         assertEquals(error, mActivity.dropInViewModel.getUserCanceledError().getValue());
@@ -216,7 +216,7 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        mActivity.onActivityResult(100, 1, mock(Intent.class));
+        mActivity.onActivityResult(13487, 1, mock(Intent.class));
 
         assertTrue(mActivity.isFinishing());
         verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error");
