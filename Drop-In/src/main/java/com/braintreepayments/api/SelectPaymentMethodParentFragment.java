@@ -1,11 +1,13 @@
 package com.braintreepayments.api;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.animation.DecelerateInterpolator;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -17,11 +19,9 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.braintreepayments.api.dropin.R;
 
-import java.util.ArrayList;
-
-import static com.braintreepayments.api.SelectPaymentMethodChildFragment.VAULT_MANAGER;
-
 public class SelectPaymentMethodParentFragment extends Fragment {
+
+    private View backgroundView;
 
     @VisibleForTesting
     ViewPager2 viewPager;
@@ -35,6 +35,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bt_fragment_select_payment_method_parent, container, false);
 
+        backgroundView = view.findViewById(R.id.background);
         viewPager = view.findViewById(R.id.view_pager);
         viewPager.setUserInputEnabled(false);
 
@@ -96,6 +97,30 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        ObjectAnimator backgroundFadeInAnimator =
+                ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 1.0f);
+        backgroundFadeInAnimator.setDuration(300);
+
+        ViewGroup.LayoutParams viewPagerLayoutParams = viewPager.getLayoutParams();
+        viewPager.measure(viewPagerLayoutParams.width, viewPagerLayoutParams.height);
+        int viewPagerHeight = viewPager.getMeasuredHeight();
+
+        viewPager.setTranslationY(viewPagerHeight);
+        ObjectAnimator slideUpAnimator =
+                ObjectAnimator.ofFloat(viewPager, "translationY", viewPagerHeight, 0);
+        slideUpAnimator.setInterpolator(new DecelerateInterpolator());
+        slideUpAnimator.setDuration(150);
+        slideUpAnimator.setStartDelay(150);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(slideUpAnimator).with(backgroundFadeInAnimator);
+        animatorSet.start();
     }
 
     @VisibleForTesting
