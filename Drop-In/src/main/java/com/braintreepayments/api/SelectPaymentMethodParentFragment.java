@@ -2,6 +2,7 @@ package com.braintreepayments.api;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -18,6 +19,8 @@ import androidx.fragment.app.FragmentResultListener;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.braintreepayments.api.dropin.R;
+
+import static com.braintreepayments.api.SelectPaymentMethodChildFragment.VAULT_MANAGER;
 
 public class SelectPaymentMethodParentFragment extends Fragment {
 
@@ -102,18 +105,19 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        slideUpBottomSheet();
+    }
 
+    private void slideUpBottomSheet() {
         ObjectAnimator backgroundFadeInAnimator =
                 ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 1.0f);
         backgroundFadeInAnimator.setDuration(300);
 
-        ViewGroup.LayoutParams viewPagerLayoutParams = viewPager.getLayoutParams();
-        viewPager.measure(viewPagerLayoutParams.width, viewPagerLayoutParams.height);
-        int viewPagerHeight = viewPager.getMeasuredHeight();
+        int viewPagerHeight = getViewPagerMeasuredHeight();
 
         viewPager.setTranslationY(viewPagerHeight);
         ObjectAnimator slideUpAnimator =
-                ObjectAnimator.ofFloat(viewPager, "translationY", viewPagerHeight, 0);
+                ObjectAnimator.ofFloat(viewPager, View.TRANSLATION_Y, viewPagerHeight, 0);
         slideUpAnimator.setInterpolator(new DecelerateInterpolator());
         slideUpAnimator.setDuration(150);
         slideUpAnimator.setStartDelay(150);
@@ -138,27 +142,46 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         sendDropInEvent(event);
     }
 
-    private void onShowVaultManager() {
-        int targetHeight = dpToPixels(400);
+    private int getViewPagerMeasuredHeight() {
+        ViewGroup.LayoutParams viewPagerLayoutParams = viewPager.getLayoutParams();
+        viewPager.measure(viewPagerLayoutParams.width, viewPagerLayoutParams.height);
+        return viewPager.getMeasuredHeight();
+    }
+
+    private void onShowVaultManager(DropInEvent event) {
+        // keep the same height when transitioning to vault manager
+        int currentHeight = getViewPagerMeasuredHeight();
+
         ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
-        layoutParams.height = targetHeight;
+        layoutParams.height = currentHeight;
         viewPager.setLayoutParams(layoutParams);
         requestLayout();
 
         childFragmentList.add(VAULT_MANAGER);
+        viewPager.setCurrentItem(1, true);
         viewPagerAdapter.notifyDataSetChanged();
-        viewPager.setCurrentItem(1, false);
     }
 
-    private void onDismissVaultManager() {
-        ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
-        layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
-        viewPager.setLayoutParams(layoutParams);
-        requestLayout();
+    private void onDismissVaultManager(DropInEvent event) {
+        viewPager.setCurrentItem(0, true);
 
-        childFragmentList.remove(1);
-        viewPagerAdapter.notifyDataSetChanged();
-        viewPager.setCurrentItem(0, false);
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager2.SCROLL_STATE_IDLE) {
+                    // revert layout height to wrap content
+                    ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
+                    layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
+                    viewPager.setLayoutParams(layoutParams);
+                    requestLayout();
+
+                    // remove vault manager fragment
+                    childFragmentList.remove(1);
+                    viewPagerAdapter.notifyDataSetChanged();
+                    viewPager.unregisterOnPageChangeCallback(this);
+                }
+            }
+        });
     }
 
     private void requestLayout() {
