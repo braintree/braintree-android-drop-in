@@ -16,11 +16,14 @@
     </style>
 
     <style name="bt_drop_in_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="windowNoTitle">true</item>
+        <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowAnimationStyle">@style/bt_fade_activity_animation</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:backgroundDimEnabled">false</item>
+
         <item name="colorPrimary">@color/bt_color_primary</item>
         <item name="colorPrimaryDark">@color/bt_color_primary_dark</item>
         <item name="colorAccent">@color/bt_blue</item>
