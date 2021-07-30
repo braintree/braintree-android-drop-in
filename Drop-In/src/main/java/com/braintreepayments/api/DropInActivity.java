@@ -428,13 +428,7 @@ public class DropInActivity extends BaseActivity {
         getDropInClient().handleThreeDSecureActivityResult(this, resultCode, data, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                if (dropInResult != null) {
-                    finishWithDropInResult(dropInResult);
-                } else if (error instanceof UserCanceledException) {
-                    dropInViewModel.setUserCanceledError(error);
-                } else {
-                    onError(error);
-                }
+                onDropInResult(dropInResult, error);
             }
         });
     }
@@ -443,13 +437,7 @@ public class DropInActivity extends BaseActivity {
         getDropInClient().handleGooglePayActivityResult(this, resultCode, data, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                if (dropInResult != null) {
-                    finishWithDropInResult(dropInResult);
-                } else if (error instanceof UserCanceledException) {
-                    dropInViewModel.setUserCanceledError(error);
-                } else {
-                    onError(error);
-                }
+                onDropInResult(dropInResult, error);
             }
         });
     }
@@ -458,15 +446,19 @@ public class DropInActivity extends BaseActivity {
         getDropInClient().handleVenmoActivityResult(this, resultCode, data, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                if (dropInResult != null) {
-                    finishWithDropInResult(dropInResult);
-                } else if (error instanceof UserCanceledException) {
-                    dropInViewModel.setUserCanceledError(error);
-                } else {
-                    onError(error);
-                }
+                onDropInResult(dropInResult, error);
             }
         });
+    }
+
+    private void onDropInResult(DropInResult dropInResult, Exception error) {
+        if (dropInResult != null) {
+            finishWithDropInResult(dropInResult);
+        } else if (error instanceof UserCanceledException) {
+            dropInViewModel.setUserCanceledError(error);
+        } else {
+            onError(error);
+        }
     }
 
     @VisibleForTesting
