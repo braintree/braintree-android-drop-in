@@ -414,7 +414,31 @@ public class DropInActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case BraintreeRequestCodes.THREE_D_SECURE:
+                handleThreeDSecureActivityResult(resultCode, data);
+            case BraintreeRequestCodes.GOOGLE_PAY:
+                handleGooglePayActivityResult(resultCode, data);
+        }
+    }
+
+    private void handleThreeDSecureActivityResult(int resultCode, Intent data) {
         getDropInClient().handleThreeDSecureActivityResult(this, resultCode, data, new DropInResultCallback() {
+            @Override
+            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                if (dropInResult != null) {
+                    finishWithDropInResult(dropInResult);
+                } else if (error instanceof UserCanceledException) {
+                    dropInViewModel.setUserCanceledError(error);
+                } else {
+                    onError(error);
+                }
+            }
+        });
+    }
+
+    private void handleGooglePayActivityResult(int resultCode, Intent data) {
+        getDropInClient().handleGooglePayActivityResult(this, resultCode, data, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
                 if (dropInResult != null) {

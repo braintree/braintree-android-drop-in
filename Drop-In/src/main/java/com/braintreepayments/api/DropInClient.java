@@ -240,6 +240,16 @@ public class DropInClient {
         });
     }
 
+    // TODO: unit test
+    void handleGooglePayActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
+        googlePayClient.onActivityResult(resultCode, data, new GooglePayOnActivityResultCallback() {
+            @Override
+            public void onResult(@Nullable PaymentMethodNonce paymentMethodNonce, @Nullable Exception error) {
+               notifyDropInResult(activity, paymentMethodNonce, error, callback);
+            }
+        });
+    }
+
     private void notifyDropInResult(FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, Exception dropInResultError, final DropInResultCallback callback) {
         if (dropInResultError != null) {
             callback.onResult(null, dropInResultError);
