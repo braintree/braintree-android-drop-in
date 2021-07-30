@@ -2,7 +2,6 @@ package com.braintreepayments.api;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
