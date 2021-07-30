@@ -5,6 +5,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -23,6 +24,7 @@ import static com.braintreepayments.api.SelectPaymentMethodChildFragment.VAULT_M
 public class SelectPaymentMethodParentFragment extends Fragment {
 
     private ViewPager2 viewPager;
+
     private SelectPaymentMethodChildFragmentAdapter viewPagerAdapter;
     private SelectPaymentMethodChildFragmentList childFragmentList;
 
@@ -81,6 +83,14 @@ public class SelectPaymentMethodParentFragment extends Fragment {
                     sendDropInEvent(new DropInEvent(DropInEventType.CANCEL_DROPIN));
                     remove();
                 }
+            }
+        });
+
+        Button backButton = view.findViewById(R.id.back_button);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendDropInEvent(new DropInEvent(DropInEventType.CANCEL_DROPIN));
             }
         });
 
