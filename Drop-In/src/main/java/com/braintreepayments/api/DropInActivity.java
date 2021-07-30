@@ -386,10 +386,6 @@ public class DropInActivity extends BaseActivity {
         }
     }
 
-    public void onBackgroundClicked(View v) {
-        onBackPressed();
-    }
-
     @Override
     public void finish() {
         super.finish();
