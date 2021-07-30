@@ -1,38 +1,52 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:bt="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context="com.braintreepayments.api.AddCardFragment">
 
-    <LinearLayout
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/bt_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_margin="16dp">
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@string/bt_card_details"
+        app:theme="@style/bt_toolbar_theme" />
 
-        <com.braintreepayments.cardform.view.CardForm
-            android:id="@+id/bt_card_form"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
-        <com.braintreepayments.cardform.view.SupportedCardTypesView
-            tools:ignore="RtlCompat"
-            android:id="@+id/bt_supported_card_types"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="36dp"
-            android:paddingLeft="52dp"
-            android:paddingStart="52dp"
-            android:paddingEnd="0dp"/>
+            android:layout_margin="16dp"
+            android:orientation="vertical">
 
-        <com.braintreepayments.api.AnimatedButtonView
-            android:id="@+id/bt_animated_button_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            bt:bt_buttonText="@string/bt_next"/>
+            <com.braintreepayments.cardform.view.CardForm
+                android:id="@+id/bt_card_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
 
-    </LinearLayout>
+            <com.braintreepayments.cardform.view.SupportedCardTypesView
+                android:id="@+id/bt_supported_card_types"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="52dp"
+                android:paddingLeft="52dp"
+                android:paddingTop="36dp"
+                android:paddingEnd="0dp"
+                tools:ignore="RtlCompat" />
 
-</ScrollView>
+            <com.braintreepayments.api.AnimatedButtonView
+                android:id="@+id/bt_animated_button_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="48dp"
+                app:bt_buttonText="@string/bt_next" />
+
+        </LinearLayout>
+
+    </ScrollView>
+</LinearLayout>

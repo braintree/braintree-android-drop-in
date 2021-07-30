@@ -5,14 +5,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
-import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -372,7 +369,6 @@ public class DropInActivity extends BaseActivity {
     }
 
     private void startAddCardFlow(@Nullable String cardNumber) {
-        setActionBarTitle(R.string.bt_card_details);
         getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
             @Override
             public void onResult(List<String> supportedCardTypes, Exception error) {
@@ -388,16 +384,6 @@ public class DropInActivity extends BaseActivity {
             }
             replaceExistingFragment(AddCardFragment.class, ADD_CARD_TAG, args);
         }
-    }
-
-    private void setActionBarTitle(@StringRes int titleResId) {
-        if (actionBar == null) {
-            setSupportActionBar((Toolbar) findViewById(R.id.bt_toolbar));
-            actionBar = getSupportActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-        actionBar.setTitle(titleResId);
-        findViewById(R.id.bt_toolbar).setVisibility(View.VISIBLE);
     }
 
     public void onBackgroundClicked(View v) {
