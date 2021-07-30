@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -71,6 +72,14 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
                 if (error instanceof ErrorWithResponse) {
                     setErrors((ErrorWithResponse) error);
                 }
+            }
+        });
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                getParentFragmentManager().popBackStack();
+                remove();
             }
         });
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
@@ -16,6 +17,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.braintreepayments.api.dropin.R;
 
 import java.util.ArrayList;
+
+import static com.braintreepayments.api.SelectPaymentMethodChildFragment.VAULT_MANAGER;
 
 public class SelectPaymentMethodParentFragment extends Fragment {
 
@@ -65,6 +68,22 @@ public class SelectPaymentMethodParentFragment extends Fragment {
             }
         });
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                int position = viewPager.getCurrentItem();
+                SelectPaymentMethodChildFragment visibleFragment =
+                    childFragmentList.getItem(position);
+
+                if (visibleFragment == VAULT_MANAGER) {
+                    onDismissVaultManager();
+                } else {
+                    sendDropInEvent(new DropInEvent(DropInEventType.CANCEL_DROPIN));
+                    remove();
+                }
+            }
+        });
+
         return view;
     }
 
@@ -72,10 +91,10 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     void onDropInEvent(DropInEvent event) {
         switch (event.getType()) {
             case SHOW_VAULT_MANAGER:
-                onShowVaultManager(event);
+                onShowVaultManager();
                 break;
             case DISMISS_VAULT_MANAGER:
-                onDismissVaultManager(event);
+                onDismissVaultManager();
                 break;
         }
 
@@ -83,19 +102,19 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         sendDropInEvent(event);
     }
 
-    private void onShowVaultManager(DropInEvent event) {
+    private void onShowVaultManager() {
         int targetHeight = dpToPixels(400);
         ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
         layoutParams.height = targetHeight;
         viewPager.setLayoutParams(layoutParams);
         requestLayout();
 
-        childFragmentList.add(SelectPaymentMethodChildFragment.VAULT_MANAGER);
+        childFragmentList.add(VAULT_MANAGER);
         viewPagerAdapter.notifyDataSetChanged();
         viewPager.setCurrentItem(1, false);
     }
 
-    private void onDismissVaultManager(DropInEvent event) {
+    private void onDismissVaultManager() {
         ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
         layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT;
         viewPager.setLayoutParams(layoutParams);

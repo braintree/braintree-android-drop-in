@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -99,6 +101,9 @@ public class DropInActivity extends BaseActivity {
             case CARD_DETAILS_SUBMIT:
                 onCardDetailsSubmit(event);
                 break;
+            case CANCEL_DROPIN:
+                onDropInCanceled(event);
+                break;
             case DELETE_VAULTED_PAYMENT_METHOD:
                 onDeleteVaultedPaymentMethod(event);
                 break;
@@ -121,6 +126,12 @@ public class DropInActivity extends BaseActivity {
                 onVaultedPaymentMethodSelected(event);
                 break;
         }
+    }
+
+    private void onDropInCanceled(DropInEvent event) {
+        getDropInClient().sendAnalyticsEvent("sdk.exit.canceled");
+        setResult(RESULT_CANCELED);
+        finish();
     }
 
     @VisibleForTesting
@@ -264,6 +275,7 @@ public class DropInActivity extends BaseActivity {
         fragmentManager
                 .beginTransaction()
                 .replace(R.id.fragment_container_view, fragmentClass, args, tag)
+                .addToBackStack(null)
                 .commit();
     }
 
@@ -390,13 +402,6 @@ public class DropInActivity extends BaseActivity {
 
     public void onBackgroundClicked(View v) {
         onBackPressed();
-    }
-
-    @Override
-    public void onBackPressed() {
-        getDropInClient().sendAnalyticsEvent("sdk.exit.canceled");
-        setResult(RESULT_CANCELED);
-        finish();
     }
 
     @Override
