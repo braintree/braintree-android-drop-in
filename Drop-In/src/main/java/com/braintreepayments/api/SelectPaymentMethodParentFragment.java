@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
+import android.widget.ViewAnimator;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -65,19 +66,9 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         viewPagerAdapter = new SelectPaymentMethodChildFragmentAdapter(childFragmentManager, getLifecycle(), childFragmentList, dropInRequest);
         viewPager.setAdapter(viewPagerAdapter);
 
-        // disable animation for now
-        viewPager.setPageTransformer(new ViewPager2.PageTransformer() {
-            @Override
-            public void transformPage(@NonNull View page, float position) {
-                if (position < -1 || position > 1) {
-                    // page is either offscreen to the left or offscreen to the right
-                    page.setAlpha(0.0f);
-                } else {
-                    // page is visible
-                    page.setAlpha(1.0f);
-                }
-            }
-        });
+        // disable animation when smooth scrolling between supported payment methods
+        // and vault manager fragments
+        viewPager.setPageTransformer(new NoAnimationPageTransformer());
 
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
             @Override
