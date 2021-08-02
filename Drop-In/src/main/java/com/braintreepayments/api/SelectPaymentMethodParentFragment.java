@@ -29,7 +29,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     private static final int BOTTOM_SHEET_SLIDE_UP_DELAY = 150;
     private static final int BOTTOM_SHEET_SLIDE_ANIM_DURATION = 150;
 
-    private static final int BACKGOUND_FADE_ANIM_DURATION = 300;
+    private static final int BACKGROUND_FADE_ANIM_DURATION = 300;
     private static final int VIEW_PAGER_TRANSITION_ANIM_DURATION = 300;
 
     private View backgroundView;
@@ -140,7 +140,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     private void slideUpBottomSheet() {
         ObjectAnimator backgroundFadeInAnimator =
                 ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 0.0f, 1.0f);
-        backgroundFadeInAnimator.setDuration(BACKGOUND_FADE_ANIM_DURATION);
+        backgroundFadeInAnimator.setDuration(BACKGROUND_FADE_ANIM_DURATION);
 
         int viewPagerHeight = getViewPagerMeasuredHeight();
 
@@ -161,7 +161,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     private void slideDownBottomSheet(final AnimationCompleteCallback callback) {
         ObjectAnimator backgroundFadeInAnimator =
                 ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 1.0f, 0.0f);
-        backgroundFadeInAnimator.setDuration(BACKGOUND_FADE_ANIM_DURATION);
+        backgroundFadeInAnimator.setDuration(BACKGROUND_FADE_ANIM_DURATION);
 
         int viewPagerHeight = getViewPagerMeasuredHeight();
 
