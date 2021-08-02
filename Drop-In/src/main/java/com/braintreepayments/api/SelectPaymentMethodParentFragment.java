@@ -23,7 +23,8 @@ import static com.braintreepayments.api.SelectPaymentMethodChildFragment.VAULT_M
 
 public class SelectPaymentMethodParentFragment extends Fragment {
 
-    private ViewPager2 viewPager;
+    @VisibleForTesting
+    ViewPager2 viewPager;
 
     private SelectPaymentMethodChildFragmentAdapter viewPagerAdapter;
     private SelectPaymentMethodChildFragmentList childFragmentList;
