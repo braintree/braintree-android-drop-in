@@ -1,5 +1,7 @@
 package com.braintreepayments.api
 
+import android.os.Bundle
+import android.view.View.VISIBLE
 import androidx.core.os.bundleOf
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
@@ -236,5 +238,24 @@ class SupportedPaymentMethodsFragmentUITest {
         scenario.onFragment { fragment ->
             assertTrue(fragment.dropInViewModel.isLoading.value!!)
         }
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenUserCanceledErrorPresentInViewModel_hidesLoader() {
+        val dropInRequest = DropInRequest()
+                .vaultManager(false)
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.mLoadingIndicatorWrapper.visibility = VISIBLE
+            fragment.dropInViewModel.setUserCanceledError(Exception("User canceled PayPal."))
+        }
+
+        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.bt_supported_payment_methods)).check(matches(isDisplayed()))
     }
 }

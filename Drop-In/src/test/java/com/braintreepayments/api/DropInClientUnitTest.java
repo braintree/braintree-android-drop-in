@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import androidx.fragment.app.FragmentActivity;
 
+import org.apache.tools.ant.types.Commandline;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -1672,6 +1673,155 @@ public class DropInClientUnitTest {
 
         List<PaymentMethodNonce> paymentMethodNonces = paymentMethodNoncesCaptor.getValue();
         assertEquals(0, paymentMethodNonces.size());
+    }
+
+    @Test
+    public void onActivityResult_whenResultCodeVenmo_handlesVenmoResult() {
+        VenmoClient venmoClient = mock(VenmoClient.class);
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .venmoClient(venmoClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        FragmentActivity activity = mock(FragmentActivity.class);
+        Intent intent = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleActivityResult(activity, BraintreeRequestCodes.VENMO, 1, intent, callback);
+
+        verify(venmoClient).onActivityResult(same(activity), eq(1), same(intent), any(VenmoOnActivityResultCallback.class));
+    }
+
+    @Test
+    public void onActivityResult_whenResultCodeGooglePay_handlesGooglePayResult() {
+        GooglePayClient googlePayClient = mock(GooglePayClient.class);
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        FragmentActivity activity = mock(FragmentActivity.class);
+        Intent intent = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleActivityResult(activity, BraintreeRequestCodes.GOOGLE_PAY, 1, intent, callback);
+
+        verify(googlePayClient).onActivityResult(eq(1), same(intent), any(GooglePayOnActivityResultCallback.class));
+    }
+
+    @Test
+    public void onActivityResult_whenResultCodeThreeDSecure_handlesThreeDSecureResult() {
+        ThreeDSecureClient threeDSecureClient = mock(ThreeDSecureClient.class);
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .threeDSecureClient(threeDSecureClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        FragmentActivity activity = mock(FragmentActivity.class);
+        Intent intent = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleActivityResult(activity, BraintreeRequestCodes.THREE_D_SECURE, 1, intent, callback);
+
+        verify(threeDSecureClient).onActivityResult(eq(1), same(intent), any(ThreeDSecureResultCallback.class));
+    }
+
+    @Test
+    public void handleGooglePayActivityResult_withPaymentMethodNonce_callsBackDropInResult() {
+        PaymentMethodNonce paymentMethodNonce = mock(PaymentMethodNonce.class);
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .onActivityResultSuccess(paymentMethodNonce)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        Intent data = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleGooglePayActivityResult(activity, 1, data, callback);
+
+        ArgumentCaptor<DropInResult> captor = ArgumentCaptor.forClass(DropInResult.class);
+        verify(callback).onResult(captor.capture(), (Exception) isNull());
+
+        DropInResult result = captor.getValue();
+        assertEquals(paymentMethodNonce, result.getPaymentMethodNonce());
+    }
+
+    @Test
+    public void handleGooglePayActivityResult_withError_callsBackError() {
+        Exception error = new Exception("Google Pay error");
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .onActivityResultError(error)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        Intent data = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleGooglePayActivityResult(activity, 1, data, callback);
+
+        verify(callback).onResult((DropInResult) isNull(), same(error));
+    }
+
+    @Test
+    public void handleVenmoActivityResult_withVenmoAccountNonce_callsBackDropInResult() {
+        VenmoAccountNonce venmoAccountNonce = mock(VenmoAccountNonce.class);
+        VenmoClient venmoClient = new MockVenmoClientBuilder()
+                .onActivityResultSuccess(venmoAccountNonce)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .venmoClient(venmoClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        Intent data = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleVenmoActivityResult(activity, 1, data, callback);
+
+        ArgumentCaptor<DropInResult> captor = ArgumentCaptor.forClass(DropInResult.class);
+        verify(callback).onResult(captor.capture(), (Exception) isNull());
+
+        DropInResult result = captor.getValue();
+        assertEquals(venmoAccountNonce, result.getPaymentMethodNonce());
+    }
+
+    @Test
+    public void handleVenmoActivityResult_withVenmoError_callsBackError() {
+        Exception error = new Exception("Venmo error");
+        VenmoClient venmoClient = new MockVenmoClientBuilder()
+                .onActivityResultError(error)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .venmoClient(venmoClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        Intent data = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleVenmoActivityResult(activity, 1, data, callback);
+
+        verify(callback).onResult((DropInResult) isNull(), same(error));
     }
 
     private Configuration mockConfiguration(boolean paypalEnabled, boolean venmoEnabled,
