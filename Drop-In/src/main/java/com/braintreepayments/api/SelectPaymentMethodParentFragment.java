@@ -129,7 +129,9 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         slideDownBottomSheet(new AnimationCompleteCallback() {
             @Override
             public void onAnimationComplete() {
-                callback.onAnimationComplete();
+                if (callback != null) {
+                    callback.onAnimationComplete();
+                }
                 sendDropInEvent(new DropInEvent(DropInEventType.CANCEL_DROPIN));
             }
         });
