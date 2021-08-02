@@ -1676,6 +1676,63 @@ public class DropInClientUnitTest {
     }
 
     @Test
+    public void onActivityResult_whenResultCodeVenmo_handlesVenmoResult() {
+        VenmoClient venmoClient = mock(VenmoClient.class);
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .venmoClient(venmoClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        FragmentActivity activity = mock(FragmentActivity.class);
+        Intent intent = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleActivityResult(activity, BraintreeRequestCodes.VENMO, 1, intent, callback);
+
+        verify(venmoClient).onActivityResult(same(activity), eq(1), same(intent), any(VenmoOnActivityResultCallback.class));
+    }
+
+    @Test
+    public void onActivityResult_whenResultCodeGooglePay_handlesGooglePayResult() {
+        GooglePayClient googlePayClient = mock(GooglePayClient.class);
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        FragmentActivity activity = mock(FragmentActivity.class);
+        Intent intent = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleActivityResult(activity, BraintreeRequestCodes.GOOGLE_PAY, 1, intent, callback);
+
+        verify(googlePayClient).onActivityResult(eq(1), same(intent), any(GooglePayOnActivityResultCallback.class));
+    }
+
+    @Test
+    public void onActivityResult_whenResultCodeThreeDSecure_handlesThreeDSecureResult() {
+        ThreeDSecureClient threeDSecureClient = mock(ThreeDSecureClient.class);
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .threeDSecureClient(threeDSecureClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        FragmentActivity activity = mock(FragmentActivity.class);
+        Intent intent = mock(Intent.class);
+        DropInResultCallback callback = mock(DropInResultCallback.class);
+        sut.handleActivityResult(activity, BraintreeRequestCodes.THREE_D_SECURE, 1, intent, callback);
+
+        verify(threeDSecureClient).onActivityResult(eq(1), same(intent), any(ThreeDSecureResultCallback.class));
+    }
+
+    @Test
     public void handleGooglePayActivityResult_withPaymentMethodNonce_callsBackDropInResult() {
         PaymentMethodNonce paymentMethodNonce = mock(PaymentMethodNonce.class);
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()

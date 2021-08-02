@@ -158,7 +158,7 @@ public class DropInActivityUnitTest {
         when(result.getPaymentMethodNonce()).thenReturn(nonce);
         when(result.getDeviceData()).thenReturn("device data");
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .handleThreeDSecureActivityResultSuccess(result)
+                .handleActivityResultSuccess(result)
                 .build();
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
@@ -175,7 +175,7 @@ public class DropInActivityUnitTest {
 
         Exception error = new UserCanceledException("User canceled 3DS.");
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .handleThreeDSecureActivityResultError(error)
+                .handleActivityResultError(error)
                 .build();
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
@@ -194,7 +194,7 @@ public class DropInActivityUnitTest {
 
         Exception error = new Exception("A 3DS error");
         DropInClient dropInClient = new MockDropInClientBuilder()
-                .handleThreeDSecureActivityResultError(error)
+                .handleActivityResultError(error)
                 .build();
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
@@ -207,7 +207,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onActivityResult_whenResultCodeThreeDSecure_handlesThreeDSecureResult() {
+    public void onActivityResult_forwardsResultToDropInClient() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
 
@@ -220,41 +220,7 @@ public class DropInActivityUnitTest {
         Intent intent = mock(Intent.class);
         mActivity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, intent);
 
-        verify(mActivity.dropInClient).handleThreeDSecureActivityResult(same(mActivity), eq(1), same(intent), any(DropInResultCallback.class));
-    }
-
-    @Test
-    public void onActivityResult_whenResultCodeVenmo_handlesVenmoResult() {
-        String authorization = Fixtures.TOKENIZATION_KEY;
-        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-
-        DropInClient dropInClient = new MockDropInClientBuilder()
-                .build();
-
-        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
-
-        Intent intent = mock(Intent.class);
-        mActivity.onActivityResult(BraintreeRequestCodes.VENMO, 1, intent);
-
-        verify(mActivity.dropInClient).handleVenmoActivityResult(same(mActivity), eq(1), same(intent), any(DropInResultCallback.class));
-    }
-
-    @Test
-    public void onActivityResult_whenResultCodeGooglePay_handlesGooglePayResult() {
-        String authorization = Fixtures.TOKENIZATION_KEY;
-        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-
-        DropInClient dropInClient = new MockDropInClientBuilder()
-                .build();
-
-        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
-
-        Intent intent = mock(Intent.class);
-        mActivity.onActivityResult(BraintreeRequestCodes.GOOGLE_PAY, 1, intent);
-
-        verify(mActivity.dropInClient).handleGooglePayActivityResult(same(mActivity), eq(1), same(intent), any(DropInResultCallback.class));
+        verify(mActivity.dropInClient).handleActivityResult(same(mActivity), eq(BraintreeRequestCodes.THREE_D_SECURE), eq(1), same(intent), any(DropInResultCallback.class));
     }
 
     @Test

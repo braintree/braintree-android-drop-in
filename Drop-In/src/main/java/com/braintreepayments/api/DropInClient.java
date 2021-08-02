@@ -227,6 +227,20 @@ public class DropInClient {
         }
     }
 
+    void handleActivityResult(FragmentActivity activity, int requestCode, int resultCode, @Nullable Intent data, DropInResultCallback callback) {
+        switch (requestCode) {
+            case BraintreeRequestCodes.THREE_D_SECURE:
+                handleThreeDSecureActivityResult(activity, resultCode, data, callback);
+                return;
+            case BraintreeRequestCodes.GOOGLE_PAY:
+                handleGooglePayActivityResult(activity, resultCode, data, callback);
+                return;
+            case BraintreeRequestCodes.VENMO:
+                handleVenmoActivityResult(activity, resultCode, data, callback);
+                return;
+        }
+    }
+
     void handleThreeDSecureActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
         threeDSecureClient.onActivityResult(resultCode, data, new ThreeDSecureResultCallback() {
             @Override

@@ -408,33 +408,12 @@ public class DropInActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        handleActivityResult(requestCode, resultCode, data);
-    }
-
-    private void handleActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        switch (requestCode) {
-            case BraintreeRequestCodes.THREE_D_SECURE:
-                getDropInClient().handleThreeDSecureActivityResult(this, resultCode, data, new DropInResultCallback() {
-                    @Override
-                    public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                        onDropInResult(dropInResult, error);
-                    }
-                });
-            case BraintreeRequestCodes.GOOGLE_PAY:
-                getDropInClient().handleGooglePayActivityResult(this, resultCode, data, new DropInResultCallback() {
-                    @Override
-                    public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                        onDropInResult(dropInResult, error);
-                    }
-                });
-            case BraintreeRequestCodes.VENMO:
-                getDropInClient().handleVenmoActivityResult(this, resultCode, data, new DropInResultCallback() {
-                    @Override
-                    public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                        onDropInResult(dropInResult, error);
-                    }
-                });
-        }
+        getDropInClient().handleActivityResult(this, requestCode, resultCode, data, new DropInResultCallback() {
+            @Override
+            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
+                onDropInResult(dropInResult, error);
+            }
+        });
     }
 
     private void onDropInResult(DropInResult dropInResult, Exception error) {
