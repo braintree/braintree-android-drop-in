@@ -85,7 +85,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
                     childFragmentList.getItem(position);
 
                 if (visibleFragment == VAULT_MANAGER) {
-                    onDismissVaultManager();
+                    dismissVaultManager();
                 } else {
                     sendDropInEvent(new DropInEvent(DropInEventType.CANCEL_DROPIN));
                     remove();
@@ -133,10 +133,10 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     void onDropInEvent(DropInEvent event) {
         switch (event.getType()) {
             case SHOW_VAULT_MANAGER:
-                onShowVaultManager();
+                showVaultManager();
                 break;
             case DISMISS_VAULT_MANAGER:
-                onDismissVaultManager();
+                dismissVaultManager();
                 break;
         }
 
@@ -144,7 +144,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         sendDropInEvent(event);
     }
 
-    private void onShowVaultManager() {
+    private void showVaultManager() {
         // keep the same height when transitioning to vault manager
         int currentHeight = getViewPagerMeasuredHeight();
         setViewPagerHeight(currentHeight);
@@ -155,7 +155,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         viewPagerAnimator.animateToPosition(viewPager, 1);
     }
 
-    private void onDismissVaultManager() {
+    private void dismissVaultManager() {
         viewPagerAnimator.animateToPosition(viewPager, 0, new ViewPager2Animator.OnAnimationCompleteCallback() {
 
             @Override
