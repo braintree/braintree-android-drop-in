@@ -84,6 +84,29 @@ class SelectPaymentMethodParentFragmentUITest {
     }
 
     @Test
+    fun whenStateIsRESUMED_andVaultManagerIsDisplayed_returnsToSupportedPaymentMethodsFragmentAndRemovesVaultManager() {
+        val scenario =
+                FragmentScenario.launchInContainer(SelectPaymentMethodParentFragment::class.java)
+
+        scenario.onFragment { fragment ->
+            val childFragmentManager = fragment.childFragmentManager
+            val showVaultManagerEvent = DropInEvent(DropInEventType.SHOW_VAULT_MANAGER)
+            childFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, showVaultManagerEvent.toBundle())
+        }
+
+        onView(isRoot()).perform(waitFor(1000))
+        onView(isRoot()).perform(ViewActions.pressBack())
+        onView(isRoot()).perform(waitFor(1000))
+
+        scenario.onFragment { fragment ->
+            val viewPagerAdapter =
+                    fragment.viewPager.adapter as SelectPaymentMethodChildFragmentAdapter
+            assertEquals(1, viewPagerAdapter.itemCount)
+            assertEquals(SelectPaymentMethodChildFragment.SUPPORTED_PAYMENT_METHODS.id, viewPagerAdapter.getItemId(0))
+        }
+    }
+
+    @Test
     fun whenStateIsRESUMED_andVaultManagerIsDisplayed_doesNotSendCancelDropInEvent() {
         val scenario =
                 FragmentScenario.launchInContainer(SelectPaymentMethodParentFragment::class.java)
