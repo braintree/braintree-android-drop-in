@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
-import android.widget.ViewAnimator;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -25,6 +24,12 @@ import com.braintreepayments.api.dropin.R;
 import static com.braintreepayments.api.SelectPaymentMethodChildFragment.VAULT_MANAGER;
 
 public class SelectPaymentMethodParentFragment extends Fragment {
+
+    private static final int BOTTOM_SHEET_SLIDE_UP_DELAY = 150;
+    private static final int BOTTOM_SHEET_SLIDE_ANIM_DURATION = 150;
+
+    private static final int BACKGOUND_FADE_ANIM_DURATION = 300;
+    private static final int VIEW_PAGER_TRANSITION_ANIM_DURATION = 300;
 
     private View backgroundView;
 
@@ -46,7 +51,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         viewPager = view.findViewById(R.id.view_pager);
         viewPager.setUserInputEnabled(false);
 
-        viewPagerAnimator = new ViewPager2Animator(300);
+        viewPagerAnimator = new ViewPager2Animator(VIEW_PAGER_TRANSITION_ANIM_DURATION);
         childFragmentList = new SelectPaymentMethodChildFragmentList(
                 SelectPaymentMethodChildFragment.SUPPORTED_PAYMENT_METHODS);
 
@@ -115,7 +120,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     private void slideUpBottomSheet() {
         ObjectAnimator backgroundFadeInAnimator =
                 ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 0.0f, 1.0f);
-        backgroundFadeInAnimator.setDuration(300);
+        backgroundFadeInAnimator.setDuration(BACKGOUND_FADE_ANIM_DURATION);
 
         int viewPagerHeight = getViewPagerMeasuredHeight();
 
@@ -123,8 +128,8 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         ObjectAnimator slideUpAnimator =
                 ObjectAnimator.ofFloat(viewPager, View.TRANSLATION_Y, viewPagerHeight, 0);
         slideUpAnimator.setInterpolator(new DecelerateInterpolator());
-        slideUpAnimator.setDuration(150);
-        slideUpAnimator.setStartDelay(150);
+        slideUpAnimator.setDuration(BOTTOM_SHEET_SLIDE_ANIM_DURATION);
+        slideUpAnimator.setStartDelay(BOTTOM_SHEET_SLIDE_UP_DELAY);
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(slideUpAnimator).with(backgroundFadeInAnimator);
@@ -134,7 +139,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     private void slideDownBottomSheet(final AnimationCompleteCallback callback) {
         ObjectAnimator backgroundFadeInAnimator =
                 ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 1.0f, 0.0f);
-        backgroundFadeInAnimator.setDuration(300);
+        backgroundFadeInAnimator.setDuration(BACKGOUND_FADE_ANIM_DURATION);
 
         int viewPagerHeight = getViewPagerMeasuredHeight();
 
@@ -142,7 +147,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         ObjectAnimator slideUpAnimator =
                 ObjectAnimator.ofFloat(viewPager, View.TRANSLATION_Y, 0, viewPagerHeight);
         slideUpAnimator.setInterpolator(new AccelerateInterpolator());
-        slideUpAnimator.setDuration(150);
+        slideUpAnimator.setDuration(BOTTOM_SHEET_SLIDE_ANIM_DURATION);
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(slideUpAnimator).with(backgroundFadeInAnimator);
