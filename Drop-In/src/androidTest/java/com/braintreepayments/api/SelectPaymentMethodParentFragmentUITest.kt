@@ -3,6 +3,8 @@ package com.braintreepayments.api
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.pressBack
+import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import junit.framework.Assert.assertNotNull
@@ -45,6 +47,29 @@ class SelectPaymentMethodParentFragmentUITest {
         onView(isRoot()).perform(waitFor(1000))
 
         val vaultManagerEvent = events.first { it.type == DropInEventType.SHOW_VAULT_MANAGER }
+        assertNotNull(vaultManagerEvent)
+    }
+
+    @Test
+    fun whenStateIsRESUMED_andSupportedPaymentMethodsIsDisplayed_sendsCancelDropInEvent() {
+        val scenario =
+                FragmentScenario.launchInContainer(SelectPaymentMethodParentFragment::class.java)
+
+        val events = mutableListOf<DropInEvent>()
+
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            val parentFragmentManager = fragment.parentFragmentManager
+
+            parentFragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                events += DropInEvent.fromBundle(result)
+            }
+        }
+
+        onView(isRoot()).perform(ViewActions.pressBack())
+        onView(isRoot()).perform(waitFor(1000))
+
+        val vaultManagerEvent = events.first { it.type == DropInEventType.CANCEL_DROPIN }
         assertNotNull(vaultManagerEvent)
     }
 }
