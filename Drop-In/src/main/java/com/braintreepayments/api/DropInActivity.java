@@ -57,6 +57,12 @@ public class DropInActivity extends BaseActivity {
     }
 
     @Override
+    protected void onNewIntent(Intent newIntent) {
+        super.onNewIntent(newIntent);
+        setIntent(newIntent);
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
