@@ -1,10 +1,12 @@
 package com.braintreepayments.api
 
+import android.app.Activity.RESULT_CANCELED
 import android.content.Intent
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import junit.framework.Assert.assertEquals
 import org.json.JSONObject
 import org.junit.Ignore
 import org.junit.Test
@@ -15,8 +17,8 @@ class DropInActivityUITest {
 
     @Ignore("Ignoring this test until Activity testing approach is finalized")
     @Test
-    fun onResume_whenBrowserSwitchResultExists_finishesWithResult() {
-        // TODO: Investigate Activity testing strategy
+    fun whenStateIsRESUMED_whenBrowserSwitchResultExists_finishesWithResult() {
+        // TODO: Investigate mockito failures in androidTest and figure out a DropInClient dependency injection strategy for unit tests
         val authorization = Authorization.fromString(Fixtures.TOKENIZATION_KEY)
         val dropInRequest = DropInRequest()
                 .clientToken(authorization.toString())
@@ -44,5 +46,29 @@ class DropInActivityUITest {
         }
 
         scenario.moveToState(Lifecycle.State.RESUMED)
+    }
+
+    @Test
+    fun whenStateIsRESUMED_onCancelDropInEvent_finishesWithResult() {
+        val authorization = Authorization.fromString(Fixtures.TOKENIZATION_KEY)
+        val dropInRequest = DropInRequest()
+                .clientToken(authorization.toString())
+                .threeDSecureRequest(ThreeDSecureRequest())
+
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(context, DropInActivity::class.java)
+        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, dropInRequest)
+        intent.putExtra(DropInClient.EXTRA_AUTHORIZATION, Fixtures.TOKENIZATION_KEY)
+        intent.putExtra(DropInClient.EXTRA_SESSION_ID, "session-id")
+
+        val scenario = ActivityScenario.launch<DropInActivity>(intent)
+        scenario.onActivity { activity ->
+            val fragmentManager = activity.supportFragmentManager
+
+            val event = DropInEvent(DropInEventType.CANCEL_DROPIN)
+            fragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
+        }
+
+        assertEquals(RESULT_CANCELED, scenario.result.resultCode)
     }
 }

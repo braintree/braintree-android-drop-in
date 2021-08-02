@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -25,6 +27,7 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
 
     @VisibleForTesting
     CardForm cardForm;
+
     private SupportedCardTypesView supportedCardTypesView;
     private AnimatedButtonView animatedButtonView;
 
@@ -71,6 +74,22 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
                 if (error instanceof ErrorWithResponse) {
                     setErrors((ErrorWithResponse) error);
                 }
+            }
+        });
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                getParentFragmentManager().popBackStack();
+                remove();
+            }
+        });
+
+        Toolbar toolbar = view.findViewById(R.id.bt_toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager().popBackStack();
             }
         });
 

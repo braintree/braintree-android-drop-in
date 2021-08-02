@@ -124,6 +124,17 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // show supported payment methods immediately if possible
+        List<DropInPaymentMethodType> supportedPaymentMethods = dropInViewModel.getSupportedPaymentMethods().getValue();
+        if (supportedPaymentMethods != null) {
+            showSupportedPaymentMethods(supportedPaymentMethods);
+        }
+    }
+
     private void showLoader() {
         mLoadingIndicatorWrapper.setVisibility(View.VISIBLE);
     }
