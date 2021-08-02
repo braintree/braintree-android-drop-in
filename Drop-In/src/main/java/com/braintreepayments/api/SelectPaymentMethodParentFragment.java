@@ -13,6 +13,7 @@ import android.widget.Button;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -42,6 +43,9 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     private SelectPaymentMethodChildFragmentList childFragmentList;
 
     private DropInRequest dropInRequest;
+
+    private Animator bottomSheetSlideInAnimator;
+    private Animator bottomSheetSlideOutAnimator;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -85,9 +89,13 @@ public class SelectPaymentMethodParentFragment extends Fragment {
                 if (visibleFragment == VAULT_MANAGER) {
                     dismissVaultManager();
                 } else {
-                    setEnabled(false);
-                    remove();
-                    cancelDropIn();
+                    cancelDropIn(new AnimationCompleteCallback() {
+                        @Override
+                        public void onAnimationComplete() {
+                            setEnabled(false);
+                            remove();
+                        }
+                    });
                 }
             }
         });
@@ -110,9 +118,18 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     }
 
     private void cancelDropIn() {
+        cancelDropIn(null);
+    }
+
+    private void cancelDropIn(@Nullable final AnimationCompleteCallback callback) {
+        if (isAnimatingBottomSheet()) {
+            return;
+        }
+
         slideDownBottomSheet(new AnimationCompleteCallback() {
             @Override
             public void onAnimationComplete() {
+                callback.onAnimationComplete();
                 sendDropInEvent(new DropInEvent(DropInEventType.CANCEL_DROPIN));
             }
         });
@@ -135,6 +152,8 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(slideUpAnimator).with(backgroundFadeInAnimator);
         animatorSet.start();
+
+        bottomSheetSlideInAnimator = animatorSet;
     }
 
     private void slideDownBottomSheet(final AnimationCompleteCallback callback) {
@@ -161,6 +180,16 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         });
 
         animatorSet.start();
+
+        bottomSheetSlideOutAnimator = animatorSet;
+    }
+
+    private boolean isAnimatingBottomSheet() {
+        boolean isSlidingInBottomSheet =
+                (bottomSheetSlideInAnimator != null && bottomSheetSlideInAnimator.isRunning());
+        boolean isSlidingOutBottomSheet =
+                (bottomSheetSlideOutAnimator != null && bottomSheetSlideOutAnimator.isRunning());
+        return (isSlidingInBottomSheet || isSlidingOutBottomSheet);
     }
 
     @VisibleForTesting
