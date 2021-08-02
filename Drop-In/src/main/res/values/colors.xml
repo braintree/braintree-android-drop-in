@@ -14,4 +14,7 @@
     <color name="bt_color_primary_dark">#363439</color>
     <color name="bt_text_blue">#199DDC</color>
     <color name="bt_error_red">#DD5555</color>
+
+    <!-- HACK: make card form dark icons show up, but allow for full transparency of drop in activity window background -->
+    <color name="bt_window_background">#00FFFFFF</color>
 </resources>
