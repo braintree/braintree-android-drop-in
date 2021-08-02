@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
@@ -143,7 +144,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         sendDropInEvent(event);
     }
 
-    private void onShowVaultManager(DropInEvent event) {
+    private void onShowVaultManager() {
         // keep the same height when transitioning to vault manager
         int currentHeight = getViewPagerMeasuredHeight();
         setViewPagerHeight(currentHeight);
@@ -154,7 +155,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         viewPagerAnimator.animateToPosition(viewPager, 1);
     }
 
-    private void onDismissVaultManager(DropInEvent event) {
+    private void onDismissVaultManager() {
         viewPagerAnimator.animateToPosition(viewPager, 0, new ViewPager2Animator.OnAnimationCompleteCallback() {
 
             @Override
