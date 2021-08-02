@@ -3,6 +3,7 @@ package com.braintreepayments.api;
 public enum DropInEventType {
     ADD_CARD_SUBMIT,
     CARD_DETAILS_SUBMIT,
+    CANCEL_DROPIN,
     DELETE_VAULTED_PAYMENT_METHOD,
     DID_DISPLAY_SUPPORTED_PAYMENT_METHODS,
     DISMISS_VAULT_MANAGER,

@@ -1,22 +1,45 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:bt="http://schemas.android.com/apk/res-auto"
-    tools:context="com.braintreepayments.api.CardDetailsFragment"
-    android:layout_margin="16dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.braintreepayments.api.CardDetailsFragment">
 
-    <com.braintreepayments.cardform.view.CardForm
-        android:id="@+id/bt_card_form"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/bt_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="?attr/actionBarSize"
+        app:navigationIcon="?attr/homeAsUpIndicator"
+        app:title="@string/bt_card_details"
+        app:theme="@style/bt_toolbar_theme" />
 
-    <com.braintreepayments.api.AnimatedButtonView
-        android:id="@+id/bt_animated_button_view"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        bt:bt_buttonText="@string/bt_add_card"/>
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:orientation="vertical"
+            >
+
+            <com.braintreepayments.cardform.view.CardForm
+                android:id="@+id/bt_card_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <com.braintreepayments.api.AnimatedButtonView
+                android:id="@+id/bt_animated_button_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                app:bt_buttonText="@string/bt_add_card" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </LinearLayout>

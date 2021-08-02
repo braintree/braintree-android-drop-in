@@ -302,34 +302,6 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void touchingOutsideSheetTriggersBackPress() {
-        String authorization = Fixtures.TOKENIZATION_KEY;
-        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-        setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
-        mActivityController.setup();
-
-        mActivity.onBackgroundClicked(null);
-
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_CANCELED, mShadowActivity.getResultCode());
-    }
-
-    @Test
-    public void touchingOutsideSheetSendsAnalyticsEvent() {
-        String authorization = Fixtures.TOKENIZATION_KEY;
-        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
-
-        DropInClient dropInClient = new MockDropInClientBuilder()
-                .build();
-        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
-
-        mActivity.onBackgroundClicked(null);
-
-        verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.canceled");
-    }
-
-    @Test
     public void onVaultedPaymentMethodSelected_whenShouldNotRequestThreeDSecureVerification_returnsANonce() throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);

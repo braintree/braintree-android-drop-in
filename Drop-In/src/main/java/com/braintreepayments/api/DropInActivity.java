@@ -10,7 +10,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.widget.Toolbar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -99,6 +98,9 @@ public class DropInActivity extends BaseActivity {
             case CARD_DETAILS_SUBMIT:
                 onCardDetailsSubmit(event);
                 break;
+            case CANCEL_DROPIN:
+                onDropInCanceled(event);
+                break;
             case DELETE_VAULTED_PAYMENT_METHOD:
                 onDeleteVaultedPaymentMethod(event);
                 break;
@@ -121,6 +123,12 @@ public class DropInActivity extends BaseActivity {
                 onVaultedPaymentMethodSelected(event);
                 break;
         }
+    }
+
+    private void onDropInCanceled(DropInEvent event) {
+        getDropInClient().sendAnalyticsEvent("sdk.exit.canceled");
+        setResult(RESULT_CANCELED);
+        finish();
     }
 
     @VisibleForTesting
@@ -264,6 +272,7 @@ public class DropInActivity extends BaseActivity {
         fragmentManager
                 .beginTransaction()
                 .replace(R.id.fragment_container_view, fragmentClass, args, tag)
+                .addToBackStack(null)
                 .commit();
     }
 
@@ -360,7 +369,6 @@ public class DropInActivity extends BaseActivity {
     }
 
     private void startAddCardFlow(@Nullable String cardNumber) {
-        setActionBarTitle(R.string.bt_card_details);
         getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
             @Override
             public void onResult(List<String> supportedCardTypes, Exception error) {
@@ -376,27 +384,6 @@ public class DropInActivity extends BaseActivity {
             }
             replaceExistingFragment(AddCardFragment.class, ADD_CARD_TAG, args);
         }
-    }
-
-    private void setActionBarTitle(@StringRes int titleResId) {
-        if (actionBar == null) {
-            setSupportActionBar((Toolbar) findViewById(R.id.bt_toolbar));
-            actionBar = getSupportActionBar();
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
-        actionBar.setTitle(titleResId);
-        findViewById(R.id.bt_toolbar).setVisibility(View.VISIBLE);
-    }
-
-    public void onBackgroundClicked(View v) {
-        onBackPressed();
-    }
-
-    @Override
-    public void onBackPressed() {
-        getDropInClient().sendAnalyticsEvent("sdk.exit.canceled");
-        setResult(RESULT_CANCELED);
-        finish();
     }
 
     @Override

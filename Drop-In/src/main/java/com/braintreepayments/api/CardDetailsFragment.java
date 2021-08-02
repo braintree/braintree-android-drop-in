@@ -1,16 +1,16 @@
 package com.braintreepayments.api;
 
 import android.os.Bundle;
-
-import androidx.annotation.VisibleForTesting;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.VisibleForTesting;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.cardform.OnCardFormFieldFocusedListener;
@@ -79,6 +79,22 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             @Override
             public void onChanged(Exception e) {
                 animatedButtonView.showButton();
+            }
+        });
+
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                getParentFragmentManager().popBackStack();
+                remove();
+            }
+        });
+
+        Toolbar toolbar = view.findViewById(R.id.bt_toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getParentFragmentManager().popBackStack();
             }
         });
 
