@@ -1,20 +1,15 @@
 package com.braintreepayments.api;
 
-import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -27,14 +22,12 @@ import static com.braintreepayments.api.SelectPaymentMethodChildFragment.VAULT_M
 
 public class SelectPaymentMethodParentFragment extends Fragment {
 
-    private interface ViewPagerAnimationCompleteCallback {
-        void onViewPagerAnimationComplete();
-    }
-
     private View backgroundView;
 
     @VisibleForTesting
     ViewPager2 viewPager;
+
+    private ViewPager2Animator viewPagerAnimator;
 
     private SelectPaymentMethodChildFragmentAdapter viewPagerAdapter;
     private SelectPaymentMethodChildFragmentList childFragmentList;
@@ -49,6 +42,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         viewPager = view.findViewById(R.id.view_pager);
         viewPager.setUserInputEnabled(false);
 
+        viewPagerAnimator = new ViewPager2Animator(300);
         childFragmentList = new SelectPaymentMethodChildFragmentList(
                 SelectPaymentMethodChildFragment.SUPPORTED_PAYMENT_METHODS);
 
@@ -157,11 +151,12 @@ public class SelectPaymentMethodParentFragment extends Fragment {
 
         childFragmentList.add(VAULT_MANAGER);
         viewPagerAdapter.notifyDataSetChanged();
-        smoothScrollViewPagerToPosition(1);
+        viewPagerAnimator.animateToPosition(viewPager, 1);
     }
 
     private void onDismissVaultManager(DropInEvent event) {
-        smoothScrollViewPagerToPosition(0, new ViewPagerAnimationCompleteCallback() {
+        viewPagerAnimator.animateToPosition(viewPager, 0, new ViewPager2Animator.OnAnimationCompleteCallback() {
+
             @Override
             public void onViewPagerAnimationComplete() {
                 // revert layout height to wrap content
@@ -173,55 +168,6 @@ public class SelectPaymentMethodParentFragment extends Fragment {
                 viewPagerAdapter.notifyDataSetChanged();
             }
         });
-    }
-
-    private void smoothScrollViewPagerToPosition(int position) {
-        smoothScrollViewPagerToPosition(position, null);
-    }
-
-    private void smoothScrollViewPagerToPosition(int position, @Nullable final ViewPagerAnimationCompleteCallback callback) {
-        int itemWidth = viewPager.getWidth();
-        int currentPosition = viewPager.getCurrentItem();
-        int dx = itemWidth * (position - currentPosition);
-
-        ValueAnimator dragAnimator = ValueAnimator.ofInt(0, dx);
-        dragAnimator.addUpdateListener(new IncrementalAnimatorUpdateListener() {
-            @Override
-            void onAnimationUpdate(ValueAnimator valueAnimator, int increment) {
-                float value = (float) (-1 * increment);
-                viewPager.fakeDragBy(value);
-            }
-        });
-
-        dragAnimator.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animation) {
-                viewPager.beginFakeDrag();
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                viewPager.endFakeDrag();
-                viewPager.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (callback != null) {
-                            callback.onViewPagerAnimationComplete();
-                        }
-                    }
-                });
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animation) {}
-
-            @Override
-            public void onAnimationRepeat(Animator animation) {}
-        });
-
-        dragAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
-        dragAnimator.setDuration(300);
-        dragAnimator.start();
     }
 
     private int getViewPagerMeasuredHeight() {
