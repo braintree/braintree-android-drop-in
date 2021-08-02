@@ -82,7 +82,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             }
         });
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+        requireActivity().getOnBackPressedDispatcher().addCallback(requireActivity(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 getParentFragmentManager().popBackStack();

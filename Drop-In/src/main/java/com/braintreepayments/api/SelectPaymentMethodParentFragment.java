@@ -75,7 +75,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         // and vault manager fragments
         viewPager.setPageTransformer(new NoAnimationPageTransformer());
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+        requireActivity().getOnBackPressedDispatcher().addCallback(requireActivity(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 int position = viewPager.getCurrentItem();
@@ -85,8 +85,9 @@ public class SelectPaymentMethodParentFragment extends Fragment {
                 if (visibleFragment == VAULT_MANAGER) {
                     dismissVaultManager();
                 } else {
-                    cancelDropIn();
+                    setEnabled(false);
                     remove();
+                    cancelDropIn();
                 }
             }
         });
@@ -224,6 +225,8 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     }
 
     private void sendDropInEvent(DropInEvent event) {
-        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
+        if (isAdded()) {
+            getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
+        }
     }
 }
