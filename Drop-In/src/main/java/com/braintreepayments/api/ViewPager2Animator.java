@@ -11,10 +11,6 @@ class ViewPager2Animator {
 
     private final int animationDuration;
 
-    interface OnAnimationCompleteCallback {
-        void onViewPagerAnimationComplete();
-    }
-
     ViewPager2Animator(int animationDuration) {
         this.animationDuration = animationDuration;
     }
@@ -23,7 +19,7 @@ class ViewPager2Animator {
         animateToPosition(viewPager, position, null);
     }
 
-    void animateToPosition(final ViewPager2 viewPager, int position, @Nullable final OnAnimationCompleteCallback callback) {
+    void animateToPosition(final ViewPager2 viewPager, int position, @Nullable final AnimationCompleteCallback callback) {
         int itemWidth = viewPager.getWidth();
         int currentPosition = viewPager.getCurrentItem();
         int dx = itemWidth * (position - currentPosition);
@@ -50,7 +46,7 @@ class ViewPager2Animator {
                     @Override
                     public void run() {
                         if (callback != null) {
-                            callback.onViewPagerAnimationComplete();
+                            callback.onAnimationComplete();
                         }
                     }
                 });

@@ -1,11 +1,13 @@
 package com.braintreepayments.api;
 
+import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 
@@ -87,7 +89,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
                 if (visibleFragment == VAULT_MANAGER) {
                     dismissVaultManager();
                 } else {
-                    sendDropInEvent(new DropInEvent(DropInEventType.CANCEL_DROPIN));
+                    cancelDropIn();
                     remove();
                 }
             }
@@ -97,7 +99,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                sendDropInEvent(new DropInEvent(DropInEventType.CANCEL_DROPIN));
+                cancelDropIn();
             }
         });
 
@@ -110,9 +112,18 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         slideUpBottomSheet();
     }
 
+    private void cancelDropIn() {
+        slideDownBottomSheet(new AnimationCompleteCallback() {
+            @Override
+            public void onAnimationComplete() {
+                sendDropInEvent(new DropInEvent(DropInEventType.CANCEL_DROPIN));
+            }
+        });
+    }
+
     private void slideUpBottomSheet() {
         ObjectAnimator backgroundFadeInAnimator =
-                ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 1.0f);
+                ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 0.0f, 1.0f);
         backgroundFadeInAnimator.setDuration(300);
 
         int viewPagerHeight = getViewPagerMeasuredHeight();
@@ -126,6 +137,32 @@ public class SelectPaymentMethodParentFragment extends Fragment {
 
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(slideUpAnimator).with(backgroundFadeInAnimator);
+        animatorSet.start();
+    }
+
+    private void slideDownBottomSheet(final AnimationCompleteCallback callback) {
+        ObjectAnimator backgroundFadeInAnimator =
+                ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 1.0f, 0.0f);
+        backgroundFadeInAnimator.setDuration(300);
+
+        int viewPagerHeight = getViewPagerMeasuredHeight();
+
+        viewPager.setTranslationY(viewPagerHeight);
+        ObjectAnimator slideUpAnimator =
+                ObjectAnimator.ofFloat(viewPager, View.TRANSLATION_Y, 0, viewPagerHeight);
+        slideUpAnimator.setInterpolator(new AccelerateInterpolator());
+        slideUpAnimator.setDuration(150);
+
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(slideUpAnimator).with(backgroundFadeInAnimator);
+
+        animatorSet.addListener(new SimpleAnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                callback.onAnimationComplete();
+            }
+        });
+
         animatorSet.start();
     }
 
@@ -156,10 +193,10 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     }
 
     private void dismissVaultManager() {
-        viewPagerAnimator.animateToPosition(viewPager, 0, new ViewPager2Animator.OnAnimationCompleteCallback() {
+        viewPagerAnimator.animateToPosition(viewPager, 0, new AnimationCompleteCallback() {
 
             @Override
-            public void onViewPagerAnimationComplete() {
+            public void onAnimationComplete() {
                 // revert layout height to wrap content
                 setViewPagerHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
                 requestLayout();
