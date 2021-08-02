@@ -51,13 +51,7 @@ public class DropInActivity extends BaseActivity {
         getDropInClient().deliverBrowserSwitchResult(this, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                if (dropInResult != null) {
-                    finishWithDropInResult(dropInResult);
-                } else if (error instanceof UserCanceledException) {
-                    dropInViewModel.setUserCanceledError(error);
-                } else {
-                    onError(error);
-                }
+                onDropInResult(dropInResult, error);
             }
         });
     }
@@ -414,18 +408,22 @@ public class DropInActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        getDropInClient().handleThreeDSecureActivityResult(this, resultCode, data, new DropInResultCallback() {
+        getDropInClient().handleActivityResult(this, requestCode, resultCode, data, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                if (dropInResult != null) {
-                    finishWithDropInResult(dropInResult);
-                } else if (error instanceof UserCanceledException) {
-                    dropInViewModel.setUserCanceledError(error);
-                } else {
-                    onError(error);
-                }
+                onDropInResult(dropInResult, error);
             }
         });
+    }
+
+    private void onDropInResult(DropInResult dropInResult, Exception error) {
+        if (dropInResult != null) {
+            finishWithDropInResult(dropInResult);
+        } else if (error instanceof UserCanceledException) {
+            dropInViewModel.setUserCanceledError(error);
+        } else {
+            onError(error);
+        }
     }
 
     @VisibleForTesting

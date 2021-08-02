@@ -227,6 +227,20 @@ public class DropInClient {
         }
     }
 
+    void handleActivityResult(FragmentActivity activity, int requestCode, int resultCode, @Nullable Intent data, DropInResultCallback callback) {
+        switch (requestCode) {
+            case BraintreeRequestCodes.THREE_D_SECURE:
+                handleThreeDSecureActivityResult(activity, resultCode, data, callback);
+                return;
+            case BraintreeRequestCodes.GOOGLE_PAY:
+                handleGooglePayActivityResult(activity, resultCode, data, callback);
+                return;
+            case BraintreeRequestCodes.VENMO:
+                handleVenmoActivityResult(activity, resultCode, data, callback);
+                return;
+        }
+    }
+
     void handleThreeDSecureActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
         threeDSecureClient.onActivityResult(resultCode, data, new ThreeDSecureResultCallback() {
             @Override
@@ -236,6 +250,24 @@ public class DropInClient {
                     paymentMethodNonce = threeDSecureResult.getTokenizedCard();
                 }
                 notifyDropInResult(activity, paymentMethodNonce, error, callback);
+            }
+        });
+    }
+
+    void handleGooglePayActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
+        googlePayClient.onActivityResult(resultCode, data, new GooglePayOnActivityResultCallback() {
+            @Override
+            public void onResult(@Nullable PaymentMethodNonce paymentMethodNonce, @Nullable Exception error) {
+               notifyDropInResult(activity, paymentMethodNonce, error, callback);
+            }
+        });
+    }
+
+    void handleVenmoActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
+        venmoClient.onActivityResult(activity, resultCode, data, new VenmoOnActivityResultCallback() {
+            @Override
+            public void onResult(@Nullable VenmoAccountNonce venmoAccountNonce, @Nullable Exception error) {
+                notifyDropInResult(activity, venmoAccountNonce, error, callback);
             }
         });
     }
