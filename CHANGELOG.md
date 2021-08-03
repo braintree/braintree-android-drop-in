@@ -29,7 +29,7 @@
   * Remove `EditCardView`
   * Change `DropInPaymentMethodType#getCardTypes()` parameter from `Set` to `List`
   * Replace `VaultManagerActivity` with `VaultManagerFragment`
-  * Remove `clientToken` and `tokenizationKey` from `DropInRequest` in favor of instantiating `DropInClient` with authorization
+  * Remove `clientToken`, `tokenizationKey`, and `authorization` from `DropInRequest` in favor of instantiating `DropInClient` with authorization
   * Remove deprecated `amount` parameter from `DropInRequest`
   * Remove `intent` from `DropInRequest`
   * Remove builder pattern from `DropInRequest`
