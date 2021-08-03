@@ -31,6 +31,9 @@
   * Replace `VaultManagerActivity` with `VaultManagerFragment`
   * Remove `clientToken` and `tokenizationKey` from `DropInRequest` in favor of instantiating `DropInClient` with authorization
   * Remove deprecated `amount` parameter from `DropInRequest`
+  * Remove `intent` from `DropInRequest`
+  * Remove builder pattern from `DropInRequest`
+  * Update `DropInRequest` getter and setter methods to follow consistent naming for Kotlin synthesized properties
   * Replace `DropInActivity.EXTRA_ERROR` with `DropInResult.EXTRA_ERROR`
 
 **Note:** The credentials for integrating with 3DS have changed. If you are using 3DS please update the credentials in your app-level `build.gradle`

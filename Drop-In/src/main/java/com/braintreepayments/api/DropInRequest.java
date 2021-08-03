@@ -189,18 +189,6 @@ public class DropInRequest implements Parcelable {
         mCardholderNameStatus = fieldStatus;
     }
 
-    /**
-     * Get an {@link Intent} that can be used in {@link androidx.appcompat.app.AppCompatActivity#startActivityForResult(Intent, int)}
-     * to launch {@link DropInActivity} and the Drop-in UI.
-     *
-     * @param context
-     * @return {@link Intent} containing all of the options set in {@link DropInRequest}.
-     */
-    public Intent getIntent(Context context) {
-        return new Intent(context, DropInActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST, this);
-    }
-
     public String getAuthorization() {
         return mAuthorization;
     }
