@@ -142,8 +142,7 @@ public class DropInClient {
                         return;
                     }
 
-                    boolean hasAmount = !TextUtils.isEmpty(dropInRequest.getAmount()) ||
-                            (dropInRequest.getThreeDSecureRequest() != null && !TextUtils.isEmpty(dropInRequest.getThreeDSecureRequest().getAmount()));
+                    boolean hasAmount = (dropInRequest.getThreeDSecureRequest() != null && !TextUtils.isEmpty(dropInRequest.getThreeDSecureRequest().getAmount()));
 
                     boolean shouldRequestThreeDSecureVerification =
                             dropInRequest.shouldRequestThreeDSecureVerification()

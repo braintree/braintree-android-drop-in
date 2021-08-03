@@ -16,7 +16,6 @@ public class DropInRequest implements Parcelable {
 
     private String mAuthorization;
 
-    private String mAmount;
     private boolean mCollectDeviceData;
     private boolean mRequestThreeDSecureVerification;
     private ThreeDSecureRequest mThreeDSecureRequest;
@@ -38,22 +37,6 @@ public class DropInRequest implements Parcelable {
     private int mCardholderNameStatus = CardForm.FIELD_DISABLED;
 
     public DropInRequest() {}
-
-    /**
-     * Deprecated. Use {@link ThreeDSecureRequest#setAmount(String)}
-     *
-     * This method is optional. Amount is only used for 3D Secure verifications.
-     *
-     * This value must be a non-negative number and must match the currency format of the merchant account.
-     * It can only contain numbers and optionally one decimal point with exactly 2 decimal place precision (e.g., x.xx).
-     *
-     * @param amount Amount of the transaction.
-     */
-    @Deprecated
-    public DropInRequest amount(String amount) {
-        mAmount = amount;
-        return this;
-    }
 
     /**
      * This method is optional.
@@ -123,8 +106,8 @@ public class DropInRequest implements Parcelable {
 
     /**
      * If 3D Secure has been enabled in the control panel and an amount is specified in
-     * {@link DropInRequest#amount(String)} or a {@link ThreeDSecureRequest} is provided,
-     * Drop-In will request a 3D Secure verification for any new cards added by the user.
+     * a {@link ThreeDSecureRequest} that is provided, Drop-In will request a 3D Secure verification
+     * for any new cards added by the user.
      *
      * @param requestThreeDSecure {@code true} to request a 3D Secure verification as part of Drop-In,
      * {@code false} to not request a 3D Secure verification. Defaults to {@code false}.
@@ -235,10 +218,6 @@ public class DropInRequest implements Parcelable {
         return mAuthorization;
     }
 
-    String getAmount() {
-        return mAmount;
-    }
-
     boolean shouldCollectDeviceData() {
         return mCollectDeviceData;
     }
@@ -306,7 +285,6 @@ public class DropInRequest implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mAuthorization);
-        dest.writeString(mAmount);
         dest.writeByte(mCollectDeviceData ? (byte) 1 : (byte) 0);
         dest.writeParcelable(mGooglePaymentRequest, 0);
         dest.writeByte(mGooglePaymentEnabled ? (byte) 1 : (byte) 0);
@@ -327,7 +305,6 @@ public class DropInRequest implements Parcelable {
 
     protected DropInRequest(Parcel in) {
         mAuthorization = in.readString();
-        mAmount = in.readString();
         mCollectDeviceData = in.readByte() != 0;
         mGooglePaymentRequest = in.readParcelable(GooglePayRequest.class.getClassLoader());
         mGooglePaymentEnabled = in.readByte() != 0;

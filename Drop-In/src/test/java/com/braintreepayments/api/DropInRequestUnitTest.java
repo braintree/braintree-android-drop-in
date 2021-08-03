@@ -59,7 +59,6 @@ public class DropInRequestUnitTest {
 
         Intent intent = new DropInRequest()
                 .collectDeviceData(true)
-                .amount("1.00")
                 .googlePaymentRequest(googlePayRequest)
                 .disableGooglePayment()
                 .paypalRequest(paypalRequest)
@@ -81,7 +80,6 @@ public class DropInRequestUnitTest {
 
         assertEquals(DropInActivity.class.getName(), intent.getComponent().getClassName());
         assertTrue(dropInRequest.shouldCollectDeviceData());
-        assertEquals("1.00", dropInRequest.getAmount());
         assertEquals("10", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPrice());
         assertEquals("USD", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getCurrencyCode());
         assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPriceStatus());
@@ -130,7 +128,6 @@ public class DropInRequestUnitTest {
         assertEquals(DropInActivity.class.getName(), intent.getComponent().getClassName());
         assertNull(dropInRequest.getAuthorization());
         assertFalse(dropInRequest.shouldCollectDeviceData());
-        assertNull(dropInRequest.getAmount());
         assertTrue(dropInRequest.isGooglePaymentEnabled());
         assertNull(dropInRequest.getPayPalRequest());
         assertTrue(dropInRequest.isPayPalEnabled());
@@ -185,7 +182,6 @@ public class DropInRequestUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest()
                 .collectDeviceData(true)
-                .amount("1.00")
                 .googlePaymentRequest(googlePayRequest)
                 .disableGooglePayment()
                 .paypalRequest(paypalRequest)
@@ -208,7 +204,6 @@ public class DropInRequestUnitTest {
         DropInRequest parceledDropInRequest = DropInRequest.CREATOR.createFromParcel(parcel);
 
         assertTrue(parceledDropInRequest.shouldCollectDeviceData());
-        assertEquals("1.00", parceledDropInRequest.getAmount());
         assertEquals("10", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPrice());
         assertEquals("USD", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getCurrencyCode());
         assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPriceStatus());
