@@ -168,7 +168,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
         if (cardForm.isValid()) {
             animatedButtonView.showLoading();
 
-            boolean shouldVault = Authorization.fromString(dropInRequest.getAuthorization()) instanceof ClientToken && cardForm.isSaveCardCheckBoxChecked();
+            boolean shouldVault = !isTokenizationKeyAuth && cardForm.isSaveCardCheckBoxChecked();
 
             final Card card = new Card();
             card.setCardholderName(cardForm.getCardholderName());
