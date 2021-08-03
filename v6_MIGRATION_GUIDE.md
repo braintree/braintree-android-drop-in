@@ -135,11 +135,19 @@ Note that a payment method will only be returned when using a client token creat
 
 Java:
 ```java
-    DropInClient dropInClient = new DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
+    DropInClient dropInClient = new DropInClient(this, "CLIENT_TOKEN_WITH_CUSTOMER_ID", dropInRequest);
     dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
         @Override
         public void onResult(DropInResult dropInResult, Exception error) {
             // handle result
         }
     });
+```
+
+Kotlin:
+```kotlin
+    val dropInClient = DropInClient(this, "CLIENT_TOKEN_WITH_CUSTOMER_ID", dropInRequest)
+    dropInClient.fetchMostRecentPaymentMethod(this) { dropInResult, error ->
+        // handle result
+    }
 ```
