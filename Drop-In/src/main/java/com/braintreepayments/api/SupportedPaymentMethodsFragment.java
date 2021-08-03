@@ -93,24 +93,6 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
             }
         });
 
-        dropInViewModel.isLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean isLoading) {
-                if (isLoading) {
-                    showLoader();
-                } else {
-                    hideLoader();
-                }
-            }
-        });
-
-        dropInViewModel.getUserCanceledError().observe(getViewLifecycleOwner(), new Observer<Exception>() {
-            @Override
-            public void onChanged(Exception e) {
-                hideLoader();
-            }
-        });
-
         mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -127,7 +109,8 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
         super.onResume();
 
         // show supported payment methods immediately if possible
-        List<DropInPaymentMethodType> supportedPaymentMethods = dropInViewModel.getSupportedPaymentMethods().getValue();
+        List<DropInPaymentMethodType> supportedPaymentMethods =
+            dropInViewModel.getSupportedPaymentMethods().getValue();
         if (supportedPaymentMethods != null) {
             showSupportedPaymentMethods(supportedPaymentMethods);
         }
@@ -146,12 +129,11 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
     }
 
     private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
+        hideLoader();
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 availablePaymentMethods, this);
         mSupportedPaymentMethodsView.setAdapter(adapter);
         dropInViewModel.setIsLoading(false);
-
-        sendDropInEvent(new DropInEvent(DropInEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS));
     }
 
     @Override

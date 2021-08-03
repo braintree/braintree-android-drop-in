@@ -65,17 +65,6 @@ public class DropInActivity extends BaseActivity {
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
 
-        getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
-            @Override
-            public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
-                if (paymentMethods != null) {
-                    dropInViewModel.setSupportedPaymentMethods(paymentMethods);
-                } else {
-                    onError(error);
-                }
-            }
-        });
-
         getSupportFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
@@ -240,10 +229,21 @@ public class DropInActivity extends BaseActivity {
     }
 
     private void onDidDisplaySupportedPaymentMethods(DropInEvent event) {
-        // TODO: consider pull to refresh to allow user to request an updated
-        // instead of having this event respond to the visual presentation of supported
-        // payment methods
-        updateVaultedPaymentMethodNonces(false);
+        getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
+            @Override
+            public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
+                if (paymentMethods != null) {
+                    dropInViewModel.setSupportedPaymentMethods(paymentMethods);
+
+                    // TODO: consider pull to refresh to allow user to request an updated
+                    // instead of having this event respond to the visual presentation of supported
+                    // payment methods
+                    updateVaultedPaymentMethodNonces(false);
+                } else {
+                    onError(error);
+                }
+            }
+        });
     }
 
     void updateVaultedPaymentMethodNonces(boolean refetch) {

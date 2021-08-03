@@ -114,7 +114,14 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        slideUpBottomSheet();
+
+        slideUpBottomSheet(new AnimationCompleteCallback() {
+            @Override
+            public void onAnimationComplete() {
+                sendDropInEvent(
+                        new DropInEvent(DropInEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS));
+            }
+        });
     }
 
     private void cancelDropIn() {
@@ -137,7 +144,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         });
     }
 
-    private void slideUpBottomSheet() {
+    private void slideUpBottomSheet(final AnimationCompleteCallback callback) {
         ObjectAnimator backgroundFadeInAnimator =
                 ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 0.0f, 1.0f);
         backgroundFadeInAnimator.setDuration(BACKGROUND_FADE_ANIM_DURATION);
@@ -154,6 +161,13 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(slideUpAnimator).with(backgroundFadeInAnimator);
         animatorSet.start();
+
+        animatorSet.addListener(new SimpleAnimatorListener() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                callback.onAnimationComplete();
+            }
+        });
 
         bottomSheetSlideInAnimator = animatorSet;
     }
