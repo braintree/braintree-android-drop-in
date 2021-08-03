@@ -77,7 +77,7 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
             }
         });
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), new OnBackPressedCallback(true) {
+        requireActivity().getOnBackPressedDispatcher().addCallback(requireActivity(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
                 getParentFragmentManager().popBackStack();

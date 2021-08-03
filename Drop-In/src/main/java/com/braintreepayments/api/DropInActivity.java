@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -86,6 +87,14 @@ public class DropInActivity extends BaseActivity {
             }
         });
 
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+
+            @Override
+            public void handleOnBackPressed() {
+                onDropInCanceled();
+            }
+        });
+
         showSelectPaymentMethodParentFragment();
     }
 
@@ -99,7 +108,7 @@ public class DropInActivity extends BaseActivity {
                 onCardDetailsSubmit(event);
                 break;
             case CANCEL_DROPIN:
-                onDropInCanceled(event);
+                onDropInCanceled();
                 break;
             case DELETE_VAULTED_PAYMENT_METHOD:
                 onDeleteVaultedPaymentMethod(event);
@@ -125,7 +134,7 @@ public class DropInActivity extends BaseActivity {
         }
     }
 
-    private void onDropInCanceled(DropInEvent event) {
+    private void onDropInCanceled() {
         getDropInClient().sendAnalyticsEvent("sdk.exit.canceled");
         setResult(RESULT_CANCELED);
         finish();
@@ -389,7 +398,7 @@ public class DropInActivity extends BaseActivity {
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        overridePendingTransition(0, 0);
     }
 
     @Override

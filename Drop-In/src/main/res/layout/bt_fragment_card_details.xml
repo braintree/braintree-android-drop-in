@@ -11,20 +11,19 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:navigationIcon="?attr/homeAsUpIndicator"
-        app:title="@string/bt_card_details"
-        app:theme="@style/bt_toolbar_theme" />
+        app:theme="@style/bt_toolbar_theme"
+        app:title="@string/bt_card_details" />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
+        android:background="@color/bt_base_background">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
-            android:orientation="vertical"
-            >
+            android:orientation="vertical">
 
             <com.braintreepayments.cardform.view.CardForm
                 android:id="@+id/bt_card_form"
