@@ -41,7 +41,6 @@ class BottomSheetPresenter {
 
     private BottomSheetViewAdapter viewPagerAdapter;
 
-
     void bind(ViewHolder viewHolder) {
         this.viewHolder = viewHolder;
         this.childFragmentList = new BottomSheetViewModel(
