@@ -125,6 +125,13 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
         if (supportedPaymentMethods != null) {
             showSupportedPaymentMethods(supportedPaymentMethods);
         }
+
+        // show vaulted payment methods immediately if possible
+        List<PaymentMethodNonce> vaultedPaymentMethods =
+            dropInViewModel.getVaultedPaymentMethods().getValue();
+        if (vaultedPaymentMethods != null) {
+            showVaultedPaymentMethods(vaultedPaymentMethods);
+        }
     }
 
     private void showLoader() {

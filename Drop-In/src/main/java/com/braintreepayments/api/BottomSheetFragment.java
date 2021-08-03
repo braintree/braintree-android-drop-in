@@ -13,6 +13,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.braintreepayments.api.dropin.R;
@@ -21,6 +22,9 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
 
     @VisibleForTesting
     ViewPager2 viewPager;
+
+    @VisibleForTesting
+    DropInViewModel dropInViewModel;
 
     private View backgroundView;
 
@@ -33,6 +37,8 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
         if (args != null) {
             dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
         }
+
+        dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
         View view = inflater.inflate(R.layout.fragment_bottom_sheet, container, false);
         backgroundView = view.findViewById(R.id.background);
@@ -88,13 +94,17 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
     public void onResume() {
         super.onResume();
 
-        bottomSheetPresenter.slideUpBottomSheet(new AnimationCompleteCallback() {
-            @Override
-            public void onAnimationComplete() {
-                sendDropInEvent(
-                        new DropInEvent(DropInEventType.DID_PRESENT_BOTTOM_SHEET));
-            }
-        });
+        boolean dropInIsIdle = (dropInViewModel.getDropInState().getValue() == DropInState.IDLE);
+        if (dropInIsIdle) {
+            bottomSheetPresenter.slideUpBottomSheet(new AnimationCompleteCallback() {
+                @Override
+                public void onAnimationComplete() {
+                    dropInViewModel.setDropInState(DropInState.BOTTOM_SHEET_PRESENTED);
+                }
+            });
+        } else {
+            backgroundView.setAlpha(1.0f);
+        }
     }
 
     @Override

@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
@@ -72,10 +73,18 @@ public class DropInActivity extends BaseActivity {
         });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-
             @Override
             public void handleOnBackPressed() {
                 onDropInCanceled();
+            }
+        });
+
+        dropInViewModel.getDropInState().observe(this, new Observer<DropInState>() {
+            @Override
+            public void onChanged(DropInState dropInState) {
+                if (dropInState == DropInState.BOTTOM_SHEET_PRESENTED) {
+                    onDidPresentBottomSheet();
+                }
             }
         });
 
@@ -96,9 +105,6 @@ public class DropInActivity extends BaseActivity {
                 break;
             case DELETE_VAULTED_PAYMENT_METHOD:
                 onDeleteVaultedPaymentMethod(event);
-                break;
-            case DID_PRESENT_BOTTOM_SHEET:
-                onDidPresentBottomSheet(event);
                 break;
             case EDIT_CARD_NUMBER:
                 onEditCardNumber(event);
@@ -227,7 +233,7 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    private void onDidPresentBottomSheet(DropInEvent event) {
+    private void onDidPresentBottomSheet() {
         getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
             public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
