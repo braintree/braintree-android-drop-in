@@ -27,7 +27,7 @@ public class DropInActivity extends BaseActivity {
 
     private static final String ADD_CARD_TAG = "ADD_CARD";
     private static final String CARD_DETAILS_TAG = "CARD_DETAILS";
-    private static final String SELECT_PAYMENT_METHOD_TAG = "SELECT_PAYMENT_METHOD_PARENT_FRAGMENT";
+    private static final String BOTTOM_SHEET_TAG = "BOTTOM_SHEET";
 
     @VisibleForTesting
     DropInViewModel dropInViewModel;
@@ -286,10 +286,10 @@ public class DropInActivity extends BaseActivity {
     }
 
     private void showSelectPaymentMethodParentFragment() {
-        if (shouldAddFragment(SELECT_PAYMENT_METHOD_TAG)) {
+        if (shouldAddFragment(BOTTOM_SHEET_TAG)) {
             Bundle args = new Bundle();
             args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-            replaceExistingFragment(BottomSheetFragment.class, SELECT_PAYMENT_METHOD_TAG, args);
+            replaceExistingFragment(BottomSheetFragment.class, BOTTOM_SHEET_TAG, args);
         }
     }
 
