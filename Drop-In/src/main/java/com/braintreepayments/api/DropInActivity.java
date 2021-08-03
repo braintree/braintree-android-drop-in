@@ -31,7 +31,6 @@ public class DropInActivity extends BaseActivity {
 
     @VisibleForTesting
     DropInViewModel dropInViewModel;
-    ActionBar actionBar;
     private FragmentContainerView fragmentContainerView;
 
     @Override
