@@ -1,6 +1,6 @@
 package com.braintreepayments.api;
 
-public enum DropInState {
+enum DropInState {
     IDLE,
     FINISHING
 }
