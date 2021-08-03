@@ -276,6 +276,7 @@ public class DropInActivity extends BaseActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager
                 .beginTransaction()
+                .setCustomAnimations(R.anim.bt_activity_fade_in, R.anim.bt_activity_fade_out)
                 .replace(R.id.fragment_container_view, fragmentClass, args, tag)
                 .addToBackStack(null)
                 .commit();
