@@ -133,12 +133,18 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 availablePaymentMethods, this);
         mSupportedPaymentMethodsView.setAdapter(adapter);
-        dropInViewModel.setIsLoading(false);
     }
 
     @Override
     public void onPaymentMethodSelected(DropInPaymentMethodType type) {
-        dropInViewModel.setIsLoading(true);
+        boolean paymentTypeWillInitiateAsyncRequest = (type == DropInPaymentMethodType.PAYPAL)
+            || (type == DropInPaymentMethodType.PAY_WITH_VENMO);
+
+        if (paymentTypeWillInitiateAsyncRequest) {
+            // hide vault manager (if necessary) and show loader
+            mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
+            showLoader();
+        }
         sendDropInEvent(
                 DropInEvent.createSupportedPaymentMethodSelectedEvent(type));
     }
