@@ -25,6 +25,7 @@ public class OptionalVaultingDropInTest extends TestHelper {
     public void saveCardCheckBox_whenVisibleAndChecked_vaults() {
         setSaveCardCheckBox(true, true);
         setUniqueCustomerId();
+        launchApp();
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         tokenizeCard(VISA);
@@ -39,6 +40,7 @@ public class OptionalVaultingDropInTest extends TestHelper {
     public void saveCardCheckBox_whenVisibleAndCustomerChecks_vaults() {
         setSaveCardCheckBox(true, false);
         setUniqueCustomerId();
+        launchApp();
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         onDevice(withText("Credit or Debit Card")).perform(click());
@@ -58,6 +60,7 @@ public class OptionalVaultingDropInTest extends TestHelper {
     public void saveCardCheckBox_whenVisibleAndCustomerUnchecks_doesNotVault() {
         setSaveCardCheckBox(true, true);
         setUniqueCustomerId();
+        launchApp();
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         onDevice(withText("Credit or Debit Card")).perform(click());
@@ -77,6 +80,7 @@ public class OptionalVaultingDropInTest extends TestHelper {
     public void saveCardCheckBox_whenGoneAndChecked_vaults() {
         setSaveCardCheckBox(false, true);
         setUniqueCustomerId();
+        launchApp();
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         tokenizeCard(VISA);
@@ -91,6 +95,7 @@ public class OptionalVaultingDropInTest extends TestHelper {
     public void saveCardCheckBox_whenGoneAndUnchecked_doesNotVault() {
         setSaveCardCheckBox(false, false);
         setUniqueCustomerId();
+        launchApp();
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         tokenizeCard(VISA);
