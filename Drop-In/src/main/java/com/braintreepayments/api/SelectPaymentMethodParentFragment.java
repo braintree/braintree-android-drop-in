@@ -119,7 +119,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
             @Override
             public void onAnimationComplete() {
                 sendDropInEvent(
-                        new DropInEvent(DropInEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS));
+                        new DropInEvent(DropInEventType.DID_PRESENT_BOTTOM_SHEET));
             }
         });
     }

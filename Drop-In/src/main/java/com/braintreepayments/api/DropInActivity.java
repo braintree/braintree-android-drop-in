@@ -98,8 +98,8 @@ public class DropInActivity extends BaseActivity {
             case DELETE_VAULTED_PAYMENT_METHOD:
                 onDeleteVaultedPaymentMethod(event);
                 break;
-            case DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
-                onDidDisplaySupportedPaymentMethods(event);
+            case DID_PRESENT_BOTTOM_SHEET:
+                onDidPresentBottomSheet(event);
                 break;
             case EDIT_CARD_NUMBER:
                 onEditCardNumber(event);
@@ -228,7 +228,7 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    private void onDidDisplaySupportedPaymentMethods(DropInEvent event) {
+    private void onDidPresentBottomSheet(DropInEvent event) {
         getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
             public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
