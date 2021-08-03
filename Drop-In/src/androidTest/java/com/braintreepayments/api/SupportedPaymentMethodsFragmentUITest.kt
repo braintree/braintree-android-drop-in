@@ -218,23 +218,4 @@ class SupportedPaymentMethodsFragmentUITest {
     fun whenStateIsRESUMED_whenVaultEditButtonClicked_sendsAnalyticsEvent() {
         // TODO: capture all analytics events within a time interval and assert that the target analytics event is emitted
     }
-
-    @Test
-    fun whenStateIsRESUMED_whenUserCanceledErrorPresentInViewModel_hidesLoader() {
-        val dropInRequest = DropInRequest()
-        dropInRequest.isVaultManagerEnabled = false
-        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
-
-        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
-        scenario.moveToState(Lifecycle.State.RESUMED)
-
-        scenario.onFragment { fragment ->
-            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
-            fragment.mLoadingIndicatorWrapper.visibility = VISIBLE
-            fragment.dropInViewModel.setUserCanceledError(Exception("User canceled PayPal."))
-        }
-
-        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.bt_supported_payment_methods)).check(matches(isDisplayed()))
-    }
 }

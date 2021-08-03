@@ -50,7 +50,6 @@ class BottomSheetFragmentUITest {
         }
 
         onView(isRoot()).perform(waitFor(500))
-
         scenario.onFragment { fragment ->
             val currentItemPos = fragment.viewPager.currentItem
             assertEquals(1, currentItemPos)
@@ -80,6 +79,7 @@ class BottomSheetFragmentUITest {
             }
         }
 
+        onView(isRoot()).perform(waitFor(1000))
         onView(isRoot()).perform(ViewActions.pressBack())
         onView(isRoot()).perform(waitFor(1000))
 
@@ -153,6 +153,7 @@ class BottomSheetFragmentUITest {
             }
         }
 
+        onView(isRoot()).perform(waitFor(1000))
         onView(withId(R.id.back_button)).perform(click())
         onView(isRoot()).perform(waitFor(1000))
 
