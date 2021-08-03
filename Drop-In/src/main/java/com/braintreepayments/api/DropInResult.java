@@ -89,7 +89,7 @@ public class DropInResult implements Parcelable {
 
     /**
      * @return {@link String} of device data. Returned when specified with
-     * {@link DropInRequest#collectDeviceData(boolean)} that device data should be collected.
+     * {@link DropInRequest#setShouldCollectDeviceData(boolean)} that device data should be collected.
      */
     @Nullable
     public String getDeviceData() {

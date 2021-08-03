@@ -75,8 +75,8 @@ public class AvailablePaymentMethodNonceListUnitTest {
     @Test
     public void cardsNotAvailableIfDisableInDropInRequest() {
         Configuration configuration = getMockConfiguration(false, false, true, false);
-        DropInRequest dropInRequest = new DropInRequest()
-                .disableCard();
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setDisableCard(true);
 
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) cardNonce);
 
@@ -89,8 +89,8 @@ public class AvailablePaymentMethodNonceListUnitTest {
     @Test
     public void paypalNotAvailableIfDisabledInDropInRequest() {
         Configuration configuration = getMockConfiguration(true, false, false, false);
-        DropInRequest dropInRequest = new DropInRequest()
-                .disablePayPal();
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setDisablePayPal(true);
 
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) payPalAccountNonce);
 
@@ -103,8 +103,8 @@ public class AvailablePaymentMethodNonceListUnitTest {
     @Test
     public void venmoNotAvailableIfDisabledInDropInRequest() {
         Configuration configuration = getMockConfiguration(false, true, false, false);
-        DropInRequest dropInRequest = new DropInRequest()
-                .disableVenmo();
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setDisableVenmo(true);
 
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) venmoAccountNonce);
 
@@ -117,8 +117,8 @@ public class AvailablePaymentMethodNonceListUnitTest {
     @Test
     public void googlePaymentNotAvailableIfDisabledInDropInRequest() {
         Configuration configuration = getMockConfiguration(false, false, false, true);
-        DropInRequest dropInRequest = new DropInRequest()
-                .disableGooglePayment();
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setDisableGooglePay(true);
 
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
 
@@ -131,8 +131,8 @@ public class AvailablePaymentMethodNonceListUnitTest {
     @Test
     public void googlePayNotAvailableIfDisabledInDropInRequest() {
         Configuration configuration = getMockConfiguration(false, false, false, true);
-        DropInRequest dropInRequest = new DropInRequest()
-                .disableGooglePayment();
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setDisableGooglePay(true);
 
         List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
 

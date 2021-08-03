@@ -100,7 +100,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             }
         });
 
-        boolean showCardCheckbox = !isTokenizationKeyAuth && dropInRequest.isSaveCardCheckBoxShown();
+        boolean showCardCheckbox = !isTokenizationKeyAuth && dropInRequest.getAllowVaultCardOverride();
 
         cardForm.cardRequired(true)
                 .expirationRequired(true)
@@ -108,7 +108,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
                 .postalCodeRequired(configuration.isPostalCodeChallengePresent())
                 .cardholderName(dropInRequest.getCardholderNameStatus())
                 .saveCardCheckBoxVisible(showCardCheckbox)
-                .saveCardCheckBoxChecked(dropInRequest.getDefaultVaultSetting())
+                .saveCardCheckBoxChecked(dropInRequest.getVaultCardDefaultValue())
                 .setup(requireActivity());
 
         cardForm.maskCardNumber(dropInRequest.shouldMaskCardNumber());

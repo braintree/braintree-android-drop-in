@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.Mock;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
@@ -20,7 +19,6 @@ import java.util.Objects;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_CANCELED;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
-import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 import static com.braintreepayments.api.UnitTestFixturesHelper.base64EncodedClientTokenFromFixture;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
@@ -256,9 +254,9 @@ public class DropInActivityUnitTest {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         threeDSecureRequest.setAmount("1.00");
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .threeDSecureRequest(threeDSecureRequest)
-                .requestThreeDSecureVerification(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
+        dropInRequest.setShouldRequestThreeDSecureVerification(true);
 
         String authorization = Fixtures.TOKENIZATION_KEY;
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
@@ -387,8 +385,8 @@ public class DropInActivityUnitTest {
 
     @Test
     public void onVaultedPaymentMethodSelected_returnsDeviceData() throws JSONException {
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setShouldCollectDeviceData(true);
 
         String authorization = Fixtures.TOKENIZATION_KEY;
 

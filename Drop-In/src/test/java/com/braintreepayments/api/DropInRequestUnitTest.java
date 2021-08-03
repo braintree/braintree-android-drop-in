@@ -12,7 +12,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 
-import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
@@ -57,28 +56,24 @@ public class DropInRequestUnitTest {
         additionalInformation.setShippingMethodIndicator("GEN");
         threeDSecureRequest.setAdditionalInformation(additionalInformation);
 
-        Intent intent = new DropInRequest()
-                .collectDeviceData(true)
-                .googlePaymentRequest(googlePayRequest)
-                .disableGooglePayment()
-                .paypalRequest(paypalRequest)
-                .disablePayPal()
-                .disableVenmo()
-                .disableCard()
-                .requestThreeDSecureVerification(true)
-                .threeDSecureRequest(threeDSecureRequest)
-                .maskCardNumber(true)
-                .maskSecurityCode(true)
-                .vaultManager(true)
-                .allowVaultCardOverride(true)
-                .vaultCard(true)
-                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
-                .vaultVenmo(true)
-                .getIntent(RuntimeEnvironment.application);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setShouldCollectDeviceData(true);
+        dropInRequest.setGooglePayRequest(googlePayRequest);
+        dropInRequest.setDisableGooglePay(true);
+        dropInRequest.setPayPalRequest(paypalRequest);
+        dropInRequest.setDisablePayPal(true);
+        dropInRequest.setDisableVenmo(true);
+        dropInRequest.setDisableCard(true);
+        dropInRequest.setShouldRequestThreeDSecureVerification(true);
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
+        dropInRequest.setMaskCardNumber(true);
+        dropInRequest.setMaskSecurityCode(true);
+        dropInRequest.setEnableVaultManager(true);
+        dropInRequest.setAllowVaultCardOverride(true);
+        dropInRequest.setVaultCardDefaultValue(true);
+        dropInRequest.setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
+        dropInRequest.setVaultVenmoDefaultValue(true);
 
-        DropInRequest dropInRequest = intent.getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
-
-        assertEquals(DropInActivity.class.getName(), intent.getComponent().getClassName());
         assertTrue(dropInRequest.shouldCollectDeviceData());
         assertEquals("10", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPrice());
         assertEquals("USD", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getCurrencyCode());
@@ -111,9 +106,9 @@ public class DropInRequestUnitTest {
         assertEquals("GEN", dropInRequest.getThreeDSecureRequest().getAdditionalInformation().getShippingMethodIndicator());
         assertTrue(dropInRequest.shouldMaskCardNumber());
         assertTrue(dropInRequest.shouldMaskSecurityCode());
-        assertTrue(dropInRequest.isVaultManagerEnabled());
-        assertTrue(dropInRequest.getDefaultVaultSetting());
-        assertTrue(dropInRequest.isSaveCardCheckBoxShown());
+        assertTrue(dropInRequest.getEnableVaultManager());
+        assertTrue(dropInRequest.getVaultCardDefaultValue());
+        assertTrue(dropInRequest.getAllowVaultCardOverride());
         assertEquals(CardForm.FIELD_OPTIONAL, dropInRequest.getCardholderNameStatus());
         assertTrue(dropInRequest.shouldVaultVenmo());
     }
@@ -137,9 +132,9 @@ public class DropInRequestUnitTest {
         assertNull(dropInRequest.getThreeDSecureRequest());
         assertFalse(dropInRequest.shouldMaskCardNumber());
         assertFalse(dropInRequest.shouldMaskSecurityCode());
-        assertFalse(dropInRequest.isVaultManagerEnabled());
-        assertFalse(dropInRequest.isSaveCardCheckBoxShown());
-        assertTrue(dropInRequest.getDefaultVaultSetting());
+        assertFalse(dropInRequest.getEnableVaultManager());
+        assertFalse(dropInRequest.getAllowVaultCardOverride());
+        assertTrue(dropInRequest.getVaultCardDefaultValue());
         assertFalse(dropInRequest.shouldVaultVenmo());
         assertEquals(CardForm.FIELD_DISABLED, dropInRequest.getCardholderNameStatus());
     }
@@ -180,23 +175,23 @@ public class DropInRequestUnitTest {
         additionalInformation.setShippingMethodIndicator("GEN");
         threeDSecureRequest.setAdditionalInformation(additionalInformation);
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(true)
-                .googlePaymentRequest(googlePayRequest)
-                .disableGooglePayment()
-                .paypalRequest(paypalRequest)
-                .disablePayPal()
-                .disableVenmo()
-                .disableCard()
-                .requestThreeDSecureVerification(true)
-                .threeDSecureRequest(threeDSecureRequest)
-                .maskCardNumber(true)
-                .maskSecurityCode(true)
-                .vaultManager(true)
-                .vaultCard(true)
-                .allowVaultCardOverride(true)
-                .cardholderNameStatus(CardForm.FIELD_OPTIONAL)
-                .vaultVenmo(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setShouldCollectDeviceData(true);
+        dropInRequest.setGooglePayRequest(googlePayRequest);
+        dropInRequest.setDisableGooglePay(true);
+        dropInRequest.setPayPalRequest(paypalRequest);
+        dropInRequest.setDisablePayPal(true);
+        dropInRequest.setDisableVenmo(true);
+        dropInRequest.setDisableCard(true);
+        dropInRequest.setShouldRequestThreeDSecureVerification(true);
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
+        dropInRequest.setMaskCardNumber(true);
+        dropInRequest.setMaskSecurityCode(true);
+        dropInRequest.setEnableVaultManager(true);
+        dropInRequest.setAllowVaultCardOverride(true);
+        dropInRequest.setVaultCardDefaultValue(true);
+        dropInRequest.setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
+        dropInRequest.setVaultVenmoDefaultValue(true);
 
         Parcel parcel = Parcel.obtain();
         dropInRequest.writeToParcel(parcel, 0);
@@ -235,17 +230,17 @@ public class DropInRequestUnitTest {
         assertEquals("GEN", dropInRequest.getThreeDSecureRequest().getAdditionalInformation().getShippingMethodIndicator());
         assertTrue(parceledDropInRequest.shouldMaskCardNumber());
         assertTrue(parceledDropInRequest.shouldMaskSecurityCode());
-        assertTrue(parceledDropInRequest.isVaultManagerEnabled());
-        assertTrue(parceledDropInRequest.getDefaultVaultSetting());
-        assertTrue(parceledDropInRequest.isSaveCardCheckBoxShown());
+        assertTrue(parceledDropInRequest.getEnableVaultManager());
+        assertTrue(parceledDropInRequest.getVaultCardDefaultValue());
+        assertTrue(parceledDropInRequest.getAllowVaultCardOverride());
         assertEquals(CardForm.FIELD_OPTIONAL, parceledDropInRequest.getCardholderNameStatus());
         assertTrue(parceledDropInRequest.shouldVaultVenmo());
     }
 
     @Test
     public void getCardholderNameStatus_includesCardHolderNameStatus() {
-        DropInRequest dropInRequest = new DropInRequest()
-                .cardholderNameStatus(CardForm.FIELD_REQUIRED);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCardholderNameStatus(CardForm.FIELD_REQUIRED);
 
         assertEquals(CardForm.FIELD_REQUIRED, dropInRequest.getCardholderNameStatus());
     }

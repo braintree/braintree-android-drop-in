@@ -45,19 +45,17 @@ public class DropInRequest implements Parcelable {
      *        fraud prevention.
      * @see DataCollector
      */
-    public DropInRequest collectDeviceData(boolean collectDeviceData) {
+    public void setShouldCollectDeviceData(boolean collectDeviceData) {
         mCollectDeviceData = collectDeviceData;
-        return this;
     }
 
     /**
      * This method is optional.
      *
-     * @param request The Google Payment Request {@link GooglePayRequest} for the transaction.
+     * @param request The Google Pay Request {@link GooglePayRequest} for the transaction.
      */
-    public DropInRequest googlePaymentRequest(GooglePayRequest request) {
+    public void setGooglePayRequest(GooglePayRequest request) {
         mGooglePaymentRequest = request;
-        return this;
     }
 
     /**
@@ -67,41 +65,40 @@ public class DropInRequest implements Parcelable {
      * If no amount is set, PayPal will default to the billing agreement (Vault) flow.
      * If amount is set, PayPal will follow the one time payment (Checkout) flow.
      */
-    public DropInRequest paypalRequest(PayPalRequest request) {
+    public void setPayPalRequest(PayPalRequest request) {
         mPayPalRequest = request;
-        return this;
     }
 
     /**
-     * Disables Google Payment in Drop-in.
+     * Disables Google Pay in Drop-in.
+     * @param disableGooglePay
      */
-    public DropInRequest disableGooglePayment() {
-        mGooglePaymentEnabled = false;
-        return this;
+    public void setDisableGooglePay(boolean disableGooglePay) {
+        mGooglePaymentEnabled = !disableGooglePay;
     }
 
     /**
      * Disables PayPal in Drop-in.
+     * @param disablePayPal
      */
-    public DropInRequest disablePayPal() {
-        mPayPalEnabled = false;
-        return this;
+    public void setDisablePayPal(boolean disablePayPal) {
+        mPayPalEnabled = !disablePayPal;
     }
 
     /**
      * Disables Venmo in Drop-in.
+     * @param disableVenmo
      */
-    public DropInRequest disableVenmo() {
-        mVenmoEnabled = false;
-        return this;
+    public void setDisableVenmo(boolean disableVenmo) {
+        mVenmoEnabled = !disableVenmo;
     }
 
     /**
      * Disables Card in Drop-in.
+     * @param disableCard
      */
-    public DropInRequest disableCard() {
-        mCardEnabled = false;
-        return this;
+    public void setDisableCard(boolean disableCard) {
+        mCardEnabled = !disableCard;
     }
 
     /**
@@ -112,9 +109,8 @@ public class DropInRequest implements Parcelable {
      * @param requestThreeDSecure {@code true} to request a 3D Secure verification as part of Drop-In,
      * {@code false} to not request a 3D Secure verification. Defaults to {@code false}.
      */
-    public DropInRequest requestThreeDSecureVerification(boolean requestThreeDSecure) {
+    public void setShouldRequestThreeDSecureVerification(boolean requestThreeDSecure) {
         mRequestThreeDSecureVerification = requestThreeDSecure;
-        return this;
     }
 
     /**
@@ -123,11 +119,9 @@ public class DropInRequest implements Parcelable {
      * @param threeDSecureRequest {@link ThreeDSecureRequest} to specify options and additional information for 3D Secure.
      * To encourage 3DS 2.0 flows, set {@link ThreeDSecureRequest#setBillingAddress(ThreeDSecurePostalAddress)},
      * {@link ThreeDSecureRequest#setEmail(String)}, and {@link ThreeDSecureRequest#setMobilePhoneNumber(String)} for best results.
-     * If no amount is set, the {@link DropInRequest#amount(String)} will be used.
      */
-    public DropInRequest threeDSecureRequest(ThreeDSecureRequest threeDSecureRequest) {
+    public void setThreeDSecureRequest(ThreeDSecureRequest threeDSecureRequest) {
         mThreeDSecureRequest = threeDSecureRequest;
-        return this;
     }
 
     /**
@@ -135,30 +129,27 @@ public class DropInRequest implements Parcelable {
      * See {@link com.braintreepayments.cardform.view.CardEditText} for more details. Defaults to
      * {@code false}.
      */
-    public DropInRequest maskCardNumber(boolean maskCardNumber) {
+    public void setMaskCardNumber(boolean maskCardNumber) {
         mMaskCardNumber = maskCardNumber;
-        return this;
     }
 
     /**
      * @param maskSecurityCode {@code true} to mask the security code during input. Defaults to {@code false}.
      */
-    public DropInRequest maskSecurityCode(boolean maskSecurityCode) {
+    public void setMaskSecurityCode(boolean maskSecurityCode) {
         mMaskSecurityCode = maskSecurityCode;
-        return this;
     }
 
     /**
      * @param vaultManager {@code true} to allow customers to manage their vaulted payment methods.
      * Defaults to {@code false}.
      */
-    public DropInRequest vaultManager(boolean vaultManager) {
+    public void setEnableVaultManager(boolean vaultManager) {
         mVaultManagerEnabled = vaultManager;
-        return this;
     }
 
     /**
-     * @param defaultValue the default value used to determine if Drop-in should vault the customer's card. This setting can be overwritten by the customer if the save card checkbox is visible using {@link #allowVaultCardOverride(boolean)}
+     * @param defaultValue the default value used to determine if Drop-in should vault the customer's card. This setting can be overwritten by the customer if the save card checkbox is visible using {@link #setAllowVaultCardOverride(boolean)}
      * If the save card CheckBox is shown, and default vault value is true: the save card CheckBox will appear pre-checked.
      * If the save card CheckBox is shown, and default vault value is false: the save card Checkbox will appear un-checked.
      * If the save card CheckBox is not shown, and default vault value is true: card always vaults.
@@ -166,9 +157,8 @@ public class DropInRequest implements Parcelable {
      *
      * This value is {@code true} by default.
      */
-    public DropInRequest vaultCard(boolean defaultValue) {
+    public void setVaultCardDefaultValue(boolean defaultValue) {
         mDefaultVaultValue = defaultValue;
-        return this;
     }
 
     /**
@@ -176,18 +166,16 @@ public class DropInRequest implements Parcelable {
      *
      * This value is {@code false} by default.
      */
-    public DropInRequest vaultVenmo(boolean defaultValue) {
+    public void setVaultVenmoDefaultValue(boolean defaultValue) {
         mVaultVenmo = defaultValue;
-        return this;
     };
 
     /**
      * @param customerCheckBoxEnabled {@code true} shows save card CheckBox to allow user to choose whether or not to vault their card.
      * {@code false} does not show Save Card CheckBox.
      */
-    public DropInRequest allowVaultCardOverride(boolean customerCheckBoxEnabled) {
+    public void setAllowVaultCardOverride(boolean customerCheckBoxEnabled) {
         mShowCheckBoxToAllowVaultOverride = customerCheckBoxEnabled;
-        return this;
     }
 
     /**
@@ -197,9 +185,8 @@ public class DropInRequest implements Parcelable {
      * Can be {@link CardForm#FIELD_DISABLED}, {@link CardForm#FIELD_OPTIONAL}, or
      * {@link CardForm#FIELD_REQUIRED}.
      */
-    public DropInRequest cardholderNameStatus(int fieldStatus) {
+    public void setCardholderNameStatus(int fieldStatus) {
         mCardholderNameStatus = fieldStatus;
-        return this;
     }
 
     /**
@@ -261,7 +248,7 @@ public class DropInRequest implements Parcelable {
 
     boolean shouldVaultVenmo() { return mVaultVenmo; }
 
-    boolean isVaultManagerEnabled() {
+    boolean getEnableVaultManager() {
         return mVaultManagerEnabled;
     }
 
@@ -269,11 +256,11 @@ public class DropInRequest implements Parcelable {
         return mCardholderNameStatus;
     }
 
-    public boolean getDefaultVaultSetting() {
+    public boolean getVaultCardDefaultValue() {
         return mDefaultVaultValue;
     }
 
-    public boolean isSaveCardCheckBoxShown() {
+    public boolean getAllowVaultCardOverride() {
         return mShowCheckBoxToAllowVaultOverride;
     }
 

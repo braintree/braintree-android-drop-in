@@ -190,19 +190,19 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onAuthorizationFetched() {
-        DropInRequest dropInRequest = new DropInRequest()
-                .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))
-                .collectDeviceData(Settings.shouldCollectDeviceData(this))
-                .googlePaymentRequest(getGooglePaymentRequest())
-                .maskCardNumber(true)
-                .maskSecurityCode(true)
-                .allowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this))
-                .vaultCard(Settings.defaultVaultSetting(this))
-                .vaultManager(Settings.isVaultManagerEnabled(this))
-                .cardholderNameStatus(Settings.getCardholderNameStatus(this));
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setShouldRequestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this));
+        dropInRequest.setShouldCollectDeviceData(Settings.shouldCollectDeviceData(this));
+        dropInRequest.setGooglePayRequest(getGooglePaymentRequest());
+        dropInRequest.setMaskCardNumber(true);
+        dropInRequest.setMaskSecurityCode(true);
+        dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
+        dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
+        dropInRequest.setEnableVaultManager(Settings.isVaultManagerEnabled(this));
+        dropInRequest.setCardholderNameStatus(Settings.getCardholderNameStatus(this));
 
         if (Settings.isThreeDSecureEnabled(this)) {
-            dropInRequest.threeDSecureRequest(demoThreeDSecureRequest());
+            dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
         }
 
         dropInClient = new DropInClient(this, mAuthorization, dropInRequest);

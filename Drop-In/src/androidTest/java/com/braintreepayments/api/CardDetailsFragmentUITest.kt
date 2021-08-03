@@ -2,7 +2,6 @@ package com.braintreepayments.api
 
 import android.os.Bundle
 import android.os.Parcelable
-import androidx.core.view.isVisible
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
@@ -13,12 +12,12 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.braintreepayments.api.CardNumber.VISA
 import com.braintreepayments.api.dropin.R
 import com.braintreepayments.cardform.view.CardForm
+import com.braintreepayments.cardform.view.CardForm.FIELD_OPTIONAL
 import com.braintreepayments.cardform.view.CardForm.FIELD_REQUIRED
 import junit.framework.TestCase.*
 import org.hamcrest.Matchers.not
 import org.junit.Before
 import org.junit.Test
-import org.mockito.internal.matchers.Not
 import java.util.concurrent.CountDownLatch
 
 
@@ -88,8 +87,10 @@ class CardDetailsFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_whenDropInRequestRequiresCardholderName_setsCardFormsCardholderNameToRequired() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.cardholderNameStatus = FIELD_REQUIRED
         val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().cardholderNameStatus(FIELD_REQUIRED))
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
         args.putString("EXTRA_CARD_NUMBER", VISA)
         val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
@@ -125,8 +126,10 @@ class CardDetailsFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_withAllowVaultCardOverrideTrueAndTokenizationKey_hidesSaveCardCheckbox() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.allowVaultCardOverride = true
         val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().allowVaultCardOverride(true))
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
         args.putString("EXTRA_CARD_NUMBER", VISA)
         args.putBoolean("EXTRA_AUTH_IS_TOKENIZATION_KEY", true)
@@ -141,8 +144,10 @@ class CardDetailsFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_withAllowVaultCardOverrideTrue_showsSaveCardCheckbox() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.allowVaultCardOverride = true
         val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().allowVaultCardOverride(true))
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
         args.putString("EXTRA_CARD_NUMBER", VISA)
         val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
@@ -155,8 +160,10 @@ class CardDetailsFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_withAllowVaultCardOverrideFalse_showsSaveCardCheckbox() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.allowVaultCardOverride = false
         val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().allowVaultCardOverride(false))
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
         args.putString("EXTRA_CARD_NUMBER", VISA)
         val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
@@ -169,8 +176,11 @@ class CardDetailsFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_withAllowVaultCardOverrideTrue_andVaultCardTrue_showsSaveCardCheckboxChecked() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.allowVaultCardOverride = true
+        dropInRequest.vaultCardDefaultValue = true
         val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().allowVaultCardOverride(true).vaultCard(true))
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
         args.putString("EXTRA_CARD_NUMBER", VISA)
         val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
@@ -184,8 +194,11 @@ class CardDetailsFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_withAllowVaultCardOverrideTrue_andVaultCardFalse_showsSaveCardCheckboxNotChecked() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.allowVaultCardOverride = true
+        dropInRequest.vaultCardDefaultValue = false
         val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().allowVaultCardOverride(true).vaultCard(false))
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
         args.putString("EXTRA_CARD_NUMBER", VISA)
         val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
@@ -277,8 +290,10 @@ class CardDetailsFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_onCardFormSubmit_whenOptionalCardholderNameFieldIsEmpty_sendsCardDetailsEventWithoutCardholderName() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.cardholderNameStatus = FIELD_OPTIONAL
         val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().cardholderNameStatus(CardForm.FIELD_OPTIONAL))
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
         args.putString("EXTRA_CARD_NUMBER", VISA)
 
@@ -307,8 +322,10 @@ class CardDetailsFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_onCardFormSubmit_whenOptionalCardholderNameFieldIsFilled_sendsCardDetailsEventWithCardholderName() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.cardholderNameStatus = FIELD_OPTIONAL
         val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().cardholderNameStatus(CardForm.FIELD_OPTIONAL))
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
         args.putString("EXTRA_CARD_NUMBER", VISA)
 
@@ -338,8 +355,10 @@ class CardDetailsFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_onCardFormSubmit_whenCardholderNameRequired_sendsCardDetailsEventWithCardholderName() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.cardholderNameStatus = FIELD_REQUIRED
         val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest().cardholderNameStatus(FIELD_REQUIRED))
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
         args.putString("EXTRA_CARD_NUMBER", VISA)
 
