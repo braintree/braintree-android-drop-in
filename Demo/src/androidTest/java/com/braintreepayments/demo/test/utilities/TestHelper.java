@@ -42,7 +42,9 @@ public class TestHelper {
                 .clear()
                 .putBoolean("paypal_use_hardcoded_configuration", true)
                 .commit();
+    }
 
+    public void launchApp() {
         onDevice().onHomeScreen().launchApp("com.braintreepayments.demo");
         ensureEnvironmentIs("Sandbox");
     }
@@ -57,8 +59,8 @@ public class TestHelper {
                 .putString("customer", customerId)
                 .commit();
 
-        SystemClock.sleep(2000);
-        onDevice(withText("Reset")).perform(click());
+//        SystemClock.sleep(2000);
+//        onDevice(withText("Reset")).perform(click());
     }
 
     /**
@@ -75,8 +77,8 @@ public class TestHelper {
                 .putString("merchant_account", merchantAccountId)
                 .commit();
 
-        SystemClock.sleep(2000);
-        onDevice(withText("Reset")).perform(click());
+//        SystemClock.sleep(2000);
+//        onDevice(withText("Reset")).perform(click());
     }
 
     public void useTokenizationKey() {
@@ -84,11 +86,11 @@ public class TestHelper {
                 .edit()
                 .putBoolean("tokenization_key", true)
                 .commit();
-
-        // additional sleep here makes tests more consistent for some reason
-        SystemClock.sleep(2000);
-        onDevice(withText("Reset")).perform(click());
-        SystemClock.sleep(2000);
+//
+//        // additional sleep here makes tests more consistent for some reason
+//        SystemClock.sleep(2000);
+//        onDevice(withText("Reset")).perform(click());
+//        SystemClock.sleep(2000);
     }
 
     public void enableThreeDSecure() {
@@ -126,8 +128,8 @@ public class TestHelper {
                 .putString("cardholder_name_status", status)
                 .commit();
 
-        SystemClock.sleep(2000);
-        onDevice(withText("Reset")).perform(click());
+//        SystemClock.sleep(2000);
+//        onDevice(withText("Reset")).perform(click());
     }
 
     public void setSaveCardCheckBox(boolean visible, boolean defaultValue) {
@@ -137,8 +139,8 @@ public class TestHelper {
                 .putBoolean("save_card_checkbox_default_value", defaultValue)
                 .commit();
 
-        SystemClock.sleep(2000);
-        onDevice(withText("Reset")).perform(click());
+//        SystemClock.sleep(2000);
+//        onDevice(withText("Reset")).perform(click());
     }
 
     private void clearPreference(String preference) {

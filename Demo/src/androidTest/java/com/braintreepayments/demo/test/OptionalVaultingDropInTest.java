@@ -28,7 +28,6 @@ public class OptionalVaultingDropInTest extends TestHelper {
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         tokenizeCard(VISA);
-        onDevice(withText("Next")).perform(click());
 
         onDevice(withText("Visa")).waitForExists().perform(click());
         boolean hasSavedPaymentMethods = onDevice(withText("Recent")).waitForExists().exists();
@@ -81,7 +80,6 @@ public class OptionalVaultingDropInTest extends TestHelper {
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         tokenizeCard(VISA);
-        onDevice(withText("Next")).perform(click());
 
         onDevice(withText("Visa")).waitForExists().perform(click());
         boolean hasSavedPaymentMethods = onDevice(withText("Recent")).waitForExists().exists();
@@ -96,7 +94,6 @@ public class OptionalVaultingDropInTest extends TestHelper {
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         tokenizeCard(VISA);
-        onDevice(withText("Next")).perform(click());
 
         onDevice(withText("Visa")).waitForExists().perform(click());
         boolean hasSavedPaymentMethods = onDevice(withText("Recent")).waitForExists().exists();
