@@ -40,30 +40,6 @@ public class DropInRequest implements Parcelable {
     public DropInRequest() {}
 
     /**
-     * Provide authorization allowing this client to communicate with Braintree. Either
-     * {@link #clientToken(String)} or {@link #tokenizationKey(String)} must be set or an
-     * {@link com.braintreepayments.api.AuthenticationException} will occur.
-     *
-     * @param clientToken The client token to use for the request.
-     */
-    public DropInRequest clientToken(String clientToken) {
-        mAuthorization = clientToken;
-        return this;
-    }
-
-    /**
-     * Provide authorization allowing this client to communicate with Braintree. Either
-     * {@link #clientToken(String)} or {@link #tokenizationKey(String)} must be set or an
-     * {@link com.braintreepayments.api.AuthenticationException} will occur.
-     *
-     * @param tokenizationKey The tokenization key to use for the request.
-     */
-    public DropInRequest tokenizationKey(String tokenizationKey) {
-        mAuthorization = tokenizationKey;
-        return this;
-    }
-
-    /**
      * Deprecated. Use {@link ThreeDSecureRequest#setAmount(String)}
      *
      * This method is optional. Amount is only used for 3D Secure verifications.

@@ -29,6 +29,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
     private DropInRequest dropInRequest;
     private CardFormConfiguration configuration;
     private String cardNumber;
+    private Boolean isTokenizationKeyAuth;
 
     @VisibleForTesting
     DropInViewModel dropInViewModel;
@@ -45,6 +46,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
             configuration = args.getParcelable("EXTRA_CARD_FORM_CONFIGURATION");
             cardNumber = args.getString("EXTRA_CARD_NUMBER");
+            isTokenizationKeyAuth = args.getBoolean("EXTRA_AUTH_IS_TOKENIZATION_KEY");
         }
     }
 
@@ -98,8 +100,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             }
         });
 
-        boolean showCardCheckbox = !Authorization.isTokenizationKey(dropInRequest.getAuthorization())
-                && dropInRequest.isSaveCardCheckBoxShown();
+        boolean showCardCheckbox = !isTokenizationKeyAuth && dropInRequest.isSaveCardCheckBoxShown();
 
         cardForm.cardRequired(true)
                 .expirationRequired(true)

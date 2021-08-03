@@ -31,7 +31,6 @@ public class BaseActivityUnitTest {
     @Test
     public void onCreate_setsDropInRequest() {
         Intent intent = new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application);
         mActivityController = Robolectric.buildActivity(BaseActivity.class, intent);
         mActivity = (BaseActivity) mActivityController.get();
@@ -41,13 +40,11 @@ public class BaseActivityUnitTest {
         mActivityController.create();
 
         assertNotNull(mActivity.mDropInRequest);
-        assertEquals(TOKENIZATION_KEY, mActivity.mDropInRequest.getAuthorization());
     }
 
     @Test
     public void getDropInClient_returnsADropInClient() {
         setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application));
 
         assertNotNull(mActivity.getDropInClient());
@@ -56,7 +53,6 @@ public class BaseActivityUnitTest {
     @Test
     public void getDropInClient_setsClientTokenPresentWhenAClientTokenIsNotPresent() {
         setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application));
 
         mActivity.getDropInClient();
@@ -69,7 +65,6 @@ public class BaseActivityUnitTest {
             throws JSONException {
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application));
 
         mActivity.finish(cardNonce, "device_data");
@@ -88,7 +83,6 @@ public class BaseActivityUnitTest {
     public void finish_finishesWithException() {
         Exception exception = new Exception("Error message");
         setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
                 .getIntent(RuntimeEnvironment.application));
 
         mActivity.finish(exception);

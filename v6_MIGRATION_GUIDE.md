@@ -10,6 +10,7 @@ _Documentation for v6 will be published to https://developer.paypal.com/braintre
 
 1. [Gradle](#gradle)
 1. [Builder Pattern](#builder-pattern)
+1. [Authorization](#authorization)
 1. [Launch Drop-In](#launch-drop-in)
 1. [Handle Drop-In Result](#handle-drop-in-result)
 1. [Fetch Last Used Payment Method](#fetch-last-used-payment-method)
@@ -62,6 +63,11 @@ request.maskCardNumber = true
 ```
 
 See the [Braintree Android v4 Migration Guide](https://github.com/braintree/braintree_android/blob/master/v4_MIGRATION_GUIDE.md) for changes to request objects for Google Pay, Venmo, PayPal, and 3DS. 
+
+## Authorization
+
+The `clientToken` and `tokenizationKey` parameters have been removed from `DropInRequest`. 
+In v6, authorization should be included when instantiating a `DropInClient` instead.
 
 ## Launch Drop-In 
 

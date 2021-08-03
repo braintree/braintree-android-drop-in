@@ -21,7 +21,6 @@ class DropInActivityUITest {
         // TODO: Investigate mockito failures in androidTest and figure out a DropInClient dependency injection strategy for unit tests
         val authorization = Authorization.fromString(Fixtures.TOKENIZATION_KEY)
         val dropInRequest = DropInRequest()
-                .clientToken(authorization.toString())
                 .threeDSecureRequest(ThreeDSecureRequest())
 
         val context = InstrumentationRegistry.getInstrumentation().targetContext
@@ -52,7 +51,6 @@ class DropInActivityUITest {
     fun whenStateIsRESUMED_onCancelDropInEvent_finishesWithResult() {
         val authorization = Authorization.fromString(Fixtures.TOKENIZATION_KEY)
         val dropInRequest = DropInRequest()
-                .clientToken(authorization.toString())
                 .threeDSecureRequest(ThreeDSecureRequest())
 
         val context = InstrumentationRegistry.getInstrumentation().targetContext

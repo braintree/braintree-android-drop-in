@@ -58,7 +58,6 @@ public class DropInRequestUnitTest {
         threeDSecureRequest.setAdditionalInformation(additionalInformation);
 
         Intent intent = new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
                 .amount("1.00")
                 .googlePaymentRequest(googlePayRequest)
@@ -81,7 +80,6 @@ public class DropInRequestUnitTest {
         DropInRequest dropInRequest = intent.getParcelableExtra(DropInRequest.EXTRA_CHECKOUT_REQUEST);
 
         assertEquals(DropInActivity.class.getName(), intent.getComponent().getClassName());
-        assertEquals(TOKENIZATION_KEY, dropInRequest.getAuthorization());
         assertTrue(dropInRequest.shouldCollectDeviceData());
         assertEquals("1.00", dropInRequest.getAmount());
         assertEquals("10", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPrice());
@@ -186,7 +184,6 @@ public class DropInRequestUnitTest {
         threeDSecureRequest.setAdditionalInformation(additionalInformation);
 
         DropInRequest dropInRequest = new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
                 .collectDeviceData(true)
                 .amount("1.00")
                 .googlePaymentRequest(googlePayRequest)
@@ -210,7 +207,6 @@ public class DropInRequestUnitTest {
         parcel.setDataPosition(0);
         DropInRequest parceledDropInRequest = DropInRequest.CREATOR.createFromParcel(parcel);
 
-        assertEquals(TOKENIZATION_KEY, parceledDropInRequest.getAuthorization());
         assertTrue(parceledDropInRequest.shouldCollectDeviceData());
         assertEquals("1.00", parceledDropInRequest.getAmount());
         assertEquals("10", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPrice());
@@ -249,22 +245,6 @@ public class DropInRequestUnitTest {
         assertTrue(parceledDropInRequest.isSaveCardCheckBoxShown());
         assertEquals(CardForm.FIELD_OPTIONAL, parceledDropInRequest.getCardholderNameStatus());
         assertTrue(parceledDropInRequest.shouldVaultVenmo());
-    }
-
-    @Test
-    public void getIntent_includesClientToken() {
-        DropInRequest dropInRequest = new DropInRequest()
-                .clientToken(Fixtures.CLIENT_TOKEN);
-
-        assertEquals(Fixtures.CLIENT_TOKEN, dropInRequest.getAuthorization());
-    }
-
-    @Test
-    public void getIntent_includesTokenizationKey() {
-        DropInRequest dropInRequest = new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY);
-
-        assertEquals(TOKENIZATION_KEY, dropInRequest.getAuthorization());
     }
 
     @Test

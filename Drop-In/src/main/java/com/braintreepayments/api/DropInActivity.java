@@ -312,6 +312,7 @@ public class DropInActivity extends BaseActivity {
                         args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
                         args.putString("EXTRA_CARD_NUMBER", cardNumber);
                         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", cardFormConfiguration);
+                        args.putBoolean("EXTRA_AUTH_IS_TOKENIZATION_KEY", Authorization.isTokenizationKey(getDropInClient().getAuthorization().toString()));
 
                         replaceExistingFragment(CardDetailsFragment.class, CARD_DETAILS_TAG, args);
                     }

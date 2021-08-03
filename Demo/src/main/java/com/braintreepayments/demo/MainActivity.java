@@ -191,7 +191,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onAuthorizationFetched() {
         DropInRequest dropInRequest = new DropInRequest()
-                .clientToken(mAuthorization)
                 .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))
                 .collectDeviceData(Settings.shouldCollectDeviceData(this))
                 .googlePaymentRequest(getGooglePaymentRequest())
