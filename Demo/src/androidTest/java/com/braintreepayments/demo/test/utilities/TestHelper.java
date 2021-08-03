@@ -1,11 +1,7 @@
 package com.braintreepayments.demo.test.utilities;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.SystemClock;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.widget.Spinner;
 
 import androidx.annotation.CallSuper;
@@ -13,9 +9,6 @@ import androidx.test.core.app.ApplicationProvider;
 
 import com.braintreepayments.DeviceAutomator;
 import com.braintreepayments.cardform.view.CardForm;
-
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static com.braintreepayments.AutomatorAction.click;
 import static com.braintreepayments.AutomatorAction.setText;
@@ -26,11 +19,8 @@ import static com.braintreepayments.UiObjectMatcher.withResourceId;
 import static com.braintreepayments.UiObjectMatcher.withText;
 import static com.braintreepayments.UiObjectMatcher.withTextContaining;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assume.assumeFalse;
 
 public class TestHelper {
-
-    public static final String PAYPAL_WALLET_PACKAGE_NAME = "com.paypal.android.p2pmobile";
 
     @CallSuper
     public void setup() {
@@ -58,9 +48,6 @@ public class TestHelper {
                 .edit()
                 .putString("customer", customerId)
                 .commit();
-
-//        SystemClock.sleep(2000);
-//        onDevice(withText("Reset")).perform(click());
     }
 
     /**
@@ -76,9 +63,6 @@ public class TestHelper {
                 .edit()
                 .putString("merchant_account", merchantAccountId)
                 .commit();
-
-//        SystemClock.sleep(2000);
-//        onDevice(withText("Reset")).perform(click());
     }
 
     public void useTokenizationKey() {
@@ -86,11 +70,6 @@ public class TestHelper {
                 .edit()
                 .putBoolean("tokenization_key", true)
                 .commit();
-//
-//        // additional sleep here makes tests more consistent for some reason
-//        SystemClock.sleep(2000);
-//        onDevice(withText("Reset")).perform(click());
-//        SystemClock.sleep(2000);
     }
 
     public void enableThreeDSecure() {
@@ -127,9 +106,6 @@ public class TestHelper {
                 .edit()
                 .putString("cardholder_name_status", status)
                 .commit();
-
-//        SystemClock.sleep(2000);
-//        onDevice(withText("Reset")).perform(click());
     }
 
     public void setSaveCardCheckBox(boolean visible, boolean defaultValue) {
@@ -138,9 +114,6 @@ public class TestHelper {
                 .putBoolean("save_card_checkbox_visible", visible)
                 .putBoolean("save_card_checkbox_default_value", defaultValue)
                 .commit();
-
-//        SystemClock.sleep(2000);
-//        onDevice(withText("Reset")).perform(click());
     }
 
     private void clearPreference(String preference) {
@@ -157,16 +130,6 @@ public class TestHelper {
             onDevice(withClass(Spinner.class)).perform(click());
             onDevice(withText(environment)).perform(click());
             onDevice(withText(environment)).check(text(equalTo(environment)));
-        }
-    }
-
-    private static boolean isAppInstalled(String packageName) {
-        PackageManager pm = ApplicationProvider.getApplicationContext().getPackageManager();
-        try {
-            pm.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
         }
     }
 
