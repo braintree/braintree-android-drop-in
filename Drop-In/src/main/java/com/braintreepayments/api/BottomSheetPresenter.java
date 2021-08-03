@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.widget.ViewPager2;
 
+import static com.braintreepayments.api.SelectPaymentMethodChildFragment.PROGRESS;
 import static com.braintreepayments.api.SelectPaymentMethodChildFragment.VAULT_MANAGER;
 
 class BottomSheetPresenter {
@@ -177,7 +178,6 @@ class BottomSheetPresenter {
         }
 
         final ViewPager2 viewPager = viewHolder.getViewPager();
-
         viewPagerAnimator.animateToPosition(viewPager, 0, new AnimationCompleteCallback() {
 
             @Override
@@ -191,6 +191,25 @@ class BottomSheetPresenter {
                 viewPagerAdapter.notifyDataSetChanged();
             }
         });
+    }
+
+    void showProgress() {
+        if (isUnbound()) {
+            return;
+        }
+
+        final ViewPager2 viewPager = viewHolder.getViewPager();
+
+        // keep the same height when transitioning to vault manager
+        int currentHeight = getViewGroupMeasuredHeight(viewPager);
+        setViewGroupHeight(viewPager, currentHeight);
+        viewHolder.requestLayout();
+
+        childFragmentList.add(PROGRESS);
+        viewPagerAdapter.notifyDataSetChanged();
+
+        int currentPosition = viewPager.getCurrentItem();
+        viewPagerAnimator.animateToPosition(viewPager, currentPosition + 1);
     }
 
     boolean isAnimatingBottomSheet() {

@@ -8,7 +8,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
@@ -31,6 +30,7 @@ public class DropInActivity extends BaseActivity {
 
     @VisibleForTesting
     DropInViewModel dropInViewModel;
+
     private FragmentContainerView fragmentContainerView;
 
     @Override
@@ -428,6 +428,7 @@ public class DropInActivity extends BaseActivity {
             getDropInClient().sendAnalyticsEvent("vaulted-card.select");
         }
 
+        dropInViewModel.setDropInState(DropInState.FINISHING);
         getDropInClient().shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
@@ -488,6 +489,7 @@ public class DropInActivity extends BaseActivity {
     }
 
     void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
+        dropInViewModel.setDropInState(DropInState.FINISHING);
         getDropInClient().shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {

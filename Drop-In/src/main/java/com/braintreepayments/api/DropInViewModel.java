@@ -12,6 +12,8 @@ import java.util.List;
 
 public class DropInViewModel extends ViewModel {
 
+    private final MutableLiveData<DropInState> dropInState = new MutableLiveData<>(DropInState.IDLE);
+
     private final MutableLiveData<List<DropInPaymentMethodType>> supportedPaymentMethods = new MutableLiveData<>();
     private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethods = new MutableLiveData<>();
     private final MutableLiveData<List<CardType>> supportedCardTypes = new MutableLiveData<>();
@@ -35,7 +37,7 @@ public class DropInViewModel extends ViewModel {
     }
 
     void setSupportedCardTypes(List<CardType> value) {
-        supportedCardTypes.postValue(value);
+        supportedCardTypes.setValue(value);
     }
 
     LiveData<List<CardType>> getSupportedCardTypes() {
@@ -74,5 +76,13 @@ public class DropInViewModel extends ViewModel {
             }
             vaultedPaymentMethods.setValue(updatedPaymentMethods);
         }
+    }
+
+    LiveData<DropInState> getDropInState() {
+        return dropInState;
+    }
+
+    void setDropInState(DropInState state) {
+        dropInState.setValue(state);
     }
 }

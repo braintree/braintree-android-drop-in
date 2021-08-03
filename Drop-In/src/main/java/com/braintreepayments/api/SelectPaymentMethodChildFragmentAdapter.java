@@ -27,6 +27,8 @@ class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapter {
         args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);
 
         switch (childFragment) {
+            case PROGRESS:
+                return new ProgressFragment();
             case VAULT_MANAGER:
                 VaultManagerFragment vaultManagerFragment = new VaultManagerFragment();
                 vaultManagerFragment.setArguments(args);

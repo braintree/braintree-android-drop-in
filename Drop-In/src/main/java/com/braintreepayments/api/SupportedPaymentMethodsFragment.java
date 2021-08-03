@@ -62,7 +62,6 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
         mSupportedPaymentMethodsView = view.findViewById(R.id.bt_supported_payment_methods);
         mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
-
         mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
 
         LinearLayoutManager supportedPaymentMethodsLayoutManager =
