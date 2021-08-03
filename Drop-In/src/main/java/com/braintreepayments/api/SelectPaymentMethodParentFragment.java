@@ -26,9 +26,6 @@ public class SelectPaymentMethodParentFragment extends Fragment implements Botto
     @VisibleForTesting
     ViewPager2 viewPager;
 
-    @VisibleForTesting
-    DropInViewModel dropInViewModel;
-
     private View backgroundView;
 
     private DropInRequest dropInRequest;
@@ -50,16 +47,6 @@ public class SelectPaymentMethodParentFragment extends Fragment implements Botto
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
                 onDropInEvent(DropInEvent.fromBundle(result));
-            }
-        });
-
-        dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
-        dropInViewModel.getDropInState().observe(getViewLifecycleOwner(), new Observer<DropInState>() {
-            @Override
-            public void onChanged(DropInState dropInState) {
-                if (dropInState == DropInState.FINISHING) {
-                    bottomSheetPresenter.showProgress();
-                }
             }
         });
 

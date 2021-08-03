@@ -92,6 +92,18 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
             }
         });
 
+        dropInViewModel.getDropInState().observe(getViewLifecycleOwner(), new Observer<DropInState>() {
+            @Override
+            public void onChanged(DropInState dropInState) {
+                if (dropInState == DropInState.FINISHING) {
+                    // hide vault manager (if necessary) and show loader
+                    mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
+                    showLoader();
+                }
+            }
+        });
+
+
         mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

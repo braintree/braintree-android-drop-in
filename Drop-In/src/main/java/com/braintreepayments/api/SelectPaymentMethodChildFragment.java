@@ -2,8 +2,7 @@ package com.braintreepayments.api;
 
 enum SelectPaymentMethodChildFragment {
     SUPPORTED_PAYMENT_METHODS(0),
-    VAULT_MANAGER(1),
-    PROGRESS(2);
+    VAULT_MANAGER(1);
 
     private final long id;
 
