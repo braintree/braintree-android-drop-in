@@ -8,11 +8,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
-import com.braintreepayments.api.DropInResultCallback;
 import com.braintreepayments.api.DropInActivity;
 import com.braintreepayments.api.DropInClient;
 import com.braintreepayments.api.DropInRequest;
@@ -216,17 +214,6 @@ public class MainActivity extends BaseActivity {
                     handleDropInResult(dropInResult);
                 } else {
                     mAddPaymentMethodButton.setVisibility(VISIBLE);
-                }
-            }
-        });
-
-        dropInClient.deliverBrowserSwitchResult(this, new DropInResultCallback() {
-            @Override
-            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                if (dropInResult != null) {
-                    handleDropInResult(dropInResult);
-                } else {
-                    onError(error);
                 }
             }
         });
