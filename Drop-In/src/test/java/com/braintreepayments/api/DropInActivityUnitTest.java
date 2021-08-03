@@ -72,7 +72,7 @@ public class DropInActivityUnitTest {
 
         assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception exception = (Exception) mShadowActivity.getResultIntent()
-                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertTrue(exception instanceof InvalidArgumentException);
         assertEquals("Tokenization Key or Client Token was invalid.", exception.getMessage());
     }
@@ -625,7 +625,7 @@ public class DropInActivityUnitTest {
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception actualException = (Exception) mShadowActivity.getResultIntent()
-                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertEquals(exception.getClass(), actualException.getClass());
         assertEquals(exception.getMessage(), actualException.getMessage());
     }

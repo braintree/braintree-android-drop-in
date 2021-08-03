@@ -91,7 +91,7 @@ public class BaseActivityUnitTest {
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
         Exception error = (Exception) shadowActivity.getResultIntent()
-                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertNotNull(error);
         assertEquals("Error message", error.getMessage());
     }

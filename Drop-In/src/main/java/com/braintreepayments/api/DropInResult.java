@@ -20,6 +20,13 @@ public class DropInResult implements Parcelable {
     public static final String EXTRA_DROP_IN_RESULT =
             "com.braintreepayments.api.dropin.EXTRA_DROP_IN_RESULT";
 
+    /**
+     * Errors are returned as the serializable value of this key in the data intent in
+     * {#onActivityResult(int, int, android.content.Intent)} if responseCode is not {RESULT_OK} or
+     * {RESULT_CANCELED}.
+     */
+    public static final String EXTRA_ERROR = "com.braintreepayments.api.dropin.EXTRA_ERROR";
+
     static final String LAST_USED_PAYMENT_METHOD_TYPE =
             "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
 

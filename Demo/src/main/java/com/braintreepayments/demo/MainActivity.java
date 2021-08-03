@@ -174,7 +174,7 @@ public class MainActivity extends BaseActivity {
             mPurchaseButton.setEnabled(true);
         } else if (resultCode != RESULT_CANCELED) {
             safelyCloseLoadingView();
-            showDialog(((Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR))
+            showDialog(((Exception) data.getSerializableExtra(DropInResult.EXTRA_ERROR))
                     .getMessage());
         }
     }

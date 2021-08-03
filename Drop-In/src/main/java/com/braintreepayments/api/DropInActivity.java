@@ -31,14 +31,6 @@ public class DropInActivity extends BaseActivity {
     private static final String CARD_DETAILS_TAG = "CARD_DETAILS";
     private static final String SELECT_PAYMENT_METHOD_TAG = "SELECT_PAYMENT_METHOD_PARENT_FRAGMENT";
 
-    /**
-     * Errors are returned as the serializable value of this key in the data intent in
-     * {@link #onActivityResult(int, int, android.content.Intent)} if
-     * responseCode is not {@link #RESULT_OK} or
-     * {@link #RESULT_CANCELED}.
-     */
-    public static final String EXTRA_ERROR = "com.braintreepayments.api.dropin.EXTRA_ERROR";
-
     @VisibleForTesting
     DropInViewModel dropInViewModel;
     ActionBar actionBar;
