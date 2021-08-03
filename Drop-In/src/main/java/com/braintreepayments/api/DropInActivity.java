@@ -285,7 +285,7 @@ public class DropInActivity extends BaseActivity {
         if (shouldAddFragment(SELECT_PAYMENT_METHOD_TAG)) {
             Bundle args = new Bundle();
             args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-            replaceExistingFragment(SelectPaymentMethodParentFragment.class, SELECT_PAYMENT_METHOD_TAG, args);
+            replaceExistingFragment(BottomSheetFragment.class, SELECT_PAYMENT_METHOD_TAG, args);
         }
     }
 

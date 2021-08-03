@@ -8,12 +8,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapter {
+class BottomSheetViewAdapter extends FragmentStateAdapter {
 
     private final DropInRequest dropInRequest;
-    private final SelectPaymentMethodChildFragmentList childFragmentList;
+    private final BottomSheetViewModel childFragmentList;
 
-    SelectPaymentMethodChildFragmentAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, SelectPaymentMethodChildFragmentList childFragmentList, DropInRequest dropInRequest) {
+    BottomSheetViewAdapter(@NonNull FragmentManager fragmentManager, @NonNull Lifecycle lifecycle, BottomSheetViewModel childFragmentList, DropInRequest dropInRequest) {
         super(fragmentManager, lifecycle);
         this.dropInRequest = dropInRequest;
         this.childFragmentList = childFragmentList;
@@ -21,7 +21,7 @@ class SelectPaymentMethodChildFragmentAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        SelectPaymentMethodChildFragment childFragment = childFragmentList.getItem(position);
+        BottomSheetViewType childFragment = childFragmentList.getItem(position);
 
         Bundle args = new Bundle();
         args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);

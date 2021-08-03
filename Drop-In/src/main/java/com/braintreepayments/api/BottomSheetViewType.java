@@ -1,12 +1,12 @@
 package com.braintreepayments.api;
 
-enum SelectPaymentMethodChildFragment {
+enum BottomSheetViewType {
     SUPPORTED_PAYMENT_METHODS(0),
     VAULT_MANAGER(1);
 
     private final long id;
 
-    SelectPaymentMethodChildFragment(long id) {
+    BottomSheetViewType(long id) {
         this.id = id;
     }
 

@@ -4,20 +4,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-class SelectPaymentMethodChildFragmentList {
+class BottomSheetViewModel {
 
-    private final List<SelectPaymentMethodChildFragment> fragments;
+    private final List<BottomSheetViewType> fragments;
 
-    SelectPaymentMethodChildFragmentList(SelectPaymentMethodChildFragment ...args) {
+    BottomSheetViewModel(BottomSheetViewType...args) {
         fragments = new ArrayList<>();
         fragments.addAll(Arrays.asList(args));
     }
 
-    SelectPaymentMethodChildFragment getItem(int position) {
+    BottomSheetViewType getItem(int position) {
         return fragments.get(position);
     }
 
-    void add(SelectPaymentMethodChildFragment childFragment) {
+    void add(BottomSheetViewType childFragment) {
         fragments.add(childFragment);
     }
 
@@ -30,7 +30,7 @@ class SelectPaymentMethodChildFragmentList {
     }
 
     boolean containsItem(long itemId) {
-        for (SelectPaymentMethodChildFragment fragment : fragments) {
+        for (BottomSheetViewType fragment : fragments) {
             if (fragment.hasId(itemId)) {
                 return true;
             }

@@ -220,26 +220,6 @@ class SupportedPaymentMethodsFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_whenPaymentMethodSelected_showsLoadingView() {
-        val dropInRequest = DropInRequest()
-        dropInRequest.isVaultManagerEnabled = false
-        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
-
-        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
-        scenario.moveToState(Lifecycle.State.RESUMED)
-
-        scenario.onFragment { fragment ->
-            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
-        }
-
-        onView(isRoot()).perform(waitFor(500))
-        onView(withText("Credit or Debit Card")).perform(click())
-        scenario.onFragment { fragment ->
-            assertTrue(fragment.dropInViewModel.isLoading.value!!)
-        }
-    }
-
-    @Test
     fun whenStateIsRESUMED_whenUserCanceledErrorPresentInViewModel_hidesLoader() {
         val dropInRequest = DropInRequest()
         dropInRequest.isVaultManagerEnabled = false

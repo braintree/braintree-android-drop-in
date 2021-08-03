@@ -13,7 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 import androidx.viewpager2.widget.ViewPager2;
 
-import static com.braintreepayments.api.SelectPaymentMethodChildFragment.VAULT_MANAGER;
+import static com.braintreepayments.api.BottomSheetViewType.VAULT_MANAGER;
 
 class BottomSheetPresenter {
 
@@ -34,25 +34,25 @@ class BottomSheetPresenter {
 
     private ViewHolder viewHolder;
     private ViewPager2Animator viewPagerAnimator;
-    private SelectPaymentMethodChildFragmentList childFragmentList;
+    private BottomSheetViewModel childFragmentList;
 
     private Animator bottomSheetSlideInAnimator;
     private Animator bottomSheetSlideOutAnimator;
 
-    private SelectPaymentMethodChildFragmentAdapter viewPagerAdapter;
+    private BottomSheetViewAdapter viewPagerAdapter;
 
 
     void bind(ViewHolder viewHolder) {
         this.viewHolder = viewHolder;
-        this.childFragmentList = new SelectPaymentMethodChildFragmentList(
-                SelectPaymentMethodChildFragment.SUPPORTED_PAYMENT_METHODS);
+        this.childFragmentList = new BottomSheetViewModel(
+                BottomSheetViewType.SUPPORTED_PAYMENT_METHODS);
         this.viewPagerAnimator = new ViewPager2Animator(VIEW_PAGER_TRANSITION_ANIM_DURATION);
 
         FragmentManager childFragmentManager = viewHolder.getChildFragmentManager();
         Lifecycle lifecycle = viewHolder.getLifecycle();
         DropInRequest dropInRequest = viewHolder.getDropInRequest();
         this.viewPagerAdapter =
-            new SelectPaymentMethodChildFragmentAdapter(childFragmentManager, lifecycle, childFragmentList, dropInRequest);
+            new BottomSheetViewAdapter(childFragmentManager, lifecycle, childFragmentList, dropInRequest);
 
         ViewPager2 viewPager = viewHolder.getViewPager();
         viewPager.setUserInputEnabled(false);
@@ -74,7 +74,7 @@ class BottomSheetPresenter {
     }
 
     @Nullable
-    SelectPaymentMethodChildFragment getVisibleFragment() {
+    BottomSheetViewType getVisibleFragment() {
         if (isUnbound()) {
             return null;
         }

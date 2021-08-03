@@ -16,7 +16,7 @@ import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4ClassRunner::class)
-class SelectPaymentMethodParentFragmentUITest {
+class BottomSheetFragmentUITest {
 
     private lateinit var countDownLatch: CountDownLatch
 
@@ -28,20 +28,20 @@ class SelectPaymentMethodParentFragmentUITest {
     @Test
     fun whenStateIsRESUMED_displaysSupportedPaymentMethodsFragment() {
         val scenario =
-                FragmentScenario.launchInContainer(SelectPaymentMethodParentFragment::class.java)
+                FragmentScenario.launchInContainer(BottomSheetFragment::class.java)
 
         scenario.onFragment { fragment ->
             val viewPagerAdapter =
-                fragment.viewPager.adapter as SelectPaymentMethodChildFragmentAdapter
+                fragment.viewPager.adapter as BottomSheetViewAdapter
             assertEquals(1, viewPagerAdapter.itemCount)
-            assertEquals(SelectPaymentMethodChildFragment.SUPPORTED_PAYMENT_METHODS.id, viewPagerAdapter.getItemId(0))
+            assertEquals(BottomSheetViewType.SUPPORTED_PAYMENT_METHODS.id, viewPagerAdapter.getItemId(0))
         }
     }
 
     @Test
     fun whenStateIsRESUMED_onShowVaultManagerEvent_showsVaultManager() {
         val scenario =
-                FragmentScenario.launchInContainer(SelectPaymentMethodParentFragment::class.java)
+                FragmentScenario.launchInContainer(BottomSheetFragment::class.java)
 
         scenario.onFragment { fragment ->
             val childFragmentManager = fragment.childFragmentManager
@@ -56,18 +56,18 @@ class SelectPaymentMethodParentFragmentUITest {
             assertEquals(1, currentItemPos)
 
             val viewPagerAdapter =
-                    fragment.viewPager.adapter as SelectPaymentMethodChildFragmentAdapter
+                    fragment.viewPager.adapter as BottomSheetViewAdapter
             assertEquals(2, viewPagerAdapter.itemCount)
 
             val currentItemId = viewPagerAdapter.getItemId(currentItemPos)
-            assertEquals(SelectPaymentMethodChildFragment.VAULT_MANAGER.id, currentItemId)
+            assertEquals(BottomSheetViewType.VAULT_MANAGER.id, currentItemId)
         }
     }
 
     @Test
     fun whenStateIsRESUMED_andSupportedPaymentMethodsIsDisplayed_sendsCancelDropInEvent() {
         val scenario =
-                FragmentScenario.launchInContainer(SelectPaymentMethodParentFragment::class.java)
+                FragmentScenario.launchInContainer(BottomSheetFragment::class.java)
 
         val events = mutableListOf<DropInEvent>()
 
@@ -90,7 +90,7 @@ class SelectPaymentMethodParentFragmentUITest {
     @Test
     fun whenStateIsRESUMED_andVaultManagerIsDisplayed_returnsToSupportedPaymentMethodsFragmentAndRemovesVaultManager() {
         val scenario =
-                FragmentScenario.launchInContainer(SelectPaymentMethodParentFragment::class.java)
+                FragmentScenario.launchInContainer(BottomSheetFragment::class.java)
 
         scenario.onFragment { fragment ->
             val childFragmentManager = fragment.childFragmentManager
@@ -104,16 +104,16 @@ class SelectPaymentMethodParentFragmentUITest {
 
         scenario.onFragment { fragment ->
             val viewPagerAdapter =
-                    fragment.viewPager.adapter as SelectPaymentMethodChildFragmentAdapter
+                    fragment.viewPager.adapter as BottomSheetViewAdapter
             assertEquals(1, viewPagerAdapter.itemCount)
-            assertEquals(SelectPaymentMethodChildFragment.SUPPORTED_PAYMENT_METHODS.id, viewPagerAdapter.getItemId(0))
+            assertEquals(BottomSheetViewType.SUPPORTED_PAYMENT_METHODS.id, viewPagerAdapter.getItemId(0))
         }
     }
 
     @Test
     fun whenStateIsRESUMED_andVaultManagerIsDisplayed_doesNotSendCancelDropInEvent() {
         val scenario =
-                FragmentScenario.launchInContainer(SelectPaymentMethodParentFragment::class.java)
+                FragmentScenario.launchInContainer(BottomSheetFragment::class.java)
 
         val events = mutableListOf<DropInEvent>()
 
@@ -140,7 +140,7 @@ class SelectPaymentMethodParentFragmentUITest {
     @Test
     fun whenStateIsRESUMED_onBackButtonPress_sendsCancelDropInEvent() {
         val scenario =
-                FragmentScenario.launchInContainer(SelectPaymentMethodParentFragment::class.java)
+                FragmentScenario.launchInContainer(BottomSheetFragment::class.java)
 
         val events = mutableListOf<DropInEvent>()
 
@@ -163,7 +163,7 @@ class SelectPaymentMethodParentFragmentUITest {
     @Test
     fun whenStateIsRESUMED_onChildFragmentEvent_propagatesEventToParent() {
         val scenario =
-                FragmentScenario.launchInContainer(SelectPaymentMethodParentFragment::class.java)
+                FragmentScenario.launchInContainer(BottomSheetFragment::class.java)
 
         val events = mutableListOf<DropInEvent>()
 

@@ -13,15 +13,11 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.braintreepayments.api.dropin.R;
 
-import static com.braintreepayments.api.SelectPaymentMethodChildFragment.VAULT_MANAGER;
-
-public class SelectPaymentMethodParentFragment extends Fragment implements BottomSheetPresenter.ViewHolder {
+public class BottomSheetFragment extends Fragment implements BottomSheetPresenter.ViewHolder {
 
     @VisibleForTesting
     ViewPager2 viewPager;
@@ -38,7 +34,7 @@ public class SelectPaymentMethodParentFragment extends Fragment implements Botto
             dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
         }
 
-        View view = inflater.inflate(R.layout.bt_fragment_select_payment_method_parent, container, false);
+        View view = inflater.inflate(R.layout.fragment_bottom_sheet, container, false);
         backgroundView = view.findViewById(R.id.background);
         viewPager = view.findViewById(R.id.view_pager);
 
@@ -53,7 +49,7 @@ public class SelectPaymentMethodParentFragment extends Fragment implements Botto
         requireActivity().getOnBackPressedDispatcher().addCallback(requireActivity(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                SelectPaymentMethodChildFragment visibleFragment =
+                BottomSheetViewType visibleFragment =
                     bottomSheetPresenter.getVisibleFragment();
 
                 switch (visibleFragment) {
