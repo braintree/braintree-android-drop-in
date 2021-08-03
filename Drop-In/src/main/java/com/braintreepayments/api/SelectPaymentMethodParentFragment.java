@@ -1,14 +1,9 @@
 package com.braintreepayments.api;
 
-import android.animation.Animator;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.AccelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.Button;
 
 import androidx.activity.OnBackPressedCallback;
@@ -24,45 +19,26 @@ import com.braintreepayments.api.dropin.R;
 
 import static com.braintreepayments.api.SelectPaymentMethodChildFragment.VAULT_MANAGER;
 
-public class SelectPaymentMethodParentFragment extends Fragment {
-
-    private static final int BOTTOM_SHEET_SLIDE_UP_DELAY = 150;
-    private static final int BOTTOM_SHEET_SLIDE_ANIM_DURATION = 150;
-
-    private static final int BACKGROUND_FADE_ANIM_DURATION = 300;
-    private static final int VIEW_PAGER_TRANSITION_ANIM_DURATION = 300;
-
-    private View backgroundView;
+public class SelectPaymentMethodParentFragment extends Fragment implements BottomSheetPresenter.ViewHolder {
 
     @VisibleForTesting
     ViewPager2 viewPager;
 
-    private ViewPager2Animator viewPagerAnimator;
-
-    private SelectPaymentMethodChildFragmentAdapter viewPagerAdapter;
-    private SelectPaymentMethodChildFragmentList childFragmentList;
+    private View backgroundView;
 
     private DropInRequest dropInRequest;
-
-    private Animator bottomSheetSlideInAnimator;
-    private Animator bottomSheetSlideOutAnimator;
+    private BottomSheetPresenter bottomSheetPresenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.bt_fragment_select_payment_method_parent, container, false);
-
-        backgroundView = view.findViewById(R.id.background);
-        viewPager = view.findViewById(R.id.view_pager);
-        viewPager.setUserInputEnabled(false);
-
-        viewPagerAnimator = new ViewPager2Animator(VIEW_PAGER_TRANSITION_ANIM_DURATION);
-        childFragmentList = new SelectPaymentMethodChildFragmentList(
-                SelectPaymentMethodChildFragment.SUPPORTED_PAYMENT_METHODS);
-
         Bundle args = getArguments();
         if (args != null) {
             dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
         }
+
+        View view = inflater.inflate(R.layout.bt_fragment_select_payment_method_parent, container, false);
+        backgroundView = view.findViewById(R.id.background);
+        viewPager = view.findViewById(R.id.view_pager);
 
         FragmentManager childFragmentManager = getChildFragmentManager();
         childFragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, this, new FragmentResultListener() {
@@ -72,30 +48,26 @@ public class SelectPaymentMethodParentFragment extends Fragment {
             }
         });
 
-        viewPagerAdapter = new SelectPaymentMethodChildFragmentAdapter(childFragmentManager, getLifecycle(), childFragmentList, dropInRequest);
-        viewPager.setAdapter(viewPagerAdapter);
-
-        // disable animation when smooth scrolling between supported payment methods
-        // and vault manager fragments
-        viewPager.setPageTransformer(new NoAnimationPageTransformer());
-
         requireActivity().getOnBackPressedDispatcher().addCallback(requireActivity(), new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                int position = viewPager.getCurrentItem();
                 SelectPaymentMethodChildFragment visibleFragment =
-                    childFragmentList.getItem(position);
+                    bottomSheetPresenter.getVisibleFragment();
 
-                if (visibleFragment == VAULT_MANAGER) {
-                    dismissVaultManager();
-                } else {
-                    cancelDropIn(new AnimationCompleteCallback() {
-                        @Override
-                        public void onAnimationComplete() {
-                            setEnabled(false);
-                            remove();
-                        }
-                    });
+                switch (visibleFragment) {
+                    case VAULT_MANAGER:
+                        bottomSheetPresenter.dismissVaultManager();
+                        break;
+                    case SUPPORTED_PAYMENT_METHODS:
+                        cancelDropIn(new AnimationCompleteCallback() {
+                            @Override
+                            public void onAnimationComplete() {
+                                // prevent this fragment from handling additional back presses
+                                setEnabled(false);
+                                remove();
+                            }
+                        });
+                        break;
                 }
             }
         });
@@ -108,6 +80,9 @@ public class SelectPaymentMethodParentFragment extends Fragment {
             }
         });
 
+        bottomSheetPresenter = new BottomSheetPresenter();
+        bottomSheetPresenter.bind(this);
+
         return view;
     }
 
@@ -115,7 +90,7 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        slideUpBottomSheet(new AnimationCompleteCallback() {
+        bottomSheetPresenter.slideUpBottomSheet(new AnimationCompleteCallback() {
             @Override
             public void onAnimationComplete() {
                 sendDropInEvent(
@@ -129,11 +104,12 @@ public class SelectPaymentMethodParentFragment extends Fragment {
     }
 
     private void cancelDropIn(@Nullable final AnimationCompleteCallback callback) {
-        if (isAnimatingBottomSheet()) {
+        if (bottomSheetPresenter.isAnimatingBottomSheet()) {
+            // prevent drop in cancellation while bottom sheet is animating
             return;
         }
 
-        slideDownBottomSheet(new AnimationCompleteCallback() {
+        bottomSheetPresenter.slideDownBottomSheet(new AnimationCompleteCallback() {
             @Override
             public void onAnimationComplete() {
                 if (callback != null) {
@@ -144,78 +120,14 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         });
     }
 
-    private void slideUpBottomSheet(final AnimationCompleteCallback callback) {
-        ObjectAnimator backgroundFadeInAnimator =
-                ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 0.0f, 1.0f);
-        backgroundFadeInAnimator.setDuration(BACKGROUND_FADE_ANIM_DURATION);
-
-        int viewPagerHeight = getViewPagerMeasuredHeight();
-
-        viewPager.setTranslationY(viewPagerHeight);
-        ObjectAnimator slideUpAnimator =
-                ObjectAnimator.ofFloat(viewPager, View.TRANSLATION_Y, viewPagerHeight, 0);
-        slideUpAnimator.setInterpolator(new DecelerateInterpolator());
-        slideUpAnimator.setDuration(BOTTOM_SHEET_SLIDE_ANIM_DURATION);
-        slideUpAnimator.setStartDelay(BOTTOM_SHEET_SLIDE_UP_DELAY);
-
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.play(slideUpAnimator).with(backgroundFadeInAnimator);
-        animatorSet.start();
-
-        animatorSet.addListener(new SimpleAnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                callback.onAnimationComplete();
-            }
-        });
-
-        bottomSheetSlideInAnimator = animatorSet;
-    }
-
-    private void slideDownBottomSheet(final AnimationCompleteCallback callback) {
-        ObjectAnimator backgroundFadeInAnimator =
-                ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 1.0f, 0.0f);
-        backgroundFadeInAnimator.setDuration(BACKGROUND_FADE_ANIM_DURATION);
-
-        int viewPagerHeight = getViewPagerMeasuredHeight();
-
-        viewPager.setTranslationY(viewPagerHeight);
-        ObjectAnimator slideUpAnimator =
-                ObjectAnimator.ofFloat(viewPager, View.TRANSLATION_Y, 0, viewPagerHeight);
-        slideUpAnimator.setInterpolator(new AccelerateInterpolator());
-        slideUpAnimator.setDuration(BOTTOM_SHEET_SLIDE_ANIM_DURATION);
-
-        AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.play(slideUpAnimator).with(backgroundFadeInAnimator);
-
-        animatorSet.addListener(new SimpleAnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                callback.onAnimationComplete();
-            }
-        });
-
-        animatorSet.start();
-
-        bottomSheetSlideOutAnimator = animatorSet;
-    }
-
-    private boolean isAnimatingBottomSheet() {
-        boolean isSlidingInBottomSheet =
-                (bottomSheetSlideInAnimator != null && bottomSheetSlideInAnimator.isRunning());
-        boolean isSlidingOutBottomSheet =
-                (bottomSheetSlideOutAnimator != null && bottomSheetSlideOutAnimator.isRunning());
-        return (isSlidingInBottomSheet || isSlidingOutBottomSheet);
-    }
-
     @VisibleForTesting
     void onDropInEvent(DropInEvent event) {
         switch (event.getType()) {
             case SHOW_VAULT_MANAGER:
-                showVaultManager();
+                bottomSheetPresenter.showVaultManager();
                 break;
             case DISMISS_VAULT_MANAGER:
-                dismissVaultManager();
+                bottomSheetPresenter.dismissVaultManager();
                 break;
         }
 
@@ -223,55 +135,30 @@ public class SelectPaymentMethodParentFragment extends Fragment {
         sendDropInEvent(event);
     }
 
-    private void showVaultManager() {
-        // keep the same height when transitioning to vault manager
-        int currentHeight = getViewPagerMeasuredHeight();
-        setViewPagerHeight(currentHeight);
-        requestLayout();
-
-        childFragmentList.add(VAULT_MANAGER);
-        viewPagerAdapter.notifyDataSetChanged();
-        viewPagerAnimator.animateToPosition(viewPager, 1);
+    private void sendDropInEvent(DropInEvent event) {
+        if (isAdded()) {
+            getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
+        }
     }
 
-    private void dismissVaultManager() {
-        viewPagerAnimator.animateToPosition(viewPager, 0, new AnimationCompleteCallback() {
-
-            @Override
-            public void onAnimationComplete() {
-                // revert layout height to wrap content
-                setViewPagerHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-                requestLayout();
-
-                // remove vault manager fragment
-                childFragmentList.remove(1);
-                viewPagerAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    private int getViewPagerMeasuredHeight() {
-        ViewGroup.LayoutParams viewPagerLayoutParams = viewPager.getLayoutParams();
-        viewPager.measure(viewPagerLayoutParams.width, viewPagerLayoutParams.height);
-        return viewPager.getMeasuredHeight();
-    }
-
-    private void setViewPagerHeight(int newHeight) {
-        ViewGroup.LayoutParams layoutParams = viewPager.getLayoutParams();
-        layoutParams.height = newHeight;
-        viewPager.setLayoutParams(layoutParams);
-    }
-
-    private void requestLayout() {
+    public void requestLayout() {
         View rootView = getView();
         if (rootView != null) {
             rootView.requestLayout();
         }
     }
 
-    private void sendDropInEvent(DropInEvent event) {
-        if (isAdded()) {
-            getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
-        }
+    @Override
+    public DropInRequest getDropInRequest() {
+        return dropInRequest;
+    }
+    @Override
+    public ViewPager2 getViewPager() {
+        return viewPager;
+    }
+
+    @Override
+    public View getBackgroundView() {
+        return backgroundView;
     }
 }
