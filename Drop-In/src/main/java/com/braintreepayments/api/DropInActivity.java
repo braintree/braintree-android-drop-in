@@ -79,12 +79,10 @@ public class DropInActivity extends BaseActivity {
             }
         });
 
-        dropInViewModel.getDropInState().observe(this, new Observer<DropInState>() {
+        dropInViewModel.isBottomSheetPresented().observe(this, new Observer<Boolean>() {
             @Override
-            public void onChanged(DropInState dropInState) {
-                if (dropInState == DropInState.BOTTOM_SHEET_PRESENTED) {
-                    onDidPresentBottomSheet();
-                }
+            public void onChanged(Boolean aBoolean) {
+                onDidPresentBottomSheet();
             }
         });
 

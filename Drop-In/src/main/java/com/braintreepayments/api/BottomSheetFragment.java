@@ -94,16 +94,16 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
     public void onResume() {
         super.onResume();
 
-        boolean dropInIsIdle = (dropInViewModel.getDropInState().getValue() == DropInState.IDLE);
-        if (dropInIsIdle) {
+        boolean isBottomSheetPresented = dropInViewModel.isBottomSheetPresented().getValue();
+        if (isBottomSheetPresented) {
+            backgroundView.setAlpha(1.0f);
+        } else {
             bottomSheetPresenter.slideUpBottomSheet(new AnimationCompleteCallback() {
                 @Override
                 public void onAnimationComplete() {
-                    dropInViewModel.setDropInState(DropInState.BOTTOM_SHEET_PRESENTED);
+                    dropInViewModel.setBottomSheetPresented(true);
                 }
             });
-        } else {
-            backgroundView.setAlpha(1.0f);
         }
     }
 

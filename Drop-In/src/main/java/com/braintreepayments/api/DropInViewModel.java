@@ -12,6 +12,7 @@ import java.util.List;
 
 public class DropInViewModel extends ViewModel {
 
+    private final MutableLiveData<Boolean> isBottomSheetPresented = new MutableLiveData<>(false);
     private final MutableLiveData<DropInState> dropInState = new MutableLiveData<>(DropInState.IDLE);
 
     private final MutableLiveData<List<DropInPaymentMethodType>> supportedPaymentMethods = new MutableLiveData<>();
@@ -19,6 +20,14 @@ public class DropInViewModel extends ViewModel {
     private final MutableLiveData<List<CardType>> supportedCardTypes = new MutableLiveData<>();
     private final MutableLiveData<Exception> cardTokenizationError = new MutableLiveData<>();
     private final MutableLiveData<Exception> userCanceledError = new MutableLiveData<>();
+
+    LiveData<Boolean> isBottomSheetPresented() {
+        return isBottomSheetPresented;
+    }
+
+    void setBottomSheetPresented(boolean value) {
+        isBottomSheetPresented.setValue(value);
+    }
 
     void setVaultedPaymentMethods(List<PaymentMethodNonce> value) {
         vaultedPaymentMethods.setValue(value);
