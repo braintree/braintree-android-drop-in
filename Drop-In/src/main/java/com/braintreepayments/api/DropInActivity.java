@@ -433,7 +433,6 @@ public class DropInActivity extends BaseActivity {
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
                 if (shouldRequestThreeDSecureVerification) {
-                    dropInViewModel.setIsLoading(true);
 
                     getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new DropInResultCallback() {
                         @Override
@@ -442,7 +441,6 @@ public class DropInActivity extends BaseActivity {
                                 finishWithDropInResult(dropInResult);
                             } else {
                                 updateVaultedPaymentMethodNonces(true);
-                                dropInViewModel.setIsLoading(false);
                                 onError(error);
                             }
                         }
@@ -460,7 +458,6 @@ public class DropInActivity extends BaseActivity {
                                     finishWithDropInResult(dropInResult);
                                 } else {
                                     updateVaultedPaymentMethodNonces(true);
-                                    dropInViewModel.setIsLoading(false);
                                     onError(error);
                                 }
                             }
