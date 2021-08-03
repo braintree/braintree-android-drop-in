@@ -194,8 +194,8 @@ public class MainActivity extends BaseActivity {
         dropInRequest.setShouldRequestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this));
         dropInRequest.setShouldCollectDeviceData(Settings.shouldCollectDeviceData(this));
         dropInRequest.setGooglePayRequest(getGooglePaymentRequest());
-        dropInRequest.setMaskCardNumber(true);
-        dropInRequest.setMaskSecurityCode(true);
+        dropInRequest.setShouldMaskCardNumber(true);
+        dropInRequest.setShouldMaskSecurityCode(true);
         dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
         dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
         dropInRequest.setEnableVaultManager(Settings.isVaultManagerEnabled(this));

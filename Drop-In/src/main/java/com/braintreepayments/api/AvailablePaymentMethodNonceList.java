@@ -20,7 +20,7 @@ class AvailablePaymentMethodNonceList {
             } else if (paymentMethodNonce instanceof CardNonce) {
                 shouldAddPaymentMethod = dropInRequest.isCardEnabled() && !configuration.getSupportedCardTypes().isEmpty();
             } else if (paymentMethodNonce instanceof GooglePayCardNonce) {
-                shouldAddPaymentMethod = googlePayEnabled && dropInRequest.isGooglePaymentEnabled();
+                shouldAddPaymentMethod = googlePayEnabled && dropInRequest.isGooglePayEnabled();
             }
 
             if (shouldAddPaymentMethod) {

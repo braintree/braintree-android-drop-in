@@ -23,13 +23,13 @@ public class DropInRequest implements Parcelable {
     private GooglePayRequest mGooglePaymentRequest;
     private PayPalRequest mPayPalRequest;
 
-    private boolean mGooglePaymentEnabled = true;
+    private boolean mGooglePaymentDisabled = false;
     private boolean mMaskCardNumber = false;
     private boolean mMaskSecurityCode = false;
     private boolean mVaultManagerEnabled = false;
-    private boolean mPayPalEnabled = true;
-    private boolean mVenmoEnabled = true;
-    private boolean mCardEnabled = true;
+    private boolean mPayPalDisabled = false;
+    private boolean mVenmoDisabled = false;
+    private boolean mCardDisabled = false;
     private boolean mDefaultVaultValue = true;
     private boolean mShowCheckBoxToAllowVaultOverride = false;
     private boolean mVaultVenmo = false;
@@ -73,32 +73,32 @@ public class DropInRequest implements Parcelable {
      * Disables Google Pay in Drop-in.
      * @param disableGooglePay
      */
-    public void setDisableGooglePay(boolean disableGooglePay) {
-        mGooglePaymentEnabled = !disableGooglePay;
+    public void setGooglePayDisabled(boolean disableGooglePay) {
+        mGooglePaymentDisabled = disableGooglePay;
     }
 
     /**
      * Disables PayPal in Drop-in.
      * @param disablePayPal
      */
-    public void setDisablePayPal(boolean disablePayPal) {
-        mPayPalEnabled = !disablePayPal;
+    public void setPayPalDisabled(boolean disablePayPal) {
+        mPayPalDisabled = disablePayPal;
     }
 
     /**
      * Disables Venmo in Drop-in.
      * @param disableVenmo
      */
-    public void setDisableVenmo(boolean disableVenmo) {
-        mVenmoEnabled = !disableVenmo;
+    public void setVenmoDisabled(boolean disableVenmo) {
+        mVenmoDisabled = disableVenmo;
     }
 
     /**
      * Disables Card in Drop-in.
      * @param disableCard
      */
-    public void setDisableCard(boolean disableCard) {
-        mCardEnabled = !disableCard;
+    public void setCardDisabled(boolean disableCard) {
+        mCardDisabled = disableCard;
     }
 
     /**
@@ -129,14 +129,14 @@ public class DropInRequest implements Parcelable {
      * See {@link com.braintreepayments.cardform.view.CardEditText} for more details. Defaults to
      * {@code false}.
      */
-    public void setMaskCardNumber(boolean maskCardNumber) {
+    public void setShouldMaskCardNumber(boolean maskCardNumber) {
         mMaskCardNumber = maskCardNumber;
     }
 
     /**
      * @param maskSecurityCode {@code true} to mask the security code during input. Defaults to {@code false}.
      */
-    public void setMaskSecurityCode(boolean maskSecurityCode) {
+    public void setShouldMaskSecurityCode(boolean maskSecurityCode) {
         mMaskSecurityCode = maskSecurityCode;
     }
 
@@ -205,48 +205,47 @@ public class DropInRequest implements Parcelable {
         return mAuthorization;
     }
 
-    boolean shouldCollectDeviceData() {
+    boolean getShouldCollectDeviceData() {
         return mCollectDeviceData;
     }
 
-    public boolean isPayPalEnabled() {
-        return mPayPalEnabled;
+    public boolean getPayPalDisabled() {
+        return mPayPalDisabled;
     }
 
     public PayPalRequest getPayPalRequest() { return mPayPalRequest; }
 
-    public boolean isVenmoEnabled() {
-        return mVenmoEnabled;
+    public boolean getVenmoDisabled() {
+        return mVenmoDisabled;
     }
 
-    public boolean isCardEnabled() {
-        return mCardEnabled;
+    public boolean getCardDisabled() {
+        return mCardDisabled;
     }
 
-    // TODO: rename to get GooglePayRequest
-    public GooglePayRequest getGooglePaymentRequest() {
+    public GooglePayRequest getGooglePayRequest() {
         return mGooglePaymentRequest;
     }
 
-    public boolean isGooglePaymentEnabled() {
-        return mGooglePaymentEnabled;
+    public boolean getGooglePayDisabled() {
+        return mGooglePaymentDisabled;
     }
 
-    boolean shouldRequestThreeDSecureVerification() {
+    boolean getShouldRequestThreeDSecureVerification() {
         return mRequestThreeDSecureVerification;
     }
 
     public ThreeDSecureRequest getThreeDSecureRequest() { return mThreeDSecureRequest; }
 
-    boolean shouldMaskCardNumber() {
+    boolean getShouldMaskCardNumber() {
         return mMaskCardNumber;
     }
 
-    boolean shouldMaskSecurityCode() {
+    boolean getShouldMaskSecurityCode() {
         return mMaskSecurityCode;
     }
 
-    boolean shouldVaultVenmo() { return mVaultVenmo; }
+    boolean getVaultVenmoDefaultValue() { return mVaultVenmo; }
 
     boolean getEnableVaultManager() {
         return mVaultManagerEnabled;
@@ -264,6 +263,22 @@ public class DropInRequest implements Parcelable {
         return mShowCheckBoxToAllowVaultOverride;
     }
 
+    boolean isPayPalEnabled() {
+        return !mPayPalDisabled;
+    }
+
+    boolean isVenmoEnabled() {
+        return !mVenmoDisabled;
+    }
+
+    boolean isGooglePayEnabled() {
+        return !mGooglePaymentDisabled;
+    }
+
+    boolean isCardEnabled() {
+        return !mCardDisabled;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -274,11 +289,11 @@ public class DropInRequest implements Parcelable {
         dest.writeString(mAuthorization);
         dest.writeByte(mCollectDeviceData ? (byte) 1 : (byte) 0);
         dest.writeParcelable(mGooglePaymentRequest, 0);
-        dest.writeByte(mGooglePaymentEnabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(mGooglePaymentDisabled ? (byte) 1 : (byte) 0);
         dest.writeParcelable(mPayPalRequest, 0);
-        dest.writeByte(mPayPalEnabled ? (byte) 1 : (byte) 0);
-        dest.writeByte(mVenmoEnabled ? (byte) 1 : (byte) 0);
-        dest.writeByte(mCardEnabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(mPayPalDisabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(mVenmoDisabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(mCardDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(mRequestThreeDSecureVerification ? (byte) 1 : (byte) 0);
         dest.writeParcelable(mThreeDSecureRequest, 0);
         dest.writeByte(mMaskCardNumber ? (byte) 1 : (byte) 0);
@@ -294,11 +309,11 @@ public class DropInRequest implements Parcelable {
         mAuthorization = in.readString();
         mCollectDeviceData = in.readByte() != 0;
         mGooglePaymentRequest = in.readParcelable(GooglePayRequest.class.getClassLoader());
-        mGooglePaymentEnabled = in.readByte() != 0;
+        mGooglePaymentDisabled = in.readByte() != 0;
         mPayPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());
-        mPayPalEnabled = in.readByte() != 0;
-        mVenmoEnabled = in.readByte() != 0;
-        mCardEnabled = in.readByte() != 0;
+        mPayPalDisabled = in.readByte() != 0;
+        mVenmoDisabled = in.readByte() != 0;
+        mCardDisabled = in.readByte() != 0;
         mRequestThreeDSecureVerification = in.readByte() != 0;
         mThreeDSecureRequest = in.readParcelable(ThreeDSecureRequest.class.getClassLoader());
         mMaskCardNumber = in.readByte() != 0;

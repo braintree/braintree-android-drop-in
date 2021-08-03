@@ -168,7 +168,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setDisableGooglePay(true);
+        dropInRequest.setGooglePayDisabled(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -841,7 +841,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenCardsDisabledInDropInRequest_doesNotReturnCards() {
         Configuration configuration = mockConfiguration(false, false, true, false, false);
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setDisableCard(true);
+        dropInRequest.setCardDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -870,7 +870,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenPayPalDisabledInDropInRequest_doesNotReturnPayPal() {
         Configuration configuration = mockConfiguration(true, false, false, false, false);
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setDisablePayPal(true);
+        dropInRequest.setPayPalDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -899,7 +899,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenVenmoDisabledInDropInRequest_doesNotReturnVenmo() {
         Configuration configuration = mockConfiguration(false, true, false, false, false);
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setDisableVenmo(true);
+        dropInRequest.setVenmoDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -928,7 +928,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenGooglePayDisabledInDropInRequest_doesNotReturnGooglePay() {
         Configuration configuration = mockConfiguration(false, false, false, true, false);
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setDisableGooglePay(true);
+        dropInRequest.setGooglePayDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -1586,7 +1586,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setDisableGooglePay(true);
+        dropInRequest.setGooglePayDisabled(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)

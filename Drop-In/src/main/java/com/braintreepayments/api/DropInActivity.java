@@ -3,12 +3,10 @@ package com.braintreepayments.api;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -452,7 +450,7 @@ public class DropInActivity extends BaseActivity {
                     final DropInResult dropInResult = new DropInResult();
                     dropInResult.paymentMethodNonce(paymentMethodNonce);
 
-                    if (mDropInRequest.shouldCollectDeviceData()) {
+                    if (mDropInRequest.getShouldCollectDeviceData()) {
                         getDropInClient().collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
                             @Override
                             public void onResult(@Nullable String deviceData, @Nullable Exception error) {

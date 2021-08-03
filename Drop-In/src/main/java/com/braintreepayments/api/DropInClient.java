@@ -9,11 +9,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
-import com.braintreepayments.cardform.utils.CardType;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -108,7 +104,7 @@ public class DropInClient {
                             final DropInResult dropInResult = new DropInResult();
                             dropInResult.paymentMethodNonce(threeDSecureResult.getTokenizedCard());
 
-                            if (dropInRequest.shouldCollectDeviceData()) {
+                            if (dropInRequest.getShouldCollectDeviceData()) {
                                 dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
                                     @Override
                                     public void onResult(@Nullable String deviceData, @Nullable Exception error) {
@@ -145,7 +141,7 @@ public class DropInClient {
                     boolean hasAmount = (dropInRequest.getThreeDSecureRequest() != null && !TextUtils.isEmpty(dropInRequest.getThreeDSecureRequest().getAmount()));
 
                     boolean shouldRequestThreeDSecureVerification =
-                            dropInRequest.shouldRequestThreeDSecureVerification()
+                            dropInRequest.getShouldRequestThreeDSecureVerification()
                                     && configuration.isThreeDSecureEnabled()
                                     && hasAmount;
                     callback.onResult(shouldRequestThreeDSecureVerification);
@@ -166,13 +162,13 @@ public class DropInClient {
     }
 
     void requestGooglePayPayment(FragmentActivity activity, GooglePayRequestPaymentCallback callback) {
-        googlePayClient.requestPayment(activity, dropInRequest.getGooglePaymentRequest(), callback);
+        googlePayClient.requestPayment(activity, dropInRequest.getGooglePayRequest(), callback);
     }
 
     void tokenizeVenmoAccount(FragmentActivity activity, VenmoTokenizeAccountCallback callback) {
         // TODO: Add VenmoRequest setter to DropInRequest and remove DropInRequest#shouldVaultVenmo()
         VenmoRequest venmoRequest = new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE);
-        venmoRequest.setShouldVault(dropInRequest.shouldVaultVenmo());
+        venmoRequest.setShouldVault(dropInRequest.getVaultVenmoDefaultValue());
         venmoClient.tokenizeVenmoAccount(activity, venmoRequest, callback);
     }
 
@@ -279,7 +275,7 @@ public class DropInClient {
 
         final DropInResult dropInResult = new DropInResult()
                 .paymentMethodNonce(paymentMethodNonce);
-        if (dropInRequest.shouldCollectDeviceData()) {
+        if (dropInRequest.getShouldCollectDeviceData()) {
             dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
                 @Override
                 public void onResult(@Nullable String deviceData, @Nullable Exception dataCollectionError) {
@@ -320,7 +316,7 @@ public class DropInClient {
                     return;
                 }
 
-                if (dropInRequest.isGooglePaymentEnabled()) {
+                if (dropInRequest.isGooglePayEnabled()) {
                     googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
                         @Override
                         public void onResult(boolean isReadyToGooglePay, Exception error) {
@@ -362,7 +358,7 @@ public class DropInClient {
         }
 
         if (showGooglePay) {
-            if (dropInRequest.isGooglePaymentEnabled()) {
+            if (dropInRequest.isGooglePayEnabled()) {
                 availablePaymentMethods.add(DropInPaymentMethodType.GOOGLE_PAYMENT);
             }
         }
@@ -472,7 +468,7 @@ public class DropInClient {
                             return;
                         }
 
-                        if (dropInRequest.isGooglePaymentEnabled()) {
+                        if (dropInRequest.isGooglePayEnabled()) {
                             googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
                                 @Override
                                 public void onResult(boolean isReadyToPay, Exception error) {

@@ -59,36 +59,36 @@ public class DropInRequestUnitTest {
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setShouldCollectDeviceData(true);
         dropInRequest.setGooglePayRequest(googlePayRequest);
-        dropInRequest.setDisableGooglePay(true);
+        dropInRequest.setGooglePayDisabled(true);
         dropInRequest.setPayPalRequest(paypalRequest);
-        dropInRequest.setDisablePayPal(true);
-        dropInRequest.setDisableVenmo(true);
-        dropInRequest.setDisableCard(true);
+        dropInRequest.setPayPalDisabled(true);
+        dropInRequest.setVenmoDisabled(true);
+        dropInRequest.setCardDisabled(true);
         dropInRequest.setShouldRequestThreeDSecureVerification(true);
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setMaskCardNumber(true);
-        dropInRequest.setMaskSecurityCode(true);
+        dropInRequest.setShouldMaskCardNumber(true);
+        dropInRequest.setShouldMaskSecurityCode(true);
         dropInRequest.setEnableVaultManager(true);
         dropInRequest.setAllowVaultCardOverride(true);
         dropInRequest.setVaultCardDefaultValue(true);
         dropInRequest.setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
         dropInRequest.setVaultVenmoDefaultValue(true);
 
-        assertTrue(dropInRequest.shouldCollectDeviceData());
-        assertEquals("10", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPrice());
-        assertEquals("USD", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getCurrencyCode());
-        assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPriceStatus());
-        assertTrue(dropInRequest.getGooglePaymentRequest().isEmailRequired());
-        assertFalse(dropInRequest.isGooglePaymentEnabled());
+        assertTrue(dropInRequest.getShouldCollectDeviceData());
+        assertEquals("10", dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPrice());
+        assertEquals("USD", dropInRequest.getGooglePayRequest().getTransactionInfo().getCurrencyCode());
+        assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPriceStatus());
+        assertTrue(dropInRequest.getGooglePayRequest().isEmailRequired());
+        assertFalse(dropInRequest.getGooglePayDisabled());
 
         PayPalCheckoutRequest checkoutRequest = (PayPalCheckoutRequest) dropInRequest.getPayPalRequest();
         assertEquals("10.00", checkoutRequest.getAmount());
         assertEquals("USD", checkoutRequest.getCurrencyCode());
 
-        assertFalse(dropInRequest.isPayPalEnabled());
-        assertFalse(dropInRequest.isVenmoEnabled());
-        assertFalse(dropInRequest.isCardEnabled());
-        assertTrue(dropInRequest.shouldRequestThreeDSecureVerification());
+        assertFalse(dropInRequest.getPayPalDisabled());
+        assertFalse(dropInRequest.getVenmoDisabled());
+        assertFalse(dropInRequest.getCardDisabled());
+        assertTrue(dropInRequest.getShouldRequestThreeDSecureVerification());
         assertEquals("abc-123", dropInRequest.getThreeDSecureRequest().getNonce());
         assertEquals("2", dropInRequest.getThreeDSecureRequest().getVersionRequested());
         assertEquals("10.00", dropInRequest.getThreeDSecureRequest().getAmount());
@@ -104,13 +104,13 @@ public class DropInRequestUnitTest {
         assertEquals("US", dropInRequest.getThreeDSecureRequest().getBillingAddress().getCountryCodeAlpha2());
         assertEquals("3125557890", dropInRequest.getThreeDSecureRequest().getBillingAddress().getPhoneNumber());
         assertEquals("GEN", dropInRequest.getThreeDSecureRequest().getAdditionalInformation().getShippingMethodIndicator());
-        assertTrue(dropInRequest.shouldMaskCardNumber());
-        assertTrue(dropInRequest.shouldMaskSecurityCode());
+        assertTrue(dropInRequest.getShouldMaskCardNumber());
+        assertTrue(dropInRequest.getShouldMaskSecurityCode());
         assertTrue(dropInRequest.getEnableVaultManager());
         assertTrue(dropInRequest.getVaultCardDefaultValue());
         assertTrue(dropInRequest.getAllowVaultCardOverride());
         assertEquals(CardForm.FIELD_OPTIONAL, dropInRequest.getCardholderNameStatus());
-        assertTrue(dropInRequest.shouldVaultVenmo());
+        assertTrue(dropInRequest.getVaultVenmoDefaultValue());
     }
 
     @Test
@@ -122,20 +122,20 @@ public class DropInRequestUnitTest {
 
         assertEquals(DropInActivity.class.getName(), intent.getComponent().getClassName());
         assertNull(dropInRequest.getAuthorization());
-        assertFalse(dropInRequest.shouldCollectDeviceData());
-        assertTrue(dropInRequest.isGooglePaymentEnabled());
+        assertFalse(dropInRequest.getShouldCollectDeviceData());
+        assertTrue(dropInRequest.getGooglePayDisabled());
         assertNull(dropInRequest.getPayPalRequest());
-        assertTrue(dropInRequest.isPayPalEnabled());
-        assertTrue(dropInRequest.isVenmoEnabled());
-        assertTrue(dropInRequest.isCardEnabled());
-        assertFalse(dropInRequest.shouldRequestThreeDSecureVerification());
+        assertTrue(dropInRequest.getPayPalDisabled());
+        assertTrue(dropInRequest.getVenmoDisabled());
+        assertTrue(dropInRequest.getCardDisabled());
+        assertFalse(dropInRequest.getShouldRequestThreeDSecureVerification());
         assertNull(dropInRequest.getThreeDSecureRequest());
-        assertFalse(dropInRequest.shouldMaskCardNumber());
-        assertFalse(dropInRequest.shouldMaskSecurityCode());
+        assertFalse(dropInRequest.getShouldMaskCardNumber());
+        assertFalse(dropInRequest.getShouldMaskSecurityCode());
         assertFalse(dropInRequest.getEnableVaultManager());
         assertFalse(dropInRequest.getAllowVaultCardOverride());
         assertTrue(dropInRequest.getVaultCardDefaultValue());
-        assertFalse(dropInRequest.shouldVaultVenmo());
+        assertFalse(dropInRequest.getVaultVenmoDefaultValue());
         assertEquals(CardForm.FIELD_DISABLED, dropInRequest.getCardholderNameStatus());
     }
 
@@ -178,15 +178,15 @@ public class DropInRequestUnitTest {
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setShouldCollectDeviceData(true);
         dropInRequest.setGooglePayRequest(googlePayRequest);
-        dropInRequest.setDisableGooglePay(true);
+        dropInRequest.setGooglePayDisabled(true);
         dropInRequest.setPayPalRequest(paypalRequest);
-        dropInRequest.setDisablePayPal(true);
-        dropInRequest.setDisableVenmo(true);
-        dropInRequest.setDisableCard(true);
+        dropInRequest.setPayPalDisabled(true);
+        dropInRequest.setVenmoDisabled(true);
+        dropInRequest.setCardDisabled(true);
         dropInRequest.setShouldRequestThreeDSecureVerification(true);
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setMaskCardNumber(true);
-        dropInRequest.setMaskSecurityCode(true);
+        dropInRequest.setShouldMaskCardNumber(true);
+        dropInRequest.setShouldMaskSecurityCode(true);
         dropInRequest.setEnableVaultManager(true);
         dropInRequest.setAllowVaultCardOverride(true);
         dropInRequest.setVaultCardDefaultValue(true);
@@ -198,21 +198,21 @@ public class DropInRequestUnitTest {
         parcel.setDataPosition(0);
         DropInRequest parceledDropInRequest = DropInRequest.CREATOR.createFromParcel(parcel);
 
-        assertTrue(parceledDropInRequest.shouldCollectDeviceData());
-        assertEquals("10", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPrice());
-        assertEquals("USD", dropInRequest.getGooglePaymentRequest().getTransactionInfo().getCurrencyCode());
-        assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePaymentRequest().getTransactionInfo().getTotalPriceStatus());
-        assertTrue(dropInRequest.getGooglePaymentRequest().isEmailRequired());
+        assertTrue(parceledDropInRequest.getShouldCollectDeviceData());
+        assertEquals("10", dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPrice());
+        assertEquals("USD", dropInRequest.getGooglePayRequest().getTransactionInfo().getCurrencyCode());
+        assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPriceStatus());
+        assertTrue(dropInRequest.getGooglePayRequest().isEmailRequired());
 
         PayPalCheckoutRequest checkoutRequest = (PayPalCheckoutRequest) dropInRequest.getPayPalRequest();
         assertEquals("10.00", checkoutRequest.getAmount());
         assertEquals("USD", checkoutRequest.getCurrencyCode());
 
-        assertFalse(dropInRequest.isGooglePaymentEnabled());
-        assertFalse(parceledDropInRequest.isPayPalEnabled());
-        assertFalse(parceledDropInRequest.isVenmoEnabled());
-        assertFalse(parceledDropInRequest.isCardEnabled());
-        assertTrue(parceledDropInRequest.shouldRequestThreeDSecureVerification());
+        assertFalse(dropInRequest.getGooglePayDisabled());
+        assertFalse(parceledDropInRequest.getPayPalDisabled());
+        assertFalse(parceledDropInRequest.getVenmoDisabled());
+        assertFalse(parceledDropInRequest.getCardDisabled());
+        assertTrue(parceledDropInRequest.getShouldRequestThreeDSecureVerification());
         assertEquals("abc-123", dropInRequest.getThreeDSecureRequest().getNonce());
         assertEquals("2", dropInRequest.getThreeDSecureRequest().getVersionRequested());
         assertEquals("10.00", dropInRequest.getThreeDSecureRequest().getAmount());
@@ -228,13 +228,13 @@ public class DropInRequestUnitTest {
         assertEquals("US", dropInRequest.getThreeDSecureRequest().getBillingAddress().getCountryCodeAlpha2());
         assertEquals("3125557890", dropInRequest.getThreeDSecureRequest().getBillingAddress().getPhoneNumber());
         assertEquals("GEN", dropInRequest.getThreeDSecureRequest().getAdditionalInformation().getShippingMethodIndicator());
-        assertTrue(parceledDropInRequest.shouldMaskCardNumber());
-        assertTrue(parceledDropInRequest.shouldMaskSecurityCode());
+        assertTrue(parceledDropInRequest.getShouldMaskCardNumber());
+        assertTrue(parceledDropInRequest.getShouldMaskSecurityCode());
         assertTrue(parceledDropInRequest.getEnableVaultManager());
         assertTrue(parceledDropInRequest.getVaultCardDefaultValue());
         assertTrue(parceledDropInRequest.getAllowVaultCardOverride());
         assertEquals(CardForm.FIELD_OPTIONAL, parceledDropInRequest.getCardholderNameStatus());
-        assertTrue(parceledDropInRequest.shouldVaultVenmo());
+        assertTrue(parceledDropInRequest.getVaultVenmoDefaultValue());
     }
 
     @Test
