@@ -10,6 +10,7 @@ _Documentation for v6 will be published to https://developer.paypal.com/braintre
 
 1. [Gradle](#gradle)
 1. [Builder Pattern](#builder-pattern)
+1. [DropInRequest](#dropinrequest)
 1. [Authorization](#authorization)
 1. [Launch Drop-In](#launch-drop-in)
 1. [Handle Drop-In Result](#handle-drop-in-result)
@@ -64,9 +65,75 @@ request.maskCardNumber = true
 
 See the [Braintree Android v4 Migration Guide](https://github.com/braintree/braintree_android/blob/master/v4_MIGRATION_GUIDE.md) for changes to request objects for Google Pay, Venmo, PayPal, and 3DS. 
 
+## DropInRequest
+
+The getters and setters on `DropInRequest` have been renamed with a consistent get/set pattern to allow for Kotlin synthesized properties. 
+See the examples below for a full list of optional parameters:
+
+Java:
+```java
+    DropInRequest dropInRequest = new DropInRequest();
+    dropInRequest.setShouldCollectDeviceData(true);
+    dropInRequest.setGooglePayRequest(googlePayRequest);
+    dropInRequest.setGooglePayDisabled(true);
+    dropInRequest.setPayPalRequest(paypalRequest);
+    dropInRequest.setPayPalDisabled(true);
+    dropInRequest.setVenmoDisabled(true);
+    dropInRequest.setCardDisabled(true);
+    dropInRequest.setShouldRequestThreeDSecureVerification(true);
+    dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
+    dropInRequest.setShouldMaskCardNumber(true);
+    dropInRequest.setShouldMaskSecurityCode(true);
+    dropInRequest.setEnableVaultManager(true);
+    dropInRequest.setAllowVaultCardOverride(true);
+    dropInRequest.setVaultCardDefaultValue(true);
+    dropInRequest.setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
+    dropInRequest.setVaultVenmoDefaultValue(true);
+```
+
+Kotlin:
+```kotlin
+    val dropInRequest = DropInRequest()
+    dropInRequest.shouldCollectDeviceData = true
+    dropInRequest.googlePayRequest = googlePayRequest
+    dropInRequest.googlePayDisabled = true
+    dropInRequest.payPalRequest = paypalRequest
+    dropInRequest.payPalDisabled = true
+    dropInRequest.venmoDisabled = true
+    dropInRequest.cardDisabled = true
+    dropInRequest.shouldRequestThreeDSecureVerification = true
+    dropInRequest.threeDSecureRequest = threeDSecureRequest
+    dropInRequest.shouldMaskCardNumber = true
+    dropInRequest.shouldMaskSecurityCode = true
+    dropInRequest.enableVaultManager = true
+    dropInRequest.allowVaultCardOverride = true
+    dropInRequest.vaultCardDefaultValue = true
+    dropInRequest.cardholderNameStatus = FIELD_OPTIONAL
+    dropInRequest.vaultVenmoDefaultValue = true
+```
+
+The full list of changed parameters is below:
+1. `clientTokent` -> removed
+1. `tokenizationKey` -> removed
+1. `amount` -> removed
+1. `intent` -> removed
+1. `collectDeviceData` -> `shouldCollectDeviceData`
+1. `googlePaymentRequest` -> `googlePayRequest`
+1. `disableGooglePayment` -> `googlePayDisabled`
+1. `paypalRequest` -> `payPalRequest`
+1. `disablePayPal` -> `payPalDisabled`
+1. `disableVenmo` -> `venmoDisabled`
+1. `disableCard` -> `cardDisabled`
+1. `requestThreeDSecureVerification` -> `shouldRequestThreeDSecureVerification`
+1. `maskCardNumber` -> `shouldMaskCardNumber`
+1. `maskSecurityCode` -> `shouldMaskSecurityCode`
+1. `vaultManager` -> `enableVaultManager`
+1. `vaultCard` -> `vaultCardDefaultValue`
+1. `vaultVenmo` -> `vaultVenmoDefaultValue`
+
 ## Authorization
 
-The `clientToken` and `tokenizationKey` parameters have been removed from `DropInRequest`. 
+The `clientToken`, `tokenizationKey`, and `authorization` fields have been removed from `DropInRequest`. 
 In v6, authorization should be included when instantiating a `DropInClient` instead.
 
 ## Launch Drop-In 
