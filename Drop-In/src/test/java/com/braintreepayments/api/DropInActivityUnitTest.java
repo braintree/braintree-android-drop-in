@@ -603,6 +603,29 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void tokenizeCard_onCardTokenizeError_whenErrorNotErrorWithResponse_finishesWithError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+
+        Exception error = new Exception("card tokenize error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .cardTokenizeError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        Card card = new Card();
+        mActivity.tokenizeCard(card);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
+        assertEquals(error.getClass(), actualException.getClass());
+        assertEquals(error.getMessage(), actualException.getMessage());
+    }
+
+    @Test
     public void onPaymentMethodNonceDeleted_sendsAnalyticCall() {
         // TODO: test this after determining analytics testing strategy
 //        verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded");
