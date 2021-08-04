@@ -136,7 +136,5 @@ class AddCardFragmentUITest {
         }
 
         onView(withId(R.id.bt_button)).check(matches(isDisplayed()))
-
-        val dropInRequest = DropInRequest()
     }
 }

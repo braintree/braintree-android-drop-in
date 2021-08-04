@@ -73,7 +73,7 @@ See the examples below for a full list of optional parameters:
 Java:
 ```java
     DropInRequest dropInRequest = new DropInRequest();
-    dropInRequest.setShouldCollectDeviceData(true);
+    dropInRequest.setCollectDeviceData(true);
     dropInRequest.setGooglePayRequest(googlePayRequest);
     dropInRequest.setGooglePayDisabled(true);
     dropInRequest.setPayPalRequest(paypalRequest);
@@ -94,7 +94,7 @@ Java:
 Kotlin:
 ```kotlin
     val dropInRequest = DropInRequest()
-    dropInRequest.shouldCollectDeviceData = true
+    dropInRequest.collectDeviceData = true
     dropInRequest.googlePayRequest = googlePayRequest
     dropInRequest.isGooglePayDisabled = true
     dropInRequest.payPalRequest = paypalRequest
@@ -123,7 +123,7 @@ The full list of changed parameters is below:
 1. `disablePayPal` -> `payPalDisabled`
 1. `disableVenmo` -> `venmoDisabled`
 1. `disableCard` -> `cardDisabled`
-1. `vaultManager` -> `enableVaultManager`
+1. `vaultManager` -> `vaultManagerEnabled`
 1. `vaultCard` -> `vaultCardDefaultValue`
 1. `vaultVenmo` -> `vaultVenmoDefaultValue`
 
