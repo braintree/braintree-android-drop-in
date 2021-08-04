@@ -155,7 +155,7 @@ dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE)
 
 ## Handle Drop-In Result
 
-You should handle the `<TYPE>` in `onActivityResult`, the same was as you did in your v5 integration.
+You should handle the result in `onActivityResult`, the same way as you did in your v5 integration.
 
 Changes:
 - The key for accessing an error from the Activity result has changed from `DropInActivity.EXTRA_ERROR` to `DropInResult.EXTRA_ERROR`.
