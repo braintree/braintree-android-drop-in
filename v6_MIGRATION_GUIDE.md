@@ -11,6 +11,7 @@ _Documentation for v6 will be published to https://developer.paypal.com/braintre
 1. [Gradle](#gradle)
 1. [Builder Pattern](#builder-pattern)
 1. [DropInRequest](#dropinrequest)
+1. [DropInClient](#dropinclient)
 1. [Authorization](#authorization)
 1. [Launch Drop-In](#launch-drop-in)
 1. [Handle Drop-In Result](#handle-drop-in-result)
