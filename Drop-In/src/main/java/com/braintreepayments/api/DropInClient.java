@@ -316,7 +316,7 @@ public class DropInClient {
                     return;
                 }
 
-                if (dropInRequest.isGooglePayEnabled()) {
+                if (!dropInRequest.isGooglePayDisabled()) {
                     googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
                         @Override
                         public void onResult(boolean isReadyToGooglePay, Exception error) {
@@ -338,15 +338,15 @@ public class DropInClient {
     private List<DropInPaymentMethodType> filterSupportedPaymentMethods(Configuration configuration, boolean showGooglePay) {
         List<DropInPaymentMethodType> availablePaymentMethods = new ArrayList<>();
 
-        if (dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled()) {
+        if (!dropInRequest.isPayPalDisabled() && configuration.isPayPalEnabled()) {
             availablePaymentMethods.add(DropInPaymentMethodType.PAYPAL);
         }
 
-        if (dropInRequest.isVenmoEnabled() && configuration.isVenmoEnabled()) {
+        if (!dropInRequest.isVenmoDisabled() && configuration.isVenmoEnabled()) {
             availablePaymentMethods.add(DropInPaymentMethodType.PAY_WITH_VENMO);
         }
 
-        if (dropInRequest.isCardEnabled()) {
+        if (!dropInRequest.isCardDisabled()) {
             Set<String> supportedCardTypes =
                     new HashSet<>(configuration.getSupportedCardTypes());
             if (!configuration.isUnionPayEnabled()) {
@@ -358,7 +358,7 @@ public class DropInClient {
         }
 
         if (showGooglePay) {
-            if (dropInRequest.isGooglePayEnabled()) {
+            if (!dropInRequest.isGooglePayDisabled()) {
                 availablePaymentMethods.add(DropInPaymentMethodType.GOOGLE_PAYMENT);
             }
         }
@@ -468,7 +468,7 @@ public class DropInClient {
                             return;
                         }
 
-                        if (dropInRequest.isGooglePayEnabled()) {
+                        if (!dropInRequest.isGooglePayDisabled()) {
                             googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
                                 @Override
                                 public void onResult(boolean isReadyToPay, Exception error) {

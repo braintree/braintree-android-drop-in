@@ -309,22 +309,6 @@ public class DropInRequest implements Parcelable {
         return allowVaultCardOverride;
     }
 
-    boolean isPayPalEnabled() {
-        return !payPalDisabled;
-    }
-
-    boolean isVenmoEnabled() {
-        return !venmoDisabled;
-    }
-
-    boolean isGooglePayEnabled() {
-        return !googlePayDisabled;
-    }
-
-    boolean isCardEnabled() {
-        return !cardDisabled;
-    }
-
     @Override
     public int describeContents() {
         return 0;
