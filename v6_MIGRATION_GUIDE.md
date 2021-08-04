@@ -47,7 +47,7 @@ repositories {
 The builder pattern has been removed in v6 to allow for consistent object creation across Java and Kotlin. 
 Method chaining has been removed, and setters have been renamed with the `set` prefix.
 
-For example, a `DropInRequest` can now be constructed below:
+For example, a `DropInRequest` can now be constructed as shown below:
 
 Java:
 ```java
