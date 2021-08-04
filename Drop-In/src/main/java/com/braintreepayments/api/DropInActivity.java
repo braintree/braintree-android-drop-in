@@ -450,7 +450,7 @@ public class DropInActivity extends BaseActivity {
                     final DropInResult dropInResult = new DropInResult();
                     dropInResult.paymentMethodNonce(paymentMethodNonce);
 
-                    if (mDropInRequest.getShouldCollectDeviceData()) {
+                    if (mDropInRequest.getCollectDeviceData()) {
                         getDropInClient().collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
                             @Override
                             public void onResult(@Nullable String deviceData, @Nullable Exception error) {

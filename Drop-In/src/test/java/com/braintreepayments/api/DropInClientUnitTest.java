@@ -213,7 +213,7 @@ public class DropInClientUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setShouldRequestThreeDSecureVerification(true);
+        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -240,7 +240,7 @@ public class DropInClientUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setShouldRequestThreeDSecureVerification(true);
+        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -267,7 +267,7 @@ public class DropInClientUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setShouldRequestThreeDSecureVerification(true);
+        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -294,7 +294,7 @@ public class DropInClientUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setShouldRequestThreeDSecureVerification(true);
+        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -320,7 +320,7 @@ public class DropInClientUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setShouldRequestThreeDSecureVerification(true);
+        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -409,7 +409,7 @@ public class DropInClientUnitTest {
     public void performThreeDSecureVerification_whenShouldNotCollectDeviceData_continuesThreeDSecureVerificationAndCallsBackResultWithNonce() throws JSONException {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(false);
+        dropInRequest.setCollectDeviceData(false);
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
 
         ThreeDSecureResult performVerificationResult = new ThreeDSecureResult();
@@ -446,7 +446,7 @@ public class DropInClientUnitTest {
     public void performThreeDSecureVerification_whenShouldCollectDeviceData_includesDeviceDataInResult() throws JSONException {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(true);
+        dropInRequest.setCollectDeviceData(true);
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
 
         ThreeDSecureResult performVerificationResult = new ThreeDSecureResult();
@@ -488,7 +488,7 @@ public class DropInClientUnitTest {
     public void performThreeDSecureVerification_whenShouldCollectDeviceDataAndDataCollectionFails_callsBackAnError() throws JSONException {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(true);
+        dropInRequest.setCollectDeviceData(true);
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
@@ -1169,7 +1169,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(false);
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1209,7 +1209,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(true);
+        dropInRequest.setCollectDeviceData(true);
 
         DataCollector dataCollector = new MockDataCollectorBuilder()
                 .collectDeviceDataSuccess("device data")
@@ -1248,7 +1248,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(false);
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1283,7 +1283,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(false);
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1327,7 +1327,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(true);
+        dropInRequest.setCollectDeviceData(true);
 
         DataCollector dataCollector = new MockDataCollectorBuilder()
                 .collectDeviceDataSuccess("device data")
@@ -1366,7 +1366,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(false);
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1401,7 +1401,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(false);
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1442,7 +1442,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(true);
+        dropInRequest.setCollectDeviceData(true);
 
         DataCollector dataCollector = new MockDataCollectorBuilder()
                 .collectDeviceDataSuccess("device data")
@@ -1478,7 +1478,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(false);
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1509,7 +1509,7 @@ public class DropInClientUnitTest {
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setEnableVaultManager(true);
+        dropInRequest.setVaultManagerEnabled(true);
 
         DropInClientParams params = new DropInClientParams()
                 .braintreeClient(braintreeClient)
@@ -1528,7 +1528,7 @@ public class DropInClientUnitTest {
         assertEquals("authorization", intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION));
 
         DropInRequest dropInRequestExtra = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
-        assertTrue(dropInRequestExtra.getEnableVaultManager());
+        assertTrue(dropInRequestExtra.isVaultManagerEnabled());
     }
 
     @Test

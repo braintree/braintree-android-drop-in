@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
-import com.braintreepayments.api.DropInActivity;
 import com.braintreepayments.api.DropInClient;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
@@ -191,14 +190,14 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onAuthorizationFetched() {
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldRequestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this));
-        dropInRequest.setShouldCollectDeviceData(Settings.shouldCollectDeviceData(this));
+        dropInRequest.setRequestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this));
+        dropInRequest.setCollectDeviceData(Settings.shouldCollectDeviceData(this));
         dropInRequest.setGooglePayRequest(getGooglePaymentRequest());
-        dropInRequest.setShouldMaskCardNumber(true);
-        dropInRequest.setShouldMaskSecurityCode(true);
+        dropInRequest.setMaskCardNumber(true);
+        dropInRequest.setMaskSecurityCode(true);
         dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
         dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
-        dropInRequest.setEnableVaultManager(Settings.isVaultManagerEnabled(this));
+        dropInRequest.setVaultManagerEnabled(Settings.isVaultManagerEnabled(this));
         dropInRequest.setCardholderNameStatus(Settings.getCardholderNameStatus(this));
 
         if (Settings.isThreeDSecureEnabled(this)) {

@@ -111,8 +111,8 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
                 .saveCardCheckBoxChecked(dropInRequest.getVaultCardDefaultValue())
                 .setup(requireActivity());
 
-        cardForm.maskCardNumber(dropInRequest.getShouldMaskCardNumber());
-        cardForm.maskCvv(dropInRequest.getShouldMaskSecurityCode());
+        cardForm.maskCardNumber(dropInRequest.getMaskCardNumber());
+        cardForm.maskCvv(dropInRequest.getMaskSecurityCode());
         cardForm.setOnFormFieldFocusedListener(this);
 
         cardForm.getCardEditText().setText(cardNumber);

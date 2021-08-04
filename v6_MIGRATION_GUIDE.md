@@ -80,11 +80,11 @@ Java:
     dropInRequest.setPayPalDisabled(true);
     dropInRequest.setVenmoDisabled(true);
     dropInRequest.setCardDisabled(true);
-    dropInRequest.setShouldRequestThreeDSecureVerification(true);
+    dropInRequest.setRequestThreeDSecureVerification(true);
     dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-    dropInRequest.setShouldMaskCardNumber(true);
-    dropInRequest.setShouldMaskSecurityCode(true);
-    dropInRequest.setEnableVaultManager(true);
+    dropInRequest.setMaskCardNumber(true);
+    dropInRequest.setMaskSecurityCode(true);
+    dropInRequest.setVaultManagerEnabled(true);
     dropInRequest.setAllowVaultCardOverride(true);
     dropInRequest.setVaultCardDefaultValue(true);
     dropInRequest.setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
@@ -96,16 +96,16 @@ Kotlin:
     val dropInRequest = DropInRequest()
     dropInRequest.shouldCollectDeviceData = true
     dropInRequest.googlePayRequest = googlePayRequest
-    dropInRequest.googlePayDisabled = true
+    dropInRequest.isGooglePayDisabled = true
     dropInRequest.payPalRequest = paypalRequest
-    dropInRequest.payPalDisabled = true
-    dropInRequest.venmoDisabled = true
-    dropInRequest.cardDisabled = true
-    dropInRequest.shouldRequestThreeDSecureVerification = true
+    dropInRequest.isPayPalDisabled = true
+    dropInRequest.isVenmoDisabled = true
+    dropInRequest.isCardDisabled = true
+    dropInRequest.requestThreeDSecureVerification = true
     dropInRequest.threeDSecureRequest = threeDSecureRequest
-    dropInRequest.shouldMaskCardNumber = true
-    dropInRequest.shouldMaskSecurityCode = true
-    dropInRequest.enableVaultManager = true
+    dropInRequest.maskCardNumber = true
+    dropInRequest.maskSecurityCode = true
+    dropInRequest.isVaultManagerEnabled = true
     dropInRequest.allowVaultCardOverride = true
     dropInRequest.vaultCardDefaultValue = true
     dropInRequest.cardholderNameStatus = FIELD_OPTIONAL
@@ -117,16 +117,12 @@ The full list of changed parameters is below:
 1. `tokenizationKey` -> removed
 1. `amount` -> removed
 1. `intent` -> removed
-1. `collectDeviceData` -> `shouldCollectDeviceData`
 1. `googlePaymentRequest` -> `googlePayRequest`
 1. `disableGooglePayment` -> `googlePayDisabled`
 1. `paypalRequest` -> `payPalRequest`
 1. `disablePayPal` -> `payPalDisabled`
 1. `disableVenmo` -> `venmoDisabled`
 1. `disableCard` -> `cardDisabled`
-1. `requestThreeDSecureVerification` -> `shouldRequestThreeDSecureVerification`
-1. `maskCardNumber` -> `shouldMaskCardNumber`
-1. `maskSecurityCode` -> `shouldMaskSecurityCode`
 1. `vaultManager` -> `enableVaultManager`
 1. `vaultCard` -> `vaultCardDefaultValue`
 1. `vaultVenmo` -> `vaultVenmoDefaultValue`

@@ -104,7 +104,7 @@ public class DropInClient {
                             final DropInResult dropInResult = new DropInResult();
                             dropInResult.paymentMethodNonce(threeDSecureResult.getTokenizedCard());
 
-                            if (dropInRequest.getShouldCollectDeviceData()) {
+                            if (dropInRequest.getCollectDeviceData()) {
                                 dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
                                     @Override
                                     public void onResult(@Nullable String deviceData, @Nullable Exception error) {
@@ -141,7 +141,7 @@ public class DropInClient {
                     boolean hasAmount = (dropInRequest.getThreeDSecureRequest() != null && !TextUtils.isEmpty(dropInRequest.getThreeDSecureRequest().getAmount()));
 
                     boolean shouldRequestThreeDSecureVerification =
-                            dropInRequest.getShouldRequestThreeDSecureVerification()
+                            dropInRequest.getRequestThreeDSecureVerification()
                                     && configuration.isThreeDSecureEnabled()
                                     && hasAmount;
                     callback.onResult(shouldRequestThreeDSecureVerification);
@@ -275,7 +275,7 @@ public class DropInClient {
 
         final DropInResult dropInResult = new DropInResult()
                 .paymentMethodNonce(paymentMethodNonce);
-        if (dropInRequest.getShouldCollectDeviceData()) {
+        if (dropInRequest.getCollectDeviceData()) {
             dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
                 @Override
                 public void onResult(@Nullable String deviceData, @Nullable Exception dataCollectionError) {

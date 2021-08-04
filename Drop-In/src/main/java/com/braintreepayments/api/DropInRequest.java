@@ -10,7 +10,7 @@ import com.braintreepayments.cardform.view.CardForm;
  */
 public class DropInRequest implements Parcelable {
 
-    private boolean shouldCollectDeviceData;
+    private boolean collectDeviceData;
     private boolean requestThreeDSecureVerification;
     private ThreeDSecureRequest threeDSecureRequest;
 
@@ -18,9 +18,9 @@ public class DropInRequest implements Parcelable {
     private PayPalRequest payPalRequest;
 
     private boolean googlePayDisabled = false;
-    private boolean shouldMaskCardNumber = false;
-    private boolean shouldMaskSecurityCode = false;
-    private boolean enableVaultManager = false;
+    private boolean maskCardNumber = false;
+    private boolean maskSecurityCode = false;
+    private boolean vaultManagerEnabled = false;
     private boolean payPalDisabled = false;
     private boolean venmoDisabled = false;
     private boolean cardDisabled = false;
@@ -39,8 +39,8 @@ public class DropInRequest implements Parcelable {
      *        fraud prevention.
      * @see DataCollector
      */
-    public void setShouldCollectDeviceData(boolean collectDeviceData) {
-        shouldCollectDeviceData = collectDeviceData;
+    public void setCollectDeviceData(boolean collectDeviceData) {
+        this.collectDeviceData = collectDeviceData;
     }
 
     /**
@@ -109,7 +109,7 @@ public class DropInRequest implements Parcelable {
      * @param requestThreeDSecure {@code true} to request a 3D Secure verification as part of Drop-In,
      * {@code false} to not request a 3D Secure verification. Defaults to {@code false}.
      */
-    public void setShouldRequestThreeDSecureVerification(boolean requestThreeDSecure) {
+    public void setRequestThreeDSecureVerification(boolean requestThreeDSecure) {
         requestThreeDSecureVerification = requestThreeDSecure;
     }
 
@@ -131,8 +131,8 @@ public class DropInRequest implements Parcelable {
      * See {@link com.braintreepayments.cardform.view.CardEditText} for more details. Defaults to
      * {@code false}.
      */
-    public void setShouldMaskCardNumber(boolean maskCardNumber) {
-        shouldMaskCardNumber = maskCardNumber;
+    public void setMaskCardNumber(boolean maskCardNumber) {
+        this.maskCardNumber = maskCardNumber;
     }
 
     /**
@@ -140,8 +140,8 @@ public class DropInRequest implements Parcelable {
      *
      * @param maskSecurityCode {@code true} to mask the security code during input. Defaults to {@code false}.
      */
-    public void setShouldMaskSecurityCode(boolean maskSecurityCode) {
-        shouldMaskSecurityCode = maskSecurityCode;
+    public void setMaskSecurityCode(boolean maskSecurityCode) {
+        this.maskSecurityCode = maskSecurityCode;
     }
 
     /**
@@ -150,8 +150,8 @@ public class DropInRequest implements Parcelable {
      * @param vaultManager {@code true} to allow customers to manage their vaulted payment methods.
      * Defaults to {@code false}.
      */
-    public void setEnableVaultManager(boolean vaultManager) {
-        enableVaultManager = vaultManager;
+    public void setVaultManagerEnabled(boolean vaultManager) {
+        vaultManagerEnabled = vaultManager;
     }
 
     /**
@@ -206,14 +206,14 @@ public class DropInRequest implements Parcelable {
     /**
      * @return If Drop-in should collect and return device data for fraud prevention.
      */
-    public boolean getShouldCollectDeviceData() {
-        return shouldCollectDeviceData;
+    public boolean getCollectDeviceData() {
+        return collectDeviceData;
     }
 
     /**
      * @return If PayPal is disabled in Drop-in
      */
-    public boolean getPayPalDisabled() {
+    public boolean isPayPalDisabled() {
         return payPalDisabled;
     }
 
@@ -225,14 +225,14 @@ public class DropInRequest implements Parcelable {
     /**
      * @return If Venmo is disabled in Drop-in
      */
-    public boolean getVenmoDisabled() {
+    public boolean isVenmoDisabled() {
         return venmoDisabled;
     }
 
     /**
      * @return If card payments are disabled in Drop-in
      */
-    public boolean getCardDisabled() {
+    public boolean isCardDisabled() {
         return cardDisabled;
     }
 
@@ -246,14 +246,14 @@ public class DropInRequest implements Parcelable {
     /**
      * @return If Google Pay disabled in Drop-in
      */
-    public boolean getGooglePayDisabled() {
+    public boolean isGooglePayDisabled() {
         return googlePayDisabled;
     }
 
     /**
      * @return If a 3D Secure verification should be requested as part of Drop-in
      */
-    public boolean getShouldRequestThreeDSecureVerification() {
+    public boolean getRequestThreeDSecureVerification() {
         return requestThreeDSecureVerification;
     }
 
@@ -265,15 +265,15 @@ public class DropInRequest implements Parcelable {
     /**
      * @return If the card number field should be masked when the field is not focused.
      */
-    public boolean getShouldMaskCardNumber() {
-        return shouldMaskCardNumber;
+    public boolean getMaskCardNumber() {
+        return maskCardNumber;
     }
 
     /**
      * @return If the security code should be masked during input.
      */
-    public boolean getShouldMaskSecurityCode() {
-        return shouldMaskSecurityCode;
+    public boolean getMaskSecurityCode() {
+        return maskSecurityCode;
     }
 
     /**
@@ -284,8 +284,8 @@ public class DropInRequest implements Parcelable {
     /**
      * @return If vault manager is enabled to allow users manage their vaulted payment methods
      */
-    public boolean getEnableVaultManager() {
-        return enableVaultManager;
+    public boolean isVaultManagerEnabled() {
+        return vaultManagerEnabled;
     }
 
     /**
@@ -332,7 +332,7 @@ public class DropInRequest implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(shouldCollectDeviceData ? (byte) 1 : (byte) 0);
+        dest.writeByte(collectDeviceData ? (byte) 1 : (byte) 0);
         dest.writeParcelable(googlePayRequest, 0);
         dest.writeByte(googlePayDisabled ? (byte) 1 : (byte) 0);
         dest.writeParcelable(payPalRequest, 0);
@@ -341,9 +341,9 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(cardDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(requestThreeDSecureVerification ? (byte) 1 : (byte) 0);
         dest.writeParcelable(threeDSecureRequest, 0);
-        dest.writeByte(shouldMaskCardNumber ? (byte) 1 : (byte) 0);
-        dest.writeByte(shouldMaskSecurityCode ? (byte) 1 : (byte) 0);
-        dest.writeByte(enableVaultManager ? (byte) 1 : (byte) 0);
+        dest.writeByte(maskCardNumber ? (byte) 1 : (byte) 0);
+        dest.writeByte(maskSecurityCode ? (byte) 1 : (byte) 0);
+        dest.writeByte(vaultManagerEnabled ? (byte) 1 : (byte) 0);
         dest.writeInt(cardholderNameStatus);
         dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
@@ -351,7 +351,7 @@ public class DropInRequest implements Parcelable {
     }
 
     protected DropInRequest(Parcel in) {
-        shouldCollectDeviceData = in.readByte() != 0;
+        collectDeviceData = in.readByte() != 0;
         googlePayRequest = in.readParcelable(GooglePayRequest.class.getClassLoader());
         googlePayDisabled = in.readByte() != 0;
         payPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());
@@ -360,9 +360,9 @@ public class DropInRequest implements Parcelable {
         cardDisabled = in.readByte() != 0;
         requestThreeDSecureVerification = in.readByte() != 0;
         threeDSecureRequest = in.readParcelable(ThreeDSecureRequest.class.getClassLoader());
-        shouldMaskCardNumber = in.readByte() != 0;
-        shouldMaskSecurityCode = in.readByte() != 0;
-        enableVaultManager = in.readByte() != 0;
+        maskCardNumber = in.readByte() != 0;
+        maskSecurityCode = in.readByte() != 0;
+        vaultManagerEnabled = in.readByte() != 0;
         cardholderNameStatus = in.readInt();
         vaultCardDefaultValue = in.readByte() != 0;
         allowVaultCardOverride = in.readByte() != 0;

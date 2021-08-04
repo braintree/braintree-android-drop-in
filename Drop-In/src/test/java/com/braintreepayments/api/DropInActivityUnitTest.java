@@ -256,7 +256,7 @@ public class DropInActivityUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setShouldRequestThreeDSecureVerification(true);
+        dropInRequest.setRequestThreeDSecureVerification(true);
 
         String authorization = Fixtures.TOKENIZATION_KEY;
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
@@ -386,7 +386,7 @@ public class DropInActivityUnitTest {
     @Test
     public void onVaultedPaymentMethodSelected_returnsDeviceData() throws JSONException {
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setShouldCollectDeviceData(true);
+        dropInRequest.setCollectDeviceData(true);
 
         String authorization = Fixtures.TOKENIZATION_KEY;
 

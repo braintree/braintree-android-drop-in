@@ -181,7 +181,7 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
 
             mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
 
-            if (dropInRequest.getEnableVaultManager()) {
+            if (dropInRequest.isVaultManagerEnabled()) {
                 mVaultManagerButton.setVisibility(View.VISIBLE);
             }
 
