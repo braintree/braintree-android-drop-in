@@ -40,7 +40,6 @@ class SelectPaymentMethodParentFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_onShowVaultManagerEvent_showsVaultManager() {
-        // TODO: determine how to test UI with animation delay
         val scenario =
                 FragmentScenario.launchInContainer(SelectPaymentMethodParentFragment::class.java)
 
