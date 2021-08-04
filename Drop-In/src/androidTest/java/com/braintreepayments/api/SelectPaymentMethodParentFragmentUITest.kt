@@ -48,7 +48,11 @@ class SelectPaymentMethodParentFragmentUITest {
             val childFragmentManager = fragment.childFragmentManager
             val showVaultManagerEvent = DropInEvent(DropInEventType.SHOW_VAULT_MANAGER)
             childFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, showVaultManagerEvent.toBundle())
+        }
 
+        onView(isRoot()).perform(waitFor(500))
+
+        scenario.onFragment { fragment ->
             val currentItemPos = fragment.viewPager.currentItem
             assertEquals(1, currentItemPos)
 
