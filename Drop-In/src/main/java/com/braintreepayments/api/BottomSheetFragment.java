@@ -40,7 +40,7 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
-        View view = inflater.inflate(R.layout.fragment_bottom_sheet, container, false);
+        View view = inflater.inflate(R.layout.bt_fragment_bottom_sheet, container, false);
         backgroundView = view.findViewById(R.id.background);
         viewPager = view.findViewById(R.id.view_pager);
 
