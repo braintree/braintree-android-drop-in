@@ -127,14 +127,31 @@ The full list of changed parameters is below:
 1. `vaultCard` -> `vaultCardDefaultValue`
 1. `vaultVenmo` -> `vaultVenmoDefaultValue`
 
+## DropInClient
+
+`DropInClient` has been added in `v6` and replaces the use of an `Intent` to start Drop-in.
+See the sections below for code snippets to instantiate a `DropInClient` with authorization, and launch Drop-in.
+
 ## Authorization
 
 The `clientToken`, `tokenizationKey`, and `authorization` fields have been removed from `DropInRequest`. 
 In v6, authorization should be included when instantiating a `DropInClient` instead.
 
+Java:
+```java
+DropInRequest dropInRequest = new DropInRequest();
+DropInClient dropInClient = new DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
+```
+
+Kotlin:
+```kotlin
+val dropInRequest = DropInRequest()
+val dropInClient = DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
+```
+
 ## Launch Drop-In 
 
-`DropInClient` has been added in v6 and is responsible for launching `DropInActivity`. 
+`DropInClient` is responsible for launching `DropInActivity`. 
 To launch Drop-In, instantiate a `DropInClient` and call `DropInClient#launchDropInForResult`:
 
 Java:
