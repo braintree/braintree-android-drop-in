@@ -156,8 +156,10 @@ dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE)
 ## Handle Drop-In Result
 
 Handle the result from Drop-In in `onActivityResult` as in v5. 
-The key for accessing an error from the Activity result has moved from `DropInActivity.EXTRA_ERROR` to `DropInResult.EXTRA_ERROR`.
-The method for accessing the `String` payment method nonce from `DropInResult` has been updated from `PaymentMethodNonce#getNonce` to `PaymentMethodNonce#getString`. 
+
+Changes:
+- The key for accessing an error from the Activity result has changed from `DropInActivity.EXTRA_ERROR` to `DropInResult.EXTRA_ERROR`.
+- The method for accessing the `String` payment method nonce from `DropInResult` has been updated from `PaymentMethodNonce#getNonce` to `PaymentMethodNonce#getString`. 
 
 
 Java:
