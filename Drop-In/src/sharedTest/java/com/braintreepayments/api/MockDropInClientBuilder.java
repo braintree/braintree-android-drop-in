@@ -30,6 +30,9 @@ public class MockDropInClientBuilder {
     private Exception deletePaymentMethodNonceError;
     private CardNonce cardTokenizeSuccess;
     private Exception cardTokenizeError;
+    private Exception payPalError;
+    private Exception googlePayError;
+    private Exception venmoError;
     private UnionPayCapabilities unionPayCapabilitiesSuccess;
     private Exception unionPayCapabilitiesError;
     private UnionPayEnrollment enrollUnionPaySuccess;
@@ -102,6 +105,21 @@ public class MockDropInClientBuilder {
 
     MockDropInClientBuilder cardTokenizeError(Exception error) {
         this.cardTokenizeError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder payPalError(Exception error) {
+        this.payPalError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder googlePayError(Exception error) {
+        this.googlePayError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder venmoError(Exception error) {
+        this.venmoError = error;
         return this;
     }
 
@@ -260,6 +278,17 @@ public class MockDropInClientBuilder {
                 return null;
             }
         }).when(dropInClient).tokenizeCard(any(Card.class), any(CardTokenizeCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                PayPalFlowStartedCallback callback = (PayPalFlowStartedCallback) invocation.getArguments()[1];
+                if (payPalError != null) {
+                    callback.onResult(payPalError);
+                }
+                return null;
+            }
+        }).when(dropInClient).tokenizePayPalRequest(any(FragmentActivity.class), any(PayPalFlowStartedCallback.class));
 
         doAnswer(new Answer<Void>() {
             @Override

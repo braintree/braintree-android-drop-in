@@ -632,6 +632,7 @@ public class DropInActivityUnitTest {
 
         Exception error = new Exception("error");
         DropInClient dropInClient = new MockDropInClientBuilder()
+                .payPalError(error)
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
