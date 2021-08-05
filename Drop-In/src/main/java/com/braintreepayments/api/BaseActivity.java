@@ -57,7 +57,7 @@ class BaseActivity extends AppCompatActivity {
     }
 
     protected void finish(Exception e) {
-        setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInActivity.EXTRA_ERROR, e));
+        setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInResult.EXTRA_ERROR, e));
         finish();
     }
 }

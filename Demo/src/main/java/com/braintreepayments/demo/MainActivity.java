@@ -11,7 +11,6 @@ import android.widget.TextView;
 import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
-import com.braintreepayments.api.DropInActivity;
 import com.braintreepayments.api.DropInClient;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
@@ -174,7 +173,7 @@ public class MainActivity extends BaseActivity {
             mPurchaseButton.setEnabled(true);
         } else if (resultCode != RESULT_CANCELED) {
             safelyCloseLoadingView();
-            showDialog(((Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR))
+            showDialog(((Exception) data.getSerializableExtra(DropInResult.EXTRA_ERROR))
                     .getMessage());
         }
     }
@@ -190,20 +189,19 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onAuthorizationFetched() {
-        DropInRequest dropInRequest = new DropInRequest()
-                .clientToken(mAuthorization)
-                .requestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this))
-                .collectDeviceData(Settings.shouldCollectDeviceData(this))
-                .googlePaymentRequest(getGooglePaymentRequest())
-                .maskCardNumber(true)
-                .maskSecurityCode(true)
-                .allowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this))
-                .vaultCard(Settings.defaultVaultSetting(this))
-                .vaultManager(Settings.isVaultManagerEnabled(this))
-                .cardholderNameStatus(Settings.getCardholderNameStatus(this));
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setRequestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this));
+        dropInRequest.setCollectDeviceData(Settings.shouldCollectDeviceData(this));
+        dropInRequest.setGooglePayRequest(getGooglePaymentRequest());
+        dropInRequest.setMaskCardNumber(true);
+        dropInRequest.setMaskSecurityCode(true);
+        dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
+        dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
+        dropInRequest.setVaultManagerEnabled(Settings.isVaultManagerEnabled(this));
+        dropInRequest.setCardholderNameStatus(Settings.getCardholderNameStatus(this));
 
         if (Settings.isThreeDSecureEnabled(this)) {
-            dropInRequest.threeDSecureRequest(demoThreeDSecureRequest());
+            dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
         }
 
         dropInClient = new DropInClient(this, mAuthorization, dropInRequest);

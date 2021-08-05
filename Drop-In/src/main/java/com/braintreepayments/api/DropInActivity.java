@@ -3,12 +3,10 @@ package com.braintreepayments.api;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
@@ -30,14 +28,6 @@ public class DropInActivity extends BaseActivity {
     private static final String ADD_CARD_TAG = "ADD_CARD";
     private static final String CARD_DETAILS_TAG = "CARD_DETAILS";
     private static final String SELECT_PAYMENT_METHOD_TAG = "SELECT_PAYMENT_METHOD_PARENT_FRAGMENT";
-
-    /**
-     * Errors are returned as the serializable value of this key in the data intent in
-     * {@link #onActivityResult(int, int, android.content.Intent)} if
-     * responseCode is not {@link #RESULT_OK} or
-     * {@link #RESULT_CANCELED}.
-     */
-    public static final String EXTRA_ERROR = "com.braintreepayments.api.dropin.EXTRA_ERROR";
 
     @VisibleForTesting
     DropInViewModel dropInViewModel;
@@ -312,6 +302,7 @@ public class DropInActivity extends BaseActivity {
                         args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
                         args.putString("EXTRA_CARD_NUMBER", cardNumber);
                         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", cardFormConfiguration);
+                        args.putBoolean("EXTRA_AUTH_IS_TOKENIZATION_KEY", Authorization.isTokenizationKey(getDropInClient().getAuthorization().toString()));
 
                         replaceExistingFragment(CardDetailsFragment.class, CARD_DETAILS_TAG, args);
                     }
@@ -459,7 +450,7 @@ public class DropInActivity extends BaseActivity {
                     final DropInResult dropInResult = new DropInResult();
                     dropInResult.paymentMethodNonce(paymentMethodNonce);
 
-                    if (mDropInRequest.shouldCollectDeviceData()) {
+                    if (mDropInRequest.getCollectDeviceData()) {
                         getDropInClient().collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
                             @Override
                             public void onResult(@Nullable String deviceData, @Nullable Exception error) {

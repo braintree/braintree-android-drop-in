@@ -8,13 +8,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.shadows.ShadowActivity;
 
 import static androidx.appcompat.app.AppCompatActivity.RESULT_FIRST_USER;
 import static androidx.appcompat.app.AppCompatActivity.RESULT_OK;
-import static com.braintreepayments.api.TestTokenizationKey.TOKENIZATION_KEY;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
@@ -30,9 +28,8 @@ public class BaseActivityUnitTest {
 
     @Test
     public void onCreate_setsDropInRequest() {
-        Intent intent = new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .getIntent(RuntimeEnvironment.application);
+        Intent intent = new Intent();
+        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, new DropInRequest());
         mActivityController = Robolectric.buildActivity(BaseActivity.class, intent);
         mActivity = (BaseActivity) mActivityController.get();
 
@@ -41,23 +38,22 @@ public class BaseActivityUnitTest {
         mActivityController.create();
 
         assertNotNull(mActivity.mDropInRequest);
-        assertEquals(TOKENIZATION_KEY, mActivity.mDropInRequest.getAuthorization());
     }
 
     @Test
     public void getDropInClient_returnsADropInClient() {
-        setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .getIntent(RuntimeEnvironment.application));
+        Intent intent = new Intent();
+        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, new DropInRequest());
+        setup(intent);
 
         assertNotNull(mActivity.getDropInClient());
     }
 
     @Test
     public void getDropInClient_setsClientTokenPresentWhenAClientTokenIsNotPresent() {
-        setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .getIntent(RuntimeEnvironment.application));
+        Intent intent = new Intent();
+        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, new DropInRequest());
+        setup(intent);
 
         mActivity.getDropInClient();
 
@@ -68,9 +64,9 @@ public class BaseActivityUnitTest {
     public void finish_finishesWithPaymentMethodNonceAndDeviceDataInDropInResult()
             throws JSONException {
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-        setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .getIntent(RuntimeEnvironment.application));
+        Intent intent = new Intent();
+        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, new DropInRequest());
+        setup(intent);
 
         mActivity.finish(cardNonce, "device_data");
 
@@ -87,9 +83,9 @@ public class BaseActivityUnitTest {
     @Test
     public void finish_finishesWithException() {
         Exception exception = new Exception("Error message");
-        setup(new DropInRequest()
-                .tokenizationKey(TOKENIZATION_KEY)
-                .getIntent(RuntimeEnvironment.application));
+        Intent intent = new Intent();
+        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, new DropInRequest());
+        setup(intent);
 
         mActivity.finish(exception);
 
@@ -97,7 +93,7 @@ public class BaseActivityUnitTest {
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
         Exception error = (Exception) shadowActivity.getResultIntent()
-                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertNotNull(error);
         assertEquals("Error message", error.getMessage());
     }

@@ -1,6 +1,5 @@
 package com.braintreepayments.api
 
-import android.os.Bundle
 import android.view.View.VISIBLE
 import androidx.core.os.bundleOf
 import androidx.fragment.app.testing.FragmentScenario
@@ -71,7 +70,7 @@ class SupportedPaymentMethodsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenVaultManagerIsEnabledAndVaultedPaymentMethodsAreLoaded_displaysVaultedPaymentMethods() {
         val dropInRequest = DropInRequest()
-                .vaultManager(true)
+        dropInRequest.isVaultManagerEnabled = true
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
 
         val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
@@ -98,7 +97,7 @@ class SupportedPaymentMethodsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenVaultManagerEnabledAndNoVaultedPaymentMethodsFound_showsNothing() {
         val dropInRequest = DropInRequest()
-                .vaultManager(true)
+        dropInRequest.isVaultManagerEnabled = true
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
 
         val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
@@ -115,7 +114,7 @@ class SupportedPaymentMethodsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenVaultManagerIsEnabledAndVaultedPaymentMethodsAreLoaded_displaysVaultEditButton() {
         val dropInRequest = DropInRequest()
-                .vaultManager(true)
+        dropInRequest.isVaultManagerEnabled = true
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
 
         val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
@@ -135,7 +134,7 @@ class SupportedPaymentMethodsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenVaultManagerIsDisabled_hidesVaultEditButton() {
         val dropInRequest = DropInRequest()
-                .vaultManager(false)
+        dropInRequest.isVaultManagerEnabled = false
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
 
         val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
@@ -151,7 +150,7 @@ class SupportedPaymentMethodsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenCreditOrDebitCardSelected_sendsPaymentMethodSelectedEvent() {
         val dropInRequest = DropInRequest()
-                .vaultManager(false)
+        dropInRequest.isVaultManagerEnabled = false
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
 
         val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
@@ -223,7 +222,7 @@ class SupportedPaymentMethodsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenPaymentMethodSelected_showsLoadingView() {
         val dropInRequest = DropInRequest()
-                .vaultManager(false)
+        dropInRequest.isVaultManagerEnabled = false
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
 
         val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
@@ -243,7 +242,7 @@ class SupportedPaymentMethodsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenUserCanceledErrorPresentInViewModel_hidesLoader() {
         val dropInRequest = DropInRequest()
-                .vaultManager(false)
+        dropInRequest.isVaultManagerEnabled = false
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
 
         val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
