@@ -5,7 +5,6 @@ import android.content.Intent;
 
 import androidx.fragment.app.FragmentActivity;
 
-import org.apache.tools.ant.types.Commandline;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -168,8 +167,8 @@ public class DropInClientUnitTest {
                 .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .disableGooglePayment();
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setGooglePayDisabled(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -212,9 +211,9 @@ public class DropInClientUnitTest {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         threeDSecureRequest.setAmount("1.00");
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .threeDSecureRequest(threeDSecureRequest)
-                .requestThreeDSecureVerification(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
+        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -239,9 +238,9 @@ public class DropInClientUnitTest {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         threeDSecureRequest.setAmount("1.00");
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .threeDSecureRequest(threeDSecureRequest)
-                .requestThreeDSecureVerification(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
+        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -266,9 +265,9 @@ public class DropInClientUnitTest {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         threeDSecureRequest.setAmount("1.00");
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .threeDSecureRequest(threeDSecureRequest)
-                .requestThreeDSecureVerification(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
+        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -293,9 +292,9 @@ public class DropInClientUnitTest {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         threeDSecureRequest.setAmount("1.00");
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .threeDSecureRequest(threeDSecureRequest)
-                .requestThreeDSecureVerification(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
+        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -319,9 +318,9 @@ public class DropInClientUnitTest {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         threeDSecureRequest.setAmount("1.00");
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .threeDSecureRequest(threeDSecureRequest)
-                .requestThreeDSecureVerification(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
+        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -362,8 +361,8 @@ public class DropInClientUnitTest {
     @Test
     public void performThreeDSecureVerification_performsVerificationAndSetsNonceOnThreeDSecureRequest() throws JSONException {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
-        DropInRequest dropInRequest = new DropInRequest()
-                .threeDSecureRequest(threeDSecureRequest);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
 
         ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder().build();
         DropInClientParams params = new DropInClientParams()
@@ -384,8 +383,8 @@ public class DropInClientUnitTest {
     @Test
     public void performThreeDSecureVerification_whenVerificationFails_callbackError() throws JSONException {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
-        DropInRequest dropInRequest = new DropInRequest()
-                .threeDSecureRequest(threeDSecureRequest);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
 
         Exception performVerificationError = new Exception("verification error");
         ThreeDSecureClient threeDSecureClient = new MockThreeDSecureClientBuilder()
@@ -409,9 +408,9 @@ public class DropInClientUnitTest {
     @Test
     public void performThreeDSecureVerification_whenShouldNotCollectDeviceData_continuesThreeDSecureVerificationAndCallsBackResultWithNonce() throws JSONException {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(false)
-                .threeDSecureRequest(threeDSecureRequest);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(false);
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
 
         ThreeDSecureResult performVerificationResult = new ThreeDSecureResult();
 
@@ -446,9 +445,9 @@ public class DropInClientUnitTest {
     @Test
     public void performThreeDSecureVerification_whenShouldCollectDeviceData_includesDeviceDataInResult() throws JSONException {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(true)
-                .threeDSecureRequest(threeDSecureRequest);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(true);
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
 
         ThreeDSecureResult performVerificationResult = new ThreeDSecureResult();
 
@@ -488,9 +487,9 @@ public class DropInClientUnitTest {
     @Test
     public void performThreeDSecureVerification_whenShouldCollectDeviceDataAndDataCollectionFails_callsBackAnError() throws JSONException {
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(true)
-                .threeDSecureRequest(threeDSecureRequest);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(true);
+        dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         ThreeDSecureResult performVerificationResult = new ThreeDSecureResult();
@@ -841,8 +840,8 @@ public class DropInClientUnitTest {
     @Test
     public void getSupportedPaymentMethods_whenCardsDisabledInDropInRequest_doesNotReturnCards() {
         Configuration configuration = mockConfiguration(false, false, true, false, false);
-        DropInRequest dropInRequest = new DropInRequest()
-                .disableCard();
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCardDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -870,8 +869,8 @@ public class DropInClientUnitTest {
     @Test
     public void getSupportedPaymentMethods_whenPayPalDisabledInDropInRequest_doesNotReturnPayPal() {
         Configuration configuration = mockConfiguration(true, false, false, false, false);
-        DropInRequest dropInRequest = new DropInRequest()
-                .disablePayPal();
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setPayPalDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -899,8 +898,8 @@ public class DropInClientUnitTest {
     @Test
     public void getSupportedPaymentMethods_whenVenmoDisabledInDropInRequest_doesNotReturnVenmo() {
         Configuration configuration = mockConfiguration(false, true, false, false, false);
-        DropInRequest dropInRequest = new DropInRequest()
-                .disableVenmo();
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setVenmoDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -928,8 +927,8 @@ public class DropInClientUnitTest {
     @Test
     public void getSupportedPaymentMethods_whenGooglePayDisabledInDropInRequest_doesNotReturnGooglePay() {
         Configuration configuration = mockConfiguration(false, false, false, true, false);
-        DropInRequest dropInRequest = new DropInRequest()
-                .disableGooglePayment();
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setGooglePayDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -982,8 +981,8 @@ public class DropInClientUnitTest {
     public void tokenizePayPalAccount_withPayPalCheckoutRequest_tokenizesPayPalWithCheckoutRequest() {
         Configuration configuration = mockConfiguration(true, false, false, false, false);
         PayPalCheckoutRequest payPalRequest = new PayPalCheckoutRequest("1.00");
-        DropInRequest dropInRequest = new DropInRequest()
-                .paypalRequest(payPalRequest);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setPayPalRequest(payPalRequest);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -1008,8 +1007,8 @@ public class DropInClientUnitTest {
     public void tokenizePayPalAccount_withPayPalVaultRequest_tokenizesPayPalWithVaultRequest() {
         Configuration configuration = mockConfiguration(true, false, false, false, false);
         PayPalVaultRequest payPalRequest = new PayPalVaultRequest();
-        DropInRequest dropInRequest = new DropInRequest()
-                .paypalRequest(payPalRequest);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setPayPalRequest(payPalRequest);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -1033,8 +1032,8 @@ public class DropInClientUnitTest {
     @Test
     public void tokenizeVenmoAccount_tokenizesVenmo() {
         Configuration configuration = mockConfiguration(false, true, false, false, false);
-        DropInRequest dropInRequest = new DropInRequest()
-                .vaultVenmo(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setVaultVenmoDefaultValue(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -1065,8 +1064,8 @@ public class DropInClientUnitTest {
         Configuration configuration = mockConfiguration(false, false, false, true, false);
 
         GooglePayRequest googlePayRequest = new GooglePayRequest();
-        DropInRequest dropInRequest = new DropInRequest()
-                .googlePaymentRequest(googlePayRequest);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setGooglePayRequest(googlePayRequest);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -1169,8 +1168,8 @@ public class DropInClientUnitTest {
                 .browserSwitchResult(payPalAccountNonce)
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(false);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1209,8 +1208,8 @@ public class DropInClientUnitTest {
                 .browserSwitchResult(payPalAccountNonce)
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(true);
 
         DataCollector dataCollector = new MockDataCollectorBuilder()
                 .collectDeviceDataSuccess("device data")
@@ -1248,8 +1247,8 @@ public class DropInClientUnitTest {
                 .browserSwitchError(browserSwitchError)
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(false);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1283,8 +1282,8 @@ public class DropInClientUnitTest {
                 .browserSwitchResult(threeDSecureResult)
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(false);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1327,8 +1326,8 @@ public class DropInClientUnitTest {
                 .browserSwitchResult(threeDSecureResult)
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(true);
 
         DataCollector dataCollector = new MockDataCollectorBuilder()
                 .collectDeviceDataSuccess("device data")
@@ -1366,8 +1365,8 @@ public class DropInClientUnitTest {
                 .browserSwitchError(browserSwitchError)
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(false);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1401,8 +1400,8 @@ public class DropInClientUnitTest {
                 .activityResult(threeDSecureResult)
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(false);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1442,8 +1441,8 @@ public class DropInClientUnitTest {
                 .activityResult(threeDSecureResult)
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(true);
 
         DataCollector dataCollector = new MockDataCollectorBuilder()
                 .collectDeviceDataSuccess("device data")
@@ -1478,8 +1477,8 @@ public class DropInClientUnitTest {
                 .activityResultError(activityResultError)
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .collectDeviceData(false);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setCollectDeviceData(false);
 
         DataCollector dataCollector = mock(DataCollector.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
@@ -1509,7 +1508,9 @@ public class DropInClientUnitTest {
                 .authorization(authorization)
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest().vaultManager(true);
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setVaultManagerEnabled(true);
+
         DropInClientParams params = new DropInClientParams()
                 .braintreeClient(braintreeClient)
                 .dropInRequest(dropInRequest);
@@ -1584,8 +1585,8 @@ public class DropInClientUnitTest {
                 .getPaymentMethodNoncesSuccess(Collections.singletonList(cardNonce))
                 .build();
 
-        DropInRequest dropInRequest = new DropInRequest()
-                .disableGooglePayment();
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setGooglePayDisabled(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)

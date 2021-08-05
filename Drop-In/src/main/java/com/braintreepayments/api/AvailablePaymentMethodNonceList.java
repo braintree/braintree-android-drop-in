@@ -14,13 +14,13 @@ class AvailablePaymentMethodNonceList {
             boolean shouldAddPaymentMethod = false;
 
             if (paymentMethodNonce instanceof PayPalAccountNonce) {
-                shouldAddPaymentMethod = dropInRequest.isPayPalEnabled() && configuration.isPayPalEnabled();
+                shouldAddPaymentMethod = !dropInRequest.isPayPalDisabled() && configuration.isPayPalEnabled();
             } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
-                shouldAddPaymentMethod = dropInRequest.isVenmoEnabled() && configuration.isVenmoEnabled();
+                shouldAddPaymentMethod = !dropInRequest.isVenmoDisabled() && configuration.isVenmoEnabled();
             } else if (paymentMethodNonce instanceof CardNonce) {
-                shouldAddPaymentMethod = dropInRequest.isCardEnabled() && !configuration.getSupportedCardTypes().isEmpty();
+                shouldAddPaymentMethod = !dropInRequest.isCardDisabled() && !configuration.getSupportedCardTypes().isEmpty();
             } else if (paymentMethodNonce instanceof GooglePayCardNonce) {
-                shouldAddPaymentMethod = googlePayEnabled && dropInRequest.isGooglePaymentEnabled();
+                shouldAddPaymentMethod = googlePayEnabled && !dropInRequest.isGooglePayDisabled();
             }
 
             if (shouldAddPaymentMethod) {

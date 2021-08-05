@@ -29,6 +29,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
     private DropInRequest dropInRequest;
     private CardFormConfiguration configuration;
     private String cardNumber;
+    private Boolean isTokenizationKeyAuth;
 
     @VisibleForTesting
     DropInViewModel dropInViewModel;
@@ -45,6 +46,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
             configuration = args.getParcelable("EXTRA_CARD_FORM_CONFIGURATION");
             cardNumber = args.getString("EXTRA_CARD_NUMBER");
+            isTokenizationKeyAuth = args.getBoolean("EXTRA_AUTH_IS_TOKENIZATION_KEY");
         }
     }
 
@@ -98,8 +100,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
             }
         });
 
-        boolean showCardCheckbox = !Authorization.isTokenizationKey(dropInRequest.getAuthorization())
-                && dropInRequest.isSaveCardCheckBoxShown();
+        boolean showCardCheckbox = !isTokenizationKeyAuth && dropInRequest.getAllowVaultCardOverride();
 
         cardForm.cardRequired(true)
                 .expirationRequired(true)
@@ -107,11 +108,11 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
                 .postalCodeRequired(configuration.isPostalCodeChallengePresent())
                 .cardholderName(dropInRequest.getCardholderNameStatus())
                 .saveCardCheckBoxVisible(showCardCheckbox)
-                .saveCardCheckBoxChecked(dropInRequest.getDefaultVaultSetting())
+                .saveCardCheckBoxChecked(dropInRequest.getVaultCardDefaultValue())
                 .setup(requireActivity());
 
-        cardForm.maskCardNumber(dropInRequest.shouldMaskCardNumber());
-        cardForm.maskCvv(dropInRequest.shouldMaskSecurityCode());
+        cardForm.maskCardNumber(dropInRequest.getMaskCardNumber());
+        cardForm.maskCvv(dropInRequest.getMaskSecurityCode());
         cardForm.setOnFormFieldFocusedListener(this);
 
         cardForm.getCardEditText().setText(cardNumber);
@@ -167,7 +168,7 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
         if (cardForm.isValid()) {
             animatedButtonView.showLoading();
 
-            boolean shouldVault = Authorization.fromString(dropInRequest.getAuthorization()) instanceof ClientToken && cardForm.isSaveCardCheckBoxChecked();
+            boolean shouldVault = !isTokenizationKeyAuth && cardForm.isSaveCardCheckBoxChecked();
 
             final Card card = new Card();
             card.setCardholderName(cardForm.getCardholderName());

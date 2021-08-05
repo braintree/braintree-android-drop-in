@@ -1,7 +1,5 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -12,72 +10,27 @@ import com.braintreepayments.cardform.view.CardForm;
  */
 public class DropInRequest implements Parcelable {
 
-    public static final String EXTRA_CHECKOUT_REQUEST = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST";
+    private boolean collectDeviceData;
+    private boolean requestThreeDSecureVerification;
+    private ThreeDSecureRequest threeDSecureRequest;
 
-    private String mAuthorization;
+    private GooglePayRequest googlePayRequest;
+    private PayPalRequest payPalRequest;
 
-    private String mAmount;
-    private boolean mCollectDeviceData;
-    private boolean mRequestThreeDSecureVerification;
-    private ThreeDSecureRequest mThreeDSecureRequest;
+    private boolean googlePayDisabled = false;
+    private boolean maskCardNumber = false;
+    private boolean maskSecurityCode = false;
+    private boolean vaultManagerEnabled = false;
+    private boolean payPalDisabled = false;
+    private boolean venmoDisabled = false;
+    private boolean cardDisabled = false;
+    private boolean vaultCardDefaultValue = true;
+    private boolean allowVaultCardOverride = false;
+    private boolean vaultVenmoDefaultValue = false;
 
-    private GooglePayRequest mGooglePaymentRequest;
-    private PayPalRequest mPayPalRequest;
-
-    private boolean mGooglePaymentEnabled = true;
-    private boolean mMaskCardNumber = false;
-    private boolean mMaskSecurityCode = false;
-    private boolean mVaultManagerEnabled = false;
-    private boolean mPayPalEnabled = true;
-    private boolean mVenmoEnabled = true;
-    private boolean mCardEnabled = true;
-    private boolean mDefaultVaultValue = true;
-    private boolean mShowCheckBoxToAllowVaultOverride = false;
-    private boolean mVaultVenmo = false;
-
-    private int mCardholderNameStatus = CardForm.FIELD_DISABLED;
+    private int cardholderNameStatus = CardForm.FIELD_DISABLED;
 
     public DropInRequest() {}
-
-    /**
-     * Provide authorization allowing this client to communicate with Braintree. Either
-     * {@link #clientToken(String)} or {@link #tokenizationKey(String)} must be set or an
-     * {@link com.braintreepayments.api.AuthenticationException} will occur.
-     *
-     * @param clientToken The client token to use for the request.
-     */
-    public DropInRequest clientToken(String clientToken) {
-        mAuthorization = clientToken;
-        return this;
-    }
-
-    /**
-     * Provide authorization allowing this client to communicate with Braintree. Either
-     * {@link #clientToken(String)} or {@link #tokenizationKey(String)} must be set or an
-     * {@link com.braintreepayments.api.AuthenticationException} will occur.
-     *
-     * @param tokenizationKey The tokenization key to use for the request.
-     */
-    public DropInRequest tokenizationKey(String tokenizationKey) {
-        mAuthorization = tokenizationKey;
-        return this;
-    }
-
-    /**
-     * Deprecated. Use {@link ThreeDSecureRequest#setAmount(String)}
-     *
-     * This method is optional. Amount is only used for 3D Secure verifications.
-     *
-     * This value must be a non-negative number and must match the currency format of the merchant account.
-     * It can only contain numbers and optionally one decimal point with exactly 2 decimal place precision (e.g., x.xx).
-     *
-     * @param amount Amount of the transaction.
-     */
-    @Deprecated
-    public DropInRequest amount(String amount) {
-        mAmount = amount;
-        return this;
-    }
 
     /**
      * This method is optional.
@@ -86,19 +39,17 @@ public class DropInRequest implements Parcelable {
      *        fraud prevention.
      * @see DataCollector
      */
-    public DropInRequest collectDeviceData(boolean collectDeviceData) {
-        mCollectDeviceData = collectDeviceData;
-        return this;
+    public void setCollectDeviceData(boolean collectDeviceData) {
+        this.collectDeviceData = collectDeviceData;
     }
 
     /**
      * This method is optional.
      *
-     * @param request The Google Payment Request {@link GooglePayRequest} for the transaction.
+     * @param request The Google Pay Request {@link GooglePayRequest} for the transaction.
      */
-    public DropInRequest googlePaymentRequest(GooglePayRequest request) {
-        mGooglePaymentRequest = request;
-        return this;
+    public void setGooglePayRequest(GooglePayRequest request) {
+        googlePayRequest = request;
     }
 
     /**
@@ -108,54 +59,58 @@ public class DropInRequest implements Parcelable {
      * If no amount is set, PayPal will default to the billing agreement (Vault) flow.
      * If amount is set, PayPal will follow the one time payment (Checkout) flow.
      */
-    public DropInRequest paypalRequest(PayPalRequest request) {
-        mPayPalRequest = request;
-        return this;
+    public void setPayPalRequest(PayPalRequest request) {
+        payPalRequest = request;
     }
 
     /**
-     * Disables Google Payment in Drop-in.
+     * This method is optional.
+     *
+     * @param disableGooglePay If set to true, disables Google Pay in Drop-in. Default value is false.
      */
-    public DropInRequest disableGooglePayment() {
-        mGooglePaymentEnabled = false;
-        return this;
+    public void setGooglePayDisabled(boolean disableGooglePay) {
+        googlePayDisabled = disableGooglePay;
     }
 
     /**
-     * Disables PayPal in Drop-in.
+     * This method is optional.
+     *
+     * @param disablePayPal If set to true, disables PayPal in Drop-in. Default value is false.
      */
-    public DropInRequest disablePayPal() {
-        mPayPalEnabled = false;
-        return this;
+    public void setPayPalDisabled(boolean disablePayPal) {
+        payPalDisabled = disablePayPal;
     }
 
     /**
-     * Disables Venmo in Drop-in.
+     * This method is optional.
+     *
+     * @param disableVenmo If set to true, disables Venmo in Drop-in. Default value is false.
      */
-    public DropInRequest disableVenmo() {
-        mVenmoEnabled = false;
-        return this;
+    public void setVenmoDisabled(boolean disableVenmo) {
+        venmoDisabled = disableVenmo;
     }
 
     /**
-     * Disables Card in Drop-in.
+     * This method is optional.
+     *
+     * @param disableCard If set to true, disables Card in Drop-in. Default value is false.
      */
-    public DropInRequest disableCard() {
-        mCardEnabled = false;
-        return this;
+    public void setCardDisabled(boolean disableCard) {
+        cardDisabled = disableCard;
     }
 
     /**
+     * This method is optional.
+     *
      * If 3D Secure has been enabled in the control panel and an amount is specified in
-     * {@link DropInRequest#amount(String)} or a {@link ThreeDSecureRequest} is provided,
-     * Drop-In will request a 3D Secure verification for any new cards added by the user.
+     * a {@link ThreeDSecureRequest} that is provided, Drop-In will request a 3D Secure verification
+     * for any new cards added by the user.
      *
      * @param requestThreeDSecure {@code true} to request a 3D Secure verification as part of Drop-In,
      * {@code false} to not request a 3D Secure verification. Defaults to {@code false}.
      */
-    public DropInRequest requestThreeDSecureVerification(boolean requestThreeDSecure) {
-        mRequestThreeDSecureVerification = requestThreeDSecure;
-        return this;
+    public void setRequestThreeDSecureVerification(boolean requestThreeDSecure) {
+        requestThreeDSecureVerification = requestThreeDSecure;
     }
 
     /**
@@ -164,42 +119,45 @@ public class DropInRequest implements Parcelable {
      * @param threeDSecureRequest {@link ThreeDSecureRequest} to specify options and additional information for 3D Secure.
      * To encourage 3DS 2.0 flows, set {@link ThreeDSecureRequest#setBillingAddress(ThreeDSecurePostalAddress)},
      * {@link ThreeDSecureRequest#setEmail(String)}, and {@link ThreeDSecureRequest#setMobilePhoneNumber(String)} for best results.
-     * If no amount is set, the {@link DropInRequest#amount(String)} will be used.
      */
-    public DropInRequest threeDSecureRequest(ThreeDSecureRequest threeDSecureRequest) {
-        mThreeDSecureRequest = threeDSecureRequest;
-        return this;
+    public void setThreeDSecureRequest(ThreeDSecureRequest threeDSecureRequest) {
+        this.threeDSecureRequest = threeDSecureRequest;
     }
 
     /**
+     * This method is optional.
+     *
      * @param maskCardNumber {@code true} to mask the card number when the field is not focused.
      * See {@link com.braintreepayments.cardform.view.CardEditText} for more details. Defaults to
      * {@code false}.
      */
-    public DropInRequest maskCardNumber(boolean maskCardNumber) {
-        mMaskCardNumber = maskCardNumber;
-        return this;
+    public void setMaskCardNumber(boolean maskCardNumber) {
+        this.maskCardNumber = maskCardNumber;
     }
 
     /**
+     * This method is optional.
+     *
      * @param maskSecurityCode {@code true} to mask the security code during input. Defaults to {@code false}.
      */
-    public DropInRequest maskSecurityCode(boolean maskSecurityCode) {
-        mMaskSecurityCode = maskSecurityCode;
-        return this;
+    public void setMaskSecurityCode(boolean maskSecurityCode) {
+        this.maskSecurityCode = maskSecurityCode;
     }
 
     /**
+     * This method is optional.
+     *
      * @param vaultManager {@code true} to allow customers to manage their vaulted payment methods.
      * Defaults to {@code false}.
      */
-    public DropInRequest vaultManager(boolean vaultManager) {
-        mVaultManagerEnabled = vaultManager;
-        return this;
+    public void setVaultManagerEnabled(boolean vaultManager) {
+        vaultManagerEnabled = vaultManager;
     }
 
     /**
-     * @param defaultValue the default value used to determine if Drop-in should vault the customer's card. This setting can be overwritten by the customer if the save card checkbox is visible using {@link #allowVaultCardOverride(boolean)}
+     * This method is optional.
+     *
+     * @param defaultValue the default value used to determine if Drop-in should vault the customer's card. This setting can be overwritten by the customer if the save card checkbox is visible using {@link #setAllowVaultCardOverride(boolean)}
      * If the save card CheckBox is shown, and default vault value is true: the save card CheckBox will appear pre-checked.
      * If the save card CheckBox is shown, and default vault value is false: the save card Checkbox will appear un-checked.
      * If the save card CheckBox is not shown, and default vault value is true: card always vaults.
@@ -207,119 +165,148 @@ public class DropInRequest implements Parcelable {
      *
      * This value is {@code true} by default.
      */
-    public DropInRequest vaultCard(boolean defaultValue) {
-        mDefaultVaultValue = defaultValue;
-        return this;
+    public void setVaultCardDefaultValue(boolean defaultValue) {
+        vaultCardDefaultValue = defaultValue;
     }
 
     /**
-     * @param defaultValue the default value used to determine if Drop-in should vault the customer's venmo payment method. Must be set to `false` when using a client token without a `customerId`.
+     * This method is optional.
+     *
+     * @param defaultValue the default value used to determine if Drop-in should vault the customer's Venmo payment method. Must be set to `false` when using a client token without a `customerId`.
      *
      * This value is {@code false} by default.
      */
-    public DropInRequest vaultVenmo(boolean defaultValue) {
-        mVaultVenmo = defaultValue;
-        return this;
-    };
-
-    /**
-     * @param customerCheckBoxEnabled {@code true} shows save card CheckBox to allow user to choose whether or not to vault their card.
-     * {@code false} does not show Save Card CheckBox.
-     */
-    public DropInRequest allowVaultCardOverride(boolean customerCheckBoxEnabled) {
-        mShowCheckBoxToAllowVaultOverride = customerCheckBoxEnabled;
-        return this;
+    public void setVaultVenmoDefaultValue(boolean defaultValue) {
+        vaultVenmoDefaultValue = defaultValue;
     }
 
     /**
+     * This method is optional.
+     *
+     * @param customerCheckBoxEnabled {@code true} shows save card CheckBox to allow user to choose whether or not to vault their card.
+     * {@code false} does not show Save Card CheckBox. Default value is false.
+     */
+    public void setAllowVaultCardOverride(boolean customerCheckBoxEnabled) {
+        allowVaultCardOverride = customerCheckBoxEnabled;
+    }
+
+    /**
+     * This method is optional.
+     *
      * Sets the Cardholder Name field status, which is how it will behave in {@link CardForm}.
      * Default is {@link CardForm#FIELD_DISABLED}.
      *
      * Can be {@link CardForm#FIELD_DISABLED}, {@link CardForm#FIELD_OPTIONAL}, or
      * {@link CardForm#FIELD_REQUIRED}.
      */
-    public DropInRequest cardholderNameStatus(int fieldStatus) {
-        mCardholderNameStatus = fieldStatus;
-        return this;
+    public void setCardholderNameStatus(int fieldStatus) {
+        cardholderNameStatus = fieldStatus;
     }
 
     /**
-     * Get an {@link Intent} that can be used in {@link androidx.appcompat.app.AppCompatActivity#startActivityForResult(Intent, int)}
-     * to launch {@link DropInActivity} and the Drop-in UI.
-     *
-     * @param context
-     * @return {@link Intent} containing all of the options set in {@link DropInRequest}.
+     * @return If Drop-in should collect and return device data for fraud prevention.
      */
-    public Intent getIntent(Context context) {
-        return new Intent(context, DropInActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST, this);
+    public boolean getCollectDeviceData() {
+        return collectDeviceData;
     }
 
-    public String getAuthorization() {
-        return mAuthorization;
+    /**
+     * @return If PayPal is disabled in Drop-in
+     */
+    public boolean isPayPalDisabled() {
+        return payPalDisabled;
     }
 
-    String getAmount() {
-        return mAmount;
+    /**
+     * @return The PayPal Request {@link PayPalRequest} for the transaction.
+     */
+    public PayPalRequest getPayPalRequest() { return payPalRequest; }
+
+    /**
+     * @return If Venmo is disabled in Drop-in
+     */
+    public boolean isVenmoDisabled() {
+        return venmoDisabled;
     }
 
-    boolean shouldCollectDeviceData() {
-        return mCollectDeviceData;
+    /**
+     * @return If card payments are disabled in Drop-in
+     */
+    public boolean isCardDisabled() {
+        return cardDisabled;
     }
 
-    public boolean isPayPalEnabled() {
-        return mPayPalEnabled;
+    /**
+     * @return The Google Pay Request {@link GooglePayRequest} for the transaction.
+     */
+    public GooglePayRequest getGooglePayRequest() {
+        return googlePayRequest;
     }
 
-    public PayPalRequest getPayPalRequest() { return mPayPalRequest; }
-
-    public boolean isVenmoEnabled() {
-        return mVenmoEnabled;
+    /**
+     * @return If Google Pay disabled in Drop-in
+     */
+    public boolean isGooglePayDisabled() {
+        return googlePayDisabled;
     }
 
-    public boolean isCardEnabled() {
-        return mCardEnabled;
+    /**
+     * @return If a 3D Secure verification should be requested as part of Drop-in
+     */
+    public boolean getRequestThreeDSecureVerification() {
+        return requestThreeDSecureVerification;
     }
 
-    // TODO: rename to get GooglePayRequest
-    public GooglePayRequest getGooglePaymentRequest() {
-        return mGooglePaymentRequest;
+    /**
+     * @return The {@link ThreeDSecureRequest} for the transaction.
+     */
+    public ThreeDSecureRequest getThreeDSecureRequest() { return threeDSecureRequest; }
+
+    /**
+     * @return If the card number field should be masked when the field is not focused.
+     */
+    public boolean getMaskCardNumber() {
+        return maskCardNumber;
     }
 
-    public boolean isGooglePaymentEnabled() {
-        return mGooglePaymentEnabled;
+    /**
+     * @return If the security code should be masked during input.
+     */
+    public boolean getMaskSecurityCode() {
+        return maskSecurityCode;
     }
 
-    boolean shouldRequestThreeDSecureVerification() {
-        return mRequestThreeDSecureVerification;
+    /**
+     * @return The default value used to determine if Drop-in should vault the customer's Venmo payment method
+     */
+    public boolean getVaultVenmoDefaultValue() { return vaultVenmoDefaultValue; }
+
+    /**
+     * @return If vault manager is enabled to allow users manage their vaulted payment methods
+     */
+    public boolean isVaultManagerEnabled() {
+        return vaultManagerEnabled;
     }
 
-    public ThreeDSecureRequest getThreeDSecureRequest() { return mThreeDSecureRequest; }
-
-    boolean shouldMaskCardNumber() {
-        return mMaskCardNumber;
-    }
-
-    boolean shouldMaskSecurityCode() {
-        return mMaskSecurityCode;
-    }
-
-    boolean shouldVaultVenmo() { return mVaultVenmo; }
-
-    boolean isVaultManagerEnabled() {
-        return mVaultManagerEnabled;
-    }
-
+    /**
+     * @return The Cardholder Name field status, which is how it will behave in {@link CardForm}.
+     */
     public int getCardholderNameStatus() {
-        return mCardholderNameStatus;
+        return cardholderNameStatus;
     }
 
-    public boolean getDefaultVaultSetting() {
-        return mDefaultVaultValue;
+    /**
+     * @return The default value used to determine if Drop-in should vault the customer's card.
+     */
+    public boolean getVaultCardDefaultValue() {
+        return vaultCardDefaultValue;
     }
 
-    public boolean isSaveCardCheckBoxShown() {
-        return mShowCheckBoxToAllowVaultOverride;
+    /**
+     * @return If the save card CheckBox will be shown to allow user to choose whether or not to vault their card.
+     */
+    public boolean getAllowVaultCardOverride() {
+        return allowVaultCardOverride;
     }
 
     @Override
@@ -329,45 +316,41 @@ public class DropInRequest implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(mAuthorization);
-        dest.writeString(mAmount);
-        dest.writeByte(mCollectDeviceData ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(mGooglePaymentRequest, 0);
-        dest.writeByte(mGooglePaymentEnabled ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(mPayPalRequest, 0);
-        dest.writeByte(mPayPalEnabled ? (byte) 1 : (byte) 0);
-        dest.writeByte(mVenmoEnabled ? (byte) 1 : (byte) 0);
-        dest.writeByte(mCardEnabled ? (byte) 1 : (byte) 0);
-        dest.writeByte(mRequestThreeDSecureVerification ? (byte) 1 : (byte) 0);
-        dest.writeParcelable(mThreeDSecureRequest, 0);
-        dest.writeByte(mMaskCardNumber ? (byte) 1 : (byte) 0);
-        dest.writeByte(mMaskSecurityCode ? (byte) 1 : (byte) 0);
-        dest.writeByte(mVaultManagerEnabled ? (byte) 1 : (byte) 0);
-        dest.writeInt(mCardholderNameStatus);
-        dest.writeByte(mDefaultVaultValue ? (byte) 1 : (byte) 0);
-        dest.writeByte(mShowCheckBoxToAllowVaultOverride ? (byte) 1 : (byte) 0);
-        dest.writeByte(mVaultVenmo ? (byte) 1 : (byte) 0);
+        dest.writeByte(collectDeviceData ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(googlePayRequest, 0);
+        dest.writeByte(googlePayDisabled ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(payPalRequest, 0);
+        dest.writeByte(payPalDisabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(venmoDisabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(cardDisabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(requestThreeDSecureVerification ? (byte) 1 : (byte) 0);
+        dest.writeParcelable(threeDSecureRequest, 0);
+        dest.writeByte(maskCardNumber ? (byte) 1 : (byte) 0);
+        dest.writeByte(maskSecurityCode ? (byte) 1 : (byte) 0);
+        dest.writeByte(vaultManagerEnabled ? (byte) 1 : (byte) 0);
+        dest.writeInt(cardholderNameStatus);
+        dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
+        dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
+        dest.writeByte(vaultVenmoDefaultValue ? (byte) 1 : (byte) 0);
     }
 
     protected DropInRequest(Parcel in) {
-        mAuthorization = in.readString();
-        mAmount = in.readString();
-        mCollectDeviceData = in.readByte() != 0;
-        mGooglePaymentRequest = in.readParcelable(GooglePayRequest.class.getClassLoader());
-        mGooglePaymentEnabled = in.readByte() != 0;
-        mPayPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());
-        mPayPalEnabled = in.readByte() != 0;
-        mVenmoEnabled = in.readByte() != 0;
-        mCardEnabled = in.readByte() != 0;
-        mRequestThreeDSecureVerification = in.readByte() != 0;
-        mThreeDSecureRequest = in.readParcelable(ThreeDSecureRequest.class.getClassLoader());
-        mMaskCardNumber = in.readByte() != 0;
-        mMaskSecurityCode = in.readByte() != 0;
-        mVaultManagerEnabled = in.readByte() != 0;
-        mCardholderNameStatus = in.readInt();
-        mDefaultVaultValue = in.readByte() != 0;
-        mShowCheckBoxToAllowVaultOverride = in.readByte() != 0;
-        mVaultVenmo = in.readByte() != 0;
+        collectDeviceData = in.readByte() != 0;
+        googlePayRequest = in.readParcelable(GooglePayRequest.class.getClassLoader());
+        googlePayDisabled = in.readByte() != 0;
+        payPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());
+        payPalDisabled = in.readByte() != 0;
+        venmoDisabled = in.readByte() != 0;
+        cardDisabled = in.readByte() != 0;
+        requestThreeDSecureVerification = in.readByte() != 0;
+        threeDSecureRequest = in.readParcelable(ThreeDSecureRequest.class.getClassLoader());
+        maskCardNumber = in.readByte() != 0;
+        maskSecurityCode = in.readByte() != 0;
+        vaultManagerEnabled = in.readByte() != 0;
+        cardholderNameStatus = in.readInt();
+        vaultCardDefaultValue = in.readByte() != 0;
+        allowVaultCardOverride = in.readByte() != 0;
+        vaultVenmoDefaultValue = in.readByte() != 0;
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {
