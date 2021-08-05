@@ -25,6 +25,7 @@ public class MockDropInClientBuilder {
     private Authorization authorization;
     private Configuration configuration;
     private List<DropInPaymentMethodType> supportedPaymentMethods;
+    private Exception getSupportedCardTypesError;
     private String deviceDataSuccess;
     private PaymentMethodNonce deletedNonce;
     private Exception deletePaymentMethodNonceError;
@@ -85,6 +86,11 @@ public class MockDropInClientBuilder {
 
     MockDropInClientBuilder getSupportedPaymentMethodsSuccess(List<DropInPaymentMethodType> supportedPaymentMethods) {
         this.supportedPaymentMethods = supportedPaymentMethods;
+        return this;
+    }
+
+    MockDropInClientBuilder getSupportedCardTypesError(Exception error) {
+        this.getSupportedCardTypesError = error;
         return this;
     }
 
@@ -239,6 +245,8 @@ public class MockDropInClientBuilder {
                 GetSupportedPaymentMethodsCallback callback = (GetSupportedPaymentMethodsCallback) invocation.getArguments()[1];
                 if (supportedPaymentMethods != null) {
                     callback.onResult(supportedPaymentMethods, null);
+                } else if (getSupportedCardTypesError != null) {
+                    callback.onResult(null, getSupportedCardTypesError);
                 }
                 return null;
             }

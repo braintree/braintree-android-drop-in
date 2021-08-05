@@ -692,6 +692,28 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void startPaymentFlow_onGetSupportedCardTypesError_finishesWithError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        Exception error = new Exception("error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getSupportedCardTypesError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.startPaymentFlow(DropInPaymentMethodType.UNKNOWN);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
+        assertEquals(error.getClass(), actualException.getClass());
+        assertEquals(error.getMessage(), actualException.getMessage());
+    }
+
+    @Test
     public void onPaymentMethodNonceDeleted_sendsAnalyticCall() {
         // TODO: test this after determining analytics testing strategy
 //        verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded");
