@@ -482,7 +482,11 @@ public class DropInActivity extends BaseActivity {
             @Override
             public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
                 if (error != null) {
-                    dropInViewModel.setCardTokenizationError(error);
+                    if (error instanceof ErrorWithResponse) {
+                        dropInViewModel.setCardTokenizationError(error);
+                    } else {
+                        onError(error);
+                    }
                     return;
                 }
                 onPaymentMethodNonceCreated(cardNonce);
