@@ -293,6 +293,28 @@ public class MockDropInClientBuilder {
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
+                GooglePayRequestPaymentCallback callback = (GooglePayRequestPaymentCallback) invocation.getArguments()[1];
+                if (googlePayError != null) {
+                    callback.onResult(googlePayError);
+                }
+                return null;
+            }
+        }).when(dropInClient).requestGooglePayPayment(any(FragmentActivity.class), any(GooglePayRequestPaymentCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                VenmoTokenizeAccountCallback callback = (VenmoTokenizeAccountCallback) invocation.getArguments()[1];
+                if (venmoError != null) {
+                    callback.onResult(venmoError);
+                }
+                return null;
+            }
+        }).when(dropInClient).tokenizeVenmoAccount(any(FragmentActivity.class), any(VenmoTokenizeAccountCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
                 UnionPayFetchCapabilitiesCallback callback = (UnionPayFetchCapabilitiesCallback) invocation.getArguments()[1];
                 if (unionPayCapabilitiesSuccess != null) {
                     callback.onResult(unionPayCapabilitiesSuccess, null);

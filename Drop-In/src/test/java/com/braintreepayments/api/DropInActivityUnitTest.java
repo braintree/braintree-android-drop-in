@@ -648,6 +648,50 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void startPaymentFlow_onGooglePayError_finishesWithError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        Exception error = new Exception("error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .googlePayError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.startPaymentFlow(DropInPaymentMethodType.GOOGLE_PAYMENT);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
+        assertEquals(error.getClass(), actualException.getClass());
+        assertEquals(error.getMessage(), actualException.getMessage());
+    }
+
+    @Test
+    public void startPaymentFlow_onVenmoError_finishesWithError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        Exception error = new Exception("error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .venmoError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.startPaymentFlow(DropInPaymentMethodType.PAY_WITH_VENMO);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
+        assertEquals(error.getClass(), actualException.getClass());
+        assertEquals(error.getMessage(), actualException.getMessage());
+    }
+
+    @Test
     public void onPaymentMethodNonceDeleted_sendsAnalyticCall() {
         // TODO: test this after determining analytics testing strategy
 //        verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded");
