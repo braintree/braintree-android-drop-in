@@ -605,7 +605,7 @@ public class DropInActivityUnitTest {
     @Test
     public void tokenizeCard_onError_whenErrorNotErrorWithResponse_finishesWithError() {
         String authorization = Fixtures.TOKENIZATION_KEY;
-        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        DropInRequest dropInRequest = new DropInRequest();
 
         Exception error = new Exception("error");
         DropInClient dropInClient = new MockDropInClientBuilder()
@@ -620,7 +620,7 @@ public class DropInActivityUnitTest {
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception actualException = (Exception) mShadowActivity.getResultIntent()
-                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertEquals(error.getClass(), actualException.getClass());
         assertEquals(error.getMessage(), actualException.getMessage());
     }
@@ -628,7 +628,7 @@ public class DropInActivityUnitTest {
     @Test
     public void startPaymentFlow_onPayPalError_finishesWithError() {
         String authorization = Fixtures.TOKENIZATION_KEY;
-        DropInRequest dropInRequest = new DropInRequest().tokenizationKey(authorization);
+        DropInRequest dropInRequest = new DropInRequest();
 
         Exception error = new Exception("error");
         DropInClient dropInClient = new MockDropInClientBuilder()
@@ -642,7 +642,7 @@ public class DropInActivityUnitTest {
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
         Exception actualException = (Exception) mShadowActivity.getResultIntent()
-                .getSerializableExtra(DropInActivity.EXTRA_ERROR);
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertEquals(error.getClass(), actualException.getClass());
         assertEquals(error.getMessage(), actualException.getMessage());
     }
