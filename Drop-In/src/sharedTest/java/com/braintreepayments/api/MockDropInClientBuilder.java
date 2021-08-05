@@ -104,6 +104,11 @@ public class MockDropInClientBuilder {
         return this;
     }
 
+    MockDropInClientBuilder deletePaymentMethodError(Exception error) {
+        this.deletePaymentMethodNonceError = error;
+        return this;
+    }
+
     MockDropInClientBuilder cardTokenizeSuccess(CardNonce cardNonce) {
         this.cardTokenizeSuccess = cardNonce;
         return this;
@@ -269,6 +274,8 @@ public class MockDropInClientBuilder {
                 DeletePaymentMethodNonceCallback callback = (DeletePaymentMethodNonceCallback) invocation.getArguments()[2];
                 if (deletedNonce != null) {
                     callback.onResult(deletedNonce, null);
+                } else if (deletePaymentMethodNonceError != null) {
+                    callback.onResult(null, deletePaymentMethodNonceError);
                 }
                 return null;
             }

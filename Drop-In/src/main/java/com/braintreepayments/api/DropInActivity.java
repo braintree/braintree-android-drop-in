@@ -193,7 +193,7 @@ public class DropInActivity extends BaseActivity {
                 .show();
     }
 
-    private void removePaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
+    void removePaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
         // proactively remove from view model
         dropInViewModel.removeVaultedPaymentMethodNonce(paymentMethodNonceToDelete);
 
@@ -209,7 +209,7 @@ public class DropInActivity extends BaseActivity {
                     //mLoadingViewSwitcher.setDisplayedChild(0);
                 } else {
                     getDropInClient().sendAnalyticsEvent("manager.unknown.failed");
-                    // TODO: determine how to handle unexpected error when deleting payment method (previously finished drop in)
+                    onError(error);
                 }
             }
         });
