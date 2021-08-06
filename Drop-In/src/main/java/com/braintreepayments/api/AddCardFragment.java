@@ -22,7 +22,7 @@ import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
 import java.util.List;
 
-public class AddCardFragment extends Fragment implements OnCardFormSubmitListener,
+public class AddCardFragment extends DropInFragment implements OnCardFormSubmitListener,
         CardEditText.OnCardTypeChangedListener {
 
     @VisibleForTesting
@@ -126,10 +126,6 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
     private void showCardNotSupportedError() {
         cardForm.getCardEditText().setError(getContext().getString(R.string.bt_card_not_accepted));
         animatedButtonView.showButton();
-    }
-
-    private void sendDropInEvent(DropInEvent event) {
-        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
 
     void setErrors(ErrorWithResponse errors) {

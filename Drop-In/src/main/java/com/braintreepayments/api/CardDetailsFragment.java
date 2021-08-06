@@ -18,7 +18,7 @@ import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 
-public class CardDetailsFragment extends Fragment implements OnCardFormSubmitListener, OnCardFormFieldFocusedListener {
+public class CardDetailsFragment extends DropInFragment implements OnCardFormSubmitListener, OnCardFormFieldFocusedListener {
 
     @VisibleForTesting
     CardForm cardForm;
@@ -157,10 +157,6 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
                 cardForm.setMobileNumberError(getContext().getString(R.string.bt_mobile_number_invalid));
             }
         }
-    }
-
-    private void sendDropInEvent(DropInEvent event) {
-        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
 
     @Override

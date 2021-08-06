@@ -16,7 +16,7 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-public class VaultManagerFragment extends Fragment implements View.OnClickListener {
+public class VaultManagerFragment extends DropInFragment implements View.OnClickListener {
 
     private RecyclerView vaultManagerView;
 
@@ -69,9 +69,5 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
     private void showVaultedPaymentMethods(List<PaymentMethodNonce> vaultedPaymentMethodNonces) {
         adapter = new VaultManagerPaymentMethodsAdapter(this, vaultedPaymentMethodNonces);
         vaultManagerView.setAdapter(adapter);
-    }
-
-    private void sendDropInEvent(DropInEvent event) {
-        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
 }
