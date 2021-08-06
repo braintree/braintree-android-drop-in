@@ -103,7 +103,6 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
             }
         });
 
-
         mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
