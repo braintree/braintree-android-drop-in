@@ -175,7 +175,7 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void onDropInCanceled() {
-        getDropInClient().sendAnalyticsEvent("sdk.exit.canceled");
+        sendAnalyticsEvent("sdk.exit.canceled");
         setResult(RESULT_CANCELED);
         finish();
     }
@@ -222,14 +222,14 @@ public class DropInActivity extends AppCompatActivity {
                 .setPositiveButton(R.string.bt_delete, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.positive");
+                        sendAnalyticsEvent("manager.delete.confirmation.positive");
                         removePaymentMethodNonce(paymentMethodNonceToDelete);
                     }
                 })
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
                     public void onDismiss(DialogInterface dialog) {
-                        getDropInClient().sendAnalyticsEvent("manager.delete.confirmation.negative");
+                        sendAnalyticsEvent("manager.delete.confirmation.negative");
                     }
                 })
                 .setNegativeButton(R.string.bt_cancel, null)
@@ -246,14 +246,15 @@ public class DropInActivity extends AppCompatActivity {
             @Override
             public void onResult(@Nullable PaymentMethodNonce deletedNonce, @Nullable Exception error) {
                 if (deletedNonce != null) {
-                    getDropInClient().sendAnalyticsEvent("manager.delete.succeeded");
+                    sendAnalyticsEvent("manager.delete.succeeded");
                 } else if (error instanceof PaymentMethodDeleteException) {
                     Snackbar.make(fragmentContainerView, R.string.bt_vault_manager_delete_failure, Snackbar.LENGTH_LONG).show();
-                    getDropInClient().sendAnalyticsEvent("manager.delete.failed");
+                    sendAnalyticsEvent("manager.delete.failed");
                     // TODO: hide loading view switcher
                     //mLoadingViewSwitcher.setDisplayedChild(0);
                 } else {
-                    getDropInClient().sendAnalyticsEvent("manager.unknown.failed");
+                    sendAnalyticsEvent("manager.unknown.failed");
+                    // TODO: determine how to handle unexpected error when deleting payment method (previously finished drop in)
                     onError(error);
                 }
             }
@@ -374,22 +375,22 @@ public class DropInActivity extends AppCompatActivity {
             ErrorWithResponse errorResponse = (ErrorWithResponse) error;
             dropInViewModel.setCardTokenizationError(errorResponse);
         } else if (error instanceof AuthenticationException || error instanceof AuthorizationException || error instanceof UpgradeRequiredException) {
-            getDropInClient().sendAnalyticsEvent("sdk.exit.developer-error");
+            sendAnalyticsEvent("sdk.exit.developer-error");
         } else if (error instanceof ConfigurationException) {
-            getDropInClient().sendAnalyticsEvent("sdk.exit.configuration-exception");
+            sendAnalyticsEvent("sdk.exit.configuration-exception");
         } else if (error instanceof ServerException || error instanceof UnexpectedException) {
-            getDropInClient().sendAnalyticsEvent("sdk.exit.server-error");
+            sendAnalyticsEvent("sdk.exit.server-error");
         } else if (error instanceof ServiceUnavailableException) {
-            getDropInClient().sendAnalyticsEvent("sdk.exit.server-unavailable");
+            sendAnalyticsEvent("sdk.exit.server-unavailable");
         } else {
-            getDropInClient().sendAnalyticsEvent("sdk.exit.sdk-error");
+            sendAnalyticsEvent("sdk.exit.sdk-error");
         }
 
         finish(error);
     }
 
     private void finishWithDropInResult(DropInResult dropInResult) {
-        getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+        sendAnalyticsEvent("sdk.exit.success");
         DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, dropInResult.getPaymentMethodNonce());
         finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
     }
@@ -486,7 +487,7 @@ public class DropInActivity extends AppCompatActivity {
                 event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD);
 
         if (paymentMethodNonce instanceof CardNonce) {
-            getDropInClient().sendAnalyticsEvent("vaulted-card.select");
+            sendAnalyticsEvent("vaulted-card.select");
         }
 
         dropInViewModel.setDropInState(DropInState.FINISHING);
@@ -566,12 +567,12 @@ public class DropInActivity extends AppCompatActivity {
                                 onError(error);
                                 return;
                             }
-                            getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+                            sendAnalyticsEvent("sdk.exit.success");
                             finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
                         }
                     });
                 } else {
-                    getDropInClient().sendAnalyticsEvent("sdk.exit.success");
+                    sendAnalyticsEvent("sdk.exit.success");
                     finish(paymentMethod, null);
                 }
             }
