@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.view.View;
 
-import androidx.annotation.IdRes;
 import androidx.appcompat.app.AlertDialog;
 
 import com.braintreepayments.api.dropin.R;
