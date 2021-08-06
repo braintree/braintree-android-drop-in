@@ -9,6 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
@@ -23,7 +24,7 @@ import java.util.Arrays;
 import java.util.List;
 
 // TODO: unit test after all fragments have been extracted
-public class DropInActivity extends BaseActivity {
+public class DropInActivity extends AppCompatActivity {
 
     private static final String ADD_CARD_TAG = "ADD_CARD";
     private static final String CARD_DETAILS_TAG = "CARD_DETAILS";
@@ -32,7 +33,14 @@ public class DropInActivity extends BaseActivity {
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
+    @VisibleForTesting
+    DropInRequest mDropInRequest;
+
+    private DropInClient dropInClient;
     private FragmentContainerView fragmentContainerView;
+
+    @VisibleForTesting
+    boolean mClientTokenPresent;
 
     @Override
     protected void onResume() {
@@ -62,8 +70,21 @@ public class DropInActivity extends BaseActivity {
             return;
         }
 
+        mDropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
+
+        getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
+            @Override
+            public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
+                if (paymentMethods != null) {
+                    dropInViewModel.setSupportedPaymentMethods(paymentMethods);
+                } else {
+                    onError(error);
+                }
+            }
+        });
 
         getSupportFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this, new FragmentResultListener() {
             @Override
@@ -87,6 +108,37 @@ public class DropInActivity extends BaseActivity {
         });
 
         showSelectPaymentMethodParentFragment();
+    }
+
+    protected void finish(PaymentMethodNonce paymentMethod, String deviceData) {
+        DropInResult result = new DropInResult()
+                .paymentMethodNonce(paymentMethod)
+                .deviceData(deviceData);
+
+        setResult(RESULT_OK,
+                new Intent().putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result));
+        finish();
+    }
+
+    protected void finish(Exception e) {
+        setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInResult.EXTRA_ERROR, e));
+        finish();
+    }
+
+    @VisibleForTesting
+    DropInClient getDropInClient() {
+        // lazily instantiate dropInClient for testing purposes
+        if (dropInClient != null) {
+            return dropInClient;
+        }
+        Intent intent = getIntent();
+        String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
+        String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
+        DropInRequest dropInRequest = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+        dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
+
+        mClientTokenPresent = dropInClient.getAuthorization() instanceof ClientToken;
+        return dropInClient;
     }
 
     @VisibleForTesting

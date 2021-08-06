@@ -42,7 +42,7 @@ public class DropInActivityUnitTest {
     private ShadowActivity mShadowActivity;
 
     @Before
-    public void setup() {
+    public void beforeEach() {
     }
 
     private void setupDropInActivity(String authorization, DropInClient dropInClient, DropInRequest dropInRequest, String sessionId) {
@@ -757,6 +757,48 @@ public class DropInActivityUnitTest {
     public void onPaymentMethodNonceDeleted_sendsAnalyticCall() {
         // TODO: test this after determining analytics testing strategy
 //        verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded");
+    }
+
+    @Test
+    public void finish_finishesWithPaymentMethodNonceAndDeviceDataInDropInResult()
+            throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        DropInClient dropInClient = mock(DropInClient.class);
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+
+        CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
+        mActivity.finish(cardNonce, "device_data");
+
+        ShadowActivity shadowActivity = shadowOf(mActivity);
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_OK, shadowActivity.getResultCode());
+        DropInResult result = shadowActivity.getResultIntent()
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+        assertNotNull(result);
+        assertEquals(cardNonce.getString(), result.getPaymentMethodNonce().getString());
+        assertEquals("device_data", result.getDeviceData());
+    }
+
+    @Test
+    public void finish_finishesWithException() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        DropInClient dropInClient = mock(DropInClient.class);
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+
+        Exception exception = new Exception("Error message");
+        mActivity.finish(exception);
+
+        ShadowActivity shadowActivity = shadowOf(mActivity);
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
+        Exception error = (Exception) shadowActivity.getResultIntent()
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
+        assertNotNull(error);
+        assertEquals("Error message", error.getMessage());
     }
 
     private void assertExceptionIsReturned(String analyticsEvent, Exception exception) {
