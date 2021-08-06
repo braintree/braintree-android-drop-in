@@ -34,6 +34,21 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
+    static CardDetailsFragment from(DropInRequest dropInRequest, String cardNumber, Configuration configuration, boolean hasTokenizationKeyAuth) {
+        CardFormConfiguration cardFormConfiguration =
+                new CardFormConfiguration(configuration.isCvvChallengePresent(), configuration.isPostalCodeChallengePresent());
+
+        Bundle args = new Bundle();
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);
+        args.putString("EXTRA_CARD_NUMBER", cardNumber);
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", cardFormConfiguration);
+        args.putBoolean("EXTRA_AUTH_IS_TOKENIZATION_KEY", hasTokenizationKeyAuth);
+
+        CardDetailsFragment instance = new CardDetailsFragment();
+        instance.setArguments(args);
+        return instance;
+    }
+
     public CardDetailsFragment() {
     }
 

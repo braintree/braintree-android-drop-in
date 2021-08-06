@@ -323,7 +323,16 @@ public class DropInActivity extends AppCompatActivity {
         return (fragment == null);
     }
 
-    private void replaceExistingFragment(Class <? extends Fragment> fragmentClass, String tag, Bundle args) {
+    private void replaceExistingFragment(Fragment fragment, String tag) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container_view, fragment, tag)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void replaceExistingFragment(Class<? extends Fragment> fragmentClass, String tag, Bundle args) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager
                 .beginTransaction()
@@ -342,26 +351,25 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void showCardDetailsFragment(final String cardNumber) {
+        // TODO: make if statement truthy
+        if (!shouldAddFragment(CARD_DETAILS_TAG)) {
+            return;
+        }
+
         getDropInClient().getConfiguration(new ConfigurationCallback() {
             @Override
             public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
                 if (configuration != null) {
-                    CardFormConfiguration cardFormConfiguration =
-                        new CardFormConfiguration(configuration.isCvvChallengePresent(), configuration.isPostalCodeChallengePresent());
+                    // TODO: implement getDropInClient().hasAuthType(AuthType.TOKENIZATION_KEY)
+                    boolean hasTokenizationKeyAuth =
+                            Authorization.isTokenizationKey(getDropInClient().getAuthorization().toString());
 
-                    if (shouldAddFragment(CARD_DETAILS_TAG)) {
-                        Bundle args = new Bundle();
-                        args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-                        args.putString("EXTRA_CARD_NUMBER", cardNumber);
-                        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", cardFormConfiguration);
-                        args.putBoolean("EXTRA_AUTH_IS_TOKENIZATION_KEY", Authorization.isTokenizationKey(getDropInClient().getAuthorization().toString()));
-
-                        replaceExistingFragment(CardDetailsFragment.class, CARD_DETAILS_TAG, args);
-                    }
+                    CardDetailsFragment cardDetailsFragment = CardDetailsFragment.from(
+                            mDropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
+                    replaceExistingFragment(cardDetailsFragment, CARD_DETAILS_TAG);
                 }
             }
         });
-
     }
 
     public void onError(final Exception error) {
