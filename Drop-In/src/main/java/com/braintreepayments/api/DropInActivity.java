@@ -193,6 +193,7 @@ public class DropInActivity extends BaseActivity {
                 .show();
     }
 
+    @VisibleForTesting
     void removePaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
         // proactively remove from view model
         dropInViewModel.removeVaultedPaymentMethodNonce(paymentMethodNonceToDelete);
