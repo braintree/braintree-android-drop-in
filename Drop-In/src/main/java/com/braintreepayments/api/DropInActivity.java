@@ -201,6 +201,7 @@ public class DropInActivity extends AppCompatActivity {
                 break;
             default:
             case UNKNOWN:
+                refreshSupportedCardTypes();
                 startAddCardFlow(null);
                 break;
         }
@@ -344,9 +345,8 @@ public class DropInActivity extends AppCompatActivity {
 
     private void showSelectPaymentMethodParentFragment() {
         if (shouldAddFragment(BOTTOM_SHEET_TAG)) {
-            Bundle args = new Bundle();
-            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-            replaceExistingFragment(BottomSheetFragment.class, BOTTOM_SHEET_TAG, args);
+            BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(mDropInRequest);
+            replaceExistingFragment(bottomSheetFragment, SELECT_PAYMENT_METHOD_TAG);
         }
     }
 
@@ -434,7 +434,7 @@ public class DropInActivity extends AppCompatActivity {
         startAddCardFlow(event.getString(DropInEventProperty.CARD_NUMBER));
     }
 
-    private void startAddCardFlow(@Nullable String cardNumber) {
+    private void refreshSupportedCardTypes() {
         getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
             @Override
             public void onResult(List<String> supportedCardTypes, Exception error) {
@@ -445,15 +445,14 @@ public class DropInActivity extends AppCompatActivity {
                 }
             }
         });
+    }
 
-        if (shouldAddFragment(ADD_CARD_TAG)) {
-            Bundle args = new Bundle();
-            args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-            if (cardNumber != null) {
-                args.putString("EXTRA_CARD_NUMBER", cardNumber);
-            }
-            replaceExistingFragment(AddCardFragment.class, ADD_CARD_TAG, args);
+    private void startAddCardFlow(@Nullable String cardNumber) {
+        if (!shouldAddFragment(ADD_CARD_TAG)) {
+            return;
         }
+        AddCardFragment addCardFragment = AddCardFragment.from(mDropInRequest, cardNumber);
+        replaceExistingFragment(addCardFragment, ADD_CARD_TAG);
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -34,7 +35,16 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
-    public AddCardFragment() {
+    static AddCardFragment from(DropInRequest dropInRequest, @Nullable String cardNumber) {
+        Bundle args = new Bundle();
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);
+        if (cardNumber != null) {
+            args.putString("EXTRA_CARD_NUMBER", cardNumber);
+        }
+
+        AddCardFragment instance = new AddCardFragment();
+        instance.setArguments(args);
+        return instance;
     }
 
     @Override

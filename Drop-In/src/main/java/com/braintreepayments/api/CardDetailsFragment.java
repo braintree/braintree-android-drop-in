@@ -49,9 +49,6 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
         return instance;
     }
 
-    public CardDetailsFragment() {
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
