@@ -21,7 +21,6 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO: unit test after all fragments have been extracted
 public class DropInActivity extends AppCompatActivity {
 
     private static final String ADD_CARD_TAG = "ADD_CARD";
@@ -346,10 +345,10 @@ public class DropInActivity extends AppCompatActivity {
     private void showSelectPaymentMethodParentFragment() {
         if (fragmentAlreadyExists(SELECT_PAYMENT_METHOD_TAG)) {
             return;
-
         }
-            BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(mDropInRequest);
-            replaceExistingFragment(bottomSheetFragment, SELECT_PAYMENT_METHOD_TAG);
+        
+        BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(mDropInRequest);
+        replaceExistingFragment(bottomSheetFragment, SELECT_PAYMENT_METHOD_TAG);
     }
 
     private void showCardDetailsFragment(final String cardNumber) {
