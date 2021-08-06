@@ -200,7 +200,7 @@ public class DropInActivity extends AppCompatActivity {
                 break;
             default:
             case UNKNOWN:
-                refreshSupportedCardTypes();
+                prefetchSupportedCardTypes();
                 startAddCardFlow(null);
                 break;
         }
@@ -434,7 +434,7 @@ public class DropInActivity extends AppCompatActivity {
         startAddCardFlow(event.getString(DropInEventProperty.CARD_NUMBER));
     }
 
-    private void refreshSupportedCardTypes() {
+    private void prefetchSupportedCardTypes() {
         getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
             @Override
             public void onResult(List<String> supportedCardTypes, Exception error) {
