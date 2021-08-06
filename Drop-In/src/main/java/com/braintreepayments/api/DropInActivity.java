@@ -42,6 +42,8 @@ public class DropInActivity extends AppCompatActivity {
     @VisibleForTesting
     boolean mClientTokenPresent;
 
+    private AlertPresenter alertPresenter;
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -70,6 +72,7 @@ public class DropInActivity extends AppCompatActivity {
             return;
         }
 
+        alertPresenter = new AlertPresenter();
         mDropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
@@ -211,30 +214,20 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void deleteVaultedPaymentMethod(final PaymentMethodNonce paymentMethodNonceToDelete) {
-        PaymentMethodItemView dialogView = new PaymentMethodItemView(this);
-        dialogView.setPaymentMethod(paymentMethodNonceToDelete, false);
-
-        new AlertDialog.Builder(this,
-                R.style.Theme_AppCompat_Light_Dialog_Alert)
-                .setTitle(R.string.bt_delete_confirmation_title)
-                .setMessage(R.string.bt_delete_confirmation_description)
-                .setView(dialogView)
-                .setPositiveButton(R.string.bt_delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        alertPresenter.showConfirmNonceDeletionDialog(this, paymentMethodNonceToDelete, new DialogInteractionCallback() {
+            @Override
+            public void onDialogInteraction(DialogInteraction interaction) {
+                switch (interaction) {
+                    case POSITIVE:
                         sendAnalyticsEvent("manager.delete.confirmation.positive");
                         removePaymentMethodNonce(paymentMethodNonceToDelete);
-                    }
-                })
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
+                        break;
+                    case NEGATIVE:
                         sendAnalyticsEvent("manager.delete.confirmation.negative");
-                    }
-                })
-                .setNegativeButton(R.string.bt_cancel, null)
-                .create()
-                .show();
+                        break;
+                }
+            }
+        });
     }
 
     @VisibleForTesting
@@ -248,8 +241,11 @@ public class DropInActivity extends AppCompatActivity {
                 if (deletedNonce != null) {
                     sendAnalyticsEvent("manager.delete.succeeded");
                 } else if (error instanceof PaymentMethodDeleteException) {
-                    Snackbar.make(fragmentContainerView, R.string.bt_vault_manager_delete_failure, Snackbar.LENGTH_LONG).show();
                     sendAnalyticsEvent("manager.delete.failed");
+
+                    int snackBarTextResId = R.string.bt_vault_manager_delete_failure;
+                    alertPresenter.showSnackbarText(
+                            fragmentContainerView, snackBarTextResId, Snackbar.LENGTH_LONG);
                     // TODO: hide loading view switcher
                     //mLoadingViewSwitcher.setDisplayedChild(0);
                 } else {
