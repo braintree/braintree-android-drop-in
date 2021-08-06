@@ -318,10 +318,10 @@ public class DropInActivity extends AppCompatActivity {
         showCardDetailsFragment(cardNumber);
     }
 
-    private boolean shouldAddFragment(String tag) {
+    private boolean fragmentAlreadyExists(String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
-        return (fragment == null);
+        return (fragment != null);
     }
 
     private void replaceExistingFragment(Fragment fragment, String tag) {
@@ -344,15 +344,16 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void showSelectPaymentMethodParentFragment() {
-        if (shouldAddFragment(BOTTOM_SHEET_TAG)) {
+        if (fragmentAlreadyExists(SELECT_PAYMENT_METHOD_TAG)) {
+            return;
+
+        }
             BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(mDropInRequest);
             replaceExistingFragment(bottomSheetFragment, SELECT_PAYMENT_METHOD_TAG);
-        }
     }
 
     private void showCardDetailsFragment(final String cardNumber) {
-        // TODO: make if statement truthy
-        if (!shouldAddFragment(CARD_DETAILS_TAG)) {
+        if (fragmentAlreadyExists(CARD_DETAILS_TAG)) {
             return;
         }
 
@@ -448,7 +449,7 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void startAddCardFlow(@Nullable String cardNumber) {
-        if (!shouldAddFragment(ADD_CARD_TAG)) {
+        if (fragmentAlreadyExists(ADD_CARD_TAG)) {
             return;
         }
         AddCardFragment addCardFragment = AddCardFragment.from(mDropInRequest, cardNumber);
