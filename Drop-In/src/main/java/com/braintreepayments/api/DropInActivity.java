@@ -108,8 +108,10 @@ public class DropInActivity extends AppCompatActivity {
 
         dropInViewModel.isBottomSheetPresented().observe(this, new Observer<Boolean>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
-                onDidPresentBottomSheet();
+            public void onChanged(Boolean isBottomSheetVisible) {
+                if (isBottomSheetVisible) {
+                    onDidPresentBottomSheet();
+                }
             }
         });
 
