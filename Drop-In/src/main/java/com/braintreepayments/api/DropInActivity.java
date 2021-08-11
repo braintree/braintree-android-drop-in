@@ -107,7 +107,7 @@ public class DropInActivity extends AppCompatActivity {
             }
         });
 
-        showSelectPaymentMethodParentFragment();
+        showBottomSheet();
     }
 
     protected void finish(PaymentMethodNonce paymentMethod, String deviceData) {
@@ -342,13 +342,13 @@ public class DropInActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void showSelectPaymentMethodParentFragment() {
-        if (fragmentAlreadyExists(SELECT_PAYMENT_METHOD_TAG)) {
+    private void showBottomSheet() {
+        if (fragmentAlreadyExists(BOTTOM_SHEET_TAG)) {
             return;
         }
-        
+
         BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(mDropInRequest);
-        replaceExistingFragment(bottomSheetFragment, SELECT_PAYMENT_METHOD_TAG);
+        replaceExistingFragment(bottomSheetFragment, BOTTOM_SHEET_TAG);
     }
 
     private void showCardDetailsFragment(final String cardNumber) {
@@ -451,6 +451,7 @@ public class DropInActivity extends AppCompatActivity {
         if (fragmentAlreadyExists(ADD_CARD_TAG)) {
             return;
         }
+
         AddCardFragment addCardFragment = AddCardFragment.from(mDropInRequest, cardNumber);
         replaceExistingFragment(addCardFragment, ADD_CARD_TAG);
     }
