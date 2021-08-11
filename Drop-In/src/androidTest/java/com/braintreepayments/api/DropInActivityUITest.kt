@@ -50,7 +50,10 @@ class DropInActivityUITest {
     @Test
     fun whenStateIsRESUMED_onCancelDropInEvent_finishesWithResult() {
         val dropInRequest = DropInRequest()
-        dropInRequest.threeDSecureRequest = ThreeDSecureRequest()
+
+        val threeDSecureRequest = ThreeDSecureRequest()
+        threeDSecureRequest.isCardAddChallengeRequested = false
+        dropInRequest.threeDSecureRequest = threeDSecureRequest
 
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(context, DropInActivity::class.java)
