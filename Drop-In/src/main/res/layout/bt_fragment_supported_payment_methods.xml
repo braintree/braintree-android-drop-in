@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@color/bt_base_background"
     android:minHeight="200dp"
+    android:animateLayoutChanges="true"
     tools:context="com.braintreepayments.api.DropInActivity">
 
     <LinearLayout

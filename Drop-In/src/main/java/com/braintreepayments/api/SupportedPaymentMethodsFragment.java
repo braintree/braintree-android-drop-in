@@ -62,7 +62,6 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
         mSupportedPaymentMethodsView = view.findViewById(R.id.bt_supported_payment_methods);
         mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
-
         mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
 
         LinearLayoutManager supportedPaymentMethodsLayoutManager =
@@ -93,21 +92,14 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
             }
         });
 
-        dropInViewModel.isLoading().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
+        dropInViewModel.getDropInState().observe(getViewLifecycleOwner(), new Observer<DropInState>() {
             @Override
-            public void onChanged(Boolean isLoading) {
-                if (isLoading) {
+            public void onChanged(DropInState dropInState) {
+                if (dropInState == DropInState.FINISHING) {
+                    // hide vault manager (if necessary) and show loader
+                    mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
                     showLoader();
-                } else {
-                    hideLoader();
                 }
-            }
-        });
-
-        dropInViewModel.getUserCanceledError().observe(getViewLifecycleOwner(), new Observer<Exception>() {
-            @Override
-            public void onChanged(Exception e) {
-                hideLoader();
             }
         });
 
@@ -127,9 +119,17 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
         super.onResume();
 
         // show supported payment methods immediately if possible
-        List<DropInPaymentMethodType> supportedPaymentMethods = dropInViewModel.getSupportedPaymentMethods().getValue();
+        List<DropInPaymentMethodType> supportedPaymentMethods =
+            dropInViewModel.getSupportedPaymentMethods().getValue();
         if (supportedPaymentMethods != null) {
             showSupportedPaymentMethods(supportedPaymentMethods);
+        }
+
+        // show vaulted payment methods immediately if possible
+        List<PaymentMethodNonce> vaultedPaymentMethods =
+            dropInViewModel.getVaultedPaymentMethods().getValue();
+        if (vaultedPaymentMethods != null) {
+            showVaultedPaymentMethods(vaultedPaymentMethods);
         }
     }
 
@@ -146,17 +146,22 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
     }
 
     private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
+        hideLoader();
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
                 availablePaymentMethods, this);
         mSupportedPaymentMethodsView.setAdapter(adapter);
-        dropInViewModel.setIsLoading(false);
-
-        sendDropInEvent(new DropInEvent(DropInEventType.DID_DISPLAY_SUPPORTED_PAYMENT_METHODS));
     }
 
     @Override
     public void onPaymentMethodSelected(DropInPaymentMethodType type) {
-        dropInViewModel.setIsLoading(true);
+        boolean paymentTypeWillInitiateAsyncRequest = (type == DropInPaymentMethodType.PAYPAL)
+            || (type == DropInPaymentMethodType.PAY_WITH_VENMO);
+
+        if (paymentTypeWillInitiateAsyncRequest) {
+            // hide vault manager (if necessary) and show loader
+            mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
+            showLoader();
+        }
         sendDropInEvent(
                 DropInEvent.createSupportedPaymentMethodSelectedEvent(type));
     }

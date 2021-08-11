@@ -222,7 +222,8 @@ class SupportedPaymentMethodsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenPaymentMethodSelected_showsLoadingView() {
         val dropInRequest = DropInRequest()
-        dropInRequest.isVaultManagerEnabled = false
+        dropInRequest.isVaultManagerEnabled = true
+
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
 
         val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
@@ -234,13 +235,10 @@ class SupportedPaymentMethodsFragmentUITest {
 
         onView(isRoot()).perform(waitFor(500))
         onView(withText("Credit or Debit Card")).perform(click())
-        scenario.onFragment { fragment ->
-            assertTrue(fragment.dropInViewModel.isLoading.value!!)
-        }
+        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
     }
 
-    @Test
-    fun whenStateIsRESUMED_whenUserCanceledErrorPresentInViewModel_hidesLoader() {
+    fun whenStateIsRESUMED_whenFragmentRecreated_hidesLoader() {
         val dropInRequest = DropInRequest()
         dropInRequest.isVaultManagerEnabled = false
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
@@ -250,10 +248,11 @@ class SupportedPaymentMethodsFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
-            fragment.mLoadingIndicatorWrapper.visibility = VISIBLE
+            fragment.onPaymentMethodSelected(DropInPaymentMethodType.PAYPAL)
             fragment.dropInViewModel.setUserCanceledError(Exception("User canceled PayPal."))
         }
 
+        scenario.recreate()
         onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
         onView(withId(R.id.bt_supported_payment_methods)).check(matches(isDisplayed()))
     }

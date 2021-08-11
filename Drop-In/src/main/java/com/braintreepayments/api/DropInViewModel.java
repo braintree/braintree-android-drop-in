@@ -9,11 +9,11 @@ import com.braintreepayments.cardform.utils.CardType;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class DropInViewModel extends ViewModel {
 
-    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isBottomSheetPresented = new MutableLiveData<>(false);
+    private final MutableLiveData<DropInState> dropInState = new MutableLiveData<>(DropInState.IDLE);
 
     private final MutableLiveData<List<DropInPaymentMethodType>> supportedPaymentMethods = new MutableLiveData<>();
     private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethods = new MutableLiveData<>();
@@ -21,12 +21,12 @@ public class DropInViewModel extends ViewModel {
     private final MutableLiveData<Exception> cardTokenizationError = new MutableLiveData<>();
     private final MutableLiveData<Exception> userCanceledError = new MutableLiveData<>();
 
-    LiveData<Boolean> isLoading() {
-        return isLoading;
+    LiveData<Boolean> isBottomSheetPresented() {
+        return isBottomSheetPresented;
     }
 
-    void setIsLoading(boolean value) {
-        isLoading.setValue(value);
+    void setBottomSheetPresented(boolean value) {
+        isBottomSheetPresented.setValue(value);
     }
 
     void setVaultedPaymentMethods(List<PaymentMethodNonce> value) {
@@ -46,7 +46,7 @@ public class DropInViewModel extends ViewModel {
     }
 
     void setSupportedCardTypes(List<CardType> value) {
-        supportedCardTypes.postValue(value);
+        supportedCardTypes.setValue(value);
     }
 
     LiveData<List<CardType>> getSupportedCardTypes() {
@@ -85,5 +85,13 @@ public class DropInViewModel extends ViewModel {
             }
             vaultedPaymentMethods.setValue(updatedPaymentMethods);
         }
+    }
+
+    LiveData<DropInState> getDropInState() {
+        return dropInState;
+    }
+
+    void setDropInState(DropInState state) {
+        dropInState.setValue(state);
     }
 }
