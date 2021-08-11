@@ -45,6 +45,9 @@ public class DropInActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        BrowserSwitchResult browserSwitchResult =
+            getDropInClient().getBrowserSwitchResult(this);
+
         getDropInClient().deliverBrowserSwitchResult(this, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
