@@ -1,11 +1,9 @@
 package com.braintreepayments.api;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ViewSwitcher;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
@@ -21,7 +19,6 @@ import java.util.List;
 public class VaultManagerFragment extends Fragment implements View.OnClickListener {
 
     private RecyclerView vaultManagerView;
-    private View baseView;
 
     @VisibleForTesting
     VaultManagerPaymentMethodsAdapter adapter;
@@ -35,8 +32,6 @@ public class VaultManagerFragment extends Fragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bt_fragment_vault_manager, container, false);
 
-        // TODO: handling switching between fragment and loading
-        baseView = view.findViewById(R.id.bt_base_view);
         vaultManagerView = view.findViewById(R.id.bt_vault_manager_list);
         vaultManagerView.setLayoutManager(new LinearLayoutManager(
                 requireActivity(), RecyclerView.VERTICAL, false));

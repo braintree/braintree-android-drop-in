@@ -8,12 +8,12 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
@@ -27,11 +27,11 @@ public class DropInActivity extends BaseActivity {
 
     private static final String ADD_CARD_TAG = "ADD_CARD";
     private static final String CARD_DETAILS_TAG = "CARD_DETAILS";
-    private static final String SELECT_PAYMENT_METHOD_TAG = "SELECT_PAYMENT_METHOD_PARENT_FRAGMENT";
+    private static final String BOTTOM_SHEET_TAG = "BOTTOM_SHEET";
 
     @VisibleForTesting
     DropInViewModel dropInViewModel;
-    ActionBar actionBar;
+
     private FragmentContainerView fragmentContainerView;
 
     @Override
@@ -65,17 +65,6 @@ public class DropInActivity extends BaseActivity {
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
 
-        getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
-            @Override
-            public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
-                if (paymentMethods != null) {
-                    dropInViewModel.setSupportedPaymentMethods(paymentMethods);
-                } else {
-                    onError(error);
-                }
-            }
-        });
-
         getSupportFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this, new FragmentResultListener() {
             @Override
             public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
@@ -84,10 +73,16 @@ public class DropInActivity extends BaseActivity {
         });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-
             @Override
             public void handleOnBackPressed() {
                 onDropInCanceled();
+            }
+        });
+
+        dropInViewModel.isBottomSheetPresented().observe(this, new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean aBoolean) {
+                onDidPresentBottomSheet();
             }
         });
 
@@ -108,9 +103,6 @@ public class DropInActivity extends BaseActivity {
                 break;
             case DELETE_VAULTED_PAYMENT_METHOD:
                 onDeleteVaultedPaymentMethod(event);
-                break;
-            case DID_DISPLAY_SUPPORTED_PAYMENT_METHODS:
-                onDidDisplaySupportedPaymentMethods(event);
                 break;
             case EDIT_CARD_NUMBER:
                 onEditCardNumber(event);
@@ -239,11 +231,22 @@ public class DropInActivity extends BaseActivity {
         });
     }
 
-    private void onDidDisplaySupportedPaymentMethods(DropInEvent event) {
-        // TODO: consider pull to refresh to allow user to request an updated
-        // instead of having this event respond to the visual presentation of supported
-        // payment methods
-        updateVaultedPaymentMethodNonces(false);
+    private void onDidPresentBottomSheet() {
+        getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
+            @Override
+            public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
+                if (paymentMethods != null) {
+                    dropInViewModel.setSupportedPaymentMethods(paymentMethods);
+
+                    // TODO: consider pull to refresh to allow user to request an updated
+                    // instead of having this event respond to the visual presentation of supported
+                    // payment methods
+                    updateVaultedPaymentMethodNonces(false);
+                } else {
+                    onError(error);
+                }
+            }
+        });
     }
 
     void updateVaultedPaymentMethodNonces(boolean refetch) {
@@ -276,16 +279,17 @@ public class DropInActivity extends BaseActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager
                 .beginTransaction()
+                .setCustomAnimations(R.anim.bt_fragment_fade_in, R.anim.bt_fragment_fade_out)
                 .replace(R.id.fragment_container_view, fragmentClass, args, tag)
                 .addToBackStack(null)
                 .commit();
     }
 
     private void showSelectPaymentMethodParentFragment() {
-        if (shouldAddFragment(SELECT_PAYMENT_METHOD_TAG)) {
+        if (shouldAddFragment(BOTTOM_SHEET_TAG)) {
             Bundle args = new Bundle();
             args.putParcelable("EXTRA_DROP_IN_REQUEST", mDropInRequest);
-            replaceExistingFragment(SelectPaymentMethodParentFragment.class, SELECT_PAYMENT_METHOD_TAG, args);
+            replaceExistingFragment(BottomSheetFragment.class, BOTTOM_SHEET_TAG, args);
         }
     }
 
@@ -428,11 +432,11 @@ public class DropInActivity extends BaseActivity {
             getDropInClient().sendAnalyticsEvent("vaulted-card.select");
         }
 
+        dropInViewModel.setDropInState(DropInState.FINISHING);
         getDropInClient().shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
                 if (shouldRequestThreeDSecureVerification) {
-                    dropInViewModel.setIsLoading(true);
 
                     getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new DropInResultCallback() {
                         @Override
@@ -441,7 +445,6 @@ public class DropInActivity extends BaseActivity {
                                 finishWithDropInResult(dropInResult);
                             } else {
                                 updateVaultedPaymentMethodNonces(true);
-                                dropInViewModel.setIsLoading(false);
                                 onError(error);
                             }
                         }
@@ -459,7 +462,6 @@ public class DropInActivity extends BaseActivity {
                                     finishWithDropInResult(dropInResult);
                                 } else {
                                     updateVaultedPaymentMethodNonces(true);
-                                    dropInViewModel.setIsLoading(false);
                                     onError(error);
                                 }
                             }
@@ -491,6 +493,7 @@ public class DropInActivity extends BaseActivity {
     }
 
     void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
+        dropInViewModel.setDropInState(DropInState.FINISHING);
         getDropInClient().shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
