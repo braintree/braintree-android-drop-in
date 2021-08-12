@@ -317,10 +317,10 @@ public class DropInActivity extends AppCompatActivity {
         showCardDetailsFragment(cardNumber);
     }
 
-    private boolean fragmentAlreadyExists(String tag) {
+    private boolean shouldAddFragment(String tag) {
         FragmentManager fragmentManager = getSupportFragmentManager();
         Fragment fragment = fragmentManager.findFragmentByTag(tag);
-        return (fragment != null);
+        return (fragment == null);
     }
 
     private void replaceExistingFragment(Fragment fragment, String tag) {
@@ -343,33 +343,29 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void showBottomSheet() {
-        if (fragmentAlreadyExists(BOTTOM_SHEET_TAG)) {
-            return;
+        if (shouldAddFragment(BOTTOM_SHEET_TAG)) {
+            BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(mDropInRequest);
+            replaceExistingFragment(bottomSheetFragment, BOTTOM_SHEET_TAG);
         }
-
-        BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(mDropInRequest);
-        replaceExistingFragment(bottomSheetFragment, BOTTOM_SHEET_TAG);
     }
 
     private void showCardDetailsFragment(final String cardNumber) {
-        if (fragmentAlreadyExists(CARD_DETAILS_TAG)) {
-            return;
-        }
+        if (shouldAddFragment(CARD_DETAILS_TAG)) {
+            getDropInClient().getConfiguration(new ConfigurationCallback() {
+                @Override
+                public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
+                    if (configuration != null) {
+                        // TODO: implement getDropInClient().hasAuthType(AuthType.TOKENIZATION_KEY)
+                        boolean hasTokenizationKeyAuth =
+                                Authorization.isTokenizationKey(getDropInClient().getAuthorization().toString());
 
-        getDropInClient().getConfiguration(new ConfigurationCallback() {
-            @Override
-            public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
-                if (configuration != null) {
-                    // TODO: implement getDropInClient().hasAuthType(AuthType.TOKENIZATION_KEY)
-                    boolean hasTokenizationKeyAuth =
-                            Authorization.isTokenizationKey(getDropInClient().getAuthorization().toString());
-
-                    CardDetailsFragment cardDetailsFragment = CardDetailsFragment.from(
-                            mDropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
-                    replaceExistingFragment(cardDetailsFragment, CARD_DETAILS_TAG);
+                        CardDetailsFragment cardDetailsFragment = CardDetailsFragment.from(
+                                mDropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
+                        replaceExistingFragment(cardDetailsFragment, CARD_DETAILS_TAG);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     public void onError(final Exception error) {
@@ -448,12 +444,10 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void startAddCardFlow(@Nullable String cardNumber) {
-        if (fragmentAlreadyExists(ADD_CARD_TAG)) {
-            return;
+        if (shouldAddFragment(ADD_CARD_TAG)) {
+            AddCardFragment addCardFragment = AddCardFragment.from(mDropInRequest, cardNumber);
+            replaceExistingFragment(addCardFragment, ADD_CARD_TAG);
         }
-
-        AddCardFragment addCardFragment = AddCardFragment.from(mDropInRequest, cardNumber);
-        replaceExistingFragment(addCardFragment, ADD_CARD_TAG);
     }
 
     @Override
