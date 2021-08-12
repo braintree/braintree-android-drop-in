@@ -332,16 +332,6 @@ public class DropInActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void replaceExistingFragment(Class<? extends Fragment> fragmentClass, String tag, Bundle args) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager
-                .beginTransaction()
-                .setCustomAnimations(R.anim.bt_fragment_fade_in, R.anim.bt_fragment_fade_out)
-                .replace(R.id.fragment_container_view, fragmentClass, args, tag)
-                .addToBackStack(null)
-                .commit();
-    }
-
     private void showBottomSheet() {
         if (shouldAddFragment(BOTTOM_SHEET_TAG)) {
             BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(mDropInRequest);
