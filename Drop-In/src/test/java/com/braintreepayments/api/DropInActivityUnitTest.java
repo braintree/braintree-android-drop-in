@@ -845,7 +845,7 @@ public class DropInActivityUnitTest {
         String returnUrlScheme = "sample-scheme";
 
         BrowserSwitchRequest browserSwitchRequest =
-            new BrowserSwitchRequest(requestCode, url, metadata, returnUrlScheme);
+            new BrowserSwitchRequest(requestCode, url, metadata, returnUrlScheme, true);
         return new BrowserSwitchResult(BrowserSwitchStatus.SUCCESS, browserSwitchRequest);
     }
 }
