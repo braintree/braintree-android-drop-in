@@ -603,6 +603,24 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void tokenizeCard_onError_whenErrorWithResponse_setsCardTokenizationErrorInViewModel() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        ErrorWithResponse error = ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE);
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .cardTokenizeError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        Card card = new Card();
+        mActivity.tokenizeCard(card);
+
+        assertEquals(error, mActivity.dropInViewModel.getCardTokenizationError().getValue());
+    }
+
+    @Test
     public void tokenizeCard_onError_whenErrorNotErrorWithResponse_finishesWithError() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest();

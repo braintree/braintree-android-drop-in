@@ -379,10 +379,10 @@ public class DropInActivity extends BaseActivity {
         getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
             @Override
             public void onResult(List<String> supportedCardTypes, Exception error) {
-                if (supportedCardTypes != null) {
-                    dropInViewModel.setSupportedCardTypes(Arrays.asList(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)));
-                } else if (error != null) {
+                if (error != null) {
                     onError(error);
+                } else if (supportedCardTypes != null) {
+                    dropInViewModel.setSupportedCardTypes(Arrays.asList(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)));
                 }
             }
         });
