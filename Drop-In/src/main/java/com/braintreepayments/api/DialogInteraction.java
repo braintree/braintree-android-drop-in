@@ -1,6 +1,6 @@
 package com.braintreepayments.api;
 
-public enum DialogInteraction {
+enum DialogInteraction {
     POSITIVE,
     NEGATIVE
 }
