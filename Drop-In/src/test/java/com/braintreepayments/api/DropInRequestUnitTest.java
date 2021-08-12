@@ -140,6 +140,7 @@ public class DropInRequestUnitTest {
         billingAddress.setCountryCodeAlpha2("US");
         billingAddress.setPhoneNumber("3125557890");
         threeDSecureRequest.setBillingAddress(billingAddress);
+        threeDSecureRequest.setCardAddChallengeRequested(false);
 
         ThreeDSecureAdditionalInformation additionalInformation = new ThreeDSecureAdditionalInformation();
         additionalInformation.setShippingMethodIndicator("GEN");
