@@ -603,6 +603,157 @@ public class DropInActivityUnitTest {
     }
 
     @Test
+    public void tokenizeCard_onError_whenErrorWithResponse_setsCardTokenizationErrorInViewModel() throws JSONException {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        ErrorWithResponse error = ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE);
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .cardTokenizeError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        Card card = new Card();
+        mActivity.tokenizeCard(card);
+
+        assertEquals(error, mActivity.dropInViewModel.getCardTokenizationError().getValue());
+    }
+
+    @Test
+    public void tokenizeCard_onError_whenErrorNotErrorWithResponse_finishesWithError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        Exception error = new Exception("error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .cardTokenizeError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        Card card = new Card();
+        mActivity.tokenizeCard(card);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
+        assertEquals(error.getClass(), actualException.getClass());
+        assertEquals(error.getMessage(), actualException.getMessage());
+    }
+
+    @Test
+    public void startPaymentFlow_onPayPalError_finishesWithError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        Exception error = new Exception("error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .payPalError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.startPaymentFlow(DropInPaymentMethodType.PAYPAL);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
+        assertEquals(error.getClass(), actualException.getClass());
+        assertEquals(error.getMessage(), actualException.getMessage());
+    }
+
+    @Test
+    public void startPaymentFlow_onGooglePayError_finishesWithError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        Exception error = new Exception("error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .googlePayError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.startPaymentFlow(DropInPaymentMethodType.GOOGLE_PAYMENT);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
+        assertEquals(error.getClass(), actualException.getClass());
+        assertEquals(error.getMessage(), actualException.getMessage());
+    }
+
+    @Test
+    public void startPaymentFlow_onVenmoError_finishesWithError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        Exception error = new Exception("error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .venmoError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.startPaymentFlow(DropInPaymentMethodType.PAY_WITH_VENMO);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
+        assertEquals(error.getClass(), actualException.getClass());
+        assertEquals(error.getMessage(), actualException.getMessage());
+    }
+
+    @Test
+    public void startPaymentFlow_onGetSupportedCardTypesError_finishesWithError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        Exception error = new Exception("error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .getSupportedCardTypesError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.startPaymentFlow(DropInPaymentMethodType.UNKNOWN);
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
+        assertEquals(error.getClass(), actualException.getClass());
+        assertEquals(error.getMessage(), actualException.getMessage());
+    }
+
+    @Test
+    public void removePaymentMethodNonce_onError_finishesWithError() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        Exception error = new Exception("error");
+        DropInClient dropInClient = new MockDropInClientBuilder()
+                .deletePaymentMethodError(error)
+                .build();
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        mActivity.removePaymentMethodNonce(mock(PaymentMethodNonce.class));
+
+        assertTrue(mActivity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
+        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+                .getSerializableExtra(DropInResult.EXTRA_ERROR);
+        assertEquals(error.getClass(), actualException.getClass());
+        assertEquals(error.getMessage(), actualException.getMessage());
+    }
+
+    @Test
     public void onPaymentMethodNonceDeleted_sendsAnalyticCall() {
         // TODO: test this after determining analytics testing strategy
 //        verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded");

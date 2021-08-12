@@ -25,11 +25,15 @@ public class MockDropInClientBuilder {
     private Authorization authorization;
     private Configuration configuration;
     private List<DropInPaymentMethodType> supportedPaymentMethods;
+    private Exception getSupportedCardTypesError;
     private String deviceDataSuccess;
     private PaymentMethodNonce deletedNonce;
     private Exception deletePaymentMethodNonceError;
     private CardNonce cardTokenizeSuccess;
     private Exception cardTokenizeError;
+    private Exception payPalError;
+    private Exception googlePayError;
+    private Exception venmoError;
     private UnionPayCapabilities unionPayCapabilitiesSuccess;
     private Exception unionPayCapabilitiesError;
     private UnionPayEnrollment enrollUnionPaySuccess;
@@ -85,6 +89,11 @@ public class MockDropInClientBuilder {
         return this;
     }
 
+    MockDropInClientBuilder getSupportedCardTypesError(Exception error) {
+        this.getSupportedCardTypesError = error;
+        return this;
+    }
+
     MockDropInClientBuilder collectDeviceDataSuccess(String deviceDataSuccess) {
         this.deviceDataSuccess = deviceDataSuccess;
         return this;
@@ -95,6 +104,11 @@ public class MockDropInClientBuilder {
         return this;
     }
 
+    MockDropInClientBuilder deletePaymentMethodError(Exception error) {
+        this.deletePaymentMethodNonceError = error;
+        return this;
+    }
+
     MockDropInClientBuilder cardTokenizeSuccess(CardNonce cardNonce) {
         this.cardTokenizeSuccess = cardNonce;
         return this;
@@ -102,6 +116,21 @@ public class MockDropInClientBuilder {
 
     MockDropInClientBuilder cardTokenizeError(Exception error) {
         this.cardTokenizeError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder payPalError(Exception error) {
+        this.payPalError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder googlePayError(Exception error) {
+        this.googlePayError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder venmoError(Exception error) {
+        this.venmoError = error;
         return this;
     }
 
@@ -221,6 +250,8 @@ public class MockDropInClientBuilder {
                 GetSupportedPaymentMethodsCallback callback = (GetSupportedPaymentMethodsCallback) invocation.getArguments()[1];
                 if (supportedPaymentMethods != null) {
                     callback.onResult(supportedPaymentMethods, null);
+                } else if (getSupportedCardTypesError != null) {
+                    callback.onResult(null, getSupportedCardTypesError);
                 }
                 return null;
             }
@@ -243,6 +274,8 @@ public class MockDropInClientBuilder {
                 DeletePaymentMethodNonceCallback callback = (DeletePaymentMethodNonceCallback) invocation.getArguments()[2];
                 if (deletedNonce != null) {
                     callback.onResult(deletedNonce, null);
+                } else if (deletePaymentMethodNonceError != null) {
+                    callback.onResult(null, deletePaymentMethodNonceError);
                 }
                 return null;
             }
@@ -260,6 +293,39 @@ public class MockDropInClientBuilder {
                 return null;
             }
         }).when(dropInClient).tokenizeCard(any(Card.class), any(CardTokenizeCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                PayPalFlowStartedCallback callback = (PayPalFlowStartedCallback) invocation.getArguments()[1];
+                if (payPalError != null) {
+                    callback.onResult(payPalError);
+                }
+                return null;
+            }
+        }).when(dropInClient).tokenizePayPalRequest(any(FragmentActivity.class), any(PayPalFlowStartedCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                GooglePayRequestPaymentCallback callback = (GooglePayRequestPaymentCallback) invocation.getArguments()[1];
+                if (googlePayError != null) {
+                    callback.onResult(googlePayError);
+                }
+                return null;
+            }
+        }).when(dropInClient).requestGooglePayPayment(any(FragmentActivity.class), any(GooglePayRequestPaymentCallback.class));
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                VenmoTokenizeAccountCallback callback = (VenmoTokenizeAccountCallback) invocation.getArguments()[1];
+                if (venmoError != null) {
+                    callback.onResult(venmoError);
+                }
+                return null;
+            }
+        }).when(dropInClient).tokenizeVenmoAccount(any(FragmentActivity.class), any(VenmoTokenizeAccountCallback.class));
 
         doAnswer(new Answer<Void>() {
             @Override

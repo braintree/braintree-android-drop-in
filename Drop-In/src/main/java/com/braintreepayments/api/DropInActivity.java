@@ -185,7 +185,8 @@ public class DropInActivity extends BaseActivity {
                 .show();
     }
 
-    private void removePaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
+    @VisibleForTesting
+    void removePaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
         // proactively remove from view model
         dropInViewModel.removeVaultedPaymentMethodNonce(paymentMethodNonceToDelete);
 
@@ -201,7 +202,7 @@ public class DropInActivity extends BaseActivity {
                     //mLoadingViewSwitcher.setDisplayedChild(0);
                 } else {
                     getDropInClient().sendAnalyticsEvent("manager.unknown.failed");
-                    // TODO: determine how to handle unexpected error when deleting payment method (previously finished drop in)
+                    onError(error);
                 }
             }
         });
@@ -382,7 +383,11 @@ public class DropInActivity extends BaseActivity {
         getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
             @Override
             public void onResult(List<String> supportedCardTypes, Exception error) {
-                dropInViewModel.setSupportedCardTypes(Arrays.asList(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)));
+                if (error != null) {
+                    onError(error);
+                } else if (supportedCardTypes != null) {
+                    dropInViewModel.setSupportedCardTypes(Arrays.asList(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)));
+                }
             }
         });
 
@@ -484,7 +489,11 @@ public class DropInActivity extends BaseActivity {
             @Override
             public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
                 if (error != null) {
-                    dropInViewModel.setCardTokenizationError(error);
+                    if (error instanceof ErrorWithResponse) {
+                        dropInViewModel.setCardTokenizationError(error);
+                    } else {
+                        onError(error);
+                    }
                     return;
                 }
                 onPaymentMethodNonceCreated(cardNonce);
