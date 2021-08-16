@@ -318,6 +318,7 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void sendActivityResult() {
+
         if (pendingDropInResult != null) {
             getDropInClient().sendAnalyticsEvent("sdk.exit.success");
             DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, pendingDropInResult.getPaymentMethodNonce());
@@ -415,8 +416,7 @@ public class DropInActivity extends AppCompatActivity {
     private void finishWithDropInResult(DropInResult dropInResult) {
         pendingDropInResult = dropInResult;
 
-        boolean isBottomSheetVisible = shouldAddFragment(BOTTOM_SHEET_TAG);
-        if (isBottomSheetVisible) {
+        if (isBottomSheetVisible()) {
             dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
         } else {
             sendActivityResult();
@@ -477,16 +477,6 @@ public class DropInActivity extends AppCompatActivity {
         if (shouldAddFragment(ADD_CARD_TAG)) {
             AddCardFragment addCardFragment = AddCardFragment.from(mDropInRequest, cardNumber);
             replaceExistingFragment(addCardFragment, ADD_CARD_TAG);
-        }
-    }
-
-    @Override
-    public void finish() {
-        super.finish();
-        boolean isBottomSheetVisible = shouldAddFragment(BOTTOM_SHEET_TAG);
-        if (isBottomSheetVisible) {
-            // bottom sheet animates on its own
-            overridePendingTransition(0, 0);
         }
     }
 
@@ -616,5 +606,9 @@ public class DropInActivity extends AppCompatActivity {
             return (browserSwitchResult.getStatus() == BrowserSwitchStatus.SUCCESS);
         }
         return false;
+    }
+
+    private boolean isBottomSheetVisible() {
+        return shouldAddFragment(BOTTOM_SHEET_TAG);
     }
 }
