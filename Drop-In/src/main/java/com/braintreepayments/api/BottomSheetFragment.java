@@ -99,7 +99,6 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
                         break;
                     case SHOWN:
                     case HIDDEN:
-                    case ANIMATING:
                     default:
                         // do nothing
                 }
@@ -140,12 +139,11 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
     }
 
     private void slideUpBottomSheet() {
-        if (dropInViewModel.getBottomSheetState().getValue() == BottomSheetState.ANIMATING) {
+        if (bottomSheetPresenter.isAnimating()) {
             // prevent drop in from being shown while bottom sheet is animating
             return;
         }
 
-        dropInViewModel.setBottomSheetState(BottomSheetState.ANIMATING);
         bottomSheetPresenter.slideUpBottomSheet(new AnimationCompleteCallback() {
             @Override
             public void onAnimationComplete() {
@@ -159,12 +157,11 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
     }
 
     private void slideDownBottomSheet(@Nullable final AnimationCompleteCallback callback) {
-        if (dropInViewModel.getBottomSheetState().getValue() == BottomSheetState.ANIMATING) {
-            // prevent drop in from being shown while bottom sheet is animating
+        if (bottomSheetPresenter.isAnimating()) {
+            // prevent drop in from being hidden while bottom sheet is animating
             return;
         }
 
-        dropInViewModel.setBottomSheetState(BottomSheetState.ANIMATING);
         bottomSheetPresenter.slideDownBottomSheet(new AnimationCompleteCallback() {
             @Override
             public void onAnimationComplete() {

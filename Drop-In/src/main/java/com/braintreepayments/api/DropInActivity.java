@@ -119,7 +119,6 @@ public class DropInActivity extends AppCompatActivity {
                         break;
                     case HIDE_REQUESTED:
                     case SHOW_REQUESTED:
-                    case ANIMATING:
                     default:
                         // do nothing
                 }
