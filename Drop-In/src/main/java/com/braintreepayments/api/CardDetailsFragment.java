@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -18,7 +17,7 @@ import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 
-public class CardDetailsFragment extends Fragment implements OnCardFormSubmitListener, OnCardFormFieldFocusedListener {
+public class CardDetailsFragment extends DropInFragment implements OnCardFormSubmitListener, OnCardFormFieldFocusedListener {
 
     @VisibleForTesting
     CardForm cardForm;
@@ -34,7 +33,19 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
-    public CardDetailsFragment() {
+    static CardDetailsFragment from(DropInRequest dropInRequest, String cardNumber, Configuration configuration, boolean hasTokenizationKeyAuth) {
+        CardFormConfiguration cardFormConfiguration =
+                new CardFormConfiguration(configuration.isCvvChallengePresent(), configuration.isPostalCodeChallengePresent());
+
+        Bundle args = new Bundle();
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);
+        args.putString("EXTRA_CARD_NUMBER", cardNumber);
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", cardFormConfiguration);
+        args.putBoolean("EXTRA_AUTH_IS_TOKENIZATION_KEY", hasTokenizationKeyAuth);
+
+        CardDetailsFragment instance = new CardDetailsFragment();
+        instance.setArguments(args);
+        return instance;
     }
 
     @Override
@@ -157,10 +168,6 @@ public class CardDetailsFragment extends Fragment implements OnCardFormSubmitLis
                 cardForm.setMobileNumberError(getContext().getString(R.string.bt_mobile_number_invalid));
             }
         }
-    }
-
-    private void sendDropInEvent(DropInEvent event) {
-        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
 
     @Override

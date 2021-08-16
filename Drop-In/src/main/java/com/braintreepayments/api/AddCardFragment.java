@@ -1,15 +1,14 @@
 package com.braintreepayments.api;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -22,7 +21,7 @@ import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
 import java.util.List;
 
-public class AddCardFragment extends Fragment implements OnCardFormSubmitListener,
+public class AddCardFragment extends DropInFragment implements OnCardFormSubmitListener,
         CardEditText.OnCardTypeChangedListener {
 
     @VisibleForTesting
@@ -34,7 +33,16 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
-    public AddCardFragment() {
+    static AddCardFragment from(DropInRequest dropInRequest, @Nullable String cardNumber) {
+        Bundle args = new Bundle();
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);
+        if (cardNumber != null) {
+            args.putString("EXTRA_CARD_NUMBER", cardNumber);
+        }
+
+        AddCardFragment instance = new AddCardFragment();
+        instance.setArguments(args);
+        return instance;
     }
 
     @Override
@@ -126,10 +134,6 @@ public class AddCardFragment extends Fragment implements OnCardFormSubmitListene
     private void showCardNotSupportedError() {
         cardForm.getCardEditText().setError(getContext().getString(R.string.bt_card_not_accepted));
         animatedButtonView.showButton();
-    }
-
-    private void sendDropInEvent(DropInEvent event) {
-        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
     }
 
     void setErrors(ErrorWithResponse errors) {

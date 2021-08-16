@@ -20,7 +20,7 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-public class SupportedPaymentMethodsFragment extends Fragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
+public class SupportedPaymentMethodsFragment extends DropInFragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
 
     @VisibleForTesting
     View mLoadingIndicatorWrapper;
@@ -110,7 +110,7 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
             }
         });
 
-        sendDropInEvent(DropInEvent.createSendAnalyticsEvent("appeared"));
+        sendAnalyticsEvent("appeared");
         return view;
     }
 
@@ -141,10 +141,6 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
         mLoadingIndicatorWrapper.setVisibility(View.GONE);
     }
 
-    private void sendDropInEvent(DropInEvent event) {
-        getParentFragmentManager().setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle());
-    }
-
     private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
         hideLoader();
         SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
@@ -169,7 +165,7 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
     @Override
     public void onVaultedPaymentMethodSelected(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
-            sendDropInEvent(DropInEvent.createSendAnalyticsEvent("vaulted-card.select"));
+            sendAnalyticsEvent("vaulted-card.select");
         }
 
         sendDropInEvent(
@@ -191,7 +187,7 @@ public class SupportedPaymentMethodsFragment extends Fragment implements Support
             }
 
             if (containsCardNonce(paymentMethodNonces)) {
-                sendDropInEvent(DropInEvent.createSendAnalyticsEvent("vaulted-card.appear"));
+                sendAnalyticsEvent("vaulted-card.appear");
             }
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
