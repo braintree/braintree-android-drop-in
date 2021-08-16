@@ -6,8 +6,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import junit.framework.Assert.assertEquals
 import org.json.JSONObject
+import org.junit.Assert.assertEquals
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
