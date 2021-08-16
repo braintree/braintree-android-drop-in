@@ -35,7 +35,9 @@ public class DropInActivity extends AppCompatActivity {
 
     private DropInClient dropInClient;
     private FragmentContainerView fragmentContainerView;
-    private DropInResult pendingDropInResult;
+
+    @VisibleForTesting
+    DropInResult pendingDropInResult;
 
     @VisibleForTesting
     boolean mClientTokenPresent;
@@ -129,7 +131,8 @@ public class DropInActivity extends AppCompatActivity {
         showBottomSheet();
     }
 
-    private void finishDropInWithError(Exception e) {
+    @VisibleForTesting
+    void finishDropInWithError(Exception e) {
         setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInResult.EXTRA_ERROR, e));
         finish();
     }
@@ -308,7 +311,8 @@ public class DropInActivity extends AppCompatActivity {
         finishDropInWithPendingResult();
     }
 
-    private void finishDropInWithPendingResult() {
+    @VisibleForTesting
+    void finishDropInWithPendingResult() {
         if (pendingDropInResult != null) {
             sendAnalyticsEvent("sdk.exit.success");
             DropInResult.setLastUsedPaymentMethodType(
@@ -548,7 +552,8 @@ public class DropInActivity extends AppCompatActivity {
         });
     }
 
-    private void onCardDetailsSubmit(DropInEvent event) {
+    @VisibleForTesting
+    void onCardDetailsSubmit(DropInEvent event) {
         Card card = event.getCard(DropInEventProperty.CARD);
         dropInViewModel.setDropInState(DropInState.WILL_FINISH);
 
