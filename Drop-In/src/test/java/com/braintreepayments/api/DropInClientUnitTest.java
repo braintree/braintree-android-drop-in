@@ -2,6 +2,7 @@ package com.braintreepayments.api;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -1162,6 +1163,20 @@ public class DropInClientUnitTest {
     }
 
     @Test
+    public void getBrowserSwitchResult_forwardsInvocationToBraintreeClient() {
+        BrowserSwitchResult browserSwitchResult = createSuccessfulBrowserSwitchResult();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
+        when(braintreeClient.getBrowserSwitchResult(activity)).thenReturn(browserSwitchResult);
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+        assertSame(browserSwitchResult, sut.getBrowserSwitchResult(activity));
+    }
+
+    @Test
     public void deliverBrowserSwitchResult_whenPayPalWithoutDataCollection_tokenizesResult() {
         PayPalAccountNonce payPalAccountNonce = mock(PayPalAccountNonce.class);
         PayPalClient payPalClient = new MockPayPalClientBuilder()
@@ -1839,5 +1854,14 @@ public class DropInClientUnitTest {
         }
 
         return configuration;
+    }
+
+    private static BrowserSwitchResult createSuccessfulBrowserSwitchResult() {
+        int requestCode = 123;
+        Uri url = Uri.parse("www.example.com");
+        String returnUrlScheme = "sample-scheme";
+        BrowserSwitchRequest browserSwitchRequest = new BrowserSwitchRequest(
+                requestCode, url, new JSONObject(), returnUrlScheme, true);
+        return new BrowserSwitchResult(BrowserSwitchStatus.SUCCESS, browserSwitchRequest);
     }
 }

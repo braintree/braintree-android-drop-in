@@ -1,6 +1,9 @@
 package com.braintreepayments.api;
 
 import android.content.Intent;
+import android.net.Uri;
+
+import androidx.fragment.app.FragmentActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -73,6 +76,20 @@ public class DropInActivityUnitTest {
                 .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertTrue(exception instanceof InvalidArgumentException);
         assertEquals("Tokenization Key or Client Token was invalid.", exception.getMessage());
+    }
+
+    @Test
+    public void onResume_whenBrowserSwitchSuccessResultWillBeDelivered_updatesDropInStateToFINISHING() {
+        String authorization = Fixtures.TOKENIZATION_KEY;
+        DropInRequest dropInRequest = new DropInRequest();
+
+        DropInClient dropInClient = mock(DropInClient.class);
+        when(dropInClient.getBrowserSwitchResult(any(FragmentActivity.class))).thenReturn(createBrowserSwitchSuccessResult());
+
+        setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
+        mActivityController.setup();
+
+        assertEquals(DropInState.FINISHING, mActivity.dropInViewModel.getDropInState().getValue());
     }
 
     @Test
@@ -819,5 +836,16 @@ public class DropInActivityUnitTest {
                 .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertEquals(exception.getClass(), actualException.getClass());
         assertEquals(exception.getMessage(), actualException.getMessage());
+    }
+
+    private BrowserSwitchResult createBrowserSwitchSuccessResult() {
+        int requestCode = 123;
+        Uri url = Uri.parse("https://example.com");
+        JSONObject metadata = new JSONObject();
+        String returnUrlScheme = "sample-scheme";
+
+        BrowserSwitchRequest browserSwitchRequest =
+            new BrowserSwitchRequest(requestCode, url, metadata, returnUrlScheme, true);
+        return new BrowserSwitchResult(BrowserSwitchStatus.SUCCESS, browserSwitchRequest);
     }
 }

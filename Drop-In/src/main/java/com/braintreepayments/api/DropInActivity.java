@@ -45,6 +45,12 @@ public class DropInActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
+        if (willDeliverSuccessfulBrowserSwitchResult()) {
+            // when browser switch is successful, a tokenization http call will be made by DropInClient
+            // show the loader to signal to the user that an asynchronous operation is underway
+            dropInViewModel.setDropInState(DropInState.FINISHING);
+        }
+
         getDropInClient().deliverBrowserSwitchResult(this, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
@@ -102,8 +108,10 @@ public class DropInActivity extends AppCompatActivity {
 
         dropInViewModel.isBottomSheetPresented().observe(this, new Observer<Boolean>() {
             @Override
-            public void onChanged(Boolean aBoolean) {
-                onDidPresentBottomSheet();
+            public void onChanged(Boolean isBottomSheetVisible) {
+                if (isBottomSheetVisible) {
+                    onDidPresentBottomSheet();
+                }
             }
         });
 
@@ -563,5 +571,14 @@ public class DropInActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private boolean willDeliverSuccessfulBrowserSwitchResult() {
+        BrowserSwitchResult browserSwitchResult =
+                getDropInClient().getBrowserSwitchResult(this);
+        if (browserSwitchResult != null) {
+            return (browserSwitchResult.getStatus() == BrowserSwitchStatus.SUCCESS);
+        }
+        return false;
     }
 }

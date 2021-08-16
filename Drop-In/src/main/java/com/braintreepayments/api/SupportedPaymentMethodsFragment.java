@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -21,6 +22,12 @@ import com.braintreepayments.api.dropin.R;
 import java.util.List;
 
 public class SupportedPaymentMethodsFragment extends DropInFragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
+
+    private enum ViewState {
+        LOADING,
+        SHOW_PAYMENT_METHODS,
+        DROP_IN_FINISHING
+    }
 
     @VisibleForTesting
     View mLoadingIndicatorWrapper;
@@ -41,7 +48,10 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
-    public SupportedPaymentMethodsFragment() {}
+    private ViewState viewState;
+
+    public SupportedPaymentMethodsFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,18 +87,27 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
         new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
+        if (hasSupportedPaymentMethods()) {
+            setViewState(ViewState.SHOW_PAYMENT_METHODS);
+        } else {
+            setViewState(ViewState.LOADING);
+        }
 
         dropInViewModel.getSupportedPaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<DropInPaymentMethodType>>() {
             @Override
             public void onChanged(List<DropInPaymentMethodType> paymentMethodTypes) {
-                showSupportedPaymentMethods(paymentMethodTypes);
+                if (hasSupportedPaymentMethods()) {
+                    setViewState(ViewState.SHOW_PAYMENT_METHODS);
+                }
             }
         });
 
         dropInViewModel.getVaultedPaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<PaymentMethodNonce>>() {
             @Override
             public void onChanged(List<PaymentMethodNonce> paymentMethodNonces) {
-                showVaultedPaymentMethods(paymentMethodNonces);
+                if (hasVaultedPaymentMethods()) {
+                    refreshView();
+                }
             }
         });
 
@@ -96,9 +115,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
             @Override
             public void onChanged(DropInState dropInState) {
                 if (dropInState == DropInState.FINISHING) {
-                    // hide vault manager (if necessary) and show loader
-                    mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
-                    showLoader();
+                    setViewState(ViewState.DROP_IN_FINISHING);
                 }
             }
         });
@@ -118,18 +135,40 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
     public void onResume() {
         super.onResume();
 
-        // show supported payment methods immediately if possible
-        List<DropInPaymentMethodType> supportedPaymentMethods =
-            dropInViewModel.getSupportedPaymentMethods().getValue();
-        if (supportedPaymentMethods != null) {
-            showSupportedPaymentMethods(supportedPaymentMethods);
+        if (viewState == ViewState.LOADING && hasSupportedPaymentMethods()) {
+            setViewState(ViewState.SHOW_PAYMENT_METHODS);
         }
+    }
 
-        // show vaulted payment methods immediately if possible
-        List<PaymentMethodNonce> vaultedPaymentMethods =
-            dropInViewModel.getVaultedPaymentMethods().getValue();
-        if (vaultedPaymentMethods != null) {
-            showVaultedPaymentMethods(vaultedPaymentMethods);
+    private boolean hasSupportedPaymentMethods() {
+        return dropInViewModel.getSupportedPaymentMethods().getValue() != null;
+    }
+
+    private boolean hasVaultedPaymentMethods() {
+        return dropInViewModel.getVaultedPaymentMethods().getValue() != null;
+    }
+
+    private void setViewState(ViewState viewState) {
+        this.viewState = viewState;
+        refreshView();
+    }
+
+    private void refreshView() {
+        // TODO: consider extracting a presenter
+        switch (viewState) {
+            case LOADING:
+            case DROP_IN_FINISHING:
+                // hide vault manager (if necessary) and show loader
+                mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
+                showLoader();
+                break;
+            case SHOW_PAYMENT_METHODS:
+                hideLoader();
+                showSupportedPaymentMethods();
+                if (hasVaultedPaymentMethods()) {
+                    showVaultedPaymentMethods();
+                }
+                break;
         }
     }
 
@@ -141,22 +180,21 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
         mLoadingIndicatorWrapper.setVisibility(View.GONE);
     }
 
-    private void showSupportedPaymentMethods(List<DropInPaymentMethodType> availablePaymentMethods) {
-        hideLoader();
-        SupportedPaymentMethodsAdapter adapter = new SupportedPaymentMethodsAdapter(
-                availablePaymentMethods, this);
+    private void showSupportedPaymentMethods() {
+        List<DropInPaymentMethodType> availablePaymentMethods =
+                dropInViewModel.getSupportedPaymentMethods().getValue();
+        SupportedPaymentMethodsAdapter adapter =
+                new SupportedPaymentMethodsAdapter(availablePaymentMethods, this);
         mSupportedPaymentMethodsView.setAdapter(adapter);
     }
 
     @Override
     public void onPaymentMethodSelected(DropInPaymentMethodType type) {
         boolean paymentTypeWillInitiateAsyncRequest = (type == DropInPaymentMethodType.PAYPAL)
-            || (type == DropInPaymentMethodType.PAY_WITH_VENMO);
+                || (type == DropInPaymentMethodType.PAY_WITH_VENMO);
 
         if (paymentTypeWillInitiateAsyncRequest) {
-            // hide vault manager (if necessary) and show loader
-            mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
-            showLoader();
+            setViewState(ViewState.LOADING);
         }
         sendDropInEvent(
                 DropInEvent.createSupportedPaymentMethodSelectedEvent(type));
@@ -172,13 +210,20 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
                 DropInEvent.createVaultedPaymentMethodSelectedEvent(paymentMethodNonce));
     }
 
-    private void showVaultedPaymentMethods(List<PaymentMethodNonce> paymentMethodNonces) {
-        if (paymentMethodNonces.size() > 0) {
+    private void showVaultedPaymentMethods() {
+        List<PaymentMethodNonce> paymentMethodNonces =
+                dropInViewModel.getVaultedPaymentMethods().getValue();
+
+        if (containsCardNonce(paymentMethodNonces)) {
+            sendAnalyticsEvent("vaulted-card.appear");
+        }
+        
+        if (paymentMethodNonces != null && paymentMethodNonces.size() > 0) {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
             mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
 
             VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter =
-                new VaultedPaymentMethodsAdapter(paymentMethodNonces, this);
+                    new VaultedPaymentMethodsAdapter(paymentMethodNonces, this);
 
             mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
 
@@ -186,19 +231,18 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
                 mVaultManagerButton.setVisibility(View.VISIBLE);
             }
 
-            if (containsCardNonce(paymentMethodNonces)) {
-                sendAnalyticsEvent("vaulted-card.appear");
-            }
         } else {
             mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
             mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
         }
     }
 
-    private static boolean containsCardNonce(List<PaymentMethodNonce> paymentMethodNonces) {
-        for (PaymentMethodNonce nonce : paymentMethodNonces) {
-            if (nonce instanceof CardNonce) {
-                return true;
+    private static boolean containsCardNonce(@Nullable List<PaymentMethodNonce> paymentMethodNonces) {
+        if (paymentMethodNonces != null) {
+            for (PaymentMethodNonce nonce : paymentMethodNonces) {
+                if (nonce instanceof CardNonce) {
+                    return true;
+                }
             }
         }
         return false;
