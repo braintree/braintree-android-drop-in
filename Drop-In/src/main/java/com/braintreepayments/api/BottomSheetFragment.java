@@ -92,7 +92,7 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
             public void onChanged(BottomSheetState bottomSheetState) {
                 switch (bottomSheetState) {
                     case HIDE_REQUESTED:
-                        slideDownBottomSheet(null);
+                        slideDownBottomSheet();
                         break;
                     case SHOW_REQUESTED:
                         slideUpBottomSheet();
@@ -110,7 +110,7 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                slideDownBottomSheet(null);
+                slideDownBottomSheet();
             }
         });
 
@@ -152,6 +152,10 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
                 dropInViewModel.setBottomSheetState(BottomSheetState.SHOWN);
             }
         });
+    }
+
+    private void slideDownBottomSheet() {
+        slideDownBottomSheet(null);
     }
 
     private void slideDownBottomSheet(@Nullable final AnimationCompleteCallback callback) {
