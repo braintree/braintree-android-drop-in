@@ -1,6 +1,5 @@
 package com.braintreepayments.api;
 
-public interface DialogInteractionCallback {
-
+interface DialogInteractionCallback {
     void onDialogInteraction(DialogInteraction interaction);
 }
