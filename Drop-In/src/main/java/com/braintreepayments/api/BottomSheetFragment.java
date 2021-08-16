@@ -31,6 +31,16 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
     private DropInRequest dropInRequest;
     private BottomSheetPresenter bottomSheetPresenter;
 
+    static BottomSheetFragment from(DropInRequest dropInRequest) {
+        BottomSheetFragment instance = new BottomSheetFragment();
+
+        Bundle args = new Bundle();
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);
+
+        instance.setArguments(args);
+        return instance;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
