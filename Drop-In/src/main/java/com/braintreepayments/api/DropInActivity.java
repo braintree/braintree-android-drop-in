@@ -72,7 +72,7 @@ public class DropInActivity extends AppCompatActivity {
         setContentView(R.layout.bt_drop_in_activity);
 
         if (getDropInClient().getAuthorization() instanceof InvalidAuthorization) {
-            finish(new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
+            finishDropInWithError(new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
             return;
         }
 
@@ -138,7 +138,7 @@ public class DropInActivity extends AppCompatActivity {
         finish();
     }
 
-    protected void finish(Exception e) {
+    private void finishDropInWithError(Exception e) {
         setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInResult.EXTRA_ERROR, e));
         finish();
     }
@@ -410,15 +410,17 @@ public class DropInActivity extends AppCompatActivity {
             sendAnalyticsEvent("sdk.exit.sdk-error");
         }
 
-        finish(error);
+        finishDropInWithError(error);
     }
 
     private void finishWithDropInResult(DropInResult dropInResult) {
         pendingDropInResult = dropInResult;
 
         if (isBottomSheetVisible()) {
+            // when the bottom sheet transitions to the "HIDDEN" state; the activity will finish
             dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
         } else {
+            // no need to animate bottom sheet hidden; finish activity immediately
             sendActivityResult();
         }
     }
