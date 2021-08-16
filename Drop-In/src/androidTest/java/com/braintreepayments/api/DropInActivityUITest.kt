@@ -52,7 +52,6 @@ class DropInActivityUITest {
         val dropInRequest = DropInRequest()
 
         val threeDSecureRequest = ThreeDSecureRequest()
-        threeDSecureRequest.isCardAddChallengeRequested = false
         dropInRequest.threeDSecureRequest = threeDSecureRequest
 
         val context = InstrumentationRegistry.getInstrumentation().targetContext

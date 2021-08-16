@@ -15,7 +15,7 @@
   * Make `SupportedPaymentMethodsAdapter` package-private
   * Make `VaultedPaymentMethodsAdapter` package-private
   * Make `VaultManagerPaymentMethodsAdapter` package-private
-  * Bump braintree_android module dependency versions to `4.4.0`
+  * Bump braintree_android module dependency versions to `4.4.1`
   * Remove `ConfigurationListener`, `AddPaymentUpdateListener`, `PaymentMethodNonceCreatedListener`, `BraintreeErrorListener`, `BraintreeCancelListener`, and `UnionPayListener` from `AddCardActivity`
   * Remove `ConfigurationListener`, `PaymentMethodNonceCreatedListener`, `PaymentMethodNonceUpdatedListener`, `PaymentMethodSelectedListener`, `BraintreeErrorListener`, `BraintreeCancelListener` from `DropInActivity`
   * Remove `PaymentMethodNonceDeletedListener`, `BraintreeErrorListener` from `VaultManagerActivity`
