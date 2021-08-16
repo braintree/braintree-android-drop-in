@@ -42,8 +42,6 @@ public class DropInActivity extends AppCompatActivity {
 
     private AlertPresenter alertPresenter;
 
-    private UiDelayTimer uiDelayTimer;
-
     @Override
     protected void onResume() {
         super.onResume();
@@ -51,7 +49,7 @@ public class DropInActivity extends AppCompatActivity {
         if (willDeliverSuccessfulBrowserSwitchResult()) {
             // when browser switch is successful, a tokenization http call will be made by DropInClient
             // show the loader to signal to the user that an asynchronous operation is underway
-            dropInViewModel.setDropInState(DropInState.FINISHING);
+            dropInViewModel.setDropInState(DropInState.WILL_FINISH);
         }
 
         getDropInClient().deliverBrowserSwitchResult(this, new DropInResultCallback() {
@@ -83,7 +81,6 @@ public class DropInActivity extends AppCompatActivity {
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
-        uiDelayTimer = new UiDelayTimer(500);
 
         getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
@@ -421,12 +418,7 @@ public class DropInActivity extends AppCompatActivity {
 
         boolean isBottomSheetVisible = shouldAddFragment(BOTTOM_SHEET_TAG);
         if (isBottomSheetVisible) {
-            uiDelayTimer.postWhenReady(new Runnable() {
-                @Override
-                public void run() {
-                    dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
-                }
-            });
+            dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
         } else {
             sendActivityResult();
         }
@@ -520,11 +512,6 @@ public class DropInActivity extends AppCompatActivity {
         }
     }
 
-    private void notifyDropInWillFinish() {
-        uiDelayTimer.start();
-        dropInViewModel.setDropInState(DropInState.WILL_FINISH);
-    }
-
     @VisibleForTesting
     void onVaultedPaymentMethodSelected(DropInEvent event) {
         final PaymentMethodNonce paymentMethodNonce =
@@ -534,7 +521,7 @@ public class DropInActivity extends AppCompatActivity {
             sendAnalyticsEvent("vaulted-card.select");
         }
 
-        notifyDropInWillFinish();
+        dropInViewModel.setDropInState(DropInState.WILL_FINISH);
         getDropInClient().shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
@@ -578,7 +565,7 @@ public class DropInActivity extends AppCompatActivity {
 
     private void onCardDetailsSubmit(DropInEvent event) {
         Card card = event.getCard(DropInEventProperty.CARD);
-        notifyDropInWillFinish();
+        dropInViewModel.setDropInState(DropInState.WILL_FINISH);
 
         getDropInClient().tokenizeCard(card, new CardTokenizeCallback() {
             @Override
