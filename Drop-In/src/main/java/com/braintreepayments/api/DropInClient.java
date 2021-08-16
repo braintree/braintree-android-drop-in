@@ -192,6 +192,10 @@ public class DropInClient {
         unionPayClient.tokenize(unionPayCard, callback);
     }
 
+    BrowserSwitchResult getBrowserSwitchResult(FragmentActivity activity) {
+        return braintreeClient.getBrowserSwitchResult(activity);
+    }
+
     public void deliverBrowserSwitchResult(final FragmentActivity activity, final DropInResultCallback callback) {
         BrowserSwitchResult browserSwitchResult = braintreeClient.deliverBrowserSwitchResult(activity);
         if (browserSwitchResult != null) {
