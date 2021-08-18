@@ -106,7 +106,7 @@ public class DropInActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                onDropInCanceled();
+                dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
             }
         });
 
@@ -162,9 +162,6 @@ public class DropInActivity extends AppCompatActivity {
             case CARD_DETAILS_SUBMIT:
                 onCardDetailsSubmit(event);
                 break;
-            case CANCEL_DROPIN:
-                onDropInCanceled();
-                break;
             case DELETE_VAULTED_PAYMENT_METHOD:
                 onDeleteVaultedPaymentMethod(event);
                 break;
@@ -184,10 +181,6 @@ public class DropInActivity extends AppCompatActivity {
                 onVaultedPaymentMethodSelected(event);
                 break;
         }
-    }
-
-    private void onDropInCanceled() {
-        dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
     }
 
     @VisibleForTesting
@@ -308,11 +301,11 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void onDidHideBottomSheet() {
-        finishDropInWithPendingResult();
+        finishDropInWithPendingResult(true);
     }
 
     @VisibleForTesting
-    void finishDropInWithPendingResult() {
+    void finishDropInWithPendingResult(boolean cancelPendingActivityAnimation) {
         if (pendingDropInResult != null) {
             sendAnalyticsEvent("sdk.exit.success");
             DropInResult.setLastUsedPaymentMethodType(
@@ -325,6 +318,11 @@ public class DropInActivity extends AppCompatActivity {
             // assume drop in cancelled
             sendAnalyticsEvent("sdk.exit.canceled");
             setResult(RESULT_CANCELED);
+        }
+
+        if (cancelPendingActivityAnimation) {
+            // prevent default Android Activity animation from running
+            overridePendingTransition(0, 0);
         }
         finish();
     }
@@ -418,8 +416,8 @@ public class DropInActivity extends AppCompatActivity {
             // when the bottom sheet transitions to the "HIDDEN" state; the activity will finish
             dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
         } else {
-            // no need to animate bottom sheet hidden; finish activity immediately
-            finishDropInWithPendingResult();
+            // no need to animate bottom sheet hidden; finish activity with default Android animation
+            finishDropInWithPendingResult(false);
         }
     }
 

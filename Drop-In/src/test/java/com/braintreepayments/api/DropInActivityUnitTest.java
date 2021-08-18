@@ -793,7 +793,7 @@ public class DropInActivityUnitTest {
         dropInResult.deviceData("device_data");
 
         mActivity.pendingDropInResult = dropInResult;
-        mActivity.finishDropInWithPendingResult();
+        mActivity.finishDropInWithPendingResult(false);
 
         ShadowActivity shadowActivity = shadowOf(mActivity);
         assertTrue(mActivity.isFinishing());
