@@ -46,28 +46,4 @@ class DropInActivityUITest {
 
         scenario.moveToState(Lifecycle.State.RESUMED)
     }
-
-    @Test
-    fun whenStateIsRESUMED_onCancelDropInEvent_finishesWithResult() {
-        val dropInRequest = DropInRequest()
-
-        val threeDSecureRequest = ThreeDSecureRequest()
-        dropInRequest.threeDSecureRequest = threeDSecureRequest
-
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val intent = Intent(context, DropInActivity::class.java)
-        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, dropInRequest)
-        intent.putExtra(DropInClient.EXTRA_AUTHORIZATION, Fixtures.TOKENIZATION_KEY)
-        intent.putExtra(DropInClient.EXTRA_SESSION_ID, "session-id")
-
-        val scenario = ActivityScenario.launch<DropInActivity>(intent)
-        scenario.onActivity { activity ->
-            val fragmentManager = activity.supportFragmentManager
-
-            val event = DropInEvent(DropInEventType.CANCEL_DROPIN)
-            fragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
-        }
-
-        assertEquals(RESULT_CANCELED, scenario.result.resultCode)
-    }
 }
