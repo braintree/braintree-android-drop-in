@@ -320,11 +320,11 @@ public class DropInActivity extends AppCompatActivity {
             setResult(RESULT_CANCELED);
         }
 
+        finish();
         if (cancelPendingActivityAnimation) {
             // prevent default Android Activity animation from running
             overridePendingTransition(0, 0);
         }
-        finish();
     }
 
     void updateVaultedPaymentMethodNonces(boolean refetch) {
