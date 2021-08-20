@@ -22,9 +22,9 @@ plugins {
 
 version '5.2.3-SNAPSHOT'
 ext {
-    compileSdkVersion = 30
+    compileSdkVersion = 31
     minSdkVersion = 21
-    targetSdkVersion = 30
+    targetSdkVersion = 31
     versionCode = 85
     versionName = version
 }
@@ -33,6 +33,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
     }
 }
 
