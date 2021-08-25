@@ -608,6 +608,6 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private boolean isBottomSheetVisible() {
-        return shouldAddFragment(BOTTOM_SHEET_TAG);
+        return !shouldAddFragment(BOTTOM_SHEET_TAG);
     }
 }
