@@ -95,5 +95,6 @@ public class DropInResultUnitTest {
         assertEquals(DropInPaymentMethodType.VISA, parceled.getPaymentMethodType());
         assertEquals(cardNonce.getString(), parceled.getPaymentMethodNonce().getString());
         assertEquals("device_data", parceled.getDeviceData());
+        assertEquals("1111", parceled.getPaymentDescription());
     }
 }

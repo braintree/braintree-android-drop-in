@@ -114,7 +114,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
         dropInViewModel.getDropInState().observe(getViewLifecycleOwner(), new Observer<DropInState>() {
             @Override
             public void onChanged(DropInState dropInState) {
-                if (dropInState == DropInState.FINISHING) {
+                if (dropInState == DropInState.WILL_FINISH) {
                     setViewState(ViewState.DROP_IN_FINISHING);
                 }
             }

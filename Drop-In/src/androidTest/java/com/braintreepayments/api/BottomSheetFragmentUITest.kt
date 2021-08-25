@@ -64,16 +64,19 @@ class BottomSheetFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_andSupportedPaymentMethodsIsDisplayed_sendsCancelDropInEvent() {
+    fun whenStateIsRESUMED_andSupportedPaymentMethodsIsDisplayed_notifiesBottomSheetHidden() {
         val scenario =
                 FragmentScenario.launchInContainer(BottomSheetFragment::class.java)
 
         val events = mutableListOf<DropInEvent>()
 
+        lateinit var viewModel: DropInViewModel
+
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val parentFragmentManager = fragment.parentFragmentManager
 
+            viewModel = fragment.dropInViewModel
             parentFragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
                 events += DropInEvent.fromBundle(result)
             }
@@ -83,8 +86,7 @@ class BottomSheetFragmentUITest {
         onView(isRoot()).perform(ViewActions.pressBack())
         onView(isRoot()).perform(waitFor(1000))
 
-        val cancelDropInEvent = events.first { it.type == DropInEventType.CANCEL_DROPIN }
-        assertNotNull(cancelDropInEvent)
+        assertEquals(BottomSheetState.HIDDEN, viewModel.bottomSheetState.value)
     }
 
     @Test
@@ -111,16 +113,18 @@ class BottomSheetFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_andVaultManagerIsDisplayed_doesNotSendCancelDropInEvent() {
+    fun whenStateIsRESUMED_andVaultManagerIsDisplayed_doesNotHideBottomSheet() {
         val scenario =
                 FragmentScenario.launchInContainer(BottomSheetFragment::class.java)
 
         val events = mutableListOf<DropInEvent>()
 
+        lateinit var viewModel: DropInViewModel
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val parentFragmentManager = fragment.parentFragmentManager
 
+            viewModel = fragment.dropInViewModel
             parentFragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
                 events += DropInEvent.fromBundle(result)
             }
@@ -133,21 +137,22 @@ class BottomSheetFragmentUITest {
         onView(isRoot()).perform(ViewActions.pressBack())
         onView(isRoot()).perform(waitFor(1000))
 
-        val cancelDropInEvent = events.firstOrNull { it.type == DropInEventType.CANCEL_DROPIN }
-        assertNull(cancelDropInEvent)
+        assertEquals(BottomSheetState.SHOWN, viewModel.bottomSheetState.value)
     }
 
     @Test
-    fun whenStateIsRESUMED_onBackButtonPress_sendsCancelDropInEvent() {
+    fun whenStateIsRESUMED_onBackButtonPress_notifiesDropInViewModelHidden() {
         val scenario =
                 FragmentScenario.launchInContainer(BottomSheetFragment::class.java)
 
         val events = mutableListOf<DropInEvent>()
 
+        lateinit var viewModel: DropInViewModel
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val parentFragmentManager = fragment.parentFragmentManager
 
+            viewModel = fragment.dropInViewModel
             parentFragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
                 events += DropInEvent.fromBundle(result)
             }
@@ -157,8 +162,7 @@ class BottomSheetFragmentUITest {
         onView(withId(R.id.back_button)).perform(click())
         onView(isRoot()).perform(waitFor(1000))
 
-        val cancelDropInEvent = events.first { it.type == DropInEventType.CANCEL_DROPIN }
-        assertNotNull(cancelDropInEvent)
+        assertEquals(BottomSheetState.HIDDEN, viewModel.bottomSheetState.value)
     }
 
     @Test

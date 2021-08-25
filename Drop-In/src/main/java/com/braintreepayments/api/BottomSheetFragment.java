@@ -13,6 +13,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentResultListener;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.viewpager2.widget.ViewPager2;
 
@@ -73,7 +74,7 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
                         bottomSheetPresenter.dismissVaultManager();
                         break;
                     case SUPPORTED_PAYMENT_METHODS:
-                        cancelDropIn(new AnimationCompleteCallback() {
+                        slideDownBottomSheet(new AnimationCompleteCallback() {
                             @Override
                             public void onAnimationComplete() {
                                 // prevent this fragment from handling additional back presses
@@ -86,11 +87,29 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
             }
         });
 
+        dropInViewModel.getBottomSheetState().observe(requireActivity(), new Observer<BottomSheetState>() {
+            @Override
+            public void onChanged(BottomSheetState bottomSheetState) {
+                switch (bottomSheetState) {
+                    case HIDE_REQUESTED:
+                        slideDownBottomSheet();
+                        break;
+                    case SHOW_REQUESTED:
+                        slideUpBottomSheet();
+                        break;
+                    case SHOWN:
+                    case HIDDEN:
+                    default:
+                        // do nothing
+                }
+            }
+        });
+
         Button backButton = view.findViewById(R.id.back_button);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cancelDropIn();
+                slideDownBottomSheet();
             }
         });
 
@@ -104,16 +123,12 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
     public void onResume() {
         super.onResume();
 
-        boolean isBottomSheetPresented = dropInViewModel.isBottomSheetPresented().getValue();
-        if (isBottomSheetPresented) {
+        boolean isBottomSheetVisible =
+            dropInViewModel.getBottomSheetState().getValue() == BottomSheetState.SHOWN;
+        if (isBottomSheetVisible) {
             backgroundView.setAlpha(1.0f);
         } else {
-            bottomSheetPresenter.slideUpBottomSheet(new AnimationCompleteCallback() {
-                @Override
-                public void onAnimationComplete() {
-                    dropInViewModel.setBottomSheetPresented(true);
-                }
-            });
+            slideUpBottomSheet();
         }
     }
 
@@ -123,23 +138,37 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
         bottomSheetPresenter.unbind();
     }
 
-    private void cancelDropIn() {
-        cancelDropIn(null);
+    private void slideUpBottomSheet() {
+        if (bottomSheetPresenter.isAnimating()) {
+            // prevent drop in from being shown while bottom sheet is animating
+            return;
+        }
+
+        bottomSheetPresenter.slideUpBottomSheet(new AnimationCompleteCallback() {
+            @Override
+            public void onAnimationComplete() {
+                dropInViewModel.setBottomSheetState(BottomSheetState.SHOWN);
+            }
+        });
     }
 
-    private void cancelDropIn(@Nullable final AnimationCompleteCallback callback) {
-        if (bottomSheetPresenter.isAnimatingBottomSheet()) {
-            // prevent drop in cancellation while bottom sheet is animating
+    private void slideDownBottomSheet() {
+        slideDownBottomSheet(null);
+    }
+
+    private void slideDownBottomSheet(@Nullable final AnimationCompleteCallback callback) {
+        if (bottomSheetPresenter.isAnimating()) {
+            // prevent drop in from being hidden while bottom sheet is animating
             return;
         }
 
         bottomSheetPresenter.slideDownBottomSheet(new AnimationCompleteCallback() {
             @Override
             public void onAnimationComplete() {
+                dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
                 if (callback != null) {
                     callback.onAnimationComplete();
                 }
-                sendDropInEvent(new DropInEvent(DropInEventType.CANCEL_DROPIN));
             }
         });
     }
