@@ -89,7 +89,7 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
 
-        assertEquals(DropInState.FINISHING, mActivity.dropInViewModel.getDropInState().getValue());
+        assertEquals(DropInState.WILL_FINISH, mActivity.dropInViewModel.getDropInState().getValue());
     }
 
     @Test
@@ -620,7 +620,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void tokenizeCard_onError_whenErrorWithResponse_setsCardTokenizationErrorInViewModel() throws JSONException {
+    public void onCardDetailsSubmit_onError_whenErrorWithResponse_setsCardTokenizationErrorInViewModel() throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest();
 
@@ -632,13 +632,14 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         Card card = new Card();
-        mActivity.tokenizeCard(card);
+        DropInEvent event = DropInEvent.createCardDetailsSubmitEvent(card);
+        mActivity.onCardDetailsSubmit(event);
 
         assertEquals(error, mActivity.dropInViewModel.getCardTokenizationError().getValue());
     }
 
     @Test
-    public void tokenizeCard_onError_whenErrorNotErrorWithResponse_finishesWithError() {
+    public void onCardDetailsSubmit_onError_whenErrorNotErrorWithResponse_finishesWithError() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest();
 
@@ -650,7 +651,8 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         Card card = new Card();
-        mActivity.tokenizeCard(card);
+        DropInEvent event = DropInEvent.createCardDetailsSubmitEvent(card);
+        mActivity.onCardDetailsSubmit(event);
 
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
@@ -777,7 +779,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void finish_finishesWithPaymentMethodNonceAndDeviceDataInDropInResult()
+    public void finishDropInWithPendingResult_finishesWithPaymentMethodNonceAndDeviceDataInDropInResult()
             throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest();
@@ -785,8 +787,13 @@ public class DropInActivityUnitTest {
         DropInClient dropInClient = mock(DropInClient.class);
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
 
+        DropInResult dropInResult = new DropInResult();
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-        mActivity.finish(cardNonce, "device_data");
+        dropInResult.paymentMethodNonce(cardNonce);
+        dropInResult.deviceData("device_data");
+
+        mActivity.pendingDropInResult = dropInResult;
+        mActivity.finishDropInWithPendingResult(false);
 
         ShadowActivity shadowActivity = shadowOf(mActivity);
         assertTrue(mActivity.isFinishing());
@@ -799,7 +806,7 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void finish_finishesWithException() {
+    public void finishDropInWithError_finishesWithException() {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest();
 
@@ -807,7 +814,7 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
 
         Exception exception = new Exception("Error message");
-        mActivity.finish(exception);
+        mActivity.finishDropInWithError(exception);
 
         ShadowActivity shadowActivity = shadowOf(mActivity);
         assertTrue(mActivity.isFinishing());

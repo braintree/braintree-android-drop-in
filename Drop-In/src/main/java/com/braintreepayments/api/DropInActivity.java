@@ -37,6 +37,9 @@ public class DropInActivity extends AppCompatActivity {
     private FragmentContainerView fragmentContainerView;
 
     @VisibleForTesting
+    DropInResult pendingDropInResult;
+
+    @VisibleForTesting
     boolean mClientTokenPresent;
 
     private AlertPresenter alertPresenter;
@@ -48,7 +51,7 @@ public class DropInActivity extends AppCompatActivity {
         if (willDeliverSuccessfulBrowserSwitchResult()) {
             // when browser switch is successful, a tokenization http call will be made by DropInClient
             // show the loader to signal to the user that an asynchronous operation is underway
-            dropInViewModel.setDropInState(DropInState.FINISHING);
+            dropInViewModel.setDropInState(DropInState.WILL_FINISH);
         }
 
         getDropInClient().deliverBrowserSwitchResult(this, new DropInResultCallback() {
@@ -71,7 +74,8 @@ public class DropInActivity extends AppCompatActivity {
         setContentView(R.layout.bt_drop_in_activity);
 
         if (getDropInClient().getAuthorization() instanceof InvalidAuthorization) {
-            finish(new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
+            finishDropInWithError(
+                    new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
             return;
         }
 
@@ -102,15 +106,24 @@ public class DropInActivity extends AppCompatActivity {
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                onDropInCanceled();
+                dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
             }
         });
 
-        dropInViewModel.isBottomSheetPresented().observe(this, new Observer<Boolean>() {
+        dropInViewModel.getBottomSheetState().observe(this, new Observer<BottomSheetState>() {
             @Override
-            public void onChanged(Boolean isBottomSheetVisible) {
-                if (isBottomSheetVisible) {
-                    onDidPresentBottomSheet();
+            public void onChanged(BottomSheetState bottomSheetState) {
+                switch (bottomSheetState) {
+                    case SHOWN:
+                        onDidShowBottomSheet();
+                        break;
+                    case HIDDEN:
+                        onDidHideBottomSheet();
+                        break;
+                    case HIDE_REQUESTED:
+                    case SHOW_REQUESTED:
+                    default:
+                        // do nothing
                 }
             }
         });
@@ -118,17 +131,8 @@ public class DropInActivity extends AppCompatActivity {
         showBottomSheet();
     }
 
-    protected void finish(PaymentMethodNonce paymentMethod, String deviceData) {
-        DropInResult result = new DropInResult()
-                .paymentMethodNonce(paymentMethod)
-                .deviceData(deviceData);
-
-        setResult(RESULT_OK,
-                new Intent().putExtra(DropInResult.EXTRA_DROP_IN_RESULT, result));
-        finish();
-    }
-
-    protected void finish(Exception e) {
+    @VisibleForTesting
+    void finishDropInWithError(Exception e) {
         setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInResult.EXTRA_ERROR, e));
         finish();
     }
@@ -158,9 +162,6 @@ public class DropInActivity extends AppCompatActivity {
             case CARD_DETAILS_SUBMIT:
                 onCardDetailsSubmit(event);
                 break;
-            case CANCEL_DROPIN:
-                onDropInCanceled();
-                break;
             case DELETE_VAULTED_PAYMENT_METHOD:
                 onDeleteVaultedPaymentMethod(event);
                 break;
@@ -180,12 +181,6 @@ public class DropInActivity extends AppCompatActivity {
                 onVaultedPaymentMethodSelected(event);
                 break;
         }
-    }
-
-    private void onDropInCanceled() {
-        sendAnalyticsEvent("sdk.exit.canceled");
-        setResult(RESULT_CANCELED);
-        finish();
     }
 
     @VisibleForTesting
@@ -287,7 +282,7 @@ public class DropInActivity extends AppCompatActivity {
         });
     }
 
-    private void onDidPresentBottomSheet() {
+    private void onDidShowBottomSheet() {
         getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
             public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
@@ -303,6 +298,33 @@ public class DropInActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void onDidHideBottomSheet() {
+        finishDropInWithPendingResult(true);
+    }
+
+    @VisibleForTesting
+    void finishDropInWithPendingResult(boolean cancelPendingActivityAnimation) {
+        if (pendingDropInResult != null) {
+            sendAnalyticsEvent("sdk.exit.success");
+            DropInResult.setLastUsedPaymentMethodType(
+                    DropInActivity.this, pendingDropInResult.getPaymentMethodNonce());
+
+            Intent intent = new Intent()
+                    .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, pendingDropInResult);
+            setResult(RESULT_OK, intent);
+        } else {
+            // assume drop in cancelled
+            sendAnalyticsEvent("sdk.exit.canceled");
+            setResult(RESULT_CANCELED);
+        }
+
+        finish();
+        if (cancelPendingActivityAnimation) {
+            // prevent default Android Activity animation from running
+            overridePendingTransition(0, 0);
+        }
     }
 
     void updateVaultedPaymentMethodNonces(boolean refetch) {
@@ -335,6 +357,7 @@ public class DropInActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager
                 .beginTransaction()
+                .setCustomAnimations(R.anim.bt_fragment_fade_in, R.anim.bt_fragment_fade_out)
                 .replace(R.id.fragment_container_view, fragment, tag)
                 .addToBackStack(null)
                 .commit();
@@ -345,6 +368,7 @@ public class DropInActivity extends AppCompatActivity {
             BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(mDropInRequest);
             replaceExistingFragment(bottomSheetFragment, BOTTOM_SHEET_TAG);
         }
+        dropInViewModel.setBottomSheetState(BottomSheetState.SHOW_REQUESTED);
     }
 
     private void showCardDetailsFragment(final String cardNumber) {
@@ -382,13 +406,19 @@ public class DropInActivity extends AppCompatActivity {
             sendAnalyticsEvent("sdk.exit.sdk-error");
         }
 
-        finish(error);
+        finishDropInWithError(error);
     }
 
-    private void finishWithDropInResult(DropInResult dropInResult) {
-        sendAnalyticsEvent("sdk.exit.success");
-        DropInResult.setLastUsedPaymentMethodType(DropInActivity.this, dropInResult.getPaymentMethodNonce());
-        finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
+    private void animateBottomSheetClosedAndFinishDropInWithResult(DropInResult dropInResult) {
+        pendingDropInResult = dropInResult;
+
+        if (isBottomSheetVisible()) {
+            // when the bottom sheet transitions to the "HIDDEN" state; the activity will finish
+            dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
+        } else {
+            // no need to animate bottom sheet hidden; finish activity with default Android animation
+            finishDropInWithPendingResult(false);
+        }
     }
 
     private void startPayPalFlow() {
@@ -449,12 +479,6 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     @Override
-    public void finish() {
-        super.finish();
-        overridePendingTransition(0, 0);
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         getDropInClient().handleActivityResult(this, requestCode, resultCode, data, new DropInResultCallback() {
@@ -467,7 +491,7 @@ public class DropInActivity extends AppCompatActivity {
 
     private void onDropInResult(DropInResult dropInResult, Exception error) {
         if (dropInResult != null) {
-            finishWithDropInResult(dropInResult);
+            animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
         } else if (error instanceof UserCanceledException) {
             dropInViewModel.setUserCanceledError(error);
         } else {
@@ -484,7 +508,7 @@ public class DropInActivity extends AppCompatActivity {
             sendAnalyticsEvent("vaulted-card.select");
         }
 
-        dropInViewModel.setDropInState(DropInState.FINISHING);
+        dropInViewModel.setDropInState(DropInState.WILL_FINISH);
         getDropInClient().shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
@@ -494,7 +518,7 @@ public class DropInActivity extends AppCompatActivity {
                         @Override
                         public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
                             if (dropInResult != null) {
-                                finishWithDropInResult(dropInResult);
+                                animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
                             } else {
                                 updateVaultedPaymentMethodNonces(true);
                                 onError(error);
@@ -511,7 +535,7 @@ public class DropInActivity extends AppCompatActivity {
                             public void onResult(@Nullable String deviceData, @Nullable Exception error) {
                                 if (deviceData != null) {
                                     dropInResult.deviceData(deviceData);
-                                    finishWithDropInResult(dropInResult);
+                                    animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
                                 } else {
                                     updateVaultedPaymentMethodNonces(true);
                                     onError(error);
@@ -519,19 +543,18 @@ public class DropInActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        finishWithDropInResult(dropInResult);
+                        animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
                     }
                 }
             }
         });
     }
 
-    private void onCardDetailsSubmit(DropInEvent event) {
+    @VisibleForTesting
+    void onCardDetailsSubmit(DropInEvent event) {
         Card card = event.getCard(DropInEventProperty.CARD);
-        tokenizeCard(card);
-    }
+        dropInViewModel.setDropInState(DropInState.WILL_FINISH);
 
-    void tokenizeCard(Card card) {
         getDropInClient().tokenizeCard(card, new CardTokenizeCallback() {
             @Override
             public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
@@ -549,7 +572,6 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
-        dropInViewModel.setDropInState(DropInState.FINISHING);
         getDropInClient().shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
@@ -562,12 +584,15 @@ public class DropInActivity extends AppCompatActivity {
                                 return;
                             }
                             sendAnalyticsEvent("sdk.exit.success");
-                            finish(dropInResult.getPaymentMethodNonce(), dropInResult.getDeviceData());
+                            animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
                         }
                     });
                 } else {
                     sendAnalyticsEvent("sdk.exit.success");
-                    finish(paymentMethod, null);
+
+                    DropInResult dropInResult = new DropInResult();
+                    dropInResult.paymentMethodNonce(paymentMethod);
+                    animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
                 }
             }
         });
@@ -580,5 +605,9 @@ public class DropInActivity extends AppCompatActivity {
             return (browserSwitchResult.getStatus() == BrowserSwitchStatus.SUCCESS);
         }
         return false;
+    }
+
+    private boolean isBottomSheetVisible() {
+        return !shouldAddFragment(BOTTOM_SHEET_TAG);
     }
 }

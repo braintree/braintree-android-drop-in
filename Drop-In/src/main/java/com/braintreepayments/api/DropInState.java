@@ -2,5 +2,5 @@ package com.braintreepayments.api;
 
 enum DropInState {
     IDLE,
-    FINISHING
+    WILL_FINISH
 }

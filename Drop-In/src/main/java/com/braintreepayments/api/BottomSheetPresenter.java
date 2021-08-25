@@ -36,8 +36,8 @@ class BottomSheetPresenter {
     private ViewPager2Animator viewPagerAnimator;
     private BottomSheetViewModel childFragmentList;
 
-    private Animator bottomSheetSlideInAnimator;
-    private Animator bottomSheetSlideOutAnimator;
+    private Animator bottomSheetSlideUpAnimator;
+    private Animator bottomSheetSlideDownAnimator;
 
     private BottomSheetViewAdapter viewPagerAdapter;
 
@@ -115,7 +115,7 @@ class BottomSheetPresenter {
             }
         });
 
-        bottomSheetSlideInAnimator = animatorSet;
+        bottomSheetSlideUpAnimator = animatorSet;
     }
 
     void slideDownBottomSheet(final AnimationCompleteCallback callback) {
@@ -150,7 +150,7 @@ class BottomSheetPresenter {
 
         animatorSet.start();
 
-        bottomSheetSlideOutAnimator = animatorSet;
+        bottomSheetSlideDownAnimator = animatorSet;
     }
 
     void showVaultManager() {
@@ -191,12 +191,12 @@ class BottomSheetPresenter {
         });
     }
 
-    boolean isAnimatingBottomSheet() {
-        boolean isSlidingInBottomSheet =
-                (bottomSheetSlideInAnimator != null && bottomSheetSlideInAnimator.isRunning());
-        boolean isSlidingOutBottomSheet =
-                (bottomSheetSlideOutAnimator != null && bottomSheetSlideOutAnimator.isRunning());
-        return (isSlidingInBottomSheet || isSlidingOutBottomSheet);
+    boolean isAnimating() {
+        boolean isSlidingUpBottomSheet =
+                (bottomSheetSlideUpAnimator != null && bottomSheetSlideUpAnimator.isRunning());
+        boolean isSlidingDownBottomSheet =
+                (bottomSheetSlideDownAnimator != null && bottomSheetSlideDownAnimator.isRunning());
+        return (isSlidingUpBottomSheet || isSlidingDownBottomSheet);
     }
 
     private int getViewGroupMeasuredHeight(ViewGroup viewGroup) {

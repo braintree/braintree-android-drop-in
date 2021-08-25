@@ -48,6 +48,11 @@ public class DropInResult implements Parcelable {
     }
 
     DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
+        return paymentMethodNonce(paymentMethodNonce, new PaymentMethodNonceInspector());
+    }
+
+    @VisibleForTesting
+    DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce, PaymentMethodNonceInspector nonceInspector) {
         if (paymentMethodNonce != null) {
             mPaymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
             mPaymentDescription = nonceInspector.getDescription(paymentMethodNonce);
@@ -119,6 +124,7 @@ public class DropInResult implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(mPaymentMethodType == null ? -1 : mPaymentMethodType.ordinal());
         dest.writeParcelable(mPaymentMethodNonce, flags);
+        dest.writeString(mPaymentDescription);
         dest.writeString(mDeviceData);
     }
 
@@ -126,6 +132,7 @@ public class DropInResult implements Parcelable {
         int paymentMethodType = in.readInt();
         mPaymentMethodType = paymentMethodType == -1 ? null : DropInPaymentMethodType.values()[paymentMethodType];
         mPaymentMethodNonce = in.readParcelable(PaymentMethodNonce.class.getClassLoader());
+        mPaymentDescription = in.readString();
         mDeviceData = in.readString();
     }
 
