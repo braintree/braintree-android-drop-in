@@ -175,7 +175,7 @@ def update_migration_guide_version(version)
   major_version = version[0]
   IO.write("v#{major_version}_MIGRATION_GUIDE.md",
     File.open("v#{major_version}_MIGRATION_GUIDE.md") do |file|
-    file.read.gsub(/com.braintreepayments.api:(.+):\d+\.\d+\.\d+-.*'/, "com.braintreepayments.api:\\1:#{version}'")
+    file.read.gsub(/com.braintreepayments.api:drop-in:\d+\.\d+\.\d+(-.*)?'/, "com.braintreepayments.api:drop-in:#{version}'")
     end
   )
 end
