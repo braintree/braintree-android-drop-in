@@ -2,6 +2,9 @@ package com.braintreepayments.api;
 
 import androidx.annotation.Nullable;
 
+/**
+ * Callback for receiving the result of {@link DropInClient#deliverBrowserSwitchResult(FragmentActivity, DropInResultCallback)}
+ */
 public interface DropInResultCallback {
     /**
      * @param dropInResult {@link DropInResult}
