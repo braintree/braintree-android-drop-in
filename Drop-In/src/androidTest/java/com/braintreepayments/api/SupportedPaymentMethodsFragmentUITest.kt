@@ -30,6 +30,8 @@ class SupportedPaymentMethodsFragmentUITest {
             DropInPaymentMethodType.GOOGLE_PAYMENT
     )
 
+    private val vaultedPaymentMethods = listOf(CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)))
+
     @Test
     @Throws(InterruptedException::class)
     fun whenStateIsRESUMED_loaderIsVisible() {
@@ -56,8 +58,22 @@ class SupportedPaymentMethodsFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_whenSupportedPaymentMethodsLoaded_requestsForVaultedPaymentMethodsToBeLoaded() {
-        // TODO: assert an event is dispatched to load vaulted payment methods
+    fun whenStateIsRESUMED_whenVaultedPaymentMethodsLoaded_displaysVaultedPaymentMethods() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.isVaultManagerEnabled = false
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
+        }
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_vaulted_payment_methods)).check(matches(isDisplayed()))
+        onView(withText("1111")).check(matches(isDisplayed()))
     }
 
     @Test
@@ -168,46 +184,6 @@ class SupportedPaymentMethodsFragmentUITest {
             }
         }
 
-    }
-
-    @Test(timeout = 5000)
-    fun whenStateIsRESUMED_whenVaultManagerEnabledAndVaultedCardExists_sendsAnalyticEvent() {
-        // TODO: capture all analytics events within a time interval and assert that the target analytics event is emitted
-
-//        val dropInRequest = DropInRequest()
-//                .vaultManager(true)
-//        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
-//
-//        val scenario = FragmentScenario.launchInContainer(SelectPaymentMethodFragment::class.java, bundle)
-//        scenario.moveToState(Lifecycle.State.RESUMED)
-//
-//        scenario.onFragment { fragment ->
-//            val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
-//            val vaultedPaymentMethods = listOf(cardNonce)
-//
-//            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
-//            fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
-//
-//            val activity = fragment.requireActivity()
-//            val fragmentManager = fragment.parentFragmentManager
-//
-//            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { requestKey, result ->
-//                val event = result.get(DropInEvent.RESULT_KEY) as DropInAnalyticsEvent
-//                assertEquals(event.fragment, "vaulted-card.appear")
-//                countDownLatch.countDown()
-//            }
-//        }
-//        countDownLatch.await()
-    }
-
-    @Test
-    fun whenStateIsRESUMED_whenVaultManagerEnabledAndVaultedCardDoesNotExist_doesNotSendAnalyticEvent() {
-        // TODO: capture all analytics events within a time interval and assert that the target analytics event is emitted
-    }
-
-    @Test
-    fun whenStateIsRESUMED_whenVaultEditButtonClicked_sendsAnalyticsEvent() {
-        // TODO: capture all analytics events within a time interval and assert that the target analytics event is emitted
     }
 
     @Test
