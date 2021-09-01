@@ -20,7 +20,6 @@ import java.util.concurrent.CountDownLatch
 @RunWith(AndroidJUnit4::class)
 class VaultManagerFragmentUITest {
 
-    private lateinit var countDownLatch: CountDownLatch
     private lateinit var cardNonce: CardNonce
     private lateinit var scenario: FragmentScenario<VaultManagerFragment>
 
@@ -30,8 +29,6 @@ class VaultManagerFragmentUITest {
     fun beforeEach() {
         cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         vaultedPaymentMethodNonces.add(cardNonce)
-
-        countDownLatch = CountDownLatch(1)
 
         scenario = FragmentScenario.launchInContainer(VaultManagerFragment::class.java)
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -64,11 +61,8 @@ class VaultManagerFragmentUITest {
                 val paymentMethodNonceToDelete =
                         event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD)
                 assertSame(cardNonce, paymentMethodNonceToDelete)
-                countDownLatch.countDown()
             }
         }
-
-        countDownLatch.await()
     }
 
     @Test
@@ -86,10 +80,7 @@ class VaultManagerFragmentUITest {
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
                 val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.DISMISS_VAULT_MANAGER, event.type)
-                countDownLatch.countDown()
             }
         }
-
-        countDownLatch.await()
     }
 }

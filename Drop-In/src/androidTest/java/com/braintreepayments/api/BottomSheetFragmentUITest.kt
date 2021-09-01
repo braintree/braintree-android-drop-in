@@ -18,13 +18,6 @@ import java.util.concurrent.CountDownLatch
 @RunWith(AndroidJUnit4ClassRunner::class)
 class BottomSheetFragmentUITest {
 
-    private lateinit var countDownLatch: CountDownLatch
-
-    @Before
-    fun beforeEach() {
-        countDownLatch = CountDownLatch(1)
-    }
-
     @Test
     fun whenStateIsRESUMED_displaysSupportedPaymentMethodsFragment() {
         val scenario =

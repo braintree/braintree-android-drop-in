@@ -23,19 +23,12 @@ import java.util.concurrent.CountDownLatch
 @RunWith(AndroidJUnit4::class)
 class SupportedPaymentMethodsFragmentUITest {
 
-    private lateinit var countDownLatch: CountDownLatch
-
     private val supportedPaymentMethods = listOf(
             DropInPaymentMethodType.PAYPAL,
             DropInPaymentMethodType.PAY_WITH_VENMO,
             DropInPaymentMethodType.UNKNOWN,
             DropInPaymentMethodType.GOOGLE_PAYMENT
     )
-
-    @Before
-    fun beforeEach() {
-        countDownLatch = CountDownLatch(1)
-    }
 
     @Test
     @Throws(InterruptedException::class)
@@ -172,11 +165,9 @@ class SupportedPaymentMethodsFragmentUITest {
                 val paymentMethodType =
                     event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD)
                 assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodType)
-                countDownLatch.countDown()
             }
         }
 
-        countDownLatch.await()
     }
 
     @Test(timeout = 5000)

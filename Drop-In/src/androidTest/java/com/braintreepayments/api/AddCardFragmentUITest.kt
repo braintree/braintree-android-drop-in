@@ -22,13 +22,6 @@ import java.util.concurrent.CountDownLatch
 @RunWith(AndroidJUnit4::class)
 class AddCardFragmentUITest {
 
-    private lateinit var countDownLatch: CountDownLatch
-
-    @Before
-    fun beforeEach() {
-        countDownLatch = CountDownLatch(1)
-    }
-
     @Test
     fun whenStateIsRESUMED_buttonTextIsAddCard() {
         val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
@@ -105,10 +98,8 @@ class AddCardFragmentUITest {
                 val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.ADD_CARD_SUBMIT, event.type)
                 assertEquals(VISA, event.getString(DropInEventProperty.CARD_NUMBER))
-                countDownLatch.countDown()
             }
         }
-        countDownLatch.await()
     }
 
     @Test

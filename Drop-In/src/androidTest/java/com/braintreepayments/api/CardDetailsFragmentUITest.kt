@@ -23,13 +23,6 @@ import java.util.concurrent.CountDownLatch
 
 class CardDetailsFragmentUITest {
 
-    private lateinit var countDownLatch: CountDownLatch
-
-    @Before
-    fun beforeEach() {
-        countDownLatch = CountDownLatch(1)
-    }
-
     @Test
     fun whenStateIsRESUMED_buttonTextIsAddCard() {
         val args = Bundle()
@@ -230,10 +223,8 @@ class CardDetailsFragmentUITest {
                 val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.EDIT_CARD_NUMBER, event.type)
                 assertEquals(VISA, event.getString(DropInEventProperty.CARD_NUMBER))
-                countDownLatch.countDown()
             }
         }
-        countDownLatch.await()
     }
 
     @Test
@@ -257,10 +248,8 @@ class CardDetailsFragmentUITest {
                 val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
                 assertEquals(VISA, event.getCard(DropInEventProperty.CARD).number)
-                countDownLatch.countDown()
             }
         }
-        countDownLatch.await()
     }
 
     @Test
@@ -314,10 +303,8 @@ class CardDetailsFragmentUITest {
                 val card = event.getCard(DropInEventProperty.CARD)
                 assertEquals(VISA, card.number)
                 assertNull(card.cardholderName)
-                countDownLatch.countDown()
             }
         }
-        countDownLatch.await()
     }
 
     @Test
@@ -347,10 +334,8 @@ class CardDetailsFragmentUITest {
                 val card = event.getCard(DropInEventProperty.CARD)
                 assertEquals(VISA, card.number)
                 assertEquals("Brian Tree", card.cardholderName)
-                countDownLatch.countDown()
             }
         }
-        countDownLatch.await()
     }
 
     @Test
@@ -380,10 +365,8 @@ class CardDetailsFragmentUITest {
                 val card = event.getCard(DropInEventProperty.CARD)
                 assertEquals(VISA, card.number)
                 assertEquals("Brian Tree", card.cardholderName)
-                countDownLatch.countDown()
             }
         }
-        countDownLatch.await()
     }
 
     @Test
