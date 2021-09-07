@@ -1,0 +1,36 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingTop="@dimen/bt_choose_existing_payment_label_padding_top"
+    android:background="@color/bt_base_background"
+    tools:context="com.braintreepayments.api.VaultManagerFragment">
+
+    <Button
+        android:id="@+id/bt_vault_manager_close"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:text="@string/bt_done"
+        android:theme="@style/bt_edit_button" />
+
+    <TextView
+        android:id="@+id/bt_vault_manager_title"
+        style="@style/bt_choose_payment_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/bt_vault_manager_close"
+        android:layout_alignBottom="@id/bt_vault_manager_close"
+        android:layout_alignParentStart="true"
+        android:gravity="center_vertical"
+        android:text="@string/bt_vault_manager_title" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/bt_vault_manager_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/bt_vault_manager_title"
+        android:scrollbars="vertical" />
+
+</RelativeLayout>

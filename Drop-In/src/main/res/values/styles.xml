@@ -5,27 +5,25 @@
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="bt_fade_activity_animation">
-        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
-        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
-    </style>
-
     <style name="bt_activity_slide_animation">
         <item name="android:windowEnterAnimation">@anim/bt_slide_in_up</item>
         <item name="android:windowExitAnimation">@anim/bt_slide_out_down</item>
     </style>
 
-    <style name="bt_drop_in_activity_theme" parent="Theme.AppCompat.NoActionBar">
-        <item name="windowNoTitle">true</item>
+    <style name="bt_drop_in_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
-        <item name="android:windowBackground">@color/bt_black_54</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowTranslucentStatus" tools:targetApi="kitkat">true</item>
-        <item name="android:windowAnimationStyle">@style/bt_fade_activity_animation</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowBackground">@color/bt_window_background</item>
+        <item name="android:backgroundDimEnabled">false</item>
+
         <item name="colorPrimary">@color/bt_color_primary</item>
         <item name="colorPrimaryDark">@color/bt_color_primary_dark</item>
         <item name="colorAccent">@color/bt_blue</item>
+        <item name="titleTextColor">@color/bt_white</item>
+        <item name="colorError">@color/bt_error_red</item>
     </style>
 
     <style name="bt_add_card_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">

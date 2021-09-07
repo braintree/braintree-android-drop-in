@@ -35,4 +35,7 @@
     <dimen name="bt_payment_method_card_height">82dp</dimen>
     <dimen name="bt_payment_method_card_margin">16dp</dimen>
     <dimen name="bt_payment_method_description_padding">8dp</dimen>
+
+    <integer name="bt_fragment_transition_duration">250</integer>
+    <integer name="bt_bottom_sheet_transition_duration">250</integer>
 </resources>

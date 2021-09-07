@@ -28,9 +28,11 @@ public class CardholderNameDropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void cardholderName_whenDisabled_isHidden() {
         setCardholderNameStatus(CardForm.FIELD_DISABLED);
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists(20000).waitForEnabled(20000).perform(click());
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withText("Card Number")).perform(setText(VISA));
+        onDevice(withText("Next")).perform(click());
 
         onDevice(withText("Card Details")).waitForExists();
         try {
@@ -43,9 +45,11 @@ public class CardholderNameDropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void cardholderName_whenRequired_mustBeFilled() {
         setCardholderNameStatus(CardForm.FIELD_REQUIRED);
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists(20000).waitForEnabled(20000).perform(click());
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withText("Card Number")).perform(setText(VISA));
+        onDevice(withText("Next")).perform(click());
 
         onDevice(withText("Cardholder Name")).waitForExists();
         performCardDetailsEntry();
@@ -62,9 +66,11 @@ public class CardholderNameDropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void cardholderName_whenOptional_isShownButCanRemainEmpty() {
         setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists(20000).waitForEnabled(20000).perform(click());
         onDevice(withText("Credit or Debit Card")).perform(click());
         onDevice(withText("Card Number")).perform(setText(VISA));
+        onDevice(withText("Next")).perform(click());
 
         onDevice(withText("Cardholder Name")).waitForExists();
         performCardDetailsEntry();

@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.braintreepayments.api.models.CardNonce;
-import com.braintreepayments.api.models.PaymentMethodNonce;
+import com.braintreepayments.api.CardNonce;
+import com.braintreepayments.api.PaymentMethodNonce;
 import com.braintreepayments.demo.models.Transaction;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,16 +59,16 @@ public class CreateTransactionActivity extends AppCompatActivity {
         };
 
         if (Settings.isThreeDSecureEnabled(this) && Settings.isThreeDSecureRequired(this)) {
-            DemoApplication.getApiClient(this).createTransaction(nonce.getNonce(),
+            DemoApplication.getApiClient(this).createTransaction(nonce.getString(),
                     Settings.getThreeDSecureMerchantAccountId(this), true, callback);
         } else if (Settings.isThreeDSecureEnabled(this)) {
-            DemoApplication.getApiClient(this).createTransaction(nonce.getNonce(),
+            DemoApplication.getApiClient(this).createTransaction(nonce.getString(),
                     Settings.getThreeDSecureMerchantAccountId(this), callback);
         } else if (nonce instanceof CardNonce && ((CardNonce) nonce).getCardType().equals("UnionPay")) {
-            DemoApplication.getApiClient(this).createTransaction(nonce.getNonce(),
+            DemoApplication.getApiClient(this).createTransaction(nonce.getString(),
                     Settings.getUnionPayMerchantAccountId(this), callback);
         } else {
-            DemoApplication.getApiClient(this).createTransaction(nonce.getNonce(), Settings.getMerchantAccountId(this),
+            DemoApplication.getApiClient(this).createTransaction(nonce.getString(), Settings.getMerchantAccountId(this),
                     callback);
         }
     }

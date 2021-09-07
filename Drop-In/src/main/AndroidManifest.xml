@@ -9,12 +9,16 @@
         android:supportsRtl="true"
         tools:ignore="UnusedAttribute">
 
-        <activity android:name="com.braintreepayments.api.dropin.DropInActivity"
-            android:theme="@style/bt_drop_in_activity_theme"/>
-        <activity android:name="com.braintreepayments.api.dropin.AddCardActivity"
-            android:theme="@style/bt_add_card_activity_theme" />
-        <activity android:name="com.braintreepayments.api.dropin.VaultManagerActivity"
-            android:theme="@style/bt_vault_manager_activity_theme" />
+        <activity android:name="com.braintreepayments.api.DropInActivity"
+            android:theme="@style/bt_drop_in_activity_theme"
+            android:launchMode="singleTop">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="${applicationId}.braintree" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

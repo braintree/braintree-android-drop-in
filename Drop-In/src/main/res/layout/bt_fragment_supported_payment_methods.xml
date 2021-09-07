@@ -1,0 +1,96 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/bt_base_background"
+    android:minHeight="200dp"
+    android:animateLayoutChanges="true"
+    tools:context="com.braintreepayments.api.DropInActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/bt_vaulted_payment_methods_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/bt_choose_existing_payment_label_padding_top">
+
+                <Button
+                    android:id="@+id/bt_vault_edit_button"
+                    style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:text="@string/bt_edit"
+                    android:theme="@style/bt_edit_button"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:id="@+id/bt_vaulted_payment_methods_header"
+                    style="@style/bt_choose_payment_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/bt_vault_edit_button"
+                    android:layout_alignBottom="@id/bt_vault_edit_button"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginStart="20dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/bt_recent" />
+
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bt_vaulted_payment_methods"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp" />
+
+            <include layout="@layout/bt_section_divider" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/bt_supported_payment_methods_header"
+            style="@style/bt_choose_payment_label"
+            android:paddingTop="@dimen/bt_choose_new_payment_label_padding_top"
+            android:paddingBottom="@dimen/bt_payment_label_padding_bottom"
+            android:text="@string/bt_select_payment_method" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/bt_supported_payment_methods"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/bt_select_payment_method_loader_wrapper"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bt_base_background"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ProgressBar
+            android:id="@+id/bt_select_payment_method_loader"
+            android:layout_width="@dimen/bt_progress_bar_diameter"
+            android:layout_height="@dimen/bt_progress_bar_diameter"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+
+    </LinearLayout>
+
+</FrameLayout>

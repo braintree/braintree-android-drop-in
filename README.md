@@ -30,6 +30,20 @@ repositories {
 }
 ```
 
+Additionally, add the following Maven repository and (non-sensitive) credentials to your app-level gradle:
+
+```groovy
+repositories {
+    maven {
+        url "https://cardinalcommerceprod.jfrog.io/artifactory/android"
+        credentials {
+            username 'braintree_team_sdk'
+            password 'AKCp8jQcoDy2hxSWhDAUQKXLDPDx6NYRkqrgFLRc3qDrayg6rrCbJpsKKyMwaykVL8FWusJpp'
+        }
+    }
+}
+```
+
 ## Usage
 
 Create a `DropInRequest` and use the `Intent` to start Drop-In:

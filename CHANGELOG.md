@@ -1,5 +1,65 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Dependencies
+  * Include `braintree-core`, `three-d-secure`, `paypal`, `venmo`, `google-pay`, `card`, `data-collector`, and `union-pay` as api
+  * Bump `card-form` to `5.2.0`
+* DropInClient
+  * Add `DropInClient`
+  * Add `DropInResultCallback`
+  * Add `FetchMostRecentPaymentMethodCallback`
+  * Add `GetSupportedCardTypesCallback`
+* Fragment Architecture
+  * Add `SupportedPaymentMethodsFragment`
+  * Add `BottomSheetFragment`
+  * Add `VaultedPaymentMethodSelectedListener`  
+  * Add `BottomSheetState`
+  * Add `DropInEventType`
+  * Add `DropInViewModel`
+  * Add `SupportedPaymentMethodsViewHolder`
+* Exceptions
+  * Add `PaymentMethodDeleteException`
+* Breaking Changes
+  * Dependencies
+    * Bump braintree_android module dependency versions to `4.4.1`
+  * Package Structure
+    * Flatten package structure and move all classes to `com.braintreepayments.api` package
+  * DropInRequest
+    * Remove `clientToken`, `tokenizationKey`, and `authorization` from `DropInRequest` in favor of instantiating `DropInClient` with authorization
+    * Remove deprecated `amount` parameter from `DropInRequest`
+    * Remove `intent` from `DropInRequest`
+    * Remove builder pattern from `DropInRequest`
+    * Update `DropInRequest` getter and setter methods to follow consistent naming for Kotlin synthesized properties
+  * DropInResult
+    * Remove `DropInResultListener`
+    * Remove `DropInResult#fetchDropInResult()` 
+    * Make `DropInResult` constructor package-private
+  * PaymentMethodType
+    * Rename `PaymentMethodType` to `DropInPaymentMethodType`
+    * Change `DropInPaymentMethodType#getCardTypes()` parameter from `Set` to `List`
+  * DropInActivity
+    * Remove `ConfigurationListener`, `PaymentMethodNonceCreatedListener`, `PaymentMethodNonceUpdatedListener`, `PaymentMethodSelectedListener`, `BraintreeErrorListener`, `BraintreeCancelListener` from `DropInActivity`
+    * Replace `DropInActivity.EXTRA_ERROR` with `DropInResult.EXTRA_ERROR`
+    * Remove `BaseActivity`
+    * Remove `onBackPressed`, `onBackgroundClicked` and `onVaultEditButtonClicked` methods
+  * Fragment Architecture
+    * Replace `VaultManagerActivity` with `VaultManagerFragment`
+    * Replace `AddCardActivity` with `AddCardFragment` and `CardDetailsFragment`
+  * Adapters
+    * Make `SupportedPaymentMethodsAdapter` package-private
+    * Make `VaultedPaymentMethodsAdapter` package-private
+    * Make `VaultManagerPaymentMethodsAdapter` package-private
+  * Listeners
+    * Remove `AddPaymentUpdateListener`
+    * Remove `AnimationFinishedListener`
+  * CardViews
+    * Remove `AddCardView`
+    * Remove `EditCardView`
+    * Remove `EnrollmentCardView`
+
+**Note:** The credentials for integrating with 3DS have changed. If you are using 3DS please update the credentials in your app-level `build.gradle`
+
 ## 5.2.2
 
 * Bump braintree_android version to 3.17.4

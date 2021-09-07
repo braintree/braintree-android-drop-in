@@ -17,13 +17,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 
 import static androidx.test.InstrumentationRegistry.getTargetContext;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_CHALLENGE_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
-import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
-import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
-import static com.braintreepayments.demo.test.utilities.UiTestActions.clickWebViewText;
 import static com.braintreepayments.AutomatorAction.clearTextField;
 import static com.braintreepayments.AutomatorAction.click;
 import static com.braintreepayments.AutomatorAction.setText;
@@ -34,6 +27,13 @@ import static com.braintreepayments.UiObjectMatcher.withResourceId;
 import static com.braintreepayments.UiObjectMatcher.withText;
 import static com.braintreepayments.UiObjectMatcher.withTextContaining;
 import static com.braintreepayments.UiObjectMatcher.withTextStartingWith;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_CHALLENGE_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
+import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
+import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
+import static com.braintreepayments.demo.test.utilities.UiTestActions.clickWebViewText;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -52,6 +52,7 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void tokenizesACard() {
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(VISA);
@@ -65,6 +66,7 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void tokenizesACardWithATokenizationKey() {
         useTokenizationKey();
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(VISA);
@@ -78,6 +80,7 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void tokenizesACard_whenClientTokenWithCustomerId_vaults() {
         setUniqueCustomerId();
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(VISA);
@@ -89,6 +92,7 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void performsThreeDSecureVerification() {
         enableThreeDSecure();
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(THREE_D_SECURE_VERIFICATON);
@@ -96,9 +100,9 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Added Protection")).waitForExists();
         onDevice().typeText("1234").pressEnter();
 
-        onDevice(withText("Return To App")).waitForExists(5000);
-        if (onDevice(withText("Return To App")).exists()) {
-            clickWebViewText("Return To App");
+        onDevice(withText("RETURN TO APP")).waitForExists(5000);
+        if (onDevice(withText("RETURN TO APP")).exists()) {
+            clickWebViewText("RETURN TO APP");
         }
 
         getNonceDetails().check(text(containsString("Card Last Two: 02")));
@@ -112,6 +116,7 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void performsThreeDSecure2FrictionlessVerification() {
         enableThreeDSecure();
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON);
@@ -127,6 +132,7 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void performsThreeDSecure2ChallengeVerification() throws IOException {
         enableThreeDSecure();
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(THREE_D_SECURE_2_CHALLENGE_VERIFICATON);
@@ -149,6 +155,7 @@ public class DropInTest extends TestHelper {
     @Test(timeout = 60000)
     public void cancelsThreeDSecure2ChallengeVerification() {
         enableThreeDSecure();
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(THREE_D_SECURE_2_CHALLENGE_VERIFICATON);
@@ -166,6 +173,7 @@ public class DropInTest extends TestHelper {
     @Test
     public void tokenizesUnionPay() {
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("Credit or Debit Card")).perform(click());
@@ -195,6 +203,7 @@ public class DropInTest extends TestHelper {
     @Test
     public void tokenizesUnionPayWhenEnrollmentIsNotRequired() {
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("Credit or Debit Card")).perform(click());
@@ -222,6 +231,7 @@ public class DropInTest extends TestHelper {
     @Test
     public void tokenizesUnionPayWhenFirstSMSCodeIsInvalid() {
         setMerchantAccountId(Settings.getUnionPayMerchantAccountId(getTargetContext()));
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("Credit or Debit Card")).perform(click());
@@ -248,7 +258,7 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void tokenizesPayPal() {
-        uninstallPayPalWallet();
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
@@ -262,8 +272,8 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void tokenizesPayPalWithATokenizationKey() {
-        uninstallPayPalWallet();
         useTokenizationKey();
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).waitForExists().perform(click());
@@ -278,6 +288,7 @@ public class DropInTest extends TestHelper {
     @RequiresDevice
     @Test(timeout = 60000)
     public void tokenizesGooglePay() {
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("Google Pay")).perform(click());
@@ -291,7 +302,7 @@ public class DropInTest extends TestHelper {
 
     @Test(timeout = 60000)
     public void exitsAfterCancelingAddingAPaymentMethod() {
-        uninstallPayPalWallet();
+        launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         onDevice(withText("PayPal")).perform(click());
@@ -308,6 +319,7 @@ public class DropInTest extends TestHelper {
     public void deletesPaymentMethod() {
         setUniqueCustomerId();
         enableVaultManager();
+        launchApp();
         setSaveCardCheckBox(true, true);
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
@@ -326,9 +338,8 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Done")).waitForExists().perform(click());
 
         onDevice().pressBack();
-        onDevice(withText("Select Payment Method")).waitForExists();
+        onDevice(withText("Visa")).waitForExists().perform(click());
 
         assertFalse(onDevice(withResourceId("com.braintreepayments.demo:id/bt_payment_method_title")).exists());
     }
-
 }
