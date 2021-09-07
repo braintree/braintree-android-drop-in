@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.0.0-beta1
 
 * Dependencies
   * Include `braintree-core`, `three-d-secure`, `paypal`, `venmo`, `google-pay`, `card`, `data-collector`, and `union-pay` as api
