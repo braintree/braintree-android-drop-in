@@ -1,5 +1,11 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+* Android 12 Support
+  * Bump braintree_android module dependency versions to `4.6.0`
+  * Upgrade `targetSdkVersion` and `compileSdkVersion` to API 31
+  * Fix issue where Venmo app is not detected on Android 12 devices
+
 ## 6.0.0-beta1
 
 * Dependencies
