@@ -53,14 +53,12 @@ For example, a `DropInRequest` can now be constructed as shown below:
 Java:
 ```java
 DropInRequest request = new DropInRequest();
-request.setCollectDeviceData(true);
 request.setMaskCardNumber(true);
 ```
 
 Kotlin:
 ```kotlin
 val request = DropInRequest()
-request.collectDeviceData = true
 request.maskCardNumber = true
 ```
 
@@ -74,7 +72,6 @@ See the examples below for a full list of optional parameters:
 Java:
 ```java
     DropInRequest dropInRequest = new DropInRequest();
-    dropInRequest.setCollectDeviceData(true);
     dropInRequest.setGooglePayRequest(googlePayRequest);
     dropInRequest.setGooglePayDisabled(true);
     dropInRequest.setPayPalRequest(paypalRequest);
@@ -95,7 +92,6 @@ Java:
 Kotlin:
 ```kotlin
     val dropInRequest = DropInRequest()
-    dropInRequest.collectDeviceData = true
     dropInRequest.googlePayRequest = googlePayRequest
     dropInRequest.isGooglePayDisabled = true
     dropInRequest.payPalRequest = paypalRequest
@@ -127,6 +123,8 @@ The full list of changed parameters is below:
 1. `vaultManager` -> `vaultManagerEnabled`
 1. `vaultCard` -> `vaultCardDefaultValue`
 1. `vaultVenmo` -> `vaultVenmoDefaultValue`
+
+The `collectDeviceData` field has been removed from `DropInRequest` in favor of always returning device data.
 
 ## DropInClient
 
