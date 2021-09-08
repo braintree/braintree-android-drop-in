@@ -105,22 +105,17 @@ public class DropInClient {
                         public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
                             final DropInResult dropInResult = new DropInResult();
                             dropInResult.paymentMethodNonce(threeDSecureResult.getTokenizedCard());
-
-                            if (dropInRequest.getCollectDeviceData()) {
-                                dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
-                                    @Override
-                                    public void onResult(@Nullable String deviceData, @Nullable Exception error) {
-                                        if (deviceData != null) {
-                                            dropInResult.deviceData(deviceData);
-                                            callback.onResult(dropInResult, null);
-                                        } else {
-                                            callback.onResult(null, error);
-                                        }
+                            dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
+                                                                  @Override
+                                                                  public void onResult(@Nullable String deviceData, @Nullable Exception error) {
+                                    if (deviceData != null) {
+                                        dropInResult.deviceData(deviceData);
+                                        callback.onResult(dropInResult, null);
+                                    } else {
+                                        callback.onResult(null, error);
                                     }
-                                });
-                            } else {
-                                callback.onResult(dropInResult, null);
                             }
+                        });
                         }
                     });
                 } else {
@@ -281,24 +276,20 @@ public class DropInClient {
 
         final DropInResult dropInResult = new DropInResult()
                 .paymentMethodNonce(paymentMethodNonce);
-        if (dropInRequest.getCollectDeviceData()) {
-            dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
-                @Override
-                public void onResult(@Nullable String deviceData, @Nullable Exception dataCollectionError) {
-                    if (dataCollectionError != null) {
-                        callback.onResult(null, dataCollectionError);
-                        return;
-                    }
-
-                    if (deviceData != null) {
-                        dropInResult.deviceData(deviceData);
-                        callback.onResult(dropInResult, null);
-                    }
+        dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
+            @Override
+            public void onResult(@Nullable String deviceData, @Nullable Exception dataCollectionError) {
+                if (dataCollectionError != null) {
+                    callback.onResult(null, dataCollectionError);
+                    return;
                 }
-            });
-        } else {
-            callback.onResult(dropInResult, null);
-        }
+
+                if (deviceData != null) {
+                    dropInResult.deviceData(deviceData);
+                    callback.onResult(dropInResult, null);
+                }
+            }
+        });
     }
 
     private boolean paymentMethodCanPerformThreeDSecureVerification(final PaymentMethodNonce paymentMethodNonce) {

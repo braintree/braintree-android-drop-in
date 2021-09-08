@@ -53,7 +53,6 @@ public class DropInRequestUnitTest {
         threeDSecureRequest.setAdditionalInformation(additionalInformation);
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setCollectDeviceData(true);
         dropInRequest.setGooglePayRequest(googlePayRequest);
         dropInRequest.setGooglePayDisabled(true);
         dropInRequest.setPayPalRequest(paypalRequest);
@@ -70,7 +69,6 @@ public class DropInRequestUnitTest {
         dropInRequest.setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
         dropInRequest.setVaultVenmoDefaultValue(true);
 
-        assertTrue(dropInRequest.getCollectDeviceData());
         assertEquals("10", dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPrice());
         assertEquals("USD", dropInRequest.getGooglePayRequest().getTransactionInfo().getCurrencyCode());
         assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPriceStatus());
@@ -147,7 +145,6 @@ public class DropInRequestUnitTest {
         threeDSecureRequest.setAdditionalInformation(additionalInformation);
 
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setCollectDeviceData(true);
         dropInRequest.setGooglePayRequest(googlePayRequest);
         dropInRequest.setGooglePayDisabled(true);
         dropInRequest.setPayPalRequest(paypalRequest);
@@ -169,7 +166,6 @@ public class DropInRequestUnitTest {
         parcel.setDataPosition(0);
         DropInRequest parceledDropInRequest = DropInRequest.CREATOR.createFromParcel(parcel);
 
-        assertTrue(parceledDropInRequest.getCollectDeviceData());
         assertEquals("10", dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPrice());
         assertEquals("USD", dropInRequest.getGooglePayRequest().getTransactionInfo().getCurrencyCode());
         assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPriceStatus());

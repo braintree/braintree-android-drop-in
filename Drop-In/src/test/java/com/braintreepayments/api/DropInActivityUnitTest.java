@@ -323,6 +323,7 @@ public class DropInActivityUnitTest {
 
         DropInClient dropInClient = new MockDropInClientBuilder()
                 .shouldPerformThreeDSecureVerification(false)
+                .collectDeviceDataSuccess("sample-data")
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
@@ -381,6 +382,7 @@ public class DropInActivityUnitTest {
     public void onPaymentMethodNonceCreated_storesPaymentMethodType() throws JSONException {
         DropInClient dropInClient = new MockDropInClientBuilder()
                 .shouldPerformThreeDSecureVerification(false)
+                .collectDeviceDataSuccess("sample-data")
                 .build();
 
         String authorization = Fixtures.TOKENIZATION_KEY;
@@ -403,7 +405,6 @@ public class DropInActivityUnitTest {
     @Test
     public void onVaultedPaymentMethodSelected_returnsDeviceData() throws JSONException {
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setCollectDeviceData(true);
 
         String authorization = Fixtures.TOKENIZATION_KEY;
 
@@ -440,6 +441,7 @@ public class DropInActivityUnitTest {
         DropInClient dropInClient = new MockDropInClientBuilder()
                 .shouldPerformThreeDSecureVerification(false)
                 .getVaultedPaymentMethodsSuccess(nonces)
+                .collectDeviceDataSuccess("sample-data")
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
         mActivityController.setup();
