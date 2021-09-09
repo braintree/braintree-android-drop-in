@@ -3,7 +3,7 @@
 ## unreleased
 * Breaking Changes
   * DropInRequest
-    * Remove `collectDeviceData` from `DropInRequest` in favor of always returning device data
+    * Remove `collectDeviceData` from `DropInRequest` in favor of always returning device data in `DropInResult`
 
 ## 6.0.0-beta1
 
