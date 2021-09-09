@@ -529,8 +529,8 @@ public class DropInActivity extends AppCompatActivity {
                     final DropInResult dropInResult = new DropInResult();
                     dropInResult.paymentMethodNonce(paymentMethodNonce);
                     getDropInClient().collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
-                                                                          @Override
-                                                                          public void onResult(@Nullable String deviceData, @Nullable Exception error) {
+                        @Override
+                        public void onResult(@Nullable String deviceData, @Nullable Exception error) {
                             if (deviceData != null) {
                                 dropInResult.deviceData(deviceData);
                                 animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);

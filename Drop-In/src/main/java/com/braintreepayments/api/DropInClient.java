@@ -106,8 +106,8 @@ public class DropInClient {
                             final DropInResult dropInResult = new DropInResult();
                             dropInResult.paymentMethodNonce(threeDSecureResult.getTokenizedCard());
                             dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
-                                                                  @Override
-                                                                  public void onResult(@Nullable String deviceData, @Nullable Exception error) {
+                                @Override
+                                public void onResult(@Nullable String deviceData, @Nullable Exception error) {
                                     if (deviceData != null) {
                                         dropInResult.deviceData(deviceData);
                                         callback.onResult(dropInResult, null);
