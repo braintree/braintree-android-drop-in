@@ -54,9 +54,6 @@ public class AnimatedButtonView extends RelativeLayout implements OnClickListene
         TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.bt_AnimatedButtonAttributes);
         mButton.setText(attributes.getString(R.styleable.bt_AnimatedButtonAttributes_bt_buttonText));
         attributes.recycle();
-
-//        setFocusable(true);
-//        setFocusableInTouchMode(true);
     }
 
     @Override
