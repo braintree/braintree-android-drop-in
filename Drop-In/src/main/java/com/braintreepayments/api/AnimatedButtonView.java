@@ -76,10 +76,6 @@ public class AnimatedButtonView extends RelativeLayout implements OnClickListene
         }
     }
 
-    public void requestButtonFocus() {
-        requestFocus();
-    }
-
     public void setClickListener(OnClickListener onClickListener) {
         mOnClickListener = onClickListener;
     }
