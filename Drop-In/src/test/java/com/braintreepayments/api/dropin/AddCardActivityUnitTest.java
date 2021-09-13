@@ -977,7 +977,7 @@ public class AddCardActivityUnitTest {
 
         Intent nextStartedActivity = shadowOf(mActivity).peekNextStartedActivity();
         assertEquals(Intent.ACTION_VIEW, nextStartedActivity.getAction());
-        assertTrue(nextStartedActivity.getDataString().contains("com.braintreepayments.api.dropin.braintree"));
+        assertTrue(nextStartedActivity.getDataString().contains("com.braintreepayments.api.dropin.test.braintree"));
 
         assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
         assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();
