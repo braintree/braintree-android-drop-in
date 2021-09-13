@@ -12,7 +12,8 @@
         <meta-data android:name="com.google.android.gms.wallet.api.enabled" android:value="true" />
 
         <activity
-            android:name=".MainActivity">
+            android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -22,7 +23,8 @@
         <activity android:name=".CreateTransactionActivity" />
 
         <activity android:name="com.braintreepayments.api.BraintreeBrowserSwitchActivity"
-            android:launchMode="singleTask">
+            android:launchMode="singleTask"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <data android:scheme="${applicationId}.braintree" />
@@ -31,6 +33,5 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".internal.LeakLoggerService" />
     </application>
 </manifest>

@@ -10,12 +10,12 @@ def GATEWAY_PORT = System.properties['GATEWAY_PORT'] ?: '"3000"';
 version '4.6.0'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 31
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 31
         versionCode 84
         versionName version
 
@@ -58,9 +58,9 @@ android.buildTypes.debug { type ->
 }
 
 dependencies {
-    api 'com.braintreepayments.api:braintree:3.11.1'
+    api 'com.braintreepayments.api:braintree:3.17.5-SNAPSHOT'
     api 'com.braintreepayments:card-form:4.3.0'
-    api 'com.braintreepayments.api:three-d-secure:3.11.1'
+    api 'com.braintreepayments.api:three-d-secure:3.17.5-SNAPSHOT'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.gms:play-services-wallet:16.0.0'
 
@@ -78,10 +78,10 @@ dependencies {
 rootProject.allprojects {
     repositories {
         maven {
-            url  "https://cardinalcommerce.bintray.com/android"
+            url "https://cardinalcommerceprod.jfrog.io/artifactory/android"
             credentials {
-                username 'braintree-team-sdk@cardinalcommerce'
-                password '220cc9476025679c4e5c843666c27d97cfb0f951'
+                username 'braintree_team_sdk'
+                password 'AKCp8jQcoDy2hxSWhDAUQKXLDPDx6NYRkqrgFLRc3qDrayg6rrCbJpsKKyMwaykVL8FWusJpp'
             }
         }
     }
