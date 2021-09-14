@@ -72,7 +72,7 @@ dependencies {
     testImplementation 'org.skyscreamer:jsonassert:1.4.0'
     testImplementation 'com.squareup.assertj:assertj-android:1.1.1'
 
-    androidTestImplementation 'androidx.test.ext:junit:1.0.0-beta02'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 }
 
 rootProject.allprojects {
