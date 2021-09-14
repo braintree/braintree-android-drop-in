@@ -10,7 +10,6 @@ import com.braintreepayments.cardform.view.CardForm;
  */
 public class DropInRequest implements Parcelable {
 
-    private boolean collectDeviceData;
     private boolean requestThreeDSecureVerification;
     private ThreeDSecureRequest threeDSecureRequest;
 
@@ -31,17 +30,6 @@ public class DropInRequest implements Parcelable {
     private int cardholderNameStatus = CardForm.FIELD_DISABLED;
 
     public DropInRequest() {}
-
-    /**
-     * This method is optional.
-     *
-     * @param collectDeviceData {@code true} if Drop-in should collect and return device data for
-     *        fraud prevention.
-     * @see DataCollector
-     */
-    public void setCollectDeviceData(boolean collectDeviceData) {
-        this.collectDeviceData = collectDeviceData;
-    }
 
     /**
      * This method is optional.
@@ -204,13 +192,6 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
-     * @return If Drop-in should collect and return device data for fraud prevention.
-     */
-    public boolean getCollectDeviceData() {
-        return collectDeviceData;
-    }
-
-    /**
      * @return If PayPal is disabled in Drop-in
      */
     public boolean isPayPalDisabled() {
@@ -316,7 +297,6 @@ public class DropInRequest implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeByte(collectDeviceData ? (byte) 1 : (byte) 0);
         dest.writeParcelable(googlePayRequest, 0);
         dest.writeByte(googlePayDisabled ? (byte) 1 : (byte) 0);
         dest.writeParcelable(payPalRequest, 0);
@@ -335,7 +315,6 @@ public class DropInRequest implements Parcelable {
     }
 
     protected DropInRequest(Parcel in) {
-        collectDeviceData = in.readByte() != 0;
         googlePayRequest = in.readParcelable(GooglePayRequest.class.getClassLoader());
         googlePayDisabled = in.readByte() != 0;
         payPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());

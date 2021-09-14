@@ -191,7 +191,6 @@ public class MainActivity extends BaseActivity {
     protected void onAuthorizationFetched() {
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setRequestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this));
-        dropInRequest.setCollectDeviceData(Settings.shouldCollectDeviceData(this));
         dropInRequest.setGooglePayRequest(getGooglePaymentRequest());
         dropInRequest.setMaskCardNumber(true);
         dropInRequest.setMaskSecurityCode(true);
