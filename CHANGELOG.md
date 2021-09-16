@@ -2,7 +2,7 @@
 
 ## unreleased
 * Upgrade `targetSdkVersion` and `compileSdkVersion` to API 31
-* Bump braintree_android version to 3.x.x - TODO UPDATE VERSION
+* Bump braintree_android version to 3.18.0
 
 ## 4.6.0
 * Bump braintree_android version to 3.11.1

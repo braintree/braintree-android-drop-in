@@ -24,6 +24,5 @@ allprojects {
         maven {
             url 'file:///tmp/maven/'
         }
-        mavenLocal()
     }
 }
