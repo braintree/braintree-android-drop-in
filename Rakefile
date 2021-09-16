@@ -84,7 +84,7 @@ def post_release(version)
   puts "\nDone. Commits and tags have been created. If everything appears to be in order, hit ENTER to push."
   $stdin.gets
 
-  sh "git push origin master #{version}"
+  sh "git push origin 5.x #{version}"
 end
 
 def get_current_version
