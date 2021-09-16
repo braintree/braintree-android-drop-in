@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 5.3.0
 
 * Upgrade `targetSdkVersion` and `compileSdkVersion` to API 31
 * Bump braintree_android version to 3.18.0
