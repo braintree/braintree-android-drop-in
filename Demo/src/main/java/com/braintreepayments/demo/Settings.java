@@ -73,10 +73,6 @@ public class Settings {
         return getPreferences(context).getString("merchant_account", null);
     }
 
-    public static boolean shouldCollectDeviceData(Context context) {
-        return getPreferences(context).getBoolean("collect_device_data", false);
-    }
-
     public static String getThreeDSecureMerchantAccountId(Context context) {
         if (isThreeDSecureEnabled(context) && getEnvironment(context) == 1) {
             return "test_AIB";

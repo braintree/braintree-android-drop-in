@@ -528,23 +528,18 @@ public class DropInActivity extends AppCompatActivity {
                 } else {
                     final DropInResult dropInResult = new DropInResult();
                     dropInResult.paymentMethodNonce(paymentMethodNonce);
-
-                    if (mDropInRequest.getCollectDeviceData()) {
-                        getDropInClient().collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
-                            @Override
-                            public void onResult(@Nullable String deviceData, @Nullable Exception error) {
-                                if (deviceData != null) {
-                                    dropInResult.deviceData(deviceData);
-                                    animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
-                                } else {
-                                    updateVaultedPaymentMethodNonces(true);
-                                    onError(error);
-                                }
+                    getDropInClient().collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
+                        @Override
+                        public void onResult(@Nullable String deviceData, @Nullable Exception error) {
+                            if (deviceData != null) {
+                                dropInResult.deviceData(deviceData);
+                                animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
+                            } else {
+                                updateVaultedPaymentMethodNonces(true);
+                                onError(error);
                             }
-                        });
-                    } else {
-                        animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
                     }
+                });
                 }
             }
         });
