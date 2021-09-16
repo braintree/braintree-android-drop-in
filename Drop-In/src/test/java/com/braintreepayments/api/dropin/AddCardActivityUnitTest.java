@@ -937,10 +937,6 @@ public class AddCardActivityUnitTest {
         setText(mEditCardView, R.id.bt_card_form_expiration, ExpirationDate.VALID_EXPIRATION);
         mEditCardView.findViewById(R.id.bt_button).performClick();
 
-        Intent nextStartedActivity = shadowOf(mActivity).peekNextStartedActivity();
-        assertEquals(Intent.ACTION_VIEW, nextStartedActivity.getAction());
-        assertTrue(nextStartedActivity.getDataString().contains("com.braintreepayments.api.dropin.test.braintree"));
-
         assertThat(mEditCardView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
         assertThat(mEditCardView.findViewById(R.id.bt_button)).isGone();
 
