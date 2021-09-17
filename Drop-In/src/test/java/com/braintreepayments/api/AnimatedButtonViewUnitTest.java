@@ -1,7 +1,9 @@
 package com.braintreepayments.api;
 
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -35,16 +37,16 @@ public class AnimatedButtonViewUnitTest {
 
     @Test
     public void showsButtonByDefault() {
-        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
-        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+        assertThat((View) mView.findViewById(R.id.bt_button)).isVisible();
+        assertThat((View) mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
     }
 
     @Test
     public void onClick_showsLoadingView() {
         mView.onClick(null);
 
-        assertThat(mView.findViewById(R.id.bt_button)).isGone();
-        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+        assertThat((View) mView.findViewById(R.id.bt_button)).isGone();
+        assertThat((View) mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
     }
 
     @Test
@@ -64,24 +66,24 @@ public class AnimatedButtonViewUnitTest {
 
     @Test
     public void showLoading_showsLoading() {
-        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
-        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+        assertThat((View) mView.findViewById(R.id.bt_button)).isVisible();
+        assertThat((View) mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
 
         mView.showLoading();
 
-        assertThat(mView.findViewById(R.id.bt_button)).isGone();
-        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+        assertThat((View) mView.findViewById(R.id.bt_button)).isGone();
+        assertThat((View) mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
     }
 
     @Test
     public void showButton_showsButton() {
         mView.showLoading();
-        assertThat(mView.findViewById(R.id.bt_button)).isGone();
-        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
+        assertThat((View) mView.findViewById(R.id.bt_button)).isGone();
+        assertThat((View) mView.findViewById(R.id.bt_animated_button_loading_indicator)).isVisible();
 
         mView.showButton();
 
-        assertThat(mView.findViewById(R.id.bt_button)).isVisible();
-        assertThat(mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
+        assertThat((View) mView.findViewById(R.id.bt_button)).isVisible();
+        assertThat((View) mView.findViewById(R.id.bt_animated_button_loading_indicator)).isGone();
     }
 }
