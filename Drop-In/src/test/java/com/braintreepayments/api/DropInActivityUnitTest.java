@@ -180,6 +180,7 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         mActivity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, mock(Intent.class));
+        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
         assertTrue(mActivity.isFinishing());
     }
 
@@ -296,6 +297,7 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         mActivity.onBackPressed();
+        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_CANCELED, mShadowActivity.getResultCode());
@@ -312,6 +314,7 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         mActivity.onBackPressed();
+        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
         verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.canceled");
     }
@@ -330,7 +333,9 @@ public class DropInActivityUnitTest {
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
+
         mActivity.onVaultedPaymentMethodSelected(event);
+        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
         verify(dropInClient, never()).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(DropInResultCallback.class));
         assertTrue(mActivity.isFinishing());
@@ -365,6 +370,7 @@ public class DropInActivityUnitTest {
         DropInRequest dropInRequest = new DropInRequest();
 
         DropInClient dropInClient = new MockDropInClientBuilder()
+                .shouldPerformThreeDSecureVerification(false)
                 .collectDeviceDataSuccess("device data")
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
@@ -373,7 +379,10 @@ public class DropInActivityUnitTest {
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
+
+        // the activity will finish once the view model bottom sheet state has moved to hidden
         mActivity.onVaultedPaymentMethodSelected(event);
+        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
         verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.success");
     }
@@ -395,7 +404,9 @@ public class DropInActivityUnitTest {
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
+
         mActivity.onVaultedPaymentMethodSelected(event);
+        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
         assertEquals(DropInPaymentMethodType.VISA.getCanonicalName(),
                 BraintreeSharedPreferences.getSharedPreferences(mActivity)
@@ -420,7 +431,9 @@ public class DropInActivityUnitTest {
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
+
         mActivity.onVaultedPaymentMethodSelected(event);
+        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_OK, mShadowActivity.getResultCode());
@@ -447,7 +460,9 @@ public class DropInActivityUnitTest {
         mActivityController.setup();
 
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(paymentMethodNonce);
+
         mActivity.onVaultedPaymentMethodSelected(event);
+        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
         assertTrue(mActivity.isFinishing());
         assertEquals(RESULT_OK, mShadowActivity.getResultCode());
