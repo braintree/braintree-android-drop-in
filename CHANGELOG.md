@@ -1,6 +1,7 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.0.0-beta2
+
 * Android 12 Support
   * Bump braintree_android module dependency versions to `4.6.0`
   * Upgrade `targetSdkVersion` and `compileSdkVersion` to API 31
