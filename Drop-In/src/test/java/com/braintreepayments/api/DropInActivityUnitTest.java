@@ -632,6 +632,7 @@ public class DropInActivityUnitTest {
         DropInEvent event =
                 DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.UNKNOWN);
         mActivity.onSupportedPaymentMethodSelected(event);
+        mActivity.getSupportFragmentManager().executePendingTransactions();
 
         assertNotNull(mActivity.getSupportFragmentManager().findFragmentByTag("ADD_CARD"));
     }
