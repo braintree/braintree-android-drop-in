@@ -10,12 +10,12 @@ def GATEWAY_PORT = System.properties['GATEWAY_PORT'] ?: '"3000"';
 version '4.6.0'
 
 android {
-    compileSdkVersion 28
-    buildToolsVersion '28.0.3'
+    compileSdkVersion 31
+    buildToolsVersion '30.0.3'
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 31
         versionCode 84
         versionName version
 
@@ -58,9 +58,9 @@ android.buildTypes.debug { type ->
 }
 
 dependencies {
-    api 'com.braintreepayments.api:braintree:3.11.1'
+    api 'com.braintreepayments.api:braintree:3.18.0'
     api 'com.braintreepayments:card-form:4.3.0'
-    api 'com.braintreepayments.api:three-d-secure:3.11.1'
+    api 'com.braintreepayments.api:three-d-secure:3.18.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.gms:play-services-wallet:16.0.0'
 
@@ -68,20 +68,20 @@ dependencies {
     testImplementation 'org.powermock:powermock-module-junit4-rule:1.6.6'
     testImplementation 'org.powermock:powermock-api-mockito:1.6.6'
     testImplementation 'org.powermock:powermock-classloading-xstream:1.6.6'
-    testImplementation 'org.robolectric:robolectric:3.8'
+    testImplementation 'org.robolectric:robolectric:4.3'
     testImplementation 'org.skyscreamer:jsonassert:1.4.0'
     testImplementation 'com.squareup.assertj:assertj-android:1.1.1'
 
-    androidTestImplementation 'androidx.test.ext:junit:1.0.0-beta02'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
 }
 
 rootProject.allprojects {
     repositories {
         maven {
-            url  "https://cardinalcommerce.bintray.com/android"
+            url "https://cardinalcommerceprod.jfrog.io/artifactory/android"
             credentials {
-                username 'braintree-team-sdk@cardinalcommerce'
-                password '220cc9476025679c4e5c843666c27d97cfb0f951'
+                username 'braintree_team_sdk'
+                password 'AKCp8jQcoDy2hxSWhDAUQKXLDPDx6NYRkqrgFLRc3qDrayg6rrCbJpsKKyMwaykVL8FWusJpp'
             }
         }
     }

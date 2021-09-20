@@ -8,8 +8,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.Spinner;
 
+import com.braintreepayments.DeviceAutomator;
 import com.braintreepayments.cardform.view.CardForm;
-import com.lukekorth.deviceautomator.DeviceAutomator;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -17,16 +17,14 @@ import java.util.concurrent.TimeUnit;
 import androidx.annotation.CallSuper;
 
 import static androidx.test.InstrumentationRegistry.getTargetContext;
-import static com.lukekorth.deviceautomator.AutomatorAction.click;
-import static com.lukekorth.deviceautomator.AutomatorAction.setText;
-import static com.lukekorth.deviceautomator.AutomatorAssertion.text;
-import static com.lukekorth.deviceautomator.DeviceAutomator.onDevice;
-import static com.lukekorth.deviceautomator.UiObjectMatcher.withClass;
-import static com.lukekorth.deviceautomator.UiObjectMatcher.withResourceId;
-import static com.lukekorth.deviceautomator.UiObjectMatcher.withText;
-import static com.lukekorth.deviceautomator.UiObjectMatcher.withTextContaining;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.Assert.assertTrue;
+import static com.braintreepayments.AutomatorAction.click;
+import static com.braintreepayments.AutomatorAction.setText;
+import static com.braintreepayments.AutomatorAssertion.text;
+import static com.braintreepayments.DeviceAutomator.onDevice;
+import static com.braintreepayments.UiObjectMatcher.withClass;
+import static com.braintreepayments.UiObjectMatcher.withResourceId;
+import static com.braintreepayments.UiObjectMatcher.withText;
+import static com.braintreepayments.UiObjectMatcher.withTextContaining;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
