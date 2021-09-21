@@ -29,6 +29,11 @@ android {
         exclude 'META-INF/maven/com.google.guava/guava/pom.xml'
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7.toString()
+        targetCompatibility JavaVersion.VERSION_1_7.toString()
+    }
+
     testOptions.unitTests {
         returnDefaultValues true
         includeAndroidResources true
