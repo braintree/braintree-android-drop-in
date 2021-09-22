@@ -38,8 +38,8 @@ public class DropInClient {
     private final ThreeDSecureClient threeDSecureClient;
     private final DataCollector dataCollector;
 
-    private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest) {
-        BraintreeClient braintreeClient = new BraintreeClient(context, authorization);
+    private static DropInClientParams createDefaultParams(Context context, String authorization, String sessionId, DropInRequest dropInRequest) {
+        BraintreeClient braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
         return new DropInClientParams()
                 .dropInRequest(dropInRequest)
                 .braintreeClient(braintreeClient)
@@ -54,12 +54,11 @@ public class DropInClient {
     }
 
     public DropInClient(Context context, String authorization, DropInRequest dropInRequest) {
-        this(context, authorization, null, dropInRequest);
+        this(context, authorization, UUIDHelper.getFormattedUUID(), dropInRequest);
     }
 
     DropInClient(Context context, String authorization, String sessionId, DropInRequest dropInRequest) {
-        // TODO: instantiate a BraintreeClient with the input sessionId
-        this(createDefaultParams(context, authorization, dropInRequest));
+        this(createDefaultParams(context, authorization, sessionId, dropInRequest));
     }
 
     @VisibleForTesting
