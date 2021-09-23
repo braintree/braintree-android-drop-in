@@ -40,9 +40,9 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(RobolectricTestRunner.class)
 public class DropInActivityUnitTest {
 
-    private ActivityController mActivityController;
-    private DropInUnitTestActivity mActivity;
-    private ShadowActivity mShadowActivity;
+    private ActivityController activityController;
+    private DropInUnitTestActivity activity;
+    private ShadowActivity shadowActivity;
 
     @Before
     public void beforeEach() {
@@ -54,10 +54,10 @@ public class DropInActivityUnitTest {
                 .putExtra(DropInClient.EXTRA_AUTHORIZATION, authorization)
                 .putExtra(DropInClient.EXTRA_SESSION_ID, sessionId);
 
-        mActivityController = Robolectric.buildActivity(DropInUnitTestActivity.class, intent);
-        mActivity = (DropInUnitTestActivity) mActivityController.get();
-        mActivity.dropInClient = dropInClient;
-        mShadowActivity = shadowOf(mActivity);
+        activityController = Robolectric.buildActivity(DropInUnitTestActivity.class, intent);
+        activity = (DropInUnitTestActivity) activityController.get();
+        activity.dropInClient = dropInClient;
+        shadowActivity = shadowOf(activity);
     }
 
     @Test
@@ -69,10 +69,10 @@ public class DropInActivityUnitTest {
         when(dropInClient.getAuthorization()).thenReturn(mock(InvalidAuthorization.class));
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        Exception exception = (Exception) mShadowActivity.getResultIntent()
+        assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
+        Exception exception = (Exception) shadowActivity.getResultIntent()
                 .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertTrue(exception instanceof InvalidArgumentException);
         assertEquals("Tokenization Key or Client Token was invalid.", exception.getMessage());
@@ -87,9 +87,9 @@ public class DropInActivityUnitTest {
         when(dropInClient.getBrowserSwitchResult(any(FragmentActivity.class))).thenReturn(createBrowserSwitchSuccessResult());
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        assertEquals(DropInState.WILL_FINISH, mActivity.dropInViewModel.getDropInState().getValue());
+        assertEquals(DropInState.WILL_FINISH, activity.dropInViewModel.getDropInState().getValue());
     }
 
     @Test
@@ -100,9 +100,9 @@ public class DropInActivityUnitTest {
         DropInClient dropInClient = mock(DropInClient.class);
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        verify(dropInClient).deliverBrowserSwitchResult(same(mActivity), any(DropInResultCallback.class));
+        verify(dropInClient).deliverBrowserSwitchResult(same(activity), any(DropInResultCallback.class));
     }
 
     @Test
@@ -120,9 +120,9 @@ public class DropInActivityUnitTest {
                 .build();
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        assertFalse(mActivity.isFinishing());
+        assertFalse(activity.isFinishing());
     }
 
     @Test
@@ -136,12 +136,12 @@ public class DropInActivityUnitTest {
                 .build();
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.onActivityResult(100, 1, mock(Intent.class));
+        activity.onActivityResult(100, 1, mock(Intent.class));
 
-        assertFalse(mActivity.isFinishing());
-        assertEquals(error, mActivity.dropInViewModel.getUserCanceledError().getValue());
+        assertFalse(activity.isFinishing());
+        assertEquals(error, activity.dropInViewModel.getUserCanceledError().getValue());
     }
 
     @Test
@@ -155,12 +155,12 @@ public class DropInActivityUnitTest {
                 .build();
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.onActivityResult(100, 1, mock(Intent.class));
+        activity.onActivityResult(100, 1, mock(Intent.class));
 
-        assertTrue(mActivity.isFinishing());
-        verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error");
+        assertTrue(activity.isFinishing());
+        verify(activity.dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error");
     }
 
     @Test
@@ -177,11 +177,11 @@ public class DropInActivityUnitTest {
                 .build();
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, mock(Intent.class));
-        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
-        assertTrue(mActivity.isFinishing());
+        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, mock(Intent.class));
+        activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
+        assertTrue(activity.isFinishing());
     }
 
     @Test
@@ -195,12 +195,12 @@ public class DropInActivityUnitTest {
                 .build();
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, mock(Intent.class));
+        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, mock(Intent.class));
 
-        assertFalse(mActivity.isFinishing());
-        assertEquals(error, mActivity.dropInViewModel.getUserCanceledError().getValue());
+        assertFalse(activity.isFinishing());
+        assertEquals(error, activity.dropInViewModel.getUserCanceledError().getValue());
     }
 
     @Test
@@ -214,12 +214,12 @@ public class DropInActivityUnitTest {
                 .build();
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, mock(Intent.class));
+        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, mock(Intent.class));
 
-        assertTrue(mActivity.isFinishing());
-        verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error");
+        assertTrue(activity.isFinishing());
+        verify(activity.dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error");
     }
 
     @Test
@@ -231,12 +231,12 @@ public class DropInActivityUnitTest {
                 .build();
 
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         Intent intent = mock(Intent.class);
-        mActivity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, intent);
+        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, intent);
 
-        verify(mActivity.dropInClient).handleActivityResult(same(mActivity), eq(BraintreeRequestCodes.THREE_D_SECURE), eq(1), same(intent), any(DropInResultCallback.class));
+        verify(activity.dropInClient).handleActivityResult(same(activity), eq(BraintreeRequestCodes.THREE_D_SECURE), eq(1), same(intent), any(DropInResultCallback.class));
     }
 
     @Test
@@ -244,7 +244,7 @@ public class DropInActivityUnitTest {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest();
         setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         // TODO: revisit integration type metadata and consider passing integration (core PR)
         // type through BraintreeClient constructor instead of relying on reflection
@@ -256,9 +256,9 @@ public class DropInActivityUnitTest {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest();
         setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        verify(mActivity.dropInClient).sendAnalyticsEvent("appeared");
+        verify(activity.dropInClient).sendAnalyticsEvent("appeared");
     }
 
     @Test
@@ -278,15 +278,15 @@ public class DropInActivityUnitTest {
 
         String authorization = Fixtures.TOKENIZATION_KEY;
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivity.clientTokenPresent = true;
-        mActivityController.setup();
+        activity.clientTokenPresent = true;
+        activityController.setup();
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
 
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
-        mActivity.onVaultedPaymentMethodSelected(event);
+        activity.onVaultedPaymentMethodSelected(event);
 
-        verify(dropInClient).getVaultedPaymentMethods(same(mActivity), any(GetPaymentMethodNoncesCallback.class));
+        verify(dropInClient).getVaultedPaymentMethods(same(activity), any(GetPaymentMethodNoncesCallback.class));
     }
 
     @Test
@@ -294,13 +294,13 @@ public class DropInActivityUnitTest {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest();
         setupDropInActivity(authorization, mock(DropInClient.class), dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.onBackPressed();
-        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
+        activity.onBackPressed();
+        activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_CANCELED, mShadowActivity.getResultCode());
+        assertTrue(activity.isFinishing());
+        assertEquals(RESULT_CANCELED, shadowActivity.getResultCode());
     }
 
     @Test
@@ -311,12 +311,12 @@ public class DropInActivityUnitTest {
         DropInClient dropInClient = new MockDropInClientBuilder()
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.onBackPressed();
-        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
+        activity.onBackPressed();
+        activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
-        verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.canceled");
+        verify(activity.dropInClient).sendAnalyticsEvent("sdk.exit.canceled");
     }
 
     @Test
@@ -329,18 +329,18 @@ public class DropInActivityUnitTest {
                 .collectDeviceDataSuccess("sample-data")
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
 
-        mActivity.onVaultedPaymentMethodSelected(event);
-        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
+        activity.onVaultedPaymentMethodSelected(event);
+        activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
-        verify(dropInClient, never()).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(DropInResultCallback.class));
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
-        DropInResult result = mShadowActivity.getResultIntent()
+        verify(dropInClient, never()).performThreeDSecureVerification(same(activity), same(cardNonce), any(DropInResultCallback.class));
+        assertTrue(activity.isFinishing());
+        assertEquals(RESULT_OK, shadowActivity.getResultCode());
+        DropInResult result = shadowActivity.getResultIntent()
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertEquals(cardNonce.getString(), Objects.requireNonNull(result.getPaymentMethodNonce()).getString());
         assertEquals(cardNonce.getLastTwo(), ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
@@ -355,13 +355,13 @@ public class DropInActivityUnitTest {
                 .shouldPerformThreeDSecureVerification(true)
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
-        mActivity.onVaultedPaymentMethodSelected(event);
+        activity.onVaultedPaymentMethodSelected(event);
 
-        verify(dropInClient).performThreeDSecureVerification(same(mActivity), same(cardNonce), any(DropInResultCallback.class));
+        verify(dropInClient).performThreeDSecureVerification(same(activity), same(cardNonce), any(DropInResultCallback.class));
     }
 
     @Test
@@ -375,16 +375,16 @@ public class DropInActivityUnitTest {
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
 
-        mActivityController.setup();
+        activityController.setup();
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
 
         // the activity will finish once the view model bottom sheet state has moved to hidden
-        mActivity.onVaultedPaymentMethodSelected(event);
-        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
+        activity.onVaultedPaymentMethodSelected(event);
+        activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
-        verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit.success");
+        verify(activity.dropInClient).sendAnalyticsEvent("sdk.exit.success");
     }
 
     @Test
@@ -397,19 +397,19 @@ public class DropInActivityUnitTest {
         String authorization = Fixtures.TOKENIZATION_KEY;
         DropInRequest dropInRequest = new DropInRequest();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        assertNull(BraintreeSharedPreferences.getSharedPreferences(mActivity)
+        assertNull(BraintreeSharedPreferences.getSharedPreferences(activity)
                 .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
 
-        mActivity.onVaultedPaymentMethodSelected(event);
-        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
+        activity.onVaultedPaymentMethodSelected(event);
+        activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
         assertEquals(DropInPaymentMethodType.VISA.getCanonicalName(),
-                BraintreeSharedPreferences.getSharedPreferences(mActivity)
+                BraintreeSharedPreferences.getSharedPreferences(activity)
                         .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null));
     }
 
@@ -427,17 +427,17 @@ public class DropInActivityUnitTest {
                 .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
 
-        mActivity.onVaultedPaymentMethodSelected(event);
-        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
+        activity.onVaultedPaymentMethodSelected(event);
+        activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
-        DropInResult result = mShadowActivity.getResultIntent()
+        assertTrue(activity.isFinishing());
+        assertEquals(RESULT_OK, shadowActivity.getResultCode());
+        DropInResult result = shadowActivity.getResultIntent()
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
         assertEquals("device-data", result.getDeviceData());
     }
@@ -457,17 +457,17 @@ public class DropInActivityUnitTest {
                 .collectDeviceDataSuccess("sample-data")
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(paymentMethodNonce);
 
-        mActivity.onVaultedPaymentMethodSelected(event);
-        mActivity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
+        activity.onVaultedPaymentMethodSelected(event);
+        activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
 
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_OK, mShadowActivity.getResultCode());
+        assertTrue(activity.isFinishing());
+        assertEquals(RESULT_OK, shadowActivity.getResultCode());
         assertEquals(paymentMethodNonce.getString(),
-                Objects.requireNonNull(((DropInResult) mShadowActivity.getResultIntent()
+                Objects.requireNonNull(((DropInResult) shadowActivity.getResultIntent()
                         .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT))
                         .getPaymentMethodNonce())
                         .getString());
@@ -482,11 +482,11 @@ public class DropInActivityUnitTest {
         DropInClient dropInClient = new MockDropInClientBuilder()
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
-        mActivity.onVaultedPaymentMethodSelected(event);
+        activity.onVaultedPaymentMethodSelected(event);
 
         verify(dropInClient).sendAnalyticsEvent("vaulted-card.select");
     }
@@ -499,12 +499,12 @@ public class DropInActivityUnitTest {
         DropInClient dropInClient = new MockDropInClientBuilder()
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         PayPalAccountNonce payPalAccountNonce =
             PayPalAccountNonce.fromJSON(new JSONObject(Fixtures.PAYPAL_ACCOUNT_JSON));
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(payPalAccountNonce);
-        mActivity.onVaultedPaymentMethodSelected(event);
+        activity.onVaultedPaymentMethodSelected(event);
 
         verify(dropInClient, never()).sendAnalyticsEvent("vaulted-card.select");
     }
@@ -567,13 +567,13 @@ public class DropInActivityUnitTest {
                 .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         DropInEvent event =
                 DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAYPAL);
-        mActivity.onSupportedPaymentMethodSelected(event);
+        activity.onSupportedPaymentMethodSelected(event);
 
-        verify(dropInClient).tokenizePayPalRequest(same(mActivity), any(PayPalFlowStartedCallback.class));
+        verify(dropInClient).tokenizePayPalRequest(same(activity), any(PayPalFlowStartedCallback.class));
     }
 
     @Test
@@ -587,13 +587,13 @@ public class DropInActivityUnitTest {
                 .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         DropInEvent event =
                 DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAY_WITH_VENMO);
-        mActivity.onSupportedPaymentMethodSelected(event);
+        activity.onSupportedPaymentMethodSelected(event);
 
-        verify(dropInClient).tokenizeVenmoAccount(same(mActivity), any(VenmoTokenizeAccountCallback.class));
+        verify(dropInClient).tokenizeVenmoAccount(same(activity), any(VenmoTokenizeAccountCallback.class));
     }
 
     @Test
@@ -607,13 +607,13 @@ public class DropInActivityUnitTest {
                 .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         DropInEvent event =
                 DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.GOOGLE_PAYMENT);
-        mActivity.onSupportedPaymentMethodSelected(event);
+        activity.onSupportedPaymentMethodSelected(event);
 
-        verify(dropInClient).requestGooglePayPayment(same(mActivity), any(GooglePayRequestPaymentCallback.class));
+        verify(dropInClient).requestGooglePayPayment(same(activity), any(GooglePayRequestPaymentCallback.class));
     }
 
     @Test
@@ -627,14 +627,14 @@ public class DropInActivityUnitTest {
                 .getSupportedPaymentMethodsSuccess(new ArrayList<DropInPaymentMethodType>())
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         DropInEvent event =
                 DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.UNKNOWN);
-        mActivity.onSupportedPaymentMethodSelected(event);
-        mActivity.getSupportFragmentManager().executePendingTransactions();
+        activity.onSupportedPaymentMethodSelected(event);
+        activity.getSupportFragmentManager().executePendingTransactions();
 
-        assertNotNull(mActivity.getSupportFragmentManager().findFragmentByTag("ADD_CARD"));
+        assertNotNull(activity.getSupportFragmentManager().findFragmentByTag("ADD_CARD"));
     }
 
     @Test
@@ -647,13 +647,13 @@ public class DropInActivityUnitTest {
                 .cardTokenizeError(error)
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         Card card = new Card();
         DropInEvent event = DropInEvent.createCardDetailsSubmitEvent(card);
-        mActivity.onCardDetailsSubmit(event);
+        activity.onCardDetailsSubmit(event);
 
-        assertEquals(error, mActivity.dropInViewModel.getCardTokenizationError().getValue());
+        assertEquals(error, activity.dropInViewModel.getCardTokenizationError().getValue());
     }
 
     @Test
@@ -666,15 +666,15 @@ public class DropInActivityUnitTest {
                 .cardTokenizeError(error)
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
         Card card = new Card();
         DropInEvent event = DropInEvent.createCardDetailsSubmitEvent(card);
-        mActivity.onCardDetailsSubmit(event);
+        activity.onCardDetailsSubmit(event);
 
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+        assertTrue(activity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
+        Exception actualException = (Exception) shadowActivity.getResultIntent()
                 .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertEquals(error.getClass(), actualException.getClass());
         assertEquals(error.getMessage(), actualException.getMessage());
@@ -690,13 +690,13 @@ public class DropInActivityUnitTest {
                 .payPalError(error)
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.startPaymentFlow(DropInPaymentMethodType.PAYPAL);
+        activity.startPaymentFlow(DropInPaymentMethodType.PAYPAL);
 
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+        assertTrue(activity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
+        Exception actualException = (Exception) shadowActivity.getResultIntent()
                 .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertEquals(error.getClass(), actualException.getClass());
         assertEquals(error.getMessage(), actualException.getMessage());
@@ -712,13 +712,13 @@ public class DropInActivityUnitTest {
                 .googlePayError(error)
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.startPaymentFlow(DropInPaymentMethodType.GOOGLE_PAYMENT);
+        activity.startPaymentFlow(DropInPaymentMethodType.GOOGLE_PAYMENT);
 
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+        assertTrue(activity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
+        Exception actualException = (Exception) shadowActivity.getResultIntent()
                 .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertEquals(error.getClass(), actualException.getClass());
         assertEquals(error.getMessage(), actualException.getMessage());
@@ -734,13 +734,13 @@ public class DropInActivityUnitTest {
                 .venmoError(error)
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.startPaymentFlow(DropInPaymentMethodType.PAY_WITH_VENMO);
+        activity.startPaymentFlow(DropInPaymentMethodType.PAY_WITH_VENMO);
 
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+        assertTrue(activity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
+        Exception actualException = (Exception) shadowActivity.getResultIntent()
                 .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertEquals(error.getClass(), actualException.getClass());
         assertEquals(error.getMessage(), actualException.getMessage());
@@ -756,13 +756,13 @@ public class DropInActivityUnitTest {
                 .getSupportedCardTypesError(error)
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.startPaymentFlow(DropInPaymentMethodType.UNKNOWN);
+        activity.startPaymentFlow(DropInPaymentMethodType.UNKNOWN);
 
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+        assertTrue(activity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
+        Exception actualException = (Exception) shadowActivity.getResultIntent()
                 .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertEquals(error.getClass(), actualException.getClass());
         assertEquals(error.getMessage(), actualException.getMessage());
@@ -778,13 +778,13 @@ public class DropInActivityUnitTest {
                 .deletePaymentMethodError(error)
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.removePaymentMethodNonce(mock(PaymentMethodNonce.class));
+        activity.removePaymentMethodNonce(mock(PaymentMethodNonce.class));
 
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+        assertTrue(activity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
+        Exception actualException = (Exception) shadowActivity.getResultIntent()
                 .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertEquals(error.getClass(), actualException.getClass());
         assertEquals(error.getMessage(), actualException.getMessage());
@@ -810,11 +810,11 @@ public class DropInActivityUnitTest {
         dropInResult.paymentMethodNonce(cardNonce);
         dropInResult.deviceData("device_data");
 
-        mActivity.pendingDropInResult = dropInResult;
-        mActivity.finishDropInWithPendingResult(false);
+        activity.pendingDropInResult = dropInResult;
+        activity.finishDropInWithPendingResult(false);
 
-        ShadowActivity shadowActivity = shadowOf(mActivity);
-        assertTrue(mActivity.isFinishing());
+        ShadowActivity shadowActivity = shadowOf(activity);
+        assertTrue(activity.isFinishing());
         assertEquals(RESULT_OK, shadowActivity.getResultCode());
         DropInResult result = shadowActivity.getResultIntent()
                 .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
@@ -832,10 +832,10 @@ public class DropInActivityUnitTest {
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
 
         Exception exception = new Exception("Error message");
-        mActivity.finishDropInWithError(exception);
+        activity.finishDropInWithError(exception);
 
-        ShadowActivity shadowActivity = shadowOf(mActivity);
-        assertTrue(mActivity.isFinishing());
+        ShadowActivity shadowActivity = shadowOf(activity);
+        assertTrue(activity.isFinishing());
         assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
         Exception error = (Exception) shadowActivity.getResultIntent()
                 .getSerializableExtra(DropInResult.EXTRA_ERROR);
@@ -850,14 +850,14 @@ public class DropInActivityUnitTest {
         DropInClient dropInClient = new MockDropInClientBuilder()
                 .build();
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivityController.setup();
+        activityController.setup();
 
-        mActivity.onError(exception);
+        activity.onError(exception);
 
-        verify(mActivity.dropInClient).sendAnalyticsEvent("sdk.exit." + analyticsEvent);
-        assertTrue(mActivity.isFinishing());
-        assertEquals(RESULT_FIRST_USER, mShadowActivity.getResultCode());
-        Exception actualException = (Exception) mShadowActivity.getResultIntent()
+        verify(activity.dropInClient).sendAnalyticsEvent("sdk.exit." + analyticsEvent);
+        assertTrue(activity.isFinishing());
+        assertEquals(RESULT_FIRST_USER, shadowActivity.getResultCode());
+        Exception actualException = (Exception) shadowActivity.getResultIntent()
                 .getSerializableExtra(DropInResult.EXTRA_ERROR);
         assertEquals(exception.getClass(), actualException.getClass());
         assertEquals(exception.getMessage(), actualException.getMessage());

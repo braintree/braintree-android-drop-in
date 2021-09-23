@@ -27,15 +27,6 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
 @RunWith(RobolectricTestRunner.class)
 public class DropInResultUnitTest {
 
-    private AppCompatActivity mActivity;
-    private CountDownLatch mCountDownLatch;
-
-    @Before
-    public void setup() {
-        mActivity = Robolectric.buildActivity(FragmentTestActivity.class).setup().get();
-        mCountDownLatch = new CountDownLatch(1);
-    }
-
     @Test
     public void paymentMethodNonce_setsPaymentMethodTypeAndNonce() throws JSONException {
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
