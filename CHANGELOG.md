@@ -6,7 +6,9 @@
   * Make `DropInEventType` package-private
   * Make `DropInActivity#onError` package-private
   * Make `AnimatedButtonView` package-private
-  * make `PaymentMethodItemView` package-private
+  * Make `PaymentMethodItemView` package-private
+  * Make `SupportedPaymentMethodsViewHolder` package-private
+  * Make `VaultedPaymentMethodSelectedListener` package-private
 
 ## 6.0.0-beta2
 
