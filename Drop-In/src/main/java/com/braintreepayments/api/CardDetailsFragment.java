@@ -134,7 +134,11 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
     @Override
     public void onResume() {
         super.onResume();
-        cardForm.getExpirationDateEditText().requestFocus();
+        if (dropInRequest.getCardholderNameStatus() == CardForm.FIELD_DISABLED) {
+            cardForm.getExpirationDateEditText().requestFocus();
+        } else {
+            cardForm.getCardholderNameEditText().requestFocus();
+        }
     }
 
     void setErrors(ErrorWithResponse errors) {

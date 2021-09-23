@@ -37,15 +37,45 @@ class CardDetailsFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_expirationDateFieldIsFocused() {
+    fun whenStateIsRESUMED_andCardholderNameDisabled_expirationDateFieldIsFocused() {
+        val dropInRequest = DropInRequest()
         val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest())
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
         args.putString("EXTRA_CARD_NUMBER", VISA)
         val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
+        assertEquals(CardForm.FIELD_DISABLED, dropInRequest.cardholderNameStatus)
         onView(withId(R.id.bt_card_form_expiration)).check(matches(isFocused()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_andCardholderNameOptional_cardholderNameFieldIsFocused() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.cardholderNameStatus = FIELD_OPTIONAL
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(withId(R.id.bt_card_form_cardholder_name)).check(matches(isFocused()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_andCardholderNameRequired_cardholderNameFieldIsFocused() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.cardholderNameStatus = FIELD_REQUIRED
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(withId(R.id.bt_card_form_cardholder_name)).check(matches(isFocused()))
     }
 
     @Test
