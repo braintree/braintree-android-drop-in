@@ -3,6 +3,8 @@ package com.braintreepayments.api;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.Nullable;
+
 import com.braintreepayments.cardform.view.CardForm;
 
 /**
@@ -36,7 +38,7 @@ public class DropInRequest implements Parcelable {
      *
      * @param request The Google Pay Request {@link GooglePayRequest} for the transaction.
      */
-    public void setGooglePayRequest(GooglePayRequest request) {
+    public void setGooglePayRequest(@Nullable GooglePayRequest request) {
         googlePayRequest = request;
     }
 
@@ -47,7 +49,7 @@ public class DropInRequest implements Parcelable {
      * If no amount is set, PayPal will default to the billing agreement (Vault) flow.
      * If amount is set, PayPal will follow the one time payment (Checkout) flow.
      */
-    public void setPayPalRequest(PayPalRequest request) {
+    public void setPayPalRequest(@Nullable PayPalRequest request) {
         payPalRequest = request;
     }
 
@@ -108,7 +110,7 @@ public class DropInRequest implements Parcelable {
      * To encourage 3DS 2.0 flows, set {@link ThreeDSecureRequest#setBillingAddress(ThreeDSecurePostalAddress)},
      * {@link ThreeDSecureRequest#setEmail(String)}, and {@link ThreeDSecureRequest#setMobilePhoneNumber(String)} for best results.
      */
-    public void setThreeDSecureRequest(ThreeDSecureRequest threeDSecureRequest) {
+    public void setThreeDSecureRequest(@Nullable ThreeDSecureRequest threeDSecureRequest) {
         this.threeDSecureRequest = threeDSecureRequest;
     }
 
@@ -220,6 +222,7 @@ public class DropInRequest implements Parcelable {
     /**
      * @return The Google Pay Request {@link GooglePayRequest} for the transaction.
      */
+    @Nullable
     public GooglePayRequest getGooglePayRequest() {
         return googlePayRequest;
     }
@@ -241,6 +244,7 @@ public class DropInRequest implements Parcelable {
     /**
      * @return The {@link ThreeDSecureRequest} for the transaction.
      */
+    @Nullable
     public ThreeDSecureRequest getThreeDSecureRequest() { return threeDSecureRequest; }
 
     /**
