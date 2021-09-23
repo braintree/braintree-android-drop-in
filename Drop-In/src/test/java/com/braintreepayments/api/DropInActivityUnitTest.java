@@ -278,7 +278,7 @@ public class DropInActivityUnitTest {
 
         String authorization = Fixtures.TOKENIZATION_KEY;
         setupDropInActivity(authorization, dropInClient, dropInRequest, "sessionId");
-        mActivity.mClientTokenPresent = true;
+        mActivity.clientTokenPresent = true;
         mActivityController.setup();
 
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
