@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -30,18 +29,18 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
     }
 
     @VisibleForTesting
-    View mLoadingIndicatorWrapper;
+    View loadingIndicatorWrapper;
 
-    private TextView mSupportedPaymentMethodsHeader;
-
-    @VisibleForTesting
-    RecyclerView mSupportedPaymentMethodsView;
+    private TextView supportedPaymentMethodsHeader;
 
     @VisibleForTesting
-    RecyclerView mVaultedPaymentMethodsView;
+    RecyclerView supportedPaymentMethodsView;
 
-    private View mVaultedPaymentMethodsContainer;
-    private Button mVaultManagerButton;
+    @VisibleForTesting
+    RecyclerView vaultedPaymentMethodsView;
+
+    private View vaultedPaymentMethodsContainer;
+    private Button vaultManagerButton;
 
     private DropInRequest dropInRequest;
 
@@ -67,24 +66,24 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.bt_fragment_supported_payment_methods, container, false);
 
-        mLoadingIndicatorWrapper = view.findViewById(R.id.bt_select_payment_method_loader_wrapper);
-        mSupportedPaymentMethodsHeader = view.findViewById(R.id.bt_supported_payment_methods_header);
-        mSupportedPaymentMethodsView = view.findViewById(R.id.bt_supported_payment_methods);
-        mVaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
-        mVaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
-        mVaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
+        loadingIndicatorWrapper = view.findViewById(R.id.bt_select_payment_method_loader_wrapper);
+        supportedPaymentMethodsHeader = view.findViewById(R.id.bt_supported_payment_methods_header);
+        supportedPaymentMethodsView = view.findViewById(R.id.bt_supported_payment_methods);
+        vaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
+        vaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
+        vaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
 
         LinearLayoutManager supportedPaymentMethodsLayoutManager =
                 new LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false);
-        mSupportedPaymentMethodsView.setLayoutManager(supportedPaymentMethodsLayoutManager);
+        supportedPaymentMethodsView.setLayoutManager(supportedPaymentMethodsLayoutManager);
 
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
                 requireActivity(), supportedPaymentMethodsLayoutManager.getOrientation());
-        mSupportedPaymentMethodsView.addItemDecoration(dividerItemDecoration);
+        supportedPaymentMethodsView.addItemDecoration(dividerItemDecoration);
 
-        mVaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(requireActivity(),
+        vaultedPaymentMethodsView.setLayoutManager(new LinearLayoutManager(requireActivity(),
                 LinearLayoutManager.HORIZONTAL, false));
-        new LinearSnapHelper().attachToRecyclerView(mVaultedPaymentMethodsView);
+        new LinearSnapHelper().attachToRecyclerView(vaultedPaymentMethodsView);
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
         if (hasSupportedPaymentMethods()) {
@@ -120,7 +119,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
             }
         });
 
-        mVaultManagerButton.setOnClickListener(new View.OnClickListener() {
+        vaultManagerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendDropInEvent(new DropInEvent(DropInEventType.SHOW_VAULT_MANAGER));
@@ -159,7 +158,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
             case LOADING:
             case DROP_IN_FINISHING:
                 // hide vault manager (if necessary) and show loader
-                mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
+                vaultedPaymentMethodsContainer.setVisibility(View.GONE);
                 showLoader();
                 break;
             case SHOW_PAYMENT_METHODS:
@@ -173,11 +172,11 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
     }
 
     private void showLoader() {
-        mLoadingIndicatorWrapper.setVisibility(View.VISIBLE);
+        loadingIndicatorWrapper.setVisibility(View.VISIBLE);
     }
 
     private void hideLoader() {
-        mLoadingIndicatorWrapper.setVisibility(View.GONE);
+        loadingIndicatorWrapper.setVisibility(View.GONE);
     }
 
     private void showSupportedPaymentMethods() {
@@ -185,7 +184,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
                 dropInViewModel.getSupportedPaymentMethods().getValue();
         SupportedPaymentMethodsAdapter adapter =
                 new SupportedPaymentMethodsAdapter(availablePaymentMethods, this);
-        mSupportedPaymentMethodsView.setAdapter(adapter);
+        supportedPaymentMethodsView.setAdapter(adapter);
     }
 
     @Override
@@ -219,21 +218,21 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
         }
         
         if (paymentMethodNonces != null && paymentMethodNonces.size() > 0) {
-            mSupportedPaymentMethodsHeader.setText(R.string.bt_other);
-            mVaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
+            supportedPaymentMethodsHeader.setText(R.string.bt_other);
+            vaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
 
             VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter =
                     new VaultedPaymentMethodsAdapter(paymentMethodNonces, this);
 
-            mVaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
+            vaultedPaymentMethodsView.setAdapter(vaultedPaymentMethodsAdapter);
 
             if (dropInRequest.isVaultManagerEnabled()) {
-                mVaultManagerButton.setVisibility(View.VISIBLE);
+                vaultManagerButton.setVisibility(View.VISIBLE);
             }
 
         } else {
-            mSupportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
-            mVaultedPaymentMethodsContainer.setVisibility(View.GONE);
+            supportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
+            vaultedPaymentMethodsContainer.setVisibility(View.GONE);
         }
     }
 
