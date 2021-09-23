@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+* Visibility
+  * Make `BottomSheetState` package-private
+
 ## 6.0.0-beta2
 
 * Android 12 Support
