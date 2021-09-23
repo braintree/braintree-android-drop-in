@@ -3,6 +3,7 @@
 ## unreleased
 * Visibility
   * Make `BottomSheetState` package-private
+  * Make `DropInEventType` package-private
   * Make `DropInActivity#onError` package-private
 
 ## 6.0.0-beta2

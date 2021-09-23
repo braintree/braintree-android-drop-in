@@ -1,6 +1,6 @@
 package com.braintreepayments.api;
 
-public enum DropInEventType {
+enum DropInEventType {
     ADD_CARD_SUBMIT,
     CARD_DETAILS_SUBMIT,
     DELETE_VAULTED_PAYMENT_METHOD,

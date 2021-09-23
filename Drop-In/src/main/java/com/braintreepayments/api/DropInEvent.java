@@ -90,11 +90,11 @@ class DropInEvent {
     }
 
     PaymentMethodNonce getPaymentMethodNonce(DropInEventProperty property) {
-        return (PaymentMethodNonce) bundle.getParcelable(property.getBundleKey());
+        return bundle.getParcelable(property.getBundleKey());
     }
 
     Card getCard(DropInEventProperty property) {
-        return (Card) bundle.getParcelable(property.getBundleKey());
+        return bundle.getParcelable(property.getBundleKey());
     }
 
     DropInEventType getType() {
