@@ -5,6 +5,8 @@
   * Make `BottomSheetState` package-private
   * Make `DropInEventType` package-private
   * Make `DropInActivity#onError` package-private
+  * Make `AnimatedButtonView` package-private
+  * make `PaymentMethodItemView` package-private
 
 ## 6.0.0-beta2
 
