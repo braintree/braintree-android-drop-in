@@ -1,9 +1,7 @@
 package com.braintreepayments.api;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +15,8 @@ import com.braintreepayments.api.dropin.R;
 
 public class AnimatedButtonView extends RelativeLayout implements OnClickListener {
 
-    private ViewAnimator mViewAnimator;
-    private Button mButton;
-    private OnClickListener mOnClickListener;
+    private ViewAnimator viewAnimator;
+    private OnClickListener onClickListener;
 
     public AnimatedButtonView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -31,12 +28,6 @@ public class AnimatedButtonView extends RelativeLayout implements OnClickListene
         init(attrs);
     }
 
-    @TargetApi(VERSION_CODES.LOLLIPOP)
-    public AnimatedButtonView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-        init(attrs);
-    }
-
     private void init(AttributeSet attrs) {
         if (isInEditMode()) {
             return;
@@ -44,39 +35,39 @@ public class AnimatedButtonView extends RelativeLayout implements OnClickListene
 
         LayoutInflater.from(getContext()).inflate(R.layout.bt_animated_button_view, this);
 
-        mViewAnimator = findViewById(R.id.bt_view_animator);
-        mButton = findViewById(R.id.bt_button);
-        mButton.setOnClickListener(this);
+        viewAnimator = findViewById(R.id.bt_view_animator);
+        Button button = findViewById(R.id.bt_button);
+        button.setOnClickListener(this);
 
-        mViewAnimator.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
-        mViewAnimator.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
+        viewAnimator.setInAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_in));
+        viewAnimator.setOutAnimation(AnimationUtils.loadAnimation(getContext(), android.R.anim.fade_out));
 
         TypedArray attributes = getContext().obtainStyledAttributes(attrs, R.styleable.bt_AnimatedButtonAttributes);
-        mButton.setText(attributes.getString(R.styleable.bt_AnimatedButtonAttributes_bt_buttonText));
+        button.setText(attributes.getString(R.styleable.bt_AnimatedButtonAttributes_bt_buttonText));
         attributes.recycle();
     }
 
     @Override
     public void onClick(View view) {
         showLoading();
-        if (mOnClickListener != null) {
-            mOnClickListener.onClick(this);
+        if (onClickListener != null) {
+            onClickListener.onClick(this);
         }
     }
 
     public void showButton() {
-        if (mViewAnimator.getDisplayedChild() == 1) {
-            mViewAnimator.showPrevious();
+        if (viewAnimator.getDisplayedChild() == 1) {
+            viewAnimator.showPrevious();
         }
     }
 
     public void showLoading() {
-        if (mViewAnimator.getDisplayedChild() == 0) {
-            mViewAnimator.showNext();
+        if (viewAnimator.getDisplayedChild() == 0) {
+            viewAnimator.showNext();
         }
     }
 
     public void setClickListener(OnClickListener onClickListener) {
-        mOnClickListener = onClickListener;
+        this.onClickListener = onClickListener;
     }
 }
