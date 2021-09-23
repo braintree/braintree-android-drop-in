@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
@@ -38,43 +39,40 @@ public class MainActivity extends BaseActivity {
 
     private static final String KEY_NONCE = "nonce";
 
-    private DropInPaymentMethodType mPaymentMethodType;
-    private PaymentMethodNonce mNonce;
+    private PaymentMethodNonce nonce;
 
-    private CardView mPaymentMethod;
-    private ImageView mPaymentMethodIcon;
-    private TextView mPaymentMethodTitle;
-    private TextView mPaymentMethodDescription;
-    private TextView mNonceString;
-    private TextView mNonceDetails;
-    private TextView mDeviceData;
+    private CardView paymentMethod;
+    private ImageView paymentMethodIcon;
+    private TextView paymentMethodTitle;
+    private TextView paymentMethodDescription;
+    private TextView nonceString;
+    private TextView nonceDetails;
+    private TextView deviceData;
 
-    private Button mAddPaymentMethodButton;
-    private Button mPurchaseButton;
-    private ProgressDialog mLoading;
+    private Button addPaymentMethodButton;
+    private Button purchaseButton;
 
-    private boolean mShouldMakePurchase = false;
-    private boolean mPurchased = false;
+    private boolean purchased = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
 
-        mPaymentMethod = findViewById(R.id.payment_method);
-        mPaymentMethodIcon = findViewById(R.id.payment_method_icon);
-        mPaymentMethodTitle = findViewById(R.id.payment_method_title);
-        mPaymentMethodDescription = findViewById(R.id.payment_method_description);
-        mNonceString = findViewById(R.id.nonce);
-        mNonceDetails = findViewById(R.id.nonce_details);
-        mDeviceData = findViewById(R.id.device_data);
+        paymentMethod = findViewById(R.id.payment_method);
+        paymentMethodIcon = findViewById(R.id.payment_method_icon);
+        paymentMethodTitle = findViewById(R.id.payment_method_title);
+        paymentMethodDescription = findViewById(R.id.payment_method_description);
+        nonceString = findViewById(R.id.nonce);
+        nonceDetails = findViewById(R.id.nonce_details);
+        deviceData = findViewById(R.id.device_data);
 
-        mAddPaymentMethodButton = findViewById(R.id.add_payment_method);
-        mPurchaseButton = findViewById(R.id.purchase);
+        addPaymentMethodButton = findViewById(R.id.add_payment_method);
+        purchaseButton = findViewById(R.id.purchase);
 
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey(KEY_NONCE)) {
-                mNonce = savedInstanceState.getParcelable(KEY_NONCE);
+                nonce = savedInstanceState.getParcelable(KEY_NONCE);
             }
         }
     }
@@ -83,17 +81,17 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        if (mPurchased) {
-            mPurchased = false;
+        if (purchased) {
+            purchased = false;
             clearNonce();
         }
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mNonce != null) {
-            outState.putParcelable(KEY_NONCE, mNonce);
+        if (nonce != null) {
+            outState.putParcelable(KEY_NONCE, nonce);
         }
     }
 
@@ -129,50 +127,41 @@ public class MainActivity extends BaseActivity {
 
     public void purchase(View v) {
         Intent intent = new Intent(this, CreateTransactionActivity.class)
-                .putExtra(CreateTransactionActivity.EXTRA_PAYMENT_METHOD_NONCE, mNonce);
+                .putExtra(CreateTransactionActivity.EXTRA_PAYMENT_METHOD_NONCE, nonce);
         startActivity(intent);
 
-        mPurchased = true;
+        purchased = true;
     }
 
     public void handleDropInResult(DropInResult result) {
         if (result.getPaymentMethodType() == null) {
-            mAddPaymentMethodButton.setVisibility(VISIBLE);
+            addPaymentMethodButton.setVisibility(VISIBLE);
         } else {
-            mAddPaymentMethodButton.setVisibility(GONE);
+            addPaymentMethodButton.setVisibility(GONE);
 
-            mPaymentMethodType = result.getPaymentMethodType();
-
-            mPaymentMethodIcon.setImageResource(result.getPaymentMethodType().getDrawable());
+            paymentMethodIcon.setImageResource(result.getPaymentMethodType().getDrawable());
             if (result.getPaymentMethodNonce() != null) {
                 displayResult(result);
             }
 
-            mPurchaseButton.setEnabled(true);
+            purchaseButton.setEnabled(true);
         }
     }
 
     @Override
     public void onError(Exception error) {
         super.onError(error);
-
-        safelyCloseLoadingView();
-
-        mShouldMakePurchase = false;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        safelyCloseLoadingView();
-
         if (resultCode == RESULT_OK) {
             DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
             displayResult(result);
-            mPurchaseButton.setEnabled(true);
+            purchaseButton.setEnabled(true);
         } else if (resultCode != RESULT_CANCELED) {
-            safelyCloseLoadingView();
             showDialog(((Exception) data.getSerializableExtra(DropInResult.EXTRA_ERROR))
                     .getMessage());
         }
@@ -180,9 +169,9 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void reset() {
-        mPurchaseButton.setEnabled(false);
+        purchaseButton.setEnabled(false);
 
-        mAddPaymentMethodButton.setVisibility(GONE);
+        addPaymentMethodButton.setVisibility(GONE);
 
         clearNonce();
     }
@@ -203,42 +192,44 @@ public class MainActivity extends BaseActivity {
             dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
         }
 
-        dropInClient = new DropInClient(this, mAuthorization, dropInRequest);
+        dropInClient = new DropInClient(this, authorization, dropInRequest);
         dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
             @Override
             public void onResult(DropInResult dropInResult, Exception error) {
                 if (dropInResult != null) {
                     handleDropInResult(dropInResult);
                 } else {
-                    mAddPaymentMethodButton.setVisibility(VISIBLE);
+                    addPaymentMethodButton.setVisibility(VISIBLE);
                 }
             }
         });
     }
 
     private void displayResult(DropInResult dropInResult) {
-        mNonce = dropInResult.getPaymentMethodNonce();
-        mPaymentMethodType = DropInPaymentMethodType.forType(mNonce);
+        nonce = dropInResult.getPaymentMethodNonce();
+        DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(nonce);
 
-        mPaymentMethodIcon.setImageResource(DropInPaymentMethodType.forType(mNonce).getDrawable());
+        paymentMethodIcon.setImageResource(paymentMethodType.getDrawable());
 
-        mPaymentMethodTitle.setText(dropInResult.getPaymentMethodType().getCanonicalName());
-        mPaymentMethodDescription.setText(dropInResult.getPaymentDescription());
+        if (dropInResult.getPaymentMethodType() != null) {
+            paymentMethodTitle.setText(dropInResult.getPaymentMethodType().getCanonicalName());
+        }
+        paymentMethodDescription.setText(dropInResult.getPaymentDescription());
 
-        mPaymentMethod.setVisibility(VISIBLE);
+        paymentMethod.setVisibility(VISIBLE);
 
-        mNonceString.setText(getString(R.string.nonce) + ": " + mNonce.getString());
-        mNonceString.setVisibility(VISIBLE);
+        nonceString.setText(getString(R.string.nonce) + ": " + nonce.getString());
+        nonceString.setVisibility(VISIBLE);
 
         String details = "";
-        if (mNonce instanceof CardNonce) {
-            CardNonce cardNonce = (CardNonce) mNonce;
+        if (nonce instanceof CardNonce) {
+            CardNonce cardNonce = (CardNonce) nonce;
 
             details = "Card Last Two: " + cardNonce.getLastTwo() + "\n";
             details += "3DS isLiabilityShifted: " + cardNonce.getThreeDSecureInfo().isLiabilityShifted() + "\n";
             details += "3DS isLiabilityShiftPossible: " + cardNonce.getThreeDSecureInfo().isLiabilityShiftPossible();
-        } else if (mNonce instanceof PayPalAccountNonce) {
-            PayPalAccountNonce paypalAccountNonce = (PayPalAccountNonce) mNonce;
+        } else if (nonce instanceof PayPalAccountNonce) {
+            PayPalAccountNonce paypalAccountNonce = (PayPalAccountNonce) nonce;
 
             details = "First name: " + paypalAccountNonce.getFirstName() + "\n";
             details += "Last name: " + paypalAccountNonce.getLastName() + "\n";
@@ -248,12 +239,12 @@ public class MainActivity extends BaseActivity {
             details += "Client metadata id: " + paypalAccountNonce.getClientMetadataId() + "\n";
             details += "Billing address: " + formatAddress(paypalAccountNonce.getBillingAddress()) + "\n";
             details += "Shipping address: " + formatAddress(paypalAccountNonce.getShippingAddress());
-        } else if (mNonce instanceof VenmoAccountNonce) {
-            VenmoAccountNonce venmoAccountNonce = (VenmoAccountNonce) mNonce;
+        } else if (nonce instanceof VenmoAccountNonce) {
+            VenmoAccountNonce venmoAccountNonce = (VenmoAccountNonce) nonce;
 
             details = "Username: " + venmoAccountNonce.getUsername();
-        } else if (mNonce instanceof GooglePayCardNonce) {
-            GooglePayCardNonce googlePaymentCardNonce = (GooglePayCardNonce) mNonce;
+        } else if (nonce instanceof GooglePayCardNonce) {
+            GooglePayCardNonce googlePaymentCardNonce = (GooglePayCardNonce) nonce;
 
             details = "Underlying Card Last Two: " + googlePaymentCardNonce.getLastTwo() + "\n";
             details += "Email: " + googlePaymentCardNonce.getEmail() + "\n";
@@ -261,38 +252,28 @@ public class MainActivity extends BaseActivity {
             details += "Shipping address: " + formatAddress(googlePaymentCardNonce.getShippingAddress());
         }
 
-        mNonceDetails.setText(details);
-        mNonceDetails.setVisibility(VISIBLE);
+        nonceDetails.setText(details);
+        nonceDetails.setVisibility(VISIBLE);
 
-        mDeviceData.setText("Device Data: " + dropInResult.getDeviceData());
-        mDeviceData.setVisibility(VISIBLE);
+        deviceData.setText("Device Data: " + dropInResult.getDeviceData());
+        deviceData.setVisibility(VISIBLE);
 
-        mAddPaymentMethodButton.setVisibility(GONE);
-        mPurchaseButton.setEnabled(true);
+        addPaymentMethodButton.setVisibility(GONE);
+        purchaseButton.setEnabled(true);
     }
 
     private void clearNonce() {
-        mPaymentMethod.setVisibility(GONE);
-        mNonceString.setVisibility(GONE);
-        mNonceDetails.setVisibility(GONE);
-        mDeviceData.setVisibility(GONE);
-        mPurchaseButton.setEnabled(false);
+        paymentMethod.setVisibility(GONE);
+        nonceString.setVisibility(GONE);
+        nonceDetails.setVisibility(GONE);
+        deviceData.setVisibility(GONE);
+        purchaseButton.setEnabled(false);
     }
 
     private String formatAddress(PostalAddress address) {
         return address.getRecipientName() + " " + address.getStreetAddress() + " " +
             address.getExtendedAddress() + " " + address.getLocality() + " " + address.getRegion() +
                 " " + address.getPostalCode() + " " + address.getCountryCodeAlpha2();
-    }
-
-    private String formatAddress(UserAddress address) {
-        if(address == null) {
-            return "null";
-        }
-        return address.getName() + " " + address.getAddress1() + " " + address.getAddress2() + " " +
-                address.getAddress3() + " " + address.getAddress4() + " " + address.getAddress5() + " " +
-                address.getLocality() + " " + address.getAdministrativeArea() + " " + address.getPostalCode() + " " +
-                address.getSortingCode() + " " + address.getCountryCode();
     }
 
     private GooglePayRequest getGooglePaymentRequest() {
@@ -304,11 +285,5 @@ public class MainActivity extends BaseActivity {
                 .build());
         googlePayRequest.setEmailRequired(true);
         return googlePayRequest;
-    }
-
-    private void safelyCloseLoadingView() {
-        if (mLoading != null && mLoading.isShowing()) {
-            mLoading.dismiss();
-        }
     }
 }

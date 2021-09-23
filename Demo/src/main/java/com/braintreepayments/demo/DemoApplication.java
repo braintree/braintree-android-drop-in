@@ -2,7 +2,6 @@ package com.braintreepayments.demo;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.StrictMode;
 
 import com.braintreepayments.demo.internal.ApiClient;
 import com.braintreepayments.demo.internal.ApiClientRequestInterceptor;
@@ -11,7 +10,7 @@ import retrofit.RestAdapter;
 
 public class DemoApplication extends Application {
 
-    private static ApiClient sApiClient;
+    private static ApiClient apiClient;
 
     @Override
     public void onCreate() {
@@ -23,18 +22,18 @@ public class DemoApplication extends Application {
     }
 
     static ApiClient getApiClient(Context context) {
-        if (sApiClient == null) {
-            sApiClient = new RestAdapter.Builder()
+        if (apiClient == null) {
+            apiClient = new RestAdapter.Builder()
                     .setEndpoint(Settings.getEnvironmentUrl(context))
                     .setRequestInterceptor(new ApiClientRequestInterceptor())
                     .build()
                     .create(ApiClient.class);
         }
 
-        return sApiClient;
+        return apiClient;
     }
 
     static void resetApiClient() {
-        sApiClient = null;
+        apiClient = null;
     }
 }
