@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+* CardForm
+  * Focus Cardholder Name field when adding card details if field not disabled (fixes #180)
+
 ## 6.0.0-beta2
 
 * Android 12 Support
