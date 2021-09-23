@@ -222,7 +222,7 @@ public class MockDropInClientBuilder {
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
-                GetPaymentMethodNoncesCallback callback = (GetPaymentMethodNoncesCallback) invocation.getArguments()[2];
+                GetPaymentMethodNoncesCallback callback = (GetPaymentMethodNoncesCallback) invocation.getArguments()[1];
                 if (paymentMethodNonceListSuccess != null) {
                     callback.onResult(paymentMethodNonceListSuccess, null);
                 } else if (getVaultedPaymentMethodsError != null) {
