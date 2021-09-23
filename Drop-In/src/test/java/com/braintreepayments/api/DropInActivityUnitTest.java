@@ -286,7 +286,7 @@ public class DropInActivityUnitTest {
         DropInEvent event = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce);
         mActivity.onVaultedPaymentMethodSelected(event);
 
-        verify(dropInClient).getVaultedPaymentMethods(same(mActivity), eq(true), any(GetPaymentMethodNoncesCallback.class));
+        verify(dropInClient).getVaultedPaymentMethods(same(mActivity), any(GetPaymentMethodNoncesCallback.class));
     }
 
     @Test

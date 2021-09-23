@@ -270,7 +270,7 @@ public class DropInActivity extends AppCompatActivity {
     void refreshVaultedPaymentMethods() {
         // TODO: consider caching nonces or use a ViewModel for handling nonces
         // TODO: show loading indicator while fetching vaulted payment methods
-        getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
+        getDropInClient().getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
             @Override
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
                 if (paymentMethodNonceList != null) {
@@ -329,7 +329,7 @@ public class DropInActivity extends AppCompatActivity {
 
     void updateVaultedPaymentMethodNonces(boolean refetch) {
         if (clientTokenPresent) {
-            getDropInClient().getVaultedPaymentMethods(this, refetch, new GetPaymentMethodNoncesCallback() {
+            getDropInClient().getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
                 @Override
                 public void onResult(@Nullable List<PaymentMethodNonce> vaultedPaymentMethods, @Nullable Exception error) {
                     if (vaultedPaymentMethods != null) {
