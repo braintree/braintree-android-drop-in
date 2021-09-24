@@ -39,6 +39,7 @@ class CardDetailsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_andCardholderNameDisabled_expirationDateFieldIsFocused() {
         val dropInRequest = DropInRequest()
+        dropInRequest.cardholderNameStatus = FIELD_DISABLED
         val args = Bundle()
         args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
