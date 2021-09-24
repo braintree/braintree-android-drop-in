@@ -46,7 +46,6 @@ class CardDetailsFragmentUITest {
         val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        assertEquals(CardForm.FIELD_DISABLED, dropInRequest.cardholderNameStatus)
         onView(withId(R.id.bt_card_form_expiration)).check(matches(isFocused()))
     }
 
