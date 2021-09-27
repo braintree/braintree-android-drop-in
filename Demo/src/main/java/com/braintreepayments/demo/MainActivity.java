@@ -1,6 +1,8 @@
 package com.braintreepayments.demo;
 
-import android.app.ProgressDialog;
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +15,7 @@ import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
 import com.braintreepayments.api.DropInClient;
+import com.braintreepayments.api.DropInPaymentMethodType;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
 import com.braintreepayments.api.FetchMostRecentPaymentMethodCallback;
@@ -20,18 +23,13 @@ import com.braintreepayments.api.GooglePayCardNonce;
 import com.braintreepayments.api.GooglePayRequest;
 import com.braintreepayments.api.PayPalAccountNonce;
 import com.braintreepayments.api.PaymentMethodNonce;
-import com.braintreepayments.api.DropInPaymentMethodType;
 import com.braintreepayments.api.PostalAddress;
 import com.braintreepayments.api.ThreeDSecureAdditionalInformation;
 import com.braintreepayments.api.ThreeDSecurePostalAddress;
 import com.braintreepayments.api.ThreeDSecureRequest;
 import com.braintreepayments.api.VenmoAccountNonce;
-import com.google.android.gms.identity.intents.model.UserAddress;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
-
-import static android.view.View.GONE;
-import static android.view.View.VISIBLE;
 
 public class MainActivity extends BaseActivity {
 
@@ -146,11 +144,6 @@ public class MainActivity extends BaseActivity {
 
             purchaseButton.setEnabled(true);
         }
-    }
-
-    @Override
-    public void onError(Exception error) {
-        super.onError(error);
     }
 
     @Override
