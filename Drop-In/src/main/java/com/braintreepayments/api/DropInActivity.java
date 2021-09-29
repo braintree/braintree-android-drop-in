@@ -31,7 +31,7 @@ public class DropInActivity extends AppCompatActivity {
     DropInViewModel dropInViewModel;
 
     @VisibleForTesting
-    DropInRequest mDropInRequest;
+    DropInRequest dropInRequest;
 
     private DropInClient dropInClient;
     private FragmentContainerView fragmentContainerView;
@@ -40,7 +40,7 @@ public class DropInActivity extends AppCompatActivity {
     DropInResult pendingDropInResult;
 
     @VisibleForTesting
-    boolean mClientTokenPresent;
+    boolean clientTokenPresent;
 
     private AlertPresenter alertPresenter;
 
@@ -80,7 +80,7 @@ public class DropInActivity extends AppCompatActivity {
         }
 
         alertPresenter = new AlertPresenter();
-        mDropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+        dropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
@@ -149,7 +149,7 @@ public class DropInActivity extends AppCompatActivity {
         DropInRequest dropInRequest = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
         dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
 
-        mClientTokenPresent = dropInClient.getAuthorization() instanceof ClientToken;
+        clientTokenPresent = dropInClient.getAuthorization() instanceof ClientToken;
         return dropInClient;
     }
 
@@ -270,7 +270,7 @@ public class DropInActivity extends AppCompatActivity {
     void refreshVaultedPaymentMethods() {
         // TODO: consider caching nonces or use a ViewModel for handling nonces
         // TODO: show loading indicator while fetching vaulted payment methods
-        getDropInClient().getVaultedPaymentMethods(this, false, new GetPaymentMethodNoncesCallback() {
+        getDropInClient().getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
             @Override
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
                 if (paymentMethodNonceList != null) {
@@ -328,8 +328,8 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     void updateVaultedPaymentMethodNonces(boolean refetch) {
-        if (mClientTokenPresent) {
-            getDropInClient().getVaultedPaymentMethods(this, refetch, new GetPaymentMethodNoncesCallback() {
+        if (clientTokenPresent) {
+            getDropInClient().getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
                 @Override
                 public void onResult(@Nullable List<PaymentMethodNonce> vaultedPaymentMethods, @Nullable Exception error) {
                     if (vaultedPaymentMethods != null) {
@@ -365,7 +365,7 @@ public class DropInActivity extends AppCompatActivity {
 
     private void showBottomSheet() {
         if (shouldAddFragment(BOTTOM_SHEET_TAG)) {
-            BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(mDropInRequest);
+            BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(dropInRequest);
             replaceExistingFragment(bottomSheetFragment, BOTTOM_SHEET_TAG);
         }
         dropInViewModel.setBottomSheetState(BottomSheetState.SHOW_REQUESTED);
@@ -382,7 +382,7 @@ public class DropInActivity extends AppCompatActivity {
                                 Authorization.isTokenizationKey(getDropInClient().getAuthorization().toString());
 
                         CardDetailsFragment cardDetailsFragment = CardDetailsFragment.from(
-                                mDropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
+                                dropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
                         replaceExistingFragment(cardDetailsFragment, CARD_DETAILS_TAG);
                     }
                 }
@@ -390,7 +390,7 @@ public class DropInActivity extends AppCompatActivity {
         }
     }
 
-    public void onError(final Exception error) {
+    void onError(final Exception error) {
         if (error instanceof ErrorWithResponse) {
             ErrorWithResponse errorResponse = (ErrorWithResponse) error;
             dropInViewModel.setCardTokenizationError(errorResponse);
@@ -473,7 +473,7 @@ public class DropInActivity extends AppCompatActivity {
 
     private void startAddCardFlow(@Nullable String cardNumber) {
         if (shouldAddFragment(ADD_CARD_TAG)) {
-            AddCardFragment addCardFragment = AddCardFragment.from(mDropInRequest, cardNumber);
+            AddCardFragment addCardFragment = AddCardFragment.from(dropInRequest, cardNumber);
             replaceExistingFragment(addCardFragment, ADD_CARD_TAG);
         }
     }

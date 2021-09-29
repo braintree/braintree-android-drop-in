@@ -30,13 +30,13 @@ public class DropInResult implements Parcelable {
     static final String LAST_USED_PAYMENT_METHOD_TYPE =
             "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
 
-    private String mDeviceData;
-    private String mPaymentDescription;
+    private String deviceData;
+    private String paymentDescription;
 
-    private DropInPaymentMethodType mPaymentMethodType;
+    private DropInPaymentMethodType paymentMethodType;
 
     private PaymentMethodNonceInspector nonceInspector;
-    private PaymentMethodNonce mPaymentMethodNonce;
+    private PaymentMethodNonce paymentMethodNonce;
 
     DropInResult() {
         this(new PaymentMethodNonceInspector());
@@ -54,21 +54,21 @@ public class DropInResult implements Parcelable {
     @VisibleForTesting
     DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce, PaymentMethodNonceInspector nonceInspector) {
         if (paymentMethodNonce != null) {
-            mPaymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
-            mPaymentDescription = nonceInspector.getDescription(paymentMethodNonce);
+            paymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
+            paymentDescription = nonceInspector.getDescription(paymentMethodNonce);
         }
-        mPaymentMethodNonce = paymentMethodNonce;
+        this.paymentMethodNonce = paymentMethodNonce;
 
         return this;
     }
 
     DropInResult deviceData(@Nullable String deviceData) {
-        mDeviceData = deviceData;
+        this.deviceData = deviceData;
         return this;
     }
 
     void setPaymentMethodType(DropInPaymentMethodType mPaymentMethodType) {
-        this.mPaymentMethodType = mPaymentMethodType;
+        this.paymentMethodType = mPaymentMethodType;
     }
 
     /**
@@ -79,7 +79,7 @@ public class DropInResult implements Parcelable {
      */
     @Nullable
     public DropInPaymentMethodType getPaymentMethodType() {
-        return mPaymentMethodType;
+        return paymentMethodType;
     }
 
     /**
@@ -89,21 +89,20 @@ public class DropInResult implements Parcelable {
      */
     @Nullable
     public PaymentMethodNonce getPaymentMethodNonce() {
-        return mPaymentMethodNonce;
+        return paymentMethodNonce;
     }
 
     /**
-     * @return {@link String} of device data. Returned when specified with
-     * {@link DropInRequest#setCollectDeviceData(boolean)} that device data should be collected.
+     * @return {@link String} of device data.
      */
     @Nullable
     public String getDeviceData() {
-        return mDeviceData;
+        return deviceData;
     }
 
     @Nullable
     public String getPaymentDescription() {
-        return mPaymentDescription;
+        return paymentDescription;
     }
 
     static void setLastUsedPaymentMethodType(Context context,
@@ -122,18 +121,18 @@ public class DropInResult implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(mPaymentMethodType == null ? -1 : mPaymentMethodType.ordinal());
-        dest.writeParcelable(mPaymentMethodNonce, flags);
-        dest.writeString(mPaymentDescription);
-        dest.writeString(mDeviceData);
+        dest.writeInt(paymentMethodType == null ? -1 : paymentMethodType.ordinal());
+        dest.writeParcelable(paymentMethodNonce, flags);
+        dest.writeString(paymentDescription);
+        dest.writeString(deviceData);
     }
 
     protected DropInResult(Parcel in) {
         int paymentMethodType = in.readInt();
-        mPaymentMethodType = paymentMethodType == -1 ? null : DropInPaymentMethodType.values()[paymentMethodType];
-        mPaymentMethodNonce = in.readParcelable(PaymentMethodNonce.class.getClassLoader());
-        mPaymentDescription = in.readString();
-        mDeviceData = in.readString();
+        this.paymentMethodType = paymentMethodType == -1 ? null : DropInPaymentMethodType.values()[paymentMethodType];
+        paymentMethodNonce = in.readParcelable(PaymentMethodNonce.class.getClassLoader());
+        paymentDescription = in.readString();
+        deviceData = in.readString();
     }
 
     public static final Creator<DropInResult> CREATOR = new Creator<DropInResult>() {

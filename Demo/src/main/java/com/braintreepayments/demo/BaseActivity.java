@@ -4,8 +4,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,14 +11,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
-import androidx.core.content.ContextCompat;
 
 import com.braintreepayments.api.DropInClient;
-import com.braintreepayments.api.PaymentMethodNonce;
 import com.braintreepayments.api.internal.SignatureVerificationOverrides;
 import com.braintreepayments.demo.models.ClientToken;
 
@@ -34,18 +30,18 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
 
     private static final String KEY_AUTHORIZATION = "com.braintreepayments.demo.KEY_AUTHORIZATION";
 
-    protected String mAuthorization;
-    protected String mCustomerId;
+    protected String authorization;
+    protected String customerId;
     protected DropInClient dropInClient;
 
-    private boolean mActionBarSetup;
+    private boolean actionBarSetup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState != null && savedInstanceState.containsKey(KEY_AUTHORIZATION)) {
-            mAuthorization = savedInstanceState.getString(KEY_AUTHORIZATION);
+            authorization = savedInstanceState.getString(KEY_AUTHORIZATION);
         }
     }
 
@@ -53,9 +49,9 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
     protected void onResume() {
         super.onResume();
 
-        if (!mActionBarSetup) {
+        if (!actionBarSetup) {
             setupActionBar();
-            mActionBarSetup = true;
+            actionBarSetup = true;
         }
 
         SignatureVerificationOverrides.disableAppSwitchSignatureVerification(
@@ -65,24 +61,24 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         handleAuthorizationState();
     }
 
     private void handleAuthorizationState() {
-        if (mAuthorization == null ||
-                (Settings.useTokenizationKey(this) && !mAuthorization.equals(Settings.getEnvironmentTokenizationKey(this))) ||
-                !TextUtils.equals(mCustomerId, Settings.getCustomerId(this))) {
+        if (authorization == null ||
+                (Settings.useTokenizationKey(this) && !authorization.equals(Settings.getEnvironmentTokenizationKey(this))) ||
+                !TextUtils.equals(customerId, Settings.getCustomerId(this))) {
             performReset();
         }
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mAuthorization != null) {
-            outState.putString(KEY_AUTHORIZATION, mAuthorization);
+        if (authorization != null) {
+            outState.putString(KEY_AUTHORIZATION, authorization);
         }
     }
 
@@ -94,8 +90,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
     }
 
     private void performReset() {
-        mAuthorization = null;
-        mCustomerId = Settings.getCustomerId(this);
+        authorization = null;
+        customerId = Settings.getCustomerId(this);
 
         reset();
         fetchAuthorization();
@@ -106,10 +102,10 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
     protected abstract void onAuthorizationFetched();
 
     protected void fetchAuthorization() {
-        if (mAuthorization != null) {
+        if (authorization != null) {
             onAuthorizationFetched();
         } else if (Settings.useTokenizationKey(this)) {
-            mAuthorization = Settings.getEnvironmentTokenizationKey(this);
+            authorization = Settings.getEnvironmentTokenizationKey(this);
             onAuthorizationFetched();
         } else {
             DemoApplication.getApiClient(this).getClientToken(Settings.getCustomerId(this),
@@ -119,7 +115,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
                             if (TextUtils.isEmpty(clientToken.getClientToken())) {
                                 showDialog("Client token was empty");
                             } else {
-                                mAuthorization = clientToken.getClientToken();
+                                authorization = clientToken.getClientToken();
                                 onAuthorizationFetched();
                             }
                         }
@@ -144,12 +140,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
                     }
                 })
                 .show();
-    }
-
-    protected void setUpAsBack() {
-        if (getActionBar() != null) {
-            getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     @SuppressWarnings("ConstantConditions")

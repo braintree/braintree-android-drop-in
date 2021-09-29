@@ -23,7 +23,7 @@ public class DropInUnitTestActivity extends DropInActivity {
     }
 
     public void setDropInRequest(DropInRequest dropInRequest) {
-        mDropInRequest = dropInRequest;
+        this.dropInRequest = dropInRequest;
     }
 
     @Override

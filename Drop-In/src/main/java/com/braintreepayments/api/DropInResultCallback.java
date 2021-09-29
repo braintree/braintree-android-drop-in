@@ -1,6 +1,7 @@
 package com.braintreepayments.api;
 
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 /**
  * Callback for receiving the result of {@link DropInClient#deliverBrowserSwitchResult(FragmentActivity, DropInResultCallback)}

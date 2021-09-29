@@ -1388,7 +1388,7 @@ public class DropInClientUnitTest {
         GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
 
         DropInClient sut = new DropInClient(params);
-        sut.getVaultedPaymentMethods(activity, false, callback);
+        sut.getVaultedPaymentMethods(activity, callback);
 
         verify(callback).onResult(null, configurationError);
     }
@@ -1411,7 +1411,7 @@ public class DropInClientUnitTest {
         GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
 
         DropInClient sut = new DropInClient(params);
-        sut.getVaultedPaymentMethods(activity, false, callback);
+        sut.getVaultedPaymentMethods(activity, callback);
 
         verify(callback).onResult(null, paymentMethodClientError);
     }
@@ -1440,7 +1440,7 @@ public class DropInClientUnitTest {
         GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
 
         DropInClient sut = new DropInClient(params);
-        sut.getVaultedPaymentMethods(activity, false, callback);
+        sut.getVaultedPaymentMethods(activity, callback);
 
         verify(callback).onResult(paymentMethodNoncesCaptor.capture(), (Exception) isNull());
 
@@ -1476,7 +1476,7 @@ public class DropInClientUnitTest {
         GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
 
         DropInClient sut = new DropInClient(params);
-        sut.getVaultedPaymentMethods(activity, false, callback);
+        sut.getVaultedPaymentMethods(activity, callback);
 
         verify(callback).onResult(paymentMethodNoncesCaptor.capture(), (Exception) isNull());
 
@@ -1512,7 +1512,7 @@ public class DropInClientUnitTest {
         GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
 
         DropInClient sut = new DropInClient(params);
-        sut.getVaultedPaymentMethods(activity, false, callback);
+        sut.getVaultedPaymentMethods(activity, callback);
 
         verify(callback).onResult(paymentMethodNoncesCaptor.capture(), (Exception) isNull());
 

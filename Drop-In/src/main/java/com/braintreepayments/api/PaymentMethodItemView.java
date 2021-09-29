@@ -1,8 +1,6 @@
 package com.braintreepayments.api;
 
-import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +10,14 @@ import android.widget.TextView;
 
 import com.braintreepayments.api.dropin.R;
 
-public class PaymentMethodItemView extends LinearLayout {
+class PaymentMethodItemView extends LinearLayout {
 
-    private ImageView mIcon;
-    private TextView mTitle;
-    private TextView mDescription;
-    private View mDeleteIcon;
-    private PaymentMethodNonce mPaymentMethodNonce;
-    private View mDivider;
+    private ImageView icon;
+    private TextView title;
+    private TextView description;
+    private View deleteIcon;
+    private PaymentMethodNonce paymentMethodNonce;
+    private View divider;
 
     private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
 
@@ -38,12 +36,6 @@ public class PaymentMethodItemView extends LinearLayout {
         init();
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public PaymentMethodItemView(Context context, AttributeSet attrs, int defStyle, int defStyleRes) {
-        super(context, attrs, defStyle, defStyleRes);
-        init();
-    }
-
     private void init() {
         if (isInEditMode()) {
             return;
@@ -53,37 +45,37 @@ public class PaymentMethodItemView extends LinearLayout {
 
         LayoutInflater.from(getContext()).inflate(R.layout.bt_vault_manager_list_item, this);
 
-        mIcon = findViewById(R.id.bt_payment_method_icon);
-        mTitle = findViewById(R.id.bt_payment_method_title);
-        mDescription = findViewById(R.id.bt_payment_method_description);
-        mDeleteIcon = findViewById(R.id.bt_payment_method_delete_icon);
-        mDivider = findViewById(R.id.bt_payment_method_divider);
+        icon = findViewById(R.id.bt_payment_method_icon);
+        title = findViewById(R.id.bt_payment_method_title);
+        description = findViewById(R.id.bt_payment_method_description);
+        deleteIcon = findViewById(R.id.bt_payment_method_delete_icon);
+        divider = findViewById(R.id.bt_payment_method_divider);
     }
 
     public void setPaymentMethod(PaymentMethodNonce paymentMethodNonce, boolean usedInList) {
-        mPaymentMethodNonce = paymentMethodNonce;
+        this.paymentMethodNonce = paymentMethodNonce;
 
         DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(paymentMethodNonce);
 
         if (usedInList) {
-            mIcon.setImageResource(paymentMethodType.getDrawable());
-            mDeleteIcon.setVisibility(View.VISIBLE);
-            mDivider.setVisibility(View.VISIBLE);
+            icon.setImageResource(paymentMethodType.getDrawable());
+            deleteIcon.setVisibility(View.VISIBLE);
+            divider.setVisibility(View.VISIBLE);
         } else {
-            mIcon.setImageResource(paymentMethodType.getVaultedDrawable());
-            mDeleteIcon.setVisibility(View.GONE);
-            mDivider.setVisibility(View.GONE);
+            icon.setImageResource(paymentMethodType.getVaultedDrawable());
+            deleteIcon.setVisibility(View.GONE);
+            divider.setVisibility(View.GONE);
         }
 
-        mTitle.setText(paymentMethodType.getLocalizedName());
-        mDescription.setText(nonceInspector.getDescription(paymentMethodNonce));
+        title.setText(paymentMethodType.getLocalizedName());
+        description.setText(nonceInspector.getDescription(paymentMethodNonce));
     }
 
     public void setOnDeleteIconClick(OnClickListener clickListener) {
-        mDeleteIcon.setOnClickListener(clickListener);
+        deleteIcon.setOnClickListener(clickListener);
     }
 
     public PaymentMethodNonce getPaymentMethodNonce() {
-        return mPaymentMethodNonce;
+        return paymentMethodNonce;
     }
 }
