@@ -1,5 +1,7 @@
 package com.braintreepayments.api
 
+import android.os.Bundle
+import android.os.Parcelable
 import android.view.View.VISIBLE
 import androidx.core.os.bundleOf
 import androidx.fragment.app.testing.FragmentScenario
@@ -50,10 +52,9 @@ class SupportedPaymentMethodsFragmentUITest {
             fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
                 val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.SEND_ANALYTICS, event.type)
-//                assertEquals("appeared", DropInEventProperty.ANALYTICS_EVENT_NAME)
+                assertEquals("appeared", event.getString(DropInEventProperty.ANALYTICS_EVENT_NAME))
             }
         }
-        // TODO: assert 'appeared' analytics event sent
     }
 
     @Test
@@ -94,7 +95,25 @@ class SupportedPaymentMethodsFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_whenVaultedPaymentMethodShown_sendsAnalyticsEvent() {
-        // TODO: assert `vaulted-card.appear` event
+        val dropInRequest = DropInRequest()
+        dropInRequest.isVaultManagerEnabled = true
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
+
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = DropInEvent.fromBundle(result)
+                assertEquals(DropInEventType.SEND_ANALYTICS, event.type)
+                assertEquals("vaulted-card.appear", event.getString(DropInEventProperty.ANALYTICS_EVENT_NAME))
+            }
+        }
     }
 
     @Test
@@ -229,6 +248,38 @@ class SupportedPaymentMethodsFragmentUITest {
     @Test
     fun whenStateIsRESUMED_whenVaultedPaymentMethodSelected_sendsAnalyticsEvent() {
         // TODO: assert `vaulted-card.select` event
+        val dropInRequest = DropInRequest()
+        dropInRequest.isVaultManagerEnabled = true
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        val results = mutableListOf<Parcelable>()
+        scenario.onFragment { fragment ->
+//            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+//            fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+//                results += result
+                val event = DropInEvent.fromBundle(result)
+                assertEquals(DropInEventType.SEND_ANALYTICS, event.type)
+                assertEquals("vaulted-card.select", event.getString(DropInEventProperty.ANALYTICS_EVENT_NAME))
+            }
+
+            val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+            fragment.onVaultedPaymentMethodSelected(cardNonce)
+//
+//            val events = mutableListOf<DropInEvent>()
+//            results
+//                .map { DropInEvent.fromBundle(it as Bundle?) }
+//                .forEach { events += it }
+
+//            assertTrue(results.contains(DropInEventType))
+//            assertEquals(DropInEventType.SEND_ANALYTICS, event.type)
+//            assertEquals("vaulted-card.select", event.getString(DropInEventProperty.ANALYTICS_EVENT_NAME))
+        }
     }
 
     @Test
