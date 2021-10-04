@@ -14,10 +14,8 @@ import com.braintreepayments.cardform.utils.CardType
 import junit.framework.TestCase.assertNull
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
 class AddCardFragmentUITest {
@@ -59,8 +57,19 @@ class AddCardFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_andAddCardSelected_sendsAnalyticsEvent() {
-        // TODO: assert 'card.selected' analytics event sent
+    fun whenStateIsRESUMED_sendsAnalyticsEvent() {
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { requestKey, result ->
+                val event = DropInEvent.fromBundle(result)
+                assertEquals(DropInEventType.SEND_ANALYTICS, event.type)
+                assertEquals("card.selected", event.getString(DropInEventProperty.ANALYTICS_EVENT_NAME))
+            }
+        }
     }
 
     @Test

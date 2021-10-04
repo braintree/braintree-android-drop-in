@@ -791,12 +791,6 @@ public class DropInActivityUnitTest {
     }
 
     @Test
-    public void onPaymentMethodNonceDeleted_sendsAnalyticCall() {
-        // TODO: test this after determining analytics testing strategy
-//        verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded");
-    }
-
-    @Test
     public void finishDropInWithPendingResult_finishesWithPaymentMethodNonceAndDeviceDataInDropInResult()
             throws JSONException {
         String authorization = Fixtures.TOKENIZATION_KEY;
