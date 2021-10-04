@@ -51,6 +51,8 @@ public class VaultManagerFragment extends DropInFragment implements View.OnClick
             }
         });
 
+        sendAnalyticsEvent("manager.appeared");
+
         return view;
     }
 

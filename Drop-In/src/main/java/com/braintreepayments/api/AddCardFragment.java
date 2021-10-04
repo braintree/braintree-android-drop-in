@@ -101,6 +101,8 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
             }
         });
 
+        sendAnalyticsEvent("card.selected");
+
         return view;
     }
 

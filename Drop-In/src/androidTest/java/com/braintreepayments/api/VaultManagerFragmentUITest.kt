@@ -35,6 +35,11 @@ class VaultManagerFragmentUITest {
     }
 
     @Test
+    fun whenStateIsRESUMED_sendsAnalyticsEvent() {
+        //TODO: assert `manager.appeared` event
+    }
+
+    @Test
     fun whenStateIsRESUMED_setsVaultedPaymentMethodNoncesInAdapter() {
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethodNonces)

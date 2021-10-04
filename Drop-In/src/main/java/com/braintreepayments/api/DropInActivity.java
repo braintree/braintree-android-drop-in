@@ -504,10 +504,6 @@ public class DropInActivity extends AppCompatActivity {
         final PaymentMethodNonce paymentMethodNonce =
                 event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD);
 
-        if (paymentMethodNonce instanceof CardNonce) {
-            sendAnalyticsEvent("vaulted-card.select");
-        }
-
         dropInViewModel.setDropInState(DropInState.WILL_FINISH);
         getDropInClient().shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
             @Override

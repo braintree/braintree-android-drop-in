@@ -41,6 +41,11 @@ class SupportedPaymentMethodsFragmentUITest {
     }
 
     @Test
+    fun whenStateIsRESUMED_sendsAnalyticsEvent() {
+        // TODO: assert 'appeared' analytics event sent
+    }
+
+    @Test
     fun whenStateIsRESUMED_whenSupportedPaymentMethodsLoaded_displaysPaymentMethods() {
         val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java)
         scenario.moveToState(Lifecycle.State.RESUMED)
@@ -74,6 +79,11 @@ class SupportedPaymentMethodsFragmentUITest {
         onView(isRoot()).perform(waitFor(500))
         onView(withId(R.id.bt_vaulted_payment_methods)).check(matches(isDisplayed()))
         onView(withText("1111")).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenVaultedPaymentMethodShown_sendsAnalyticsEvent() {
+        // TODO: assert `vaulted-card.appear` event
     }
 
     @Test
@@ -205,6 +215,12 @@ class SupportedPaymentMethodsFragmentUITest {
         onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
     }
 
+    @Test
+    fun whenStateIsRESUMED_whenVaultedPaymentMethodSelected_sendsAnalyticsEvent() {
+        // TODO: assert `vaulted-card.select` event
+    }
+
+    @Test
     fun whenStateIsRESUMED_whenFragmentRecreated_hidesLoader() {
         val dropInRequest = DropInRequest()
         dropInRequest.isVaultManagerEnabled = false
