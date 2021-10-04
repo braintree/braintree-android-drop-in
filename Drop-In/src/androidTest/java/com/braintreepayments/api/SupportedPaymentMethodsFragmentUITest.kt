@@ -1,8 +1,5 @@
 package com.braintreepayments.api
 
-import android.os.Bundle
-import android.os.Parcelable
-import android.view.View.VISIBLE
 import androidx.core.os.bundleOf
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
@@ -15,11 +12,8 @@ import com.braintreepayments.api.dropin.R
 import org.hamcrest.Matchers.not
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.concurrent.CountDownLatch
 
 // Ref: https://developer.android.com/guide/fragments/test
 @RunWith(AndroidJUnit4::class)
@@ -243,43 +237,6 @@ class SupportedPaymentMethodsFragmentUITest {
         onView(isRoot()).perform(waitFor(500))
         onView(withText("Credit or Debit Card")).perform(click())
         onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
-    }
-
-    @Test
-    fun whenStateIsRESUMED_whenVaultedPaymentMethodSelected_sendsAnalyticsEvent() {
-        // TODO: assert `vaulted-card.select` event
-        val dropInRequest = DropInRequest()
-        dropInRequest.isVaultManagerEnabled = true
-        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
-
-        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
-        scenario.moveToState(Lifecycle.State.RESUMED)
-
-        val results = mutableListOf<Parcelable>()
-        scenario.onFragment { fragment ->
-//            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
-//            fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
-            val activity = fragment.requireActivity()
-            val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
-//                results += result
-                val event = DropInEvent.fromBundle(result)
-                assertEquals(DropInEventType.SEND_ANALYTICS, event.type)
-                assertEquals("vaulted-card.select", event.getString(DropInEventProperty.ANALYTICS_EVENT_NAME))
-            }
-
-            val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
-            fragment.onVaultedPaymentMethodSelected(cardNonce)
-//
-//            val events = mutableListOf<DropInEvent>()
-//            results
-//                .map { DropInEvent.fromBundle(it as Bundle?) }
-//                .forEach { events += it }
-
-//            assertTrue(results.contains(DropInEventType))
-//            assertEquals(DropInEventType.SEND_ANALYTICS, event.type)
-//            assertEquals("vaulted-card.select", event.getString(DropInEventProperty.ANALYTICS_EVENT_NAME))
-        }
     }
 
     @Test

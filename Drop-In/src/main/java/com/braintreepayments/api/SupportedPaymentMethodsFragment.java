@@ -201,10 +201,6 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
 
     @Override
     public void onVaultedPaymentMethodSelected(PaymentMethodNonce paymentMethodNonce) {
-        if (paymentMethodNonce instanceof CardNonce) {
-            sendAnalyticsEvent("vaulted-card.select");
-        }
-
         sendDropInEvent(
                 DropInEvent.createVaultedPaymentMethodSelectedEvent(paymentMethodNonce));
     }
