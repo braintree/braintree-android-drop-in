@@ -42,6 +42,17 @@ class SupportedPaymentMethodsFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_sendsAnalyticsEvent() {
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = DropInEvent.fromBundle(result)
+                assertEquals(DropInEventType.SEND_ANALYTICS, event.type)
+//                assertEquals("appeared", DropInEventProperty.ANALYTICS_EVENT_NAME)
+            }
+        }
         // TODO: assert 'appeared' analytics event sent
     }
 
