@@ -96,8 +96,6 @@ class DropInActivityUITest {
 
     @Test
     fun whenStateIsRESUMED_removePaymentMethodNonce_whenNonceNotNull_sendsAnalyticsEvent() {
-        // TODO: test this after determining analytics testing strategy
-//        verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded");
         val authorization = Authorization.fromString(Fixtures.TOKENIZATION_KEY)
         val dropInRequest = DropInRequest()
 
@@ -115,7 +113,6 @@ class DropInActivityUITest {
 
         val activity = controller.get()
         activity.dropInClient = dropInClient
-
         controller.setup()
 
         activity.removePaymentMethodNonce(cardNonce)
@@ -125,13 +122,53 @@ class DropInActivityUITest {
 
     @Test
     fun whenStateIsRESUMED_removePaymentMethodNonce_whenPaymentMethodDeleteException_sendsAnalyticsEvent() {
-        // TODO: test this after determining analytics testing strategy
-//        verify(dropInClient).sendAnalyticsEvent("manager.delete.failure");
+        val authorization = Authorization.fromString(Fixtures.TOKENIZATION_KEY)
+        val dropInRequest = DropInRequest()
+
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(context, DropInActivity::class.java)
+        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, dropInRequest)
+
+        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        val dropInClient = MockDropInClientBuilder()
+            .deletePaymentMethodError(PaymentMethodDeleteException(cardNonce, Exception("error")))
+            .authorization(authorization)
+            .build()
+
+        val controller = buildActivity(DropInActivity::class.java, intent)
+
+        val activity = controller.get()
+        activity.dropInClient = dropInClient
+        controller.setup()
+
+        activity.removePaymentMethodNonce(cardNonce)
+
+        verify(dropInClient).sendAnalyticsEvent("manager.delete.failed")
     }
 
     @Test
     fun whenStateIsRESUMED_removePaymentMethodNonce_whenUnknownError_sendsAnalyticsEvent() {
-        // TODO: test this after determining analytics testing strategy
-//        verify(dropInClient).sendAnalyticsEvent("manager.unknown.failed");
+        val authorization = Authorization.fromString(Fixtures.TOKENIZATION_KEY)
+        val dropInRequest = DropInRequest()
+
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(context, DropInActivity::class.java)
+        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, dropInRequest)
+
+        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        val dropInClient = MockDropInClientBuilder()
+            .deletePaymentMethodError(Exception("error"))
+            .authorization(authorization)
+            .build()
+
+        val controller = buildActivity(DropInActivity::class.java, intent)
+
+        val activity = controller.get()
+        activity.dropInClient = dropInClient
+        controller.setup()
+
+        activity.removePaymentMethodNonce(cardNonce)
+
+        verify(dropInClient).sendAnalyticsEvent("manager.unknown.failed")
     }
 }
