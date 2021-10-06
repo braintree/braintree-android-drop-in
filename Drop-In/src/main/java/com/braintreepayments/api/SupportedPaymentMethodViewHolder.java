@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.braintreepayments.api.dropin.R;
 
-public class SupportedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
+class SupportedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
 
     private final ImageView icon;
     private final TextView name;
 
-    public SupportedPaymentMethodViewHolder(@NonNull View itemView) {
+    SupportedPaymentMethodViewHolder(@NonNull View itemView) {
         super(itemView);
 
         icon = itemView.findViewById(R.id.bt_payment_method_icon);

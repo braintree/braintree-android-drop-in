@@ -1,6 +1,6 @@
 package com.braintreepayments.api;
 
-public enum BottomSheetState {
+enum BottomSheetState {
     HIDE_REQUESTED,
     HIDDEN,
     SHOW_REQUESTED,

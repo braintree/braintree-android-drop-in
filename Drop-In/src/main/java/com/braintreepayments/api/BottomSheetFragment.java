@@ -43,7 +43,7 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Bundle args = getArguments();
         if (args != null) {
             dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
@@ -69,20 +69,22 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
                 BottomSheetViewType visibleFragment =
                     bottomSheetPresenter.getVisibleFragment();
 
-                switch (visibleFragment) {
-                    case VAULT_MANAGER:
-                        bottomSheetPresenter.dismissVaultManager();
-                        break;
-                    case SUPPORTED_PAYMENT_METHODS:
-                        slideDownBottomSheet(new AnimationCompleteCallback() {
-                            @Override
-                            public void onAnimationComplete() {
-                                // prevent this fragment from handling additional back presses
-                                setEnabled(false);
-                                remove();
-                            }
-                        });
-                        break;
+                if (visibleFragment != null) {
+                    switch (visibleFragment) {
+                        case VAULT_MANAGER:
+                            bottomSheetPresenter.dismissVaultManager();
+                            break;
+                        case SUPPORTED_PAYMENT_METHODS:
+                            slideDownBottomSheet(new AnimationCompleteCallback() {
+                                @Override
+                                public void onAnimationComplete() {
+                                    // prevent this fragment from handling additional back presses
+                                    setEnabled(false);
+                                    remove();
+                                }
+                            });
+                            break;
+                    }
                 }
             }
         });

@@ -19,13 +19,13 @@ public class CreateTransactionActivity extends AppCompatActivity {
 
     public static final String EXTRA_PAYMENT_METHOD_NONCE = "nonce";
 
-    private ProgressBar mLoadingSpinner;
+    private ProgressBar loadingSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.create_transaction_activity);
-        mLoadingSpinner = findViewById(R.id.loading_spinner);
+        loadingSpinner = findViewById(R.id.loading_spinner);
         setTitle(R.string.processing_transaction);
 
         sendNonceToServer((PaymentMethodNonce) getIntent().getParcelableExtra(EXTRA_PAYMENT_METHOD_NONCE));
@@ -74,7 +74,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
     }
 
     private void setStatus(int message) {
-        mLoadingSpinner.setVisibility(View.GONE);
+        loadingSpinner.setVisibility(View.GONE);
         setTitle(message);
         TextView status = findViewById(R.id.transaction_status);
         status.setText(message);
@@ -82,7 +82,7 @@ public class CreateTransactionActivity extends AppCompatActivity {
     }
 
     private void setMessage(String message) {
-        mLoadingSpinner.setVisibility(View.GONE);
+        loadingSpinner.setVisibility(View.GONE);
         TextView textView = findViewById(R.id.transaction_message);
         textView.setText(message);
         textView.setVisibility(View.VISIBLE);

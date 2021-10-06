@@ -3,6 +3,15 @@
 ## unreleased
 * CardForm
   * Focus Cardholder Name field when adding card details if field not disabled (fixes #180)
+* Breaking Changes
+  * Visibility
+    * Make `BottomSheetState` package-private
+    * Make `DropInEventType` package-private
+    * Make `DropInActivity#onError` package-private
+    * Make `AnimatedButtonView` package-private
+    * Make `PaymentMethodItemView` package-private
+    * Make `SupportedPaymentMethodsViewHolder` package-private
+    * Make `VaultedPaymentMethodSelectedListener` package-private
 
 ## 6.0.0-beta2
 

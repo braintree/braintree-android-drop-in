@@ -1,5 +1,5 @@
 package com.braintreepayments.api;
 
-public interface VaultedPaymentMethodSelectedListener {
+interface VaultedPaymentMethodSelectedListener {
     void onVaultedPaymentMethodSelected(PaymentMethodNonce paymentMethodNonce);
 }

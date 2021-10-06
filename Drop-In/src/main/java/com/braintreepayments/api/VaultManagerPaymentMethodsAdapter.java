@@ -3,6 +3,7 @@ package com.braintreepayments.api;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 
@@ -10,14 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<VaultManagerPaymentMethodsAdapter.ViewHolder> {
-    private List<PaymentMethodNonce> vaultedPaymentMethodNonces;
-    private View.OnClickListener mClickListener;
+    private final List<PaymentMethodNonce> vaultedPaymentMethodNonces;
+    private final View.OnClickListener clickListener;
 
     VaultManagerPaymentMethodsAdapter(View.OnClickListener clickListener, List<PaymentMethodNonce> vaultedPaymentMethodNonces) {
-        mClickListener = clickListener;
+        this.clickListener = clickListener;
         this.vaultedPaymentMethodNonces = vaultedPaymentMethodNonces;
     }
 
+    @NonNull
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         return new ViewHolder(new PaymentMethodItemView(parent.getContext()));
@@ -32,31 +34,16 @@ class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<VaultManage
         paymentMethodItemView.setOnDeleteIconClick(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mClickListener != null) {
-                    mClickListener.onClick(paymentMethodItemView);
+                if (clickListener != null) {
+                    clickListener.onClick(paymentMethodItemView);
                 }
             }
         });
     }
 
-    PaymentMethodNonce getPaymentMethodNonce(int index) {
-        return vaultedPaymentMethodNonces.get(index);
-    }
-
-    void paymentMethodDeleted(PaymentMethodNonce paymentMethodNonce) {
-        int index = vaultedPaymentMethodNonces.indexOf(paymentMethodNonce);
-        vaultedPaymentMethodNonces.remove(index);
-        this.notifyItemRemoved(index);
-    }
-
     @Override
     public int getItemCount() {
         return vaultedPaymentMethodNonces.size();
-    }
-
-    void setPaymentMethodNonces(List<PaymentMethodNonce> paymentMethodNonces) {
-        vaultedPaymentMethodNonces.clear();
-        vaultedPaymentMethodNonces.addAll(paymentMethodNonces);
     }
 
     ArrayList<PaymentMethodNonce> getPaymentMethodNonces() {

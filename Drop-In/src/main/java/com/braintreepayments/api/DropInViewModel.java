@@ -69,7 +69,7 @@ public class DropInViewModel extends ViewModel {
         userCanceledError.setValue(value);
     }
 
-    public void removeVaultedPaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
+    void removeVaultedPaymentMethodNonce(PaymentMethodNonce paymentMethodNonceToDelete) {
         List<PaymentMethodNonce> currentPaymentMethods = vaultedPaymentMethods.getValue();
         if (currentPaymentMethods != null) {
             List<PaymentMethodNonce> updatedPaymentMethods = new ArrayList<>(currentPaymentMethods);

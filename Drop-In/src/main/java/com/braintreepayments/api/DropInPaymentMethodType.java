@@ -26,20 +26,20 @@ public enum DropInPaymentMethodType {
     HIPERCARD(CardType.HIPERCARD.getFrontResource(), R.drawable.bt_ic_vaulted_hipercard, R.string.bt_descriptor_hipercard, "Hipercard", CardType.HIPERCARD),
     UNKNOWN(CardType.UNKNOWN.getFrontResource(), R.drawable.bt_ic_vaulted_unknown, R.string.bt_descriptor_unknown, "Unknown", CardType.UNKNOWN);
 
-    private final int mIconDrawable;
-    private final int mVaultedDrawable;
-    private final int mLocalizedName;
-    private final String mCanonicalName;
-    private final CardType mCardType;
+    private final int iconDrawable;
+    private final int vaultedDrawable;
+    private final int localizedName;
+    private final String canonicalName;
+    private final CardType cardType;
 
     private static final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
 
     DropInPaymentMethodType(int iconDrawable, int vaultedDrawable, int localizedName, String canonicalName, CardType cardType) {
-        mIconDrawable = iconDrawable;
-        mVaultedDrawable = vaultedDrawable;
-        mLocalizedName = localizedName;
-        mCanonicalName = canonicalName;
-        mCardType = cardType;
+        this.iconDrawable = iconDrawable;
+        this.vaultedDrawable = vaultedDrawable;
+        this.localizedName = localizedName;
+        this.canonicalName = canonicalName;
+        this.cardType = cardType;
     }
 
     /**
@@ -50,7 +50,7 @@ public enum DropInPaymentMethodType {
      */
     public static DropInPaymentMethodType forType(@Nullable String paymentMethodType) {
         for (DropInPaymentMethodType type : values()) {
-            if (type.mCanonicalName.equals(paymentMethodType)) {
+            if (type.canonicalName.equals(paymentMethodType)) {
                 return type;
             }
         }
@@ -76,12 +76,12 @@ public enum DropInPaymentMethodType {
         List<CardType> convertedCardTypes = new ArrayList<>();
         for (String cardType : supportedCardTypes) {
             DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(cardType);
-            if (paymentMethodType != UNKNOWN && paymentMethodType.mCardType != null) {
-                convertedCardTypes.add(paymentMethodType.mCardType);
+            if (paymentMethodType != UNKNOWN && paymentMethodType.cardType != null) {
+                convertedCardTypes.add(paymentMethodType.cardType);
             }
         }
 
-        return convertedCardTypes.toArray(new CardType[convertedCardTypes.size()]);
+        return convertedCardTypes.toArray(new CardType[0]);
     }
 
     /**
@@ -89,7 +89,7 @@ public enum DropInPaymentMethodType {
      * {@link DropInPaymentMethodType}.
      */
     public int getDrawable() {
-        return mIconDrawable;
+        return iconDrawable;
     }
 
     /**
@@ -97,7 +97,7 @@ public enum DropInPaymentMethodType {
      * {@link DropInPaymentMethodType}.
      */
     public int getVaultedDrawable() {
-        return mVaultedDrawable;
+        return vaultedDrawable;
     }
 
     /**
@@ -105,7 +105,7 @@ public enum DropInPaymentMethodType {
      * DropInPaymentMethodType}.
      */
     public int getLocalizedName() {
-        return mLocalizedName;
+        return localizedName;
     }
 
     /**
@@ -113,6 +113,6 @@ public enum DropInPaymentMethodType {
      * Braintree.
      */
     public String getCanonicalName() {
-        return mCanonicalName;
+        return canonicalName;
     }
 }

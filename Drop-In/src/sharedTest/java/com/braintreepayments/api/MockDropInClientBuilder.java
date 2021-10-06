@@ -10,7 +10,6 @@ import org.mockito.stubbing.Answer;
 import java.util.List;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -223,7 +222,7 @@ public class MockDropInClientBuilder {
         doAnswer(new Answer<Void>() {
             @Override
             public Void answer(InvocationOnMock invocation) {
-                GetPaymentMethodNoncesCallback callback = (GetPaymentMethodNoncesCallback) invocation.getArguments()[2];
+                GetPaymentMethodNoncesCallback callback = (GetPaymentMethodNoncesCallback) invocation.getArguments()[1];
                 if (paymentMethodNonceListSuccess != null) {
                     callback.onResult(paymentMethodNonceListSuccess, null);
                 } else if (getVaultedPaymentMethodsError != null) {
@@ -231,7 +230,7 @@ public class MockDropInClientBuilder {
                 }
                 return null;
             }
-        }).when(dropInClient).getVaultedPaymentMethods(any(FragmentActivity.class), anyBoolean(), any(GetPaymentMethodNoncesCallback.class));
+        }).when(dropInClient).getVaultedPaymentMethods(any(FragmentActivity.class), any(GetPaymentMethodNoncesCallback.class));
 
         doAnswer(new Answer<Void>() {
             @Override
