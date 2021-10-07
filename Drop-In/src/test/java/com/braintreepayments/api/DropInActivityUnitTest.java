@@ -41,7 +41,7 @@ import static org.robolectric.Shadows.shadowOf;
 public class DropInActivityUnitTest {
 
     private ActivityController activityController;
-    private DropInActivity activity;
+    private DropInUnitTestActivity activity;
     private ShadowActivity shadowActivity;
 
     @Before
@@ -54,8 +54,8 @@ public class DropInActivityUnitTest {
                 .putExtra(DropInClient.EXTRA_AUTHORIZATION, authorization)
                 .putExtra(DropInClient.EXTRA_SESSION_ID, sessionId);
 
-        activityController = Robolectric.buildActivity(DropInActivity.class, intent);
-        activity = (DropInActivity) activityController.get();
+        activityController = Robolectric.buildActivity(DropInUnitTestActivity.class, intent);
+        activity = (DropInUnitTestActivity) activityController.get();
         activity.dropInClient = dropInClient;
         shadowActivity = shadowOf(activity);
     }

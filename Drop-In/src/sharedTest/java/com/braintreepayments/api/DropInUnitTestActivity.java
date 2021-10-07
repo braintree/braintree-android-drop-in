@@ -27,6 +27,14 @@ public class DropInUnitTestActivity extends DropInActivity {
     }
 
     @Override
+    DropInClient getDropInClient() {
+        if (dropInClient == null) {
+            dropInClient = super.getDropInClient();
+        }
+        return dropInClient;
+    }
+
+    @Override
     public Resources getResources() {
         Resources resources = spy(super.getResources());
         when(resources.getInteger(android.R.integer.config_longAnimTime)).thenReturn(0);
