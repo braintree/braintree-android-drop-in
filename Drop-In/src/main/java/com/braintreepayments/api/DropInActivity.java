@@ -75,7 +75,7 @@ public class DropInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
 
-        if (dropInClient != null) {
+        if (dropInClient == null) {
             Intent intent = getIntent();
             String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
             String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
