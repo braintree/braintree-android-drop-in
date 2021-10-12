@@ -33,7 +33,8 @@ public class DropInActivity extends AppCompatActivity {
     @VisibleForTesting
     DropInRequest dropInRequest;
 
-    private DropInClient dropInClient;
+    @VisibleForTesting
+    DropInClient dropInClient;
     private FragmentContainerView fragmentContainerView;
 
     @VisibleForTesting
@@ -42,7 +43,8 @@ public class DropInActivity extends AppCompatActivity {
     @VisibleForTesting
     boolean clientTokenPresent;
 
-    private AlertPresenter alertPresenter;
+    @VisibleForTesting
+    AlertPresenter alertPresenter;
 
     @Override
     protected void onResume() {

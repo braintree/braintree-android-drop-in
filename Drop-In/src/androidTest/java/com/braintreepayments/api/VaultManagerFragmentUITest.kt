@@ -14,7 +14,6 @@ import org.json.JSONObject
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.concurrent.CountDownLatch
 
 
 @RunWith(AndroidJUnit4::class)
@@ -32,6 +31,19 @@ class VaultManagerFragmentUITest {
 
         scenario = FragmentScenario.launchInContainer(VaultManagerFragment::class.java)
         scenario.moveToState(Lifecycle.State.RESUMED)
+    }
+
+    @Test
+    fun whenStateIsRESUMED_sendsAnalyticsEvent() {
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = DropInEvent.fromBundle(result)
+                assertEquals(DropInEventType.SEND_ANALYTICS, event.type)
+                assertEquals("manager.appeared", event.getString(DropInEventProperty.ANALYTICS_EVENT_NAME))
+            }
+        }
     }
 
     @Test
