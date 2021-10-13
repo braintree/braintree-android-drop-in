@@ -20,7 +20,7 @@ import org.robolectric.android.controller.ActivityController
 import java.util.*
 
 @RunWith(RobolectricTestRunner::class)
-class DropInActivityUITest {
+class DropInActivityTest {
 
     private lateinit var activityController: ActivityController<DropInActivity>
     private lateinit var activity: DropInActivity
