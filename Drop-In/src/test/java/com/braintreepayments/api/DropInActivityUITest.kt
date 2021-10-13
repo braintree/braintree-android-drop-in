@@ -1,5 +1,6 @@
 package com.braintreepayments.api
 
+import android.app.Activity
 import android.app.Activity.RESULT_FIRST_USER
 import android.app.Activity.RESULT_OK
 import android.content.Context
@@ -21,6 +22,7 @@ import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.android.controller.ActivityController
+import java.util.*
 
 @RunWith(RobolectricTestRunner::class)
 class DropInActivityUITest {
@@ -358,6 +360,76 @@ class DropInActivityUITest {
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
         assertEquals(error, shadowActivity.resultIntent.getSerializableExtra(DropInResult.EXTRA_ERROR))
         assertTrue(activity.isFinishing)
+    }
+
+    @Test
+    fun onResume_onVaultedPaymentMethodSelectedEvent_whenShouldNotRequestThreeDSecureVerification_returnsANonce() {
+        val dropInClient = MockDropInClientBuilder()
+            .authorization(authorization)
+            .shouldPerformThreeDSecureVerification(false)
+            .collectDeviceDataSuccess("sample-data")
+            .build()
+
+        setupDropInActivity(dropInClient, dropInRequest)
+        val shadowActivity = shadowOf(activity)
+
+        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle())
+        activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN)
+
+        verify(dropInClient, never()).performThreeDSecureVerification(same(activity), same(cardNonce), any(DropInResultCallback::class.java))
+        assertEquals(RESULT_OK, shadowActivity.resultCode)
+        val result = shadowActivity.resultIntent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT) as DropInResult?
+        assertEquals(cardNonce.string, result!!.paymentMethodNonce!!.string)
+        assertTrue(activity.isFinishing)
+    }
+
+    @Test
+    fun onResume_onVaultedPaymentSelectedEvent_whenShouldPerformThreeDSecureVerification_requestsThreeDSecureVerification() {
+        val dropInClient = MockDropInClientBuilder()
+            .authorization(authorization)
+            .shouldPerformThreeDSecureVerification(true)
+            .build()
+        setupDropInActivity(dropInClient, dropInRequest)
+
+        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle())
+
+        verify(dropInClient).performThreeDSecureVerification(same(activity), same(cardNonce), any(DropInResultCallback::class.java))
+        verify(dropInClient).sendAnalyticsEvent("sdk.exit.success")
+    }
+
+    @Test
+    fun onBackPressed_setsDropInViewModelBottomSheetStateHideRequested() {
+        // TODO: Invesigate if the onBackPressed code path is needed in DropInActivity - doesn't appear to ever get hit
+    }
+
+    @Test
+    fun onDidHideBottomSheet_whenNoResultPresent_sendAnalyticsEvent() {
+        val dropInClient = MockDropInClientBuilder()
+            .authorization(authorization)
+            .build()
+        setupDropInActivity(dropInClient, dropInRequest)
+
+        activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN)
+
+        verify(dropInClient).sendAnalyticsEvent("sdk.exit.canceled")
+    }
+
+    @Test
+    fun onResume_whenResultPresent_sendAnalyticsEvent() {
+        val paymentMethodNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        val dropInResult = DropInResult()
+            .paymentMethodNonce(paymentMethodNonce)
+            .deviceData("device data")
+
+        val dropInClient = MockDropInClientBuilder()
+            .authorization(authorization)
+            .deliverBrowserSwitchResultSuccess(dropInResult)
+            .build()
+        setupDropInActivity(dropInClient, dropInRequest)
+
+        verify(dropInClient).sendAnalyticsEvent("sdk.exit.success")
     }
 
     private fun createBrowserSwitchSuccessResult(): BrowserSwitchResult? {

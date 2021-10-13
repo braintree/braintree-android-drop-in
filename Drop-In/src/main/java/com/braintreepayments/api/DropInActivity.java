@@ -573,13 +573,10 @@ public class DropInActivity extends AppCompatActivity {
                                 onError(error);
                                 return;
                             }
-                            sendAnalyticsEvent("sdk.exit.success");
                             animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
                         }
                     });
                 } else {
-                    sendAnalyticsEvent("sdk.exit.success");
-
                     DropInResult dropInResult = new DropInResult();
                     dropInResult.paymentMethodNonce(paymentMethod);
                     animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
