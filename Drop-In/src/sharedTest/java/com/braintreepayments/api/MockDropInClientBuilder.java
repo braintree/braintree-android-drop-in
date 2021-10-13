@@ -54,7 +54,7 @@ public class MockDropInClientBuilder {
         return this;
     }
 
-    MockDropInClientBuilder dropInResultCallback(DropInResult dropInResult) {
+    MockDropInClientBuilder threeDSecureSuccess(DropInResult dropInResult) {
         this.threeDSecureSuccess = dropInResult;
         return this;
     }

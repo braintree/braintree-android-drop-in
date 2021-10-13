@@ -148,7 +148,6 @@ public class DropInActivity extends AppCompatActivity {
         finish();
     }
 
-    @VisibleForTesting
     void onDropInEvent(DropInEvent event) {
         switch (event.getType()) {
             case ADD_CARD_SUBMIT:
@@ -178,14 +177,13 @@ public class DropInActivity extends AppCompatActivity {
         }
     }
 
-    @VisibleForTesting
-    void onSupportedPaymentMethodSelected(DropInEvent event) {
+    private void onSupportedPaymentMethodSelected(DropInEvent event) {
         DropInPaymentMethodType paymentMethodType =
                 event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD);
         startPaymentFlow(paymentMethodType);
     }
 
-    void startPaymentFlow(DropInPaymentMethodType paymentMethodType) {
+    private void startPaymentFlow(DropInPaymentMethodType paymentMethodType) {
         switch (paymentMethodType) {
             case GOOGLE_PAYMENT:
                 startGooglePayFlow();
@@ -262,7 +260,7 @@ public class DropInActivity extends AppCompatActivity {
         dropInClient.sendAnalyticsEvent(eventName);
     }
 
-    void refreshVaultedPaymentMethods() {
+    private void refreshVaultedPaymentMethods() {
         // TODO: consider caching nonces or use a ViewModel for handling nonces
         // TODO: show loading indicator while fetching vaulted payment methods
         dropInClient.getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
@@ -299,8 +297,7 @@ public class DropInActivity extends AppCompatActivity {
         finishDropInWithPendingResult(true);
     }
 
-    @VisibleForTesting
-    void finishDropInWithPendingResult(boolean cancelPendingActivityAnimation) {
+    private void finishDropInWithPendingResult(boolean cancelPendingActivityAnimation) {
         if (pendingDropInResult != null) {
             sendAnalyticsEvent("sdk.exit.success");
             DropInResult.setLastUsedPaymentMethodType(
@@ -322,7 +319,7 @@ public class DropInActivity extends AppCompatActivity {
         }
     }
 
-    void updateVaultedPaymentMethodNonces(boolean refetch) {
+    private void updateVaultedPaymentMethodNonces(boolean refetch) {
         if (clientTokenPresent) {
             dropInClient.getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
                 @Override
@@ -385,6 +382,7 @@ public class DropInActivity extends AppCompatActivity {
         }
     }
 
+    @VisibleForTesting
     void onError(final Exception error) {
         if (error instanceof ErrorWithResponse) {
             ErrorWithResponse errorResponse = (ErrorWithResponse) error;
@@ -494,8 +492,7 @@ public class DropInActivity extends AppCompatActivity {
         }
     }
 
-    @VisibleForTesting
-    void onVaultedPaymentMethodSelected(DropInEvent event) {
+    private void onVaultedPaymentMethodSelected(DropInEvent event) {
         final PaymentMethodNonce paymentMethodNonce =
                 event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD);
 
@@ -540,8 +537,7 @@ public class DropInActivity extends AppCompatActivity {
         });
     }
 
-    @VisibleForTesting
-    void onCardDetailsSubmit(DropInEvent event) {
+    private void onCardDetailsSubmit(DropInEvent event) {
         Card card = event.getCard(DropInEventProperty.CARD);
         dropInViewModel.setDropInState(DropInState.WILL_FINISH);
 
@@ -561,7 +557,7 @@ public class DropInActivity extends AppCompatActivity {
         });
     }
 
-    void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
+    private void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
         dropInClient.shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
