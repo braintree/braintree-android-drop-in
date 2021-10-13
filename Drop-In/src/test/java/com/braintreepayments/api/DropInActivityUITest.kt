@@ -2,16 +2,17 @@ package com.braintreepayments.api
 
 import android.content.Context
 import android.content.Intent
-import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.json.JSONObject
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Matchers
 import org.mockito.Mockito
+import org.mockito.Mockito.*
 import org.robolectric.Robolectric.buildActivity
+import org.robolectric.RobolectricTestRunner
 
-@RunWith(AndroidJUnit4::class)
+@RunWith(RobolectricTestRunner::class)
 class DropInActivityUITest {
 
     @Test
@@ -66,7 +67,7 @@ class DropInActivityUITest {
         controller.setup()
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, dropInEvent.toBundle())
 
-        Mockito.verify(dropInClient).sendAnalyticsEvent("test-analytics.event")
+        verify(dropInClient).sendAnalyticsEvent("test-analytics.event")
     }
 
     @Test
@@ -93,7 +94,7 @@ class DropInActivityUITest {
         val dropInEvent = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce)
         activity.onVaultedPaymentMethodSelected(dropInEvent)
 
-        Mockito.verify(dropInClient).sendAnalyticsEvent("vaulted-card.select")
+        verify(dropInClient).sendAnalyticsEvent("vaulted-card.select")
     }
 
     @Test
@@ -119,7 +120,7 @@ class DropInActivityUITest {
 
         activity.removePaymentMethodNonce(cardNonce)
 
-        Mockito.verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded")
+        verify(dropInClient).sendAnalyticsEvent("manager.delete.succeeded")
     }
 
     @Test
@@ -145,7 +146,7 @@ class DropInActivityUITest {
 
         activity.removePaymentMethodNonce(cardNonce)
 
-        Mockito.verify(dropInClient).sendAnalyticsEvent("manager.delete.failed")
+        verify(dropInClient).sendAnalyticsEvent("manager.delete.failed")
     }
 
     @Test
@@ -171,7 +172,7 @@ class DropInActivityUITest {
 
         activity.removePaymentMethodNonce(cardNonce)
 
-        Mockito.verify(dropInClient).sendAnalyticsEvent("manager.unknown.failed")
+        verify(dropInClient).sendAnalyticsEvent("manager.unknown.failed")
     }
 
     @Test
@@ -207,7 +208,7 @@ class DropInActivityUITest {
         activity.alertPresenter = alertPresenter
         activity.onDropInEvent(DropInEvent.createDeleteVaultedPaymentMethodNonceEvent(cardNonce))
 
-        Mockito.verify(dropInClient).sendAnalyticsEvent("manager.delete.confirmation.positive")
+        verify(dropInClient).sendAnalyticsEvent("manager.delete.confirmation.positive")
     }
 
     @Test
@@ -224,8 +225,8 @@ class DropInActivityUITest {
             .authorization(authorization)
             .build()
 
-        val alertPresenter = Mockito.mock(AlertPresenter::class.java)
-        Mockito.doAnswer { invocation ->
+        val alertPresenter = mock(AlertPresenter::class.java)
+        doAnswer { invocation ->
             val callback = invocation.arguments[2] as DialogInteractionCallback
             callback.onDialogInteraction(DialogInteraction.NEGATIVE)
         }.`when`(alertPresenter).showConfirmNonceDeletionDialog(
@@ -243,6 +244,6 @@ class DropInActivityUITest {
         activity.alertPresenter = alertPresenter
         activity.onDropInEvent(DropInEvent.createDeleteVaultedPaymentMethodNonceEvent(cardNonce))
 
-        Mockito.verify(dropInClient).sendAnalyticsEvent("manager.delete.confirmation.negative")
+        verify(dropInClient).sendAnalyticsEvent("manager.delete.confirmation.negative")
     }
 }
