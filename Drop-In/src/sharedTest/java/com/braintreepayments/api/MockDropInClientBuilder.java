@@ -47,6 +47,7 @@ public class MockDropInClientBuilder {
     private DropInResult handleActivityResultSuccess;
 
     private boolean shouldPerformThreeDSecureVerification;
+    private BrowserSwitchResult browserSwitchResult;
 
     MockDropInClientBuilder shouldPerformThreeDSecureVerification(boolean shouldPerformThreeDSecureVerification) {
         this.shouldPerformThreeDSecureVerification = shouldPerformThreeDSecureVerification;
@@ -183,6 +184,11 @@ public class MockDropInClientBuilder {
         return this;
     }
 
+    MockDropInClientBuilder getBrowserSwitchResult(BrowserSwitchResult result) {
+        this.browserSwitchResult = result;
+        return this;
+    }
+
     MockDropInClientBuilder handleActivityResultError(Exception error) {
         this.handleActivityResultError = error;
         return this;
@@ -196,6 +202,7 @@ public class MockDropInClientBuilder {
     DropInClient build() {
         DropInClient dropInClient = mock(DropInClient.class);
         when(dropInClient.getAuthorization()).thenReturn(authorization);
+        when(dropInClient.getBrowserSwitchResult(any(FragmentActivity.class))).thenReturn(browserSwitchResult);
 
         doAnswer(new Answer<Void>() {
             @Override
