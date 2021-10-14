@@ -24,7 +24,7 @@ public class MockDropInClientBuilder {
     private Authorization authorization;
     private Configuration configuration;
     private List<DropInPaymentMethodType> supportedPaymentMethods;
-    private Exception getSupportedCardTypesError;
+    private Exception getSupportedPaymentMethodsError;
     private String deviceDataSuccess;
     private PaymentMethodNonce deletedNonce;
     private Exception deletePaymentMethodNonceError;
@@ -48,6 +48,9 @@ public class MockDropInClientBuilder {
 
     private boolean shouldPerformThreeDSecureVerification;
     private BrowserSwitchResult browserSwitchResult;
+    private List<String> getSupportedCardTypesSuccess;
+    private Exception getSupportedCardTypesError;
+    private Exception deviceDataError;
 
     MockDropInClientBuilder shouldPerformThreeDSecureVerification(boolean shouldPerformThreeDSecureVerification) {
         this.shouldPerformThreeDSecureVerification = shouldPerformThreeDSecureVerification;
@@ -89,6 +92,16 @@ public class MockDropInClientBuilder {
         return this;
     }
 
+    MockDropInClientBuilder getSupportedPaymentMethodsError(Exception error) {
+        this.getSupportedPaymentMethodsError = error;
+        return this;
+    }
+
+    MockDropInClientBuilder getSupportedCardTypesSuccess(List<String> supportedCardTypes) {
+        this.getSupportedCardTypesSuccess = supportedCardTypes;
+        return this;
+    }
+
     MockDropInClientBuilder getSupportedCardTypesError(Exception error) {
         this.getSupportedCardTypesError = error;
         return this;
@@ -96,6 +109,11 @@ public class MockDropInClientBuilder {
 
     MockDropInClientBuilder collectDeviceDataSuccess(String deviceDataSuccess) {
         this.deviceDataSuccess = deviceDataSuccess;
+        return this;
+    }
+
+    MockDropInClientBuilder collectDeviceDataError(Exception deviceDataError) {
+        this.deviceDataError = deviceDataError;
         return this;
     }
 
@@ -256,12 +274,26 @@ public class MockDropInClientBuilder {
                 GetSupportedPaymentMethodsCallback callback = (GetSupportedPaymentMethodsCallback) invocation.getArguments()[1];
                 if (supportedPaymentMethods != null) {
                     callback.onResult(supportedPaymentMethods, null);
+                } else if (getSupportedPaymentMethodsError != null) {
+                    callback.onResult(null, getSupportedPaymentMethodsError);
+                }
+                return null;
+            }
+        }).when(dropInClient).getSupportedPaymentMethods(any(FragmentActivity.class), any(GetSupportedPaymentMethodsCallback.class));
+
+
+        doAnswer(new Answer<Void>() {
+            @Override
+            public Void answer(InvocationOnMock invocation) {
+                GetSupportedCardTypesCallback callback = (GetSupportedCardTypesCallback) invocation.getArguments()[0];
+                if (getSupportedCardTypesSuccess != null) {
+                    callback.onResult(getSupportedCardTypesSuccess, null);
                 } else if (getSupportedCardTypesError != null) {
                     callback.onResult(null, getSupportedCardTypesError);
                 }
                 return null;
             }
-        }).when(dropInClient).getSupportedPaymentMethods(any(FragmentActivity.class), any(GetSupportedPaymentMethodsCallback.class));
+        }).when(dropInClient).getSupportedCardTypes(any(GetSupportedCardTypesCallback.class));
 
         doAnswer(new Answer<Void>() {
             @Override
@@ -269,6 +301,8 @@ public class MockDropInClientBuilder {
                 DataCollectorCallback callback = (DataCollectorCallback) invocation.getArguments()[1];
                 if (deviceDataSuccess != null) {
                     callback.onResult(deviceDataSuccess, null);
+                } else if (deviceDataError != null) {
+                    callback.onResult(null, deviceDataError);
                 }
                 return null;
             }
