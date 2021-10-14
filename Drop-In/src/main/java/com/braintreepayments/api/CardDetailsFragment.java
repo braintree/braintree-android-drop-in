@@ -191,8 +191,6 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
             card.setShouldValidate(shouldVault);
 
             sendDropInEvent(DropInEvent.createCardDetailsSubmitEvent(card));
-            animatedButtonView.showLoading();
-
         } else {
             animatedButtonView.showButton();
             cardForm.validate();

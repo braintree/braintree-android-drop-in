@@ -9,17 +9,17 @@ import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.braintreepayments.api.CardNumber.VISA
 import com.braintreepayments.api.dropin.R
-import com.braintreepayments.cardform.view.CardForm
 import com.braintreepayments.cardform.view.CardForm.*
 import junit.framework.TestCase.*
 import org.hamcrest.Matchers.not
-import org.junit.Before
 import org.junit.Test
-import java.util.concurrent.CountDownLatch
+import org.junit.runner.RunWith
 
 
+@RunWith(AndroidJUnit4ClassRunner::class)
 class CardDetailsFragmentUITest {
 
     @Test
@@ -282,6 +282,45 @@ class CardDetailsFragmentUITest {
     }
 
     @Test
+    fun whenStateIsRESUMED_onCardFormSubmit_whenCardFormValid_showsLoader() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest())
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+
+        val scenario = FragmentScenario.launchInContainer(
+            CardDetailsFragment::class.java,
+            args,
+            R.style.bt_drop_in_activity_theme
+        )
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_card_form_expiration)).perform(typeText(ExpirationDate.VALID_EXPIRATION))
+        onView(withId(R.id.bt_button)).perform(click())
+
+        onView(withId(R.id.bt_button)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.bt_animated_button_loading_indicator)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_onCardFormSubmit_whenCardFormNotValid_showsSubmitButton() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest())
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_button)).perform(click())
+
+        onView(withId(R.id.bt_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_animated_button_loading_indicator)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
     fun whenStateIsRESUMED_onCardFormSubmit_whenCardFormNotValid_doesNotSendCardDetailsEventAndShowsButton() {
         val args = Bundle()
         args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest())
@@ -433,6 +472,24 @@ class CardDetailsFragmentUITest {
         scenario.onFragment { fragment ->
             fragment.animatedButtonView.showLoading()
             fragment.dropInViewModel.setUserCanceledError(UserCanceledException("User canceled 3DS."))
+        }
+        onView(withId(R.id.bt_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_animated_button_loading_indicator)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenCardTokenizationErrorPresentInViewModel_showsSubmitButtonAgain() {
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest())
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(true, true))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.animatedButtonView.showLoading()
+            fragment.dropInViewModel.setCardTokenizationError(Exception("error"))
         }
         onView(withId(R.id.bt_button)).check(matches(isDisplayed()))
         onView(withId(R.id.bt_animated_button_loading_indicator)).check(matches(not(isDisplayed())))
