@@ -1,7 +1,9 @@
 package com.braintreepayments.api
 
+import android.view.View
 import androidx.core.os.bundleOf
 import androidx.fragment.app.testing.FragmentScenario
+import androidx.fragment.app.testing.withFragment
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -12,8 +14,11 @@ import com.braintreepayments.api.dropin.R
 import org.hamcrest.Matchers.not
 import org.json.JSONObject
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
+import org.mockito.Mockito.mock
 
 // Ref: https://developer.android.com/guide/fragments/test
 @RunWith(AndroidJUnit4::class)
@@ -255,6 +260,88 @@ class SupportedPaymentMethodsFragmentUITest {
         }
 
         scenario.recreate()
+        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.bt_supported_payment_methods)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenHasSupportedPaymentMethods_hidesLoader() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.isVaultManagerEnabled = true
+
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.loadingIndicatorWrapper.visibility = View.VISIBLE
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+        }
+
+        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.bt_supported_payment_methods)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    @Ignore("Can't inject dropInViewModel")
+    fun whenStateIsRESUMED_whenDoesNotHaveSupportedPaymentMethods_showsLoader() {
+        // TODO: determine testing strategy for dropInViewModel state in onCreate
+        val dropInRequest = DropInRequest()
+        dropInRequest.isVaultManagerEnabled = true
+
+        val dropInViewModel = mock(DropInViewModel::class.java)
+        Mockito.`when`(dropInViewModel.supportedCardTypes).thenReturn(null)
+
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
+
+        scenario.onFragment { fragment ->
+            fragment.loadingIndicatorWrapper.visibility = View.INVISIBLE
+            fragment.dropInViewModel = dropInViewModel
+        }
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_supported_payment_methods)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenDropInStateWillFinish_showsLoader() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.isVaultManagerEnabled = true
+
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.loadingIndicatorWrapper.visibility = View.INVISIBLE
+            fragment.dropInViewModel.setDropInState(DropInState.WILL_FINISH)
+        }
+
+        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_supported_payment_methods)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenStateLoadingAndHasSupportedPaymentMethods_hidesLoader() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.isVaultManagerEnabled = true
+
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.loadingIndicatorWrapper.visibility = View.VISIBLE
+            fragment.viewState = SupportedPaymentMethodsFragment.ViewState.LOADING
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+        }
+
         onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
         onView(withId(R.id.bt_supported_payment_methods)).check(matches(isDisplayed()))
     }
