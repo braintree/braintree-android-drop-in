@@ -1,6 +1,8 @@
 # Braintree Android Drop-In Release Notes
 
 ## unreleased
+* Braintree Core
+  * Bump braintree_android module dependency versions to `4.7.0`
 * CardForm
   * Focus Cardholder Name field when adding card details if field not disabled (fixes #180)
 * Breaking Changes
