@@ -56,7 +56,9 @@ public class DropInRequest implements Parcelable {
     /**
      * This method is optional.
      *
-     * @param request The Venmo Request {@link VenmoRequest} for the transaction.
+     * @param request The Venmo Request {@link VenmoRequest} for the transaction. If the Venmo
+     *                Request is not set, Venmo will follow the single use flow without vaulting.
+     *
      */
     public void setVenmoRequest(@Nullable VenmoRequest request) {
         venmoRequest = request;
