@@ -76,6 +76,7 @@ Java:
     dropInRequest.setGooglePayDisabled(true);
     dropInRequest.setPayPalRequest(paypalRequest);
     dropInRequest.setPayPalDisabled(true);
+    dropInRequest.setVenmoRequest(venmoRequest);
     dropInRequest.setVenmoDisabled(true);
     dropInRequest.setCardDisabled(true);
     dropInRequest.setRequestThreeDSecureVerification(true);
@@ -96,6 +97,7 @@ Kotlin:
     dropInRequest.isGooglePayDisabled = true
     dropInRequest.payPalRequest = paypalRequest
     dropInRequest.isPayPalDisabled = true
+    dropInRequest.venmoRequest = venmoRequest
     dropInRequest.isVenmoDisabled = true
     dropInRequest.isCardDisabled = true
     dropInRequest.requestThreeDSecureVerification = true
@@ -122,9 +124,10 @@ The full list of changed parameters is below:
 1. `disableCard` -> `cardDisabled`
 1. `vaultManager` -> `vaultManagerEnabled`
 1. `vaultCard` -> `vaultCardDefaultValue`
-1. `vaultVenmo` -> `vaultVenmoDefaultValue`
+1. `vaultVenmo` -> removed 
 
 The `collectDeviceData` field has been removed from `DropInRequest` in favor of always returning device data.
+The `vaultVenmo` field has been removed from `DropInRequest` in favor of setting `shouldVault` on a `VenmoRequest` that is set on the `DropInRequest`
 
 ## DropInClient
 

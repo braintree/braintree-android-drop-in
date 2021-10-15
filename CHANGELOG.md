@@ -17,7 +17,7 @@
     * Make `SupportedPaymentMethodsViewHolder` package-private
     * Make `VaultedPaymentMethodSelectedListener` package-private
   * Venmo
-    * Remove `vaultVenmoDefaultValue` in favor of setting `shouldVault` on `VenmoRequest`
+    * Remove `vaultVenmo` in favor of setting `shouldVault` on `VenmoRequest`
 
 ## 6.0.0-beta2
 
