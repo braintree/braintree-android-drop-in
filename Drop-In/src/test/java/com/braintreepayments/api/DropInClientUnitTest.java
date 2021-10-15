@@ -993,8 +993,10 @@ public class DropInClientUnitTest {
     @Test
     public void tokenizeVenmoAccount_tokenizesVenmo() {
         Configuration configuration = mockConfiguration(false, true, false, false, false);
+        VenmoRequest venmoRequest = new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE);
+        venmoRequest.setShouldVault(true);
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setVaultVenmoDefaultValue(true);
+        dropInRequest.setVenmoRequest(venmoRequest);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))

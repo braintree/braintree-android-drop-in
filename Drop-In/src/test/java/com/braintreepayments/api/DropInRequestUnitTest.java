@@ -73,7 +73,6 @@ public class DropInRequestUnitTest {
         dropInRequest.setAllowVaultCardOverride(true);
         dropInRequest.setVaultCardDefaultValue(true);
         dropInRequest.setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
-        dropInRequest.setVaultVenmoDefaultValue(true);
 
         assertEquals("10", dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPrice());
         assertEquals("USD", dropInRequest.getGooglePayRequest().getTransactionInfo().getCurrencyCode());
@@ -115,7 +114,6 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.getVaultCardDefaultValue());
         assertTrue(dropInRequest.getAllowVaultCardOverride());
         assertEquals(CardForm.FIELD_OPTIONAL, dropInRequest.getCardholderNameStatus());
-        assertTrue(dropInRequest.getVaultVenmoDefaultValue());
     }
 
     @Test
@@ -176,7 +174,6 @@ public class DropInRequestUnitTest {
         dropInRequest.setAllowVaultCardOverride(true);
         dropInRequest.setVaultCardDefaultValue(true);
         dropInRequest.setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
-        dropInRequest.setVaultVenmoDefaultValue(true);
 
         Parcel parcel = Parcel.obtain();
         dropInRequest.writeToParcel(parcel, 0);
@@ -223,7 +220,6 @@ public class DropInRequestUnitTest {
         assertTrue(parceledDropInRequest.getVaultCardDefaultValue());
         assertTrue(parceledDropInRequest.getAllowVaultCardOverride());
         assertEquals(CardForm.FIELD_OPTIONAL, parceledDropInRequest.getCardholderNameStatus());
-        assertTrue(parceledDropInRequest.getVaultVenmoDefaultValue());
     }
 
     @Test

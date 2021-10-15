@@ -28,7 +28,6 @@ public class DropInRequest implements Parcelable {
     private boolean cardDisabled = false;
     private boolean vaultCardDefaultValue = true;
     private boolean allowVaultCardOverride = false;
-    private boolean vaultVenmoDefaultValue = false;
 
     private int cardholderNameStatus = CardForm.FIELD_DISABLED;
 
@@ -172,17 +171,6 @@ public class DropInRequest implements Parcelable {
     /**
      * This method is optional.
      *
-     * @param defaultValue the default value used to determine if Drop-in should vault the customer's Venmo payment method. Must be set to `false` when using a client token without a `customerId`.
-     *
-     * This value is {@code false} by default.
-     */
-    public void setVaultVenmoDefaultValue(boolean defaultValue) {
-        vaultVenmoDefaultValue = defaultValue;
-    }
-
-    /**
-     * This method is optional.
-     *
      * @param customerCheckBoxEnabled {@code true} shows save card CheckBox to allow user to choose whether or not to vault their card.
      * {@code false} does not show Save Card CheckBox. Default value is false.
      */
@@ -277,11 +265,6 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
-     * @return The default value used to determine if Drop-in should vault the customer's Venmo payment method
-     */
-    public boolean getVaultVenmoDefaultValue() { return vaultVenmoDefaultValue; }
-
-    /**
      * @return If vault manager is enabled to allow users manage their vaulted payment methods
      */
     public boolean isVaultManagerEnabled() {
@@ -331,7 +314,6 @@ public class DropInRequest implements Parcelable {
         dest.writeInt(cardholderNameStatus);
         dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
-        dest.writeByte(vaultVenmoDefaultValue ? (byte) 1 : (byte) 0);
     }
 
     protected DropInRequest(Parcel in) {
@@ -350,7 +332,6 @@ public class DropInRequest implements Parcelable {
         cardholderNameStatus = in.readInt();
         vaultCardDefaultValue = in.readByte() != 0;
         allowVaultCardOverride = in.readByte() != 0;
-        vaultVenmoDefaultValue = in.readByte() != 0;
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {
