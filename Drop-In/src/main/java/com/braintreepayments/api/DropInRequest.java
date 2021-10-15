@@ -213,6 +213,7 @@ public class DropInRequest implements Parcelable {
     /**
      * @return The Venmo Request {@link VenmoRequest} for the transaction.
      */
+    @Nullable
     public VenmoRequest getVenmoRequest() { return venmoRequest; }
 
     /**

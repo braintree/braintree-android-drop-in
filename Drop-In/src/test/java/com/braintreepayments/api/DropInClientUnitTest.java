@@ -1,5 +1,6 @@
 package com.braintreepayments.api;
 
+import static junit.framework.TestCase.assertFalse;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -1020,6 +1021,36 @@ public class DropInClientUnitTest {
 
         VenmoRequest request = captor.getValue();
         assertTrue(request.getShouldVault());
+    }
+
+    @Test
+    public void tokenizeVenmoAccount_whenVenmoRequestNull_createsVenmoRequest() {
+        Configuration configuration = mockConfiguration(false, true, false, false, false);
+        DropInRequest dropInRequest = new DropInRequest();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        VenmoClient venmoClient = mock(VenmoClient.class);
+
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .venmoClient(venmoClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+
+        VenmoTokenizeAccountCallback callback = mock(VenmoTokenizeAccountCallback.class);
+        sut.tokenizeVenmoAccount(activity, callback);
+
+        ArgumentCaptor<VenmoRequest> captor = ArgumentCaptor.forClass(VenmoRequest.class);
+        verify(venmoClient).tokenizeVenmoAccount(same(activity), captor.capture(), same(callback));
+
+        VenmoRequest request = captor.getValue();
+        assertEquals(VenmoPaymentMethodUsage.SINGLE_USE, request.getPaymentMethodUsage());
+        assertFalse(request.getShouldVault());
     }
 
     @Test

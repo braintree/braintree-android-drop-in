@@ -167,7 +167,11 @@ public class DropInClient {
     }
 
     void tokenizeVenmoAccount(FragmentActivity activity, VenmoTokenizeAccountCallback callback) {
-        venmoClient.tokenizeVenmoAccount(activity, dropInRequest.getVenmoRequest(), callback);
+        VenmoRequest venmoRequest = dropInRequest.getVenmoRequest();
+        if (venmoRequest == null) {
+            venmoRequest = new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE);
+        }
+        venmoClient.tokenizeVenmoAccount(activity, venmoRequest, callback);
     }
 
     void deletePaymentMethod(FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, DeletePaymentMethodNonceCallback callback) {
