@@ -168,9 +168,9 @@ public class DropInClient {
 
     void tokenizeVenmoAccount(FragmentActivity activity, VenmoTokenizeAccountCallback callback) {
         // TODO: Add VenmoRequest setter to DropInRequest and remove DropInRequest#shouldVaultVenmo()
-        VenmoRequest venmoRequest = new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE);
-        venmoRequest.setShouldVault(dropInRequest.getVaultVenmoDefaultValue());
-        venmoClient.tokenizeVenmoAccount(activity, venmoRequest, callback);
+//        VenmoRequest venmoRequest = new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE);
+//        venmoRequest.setShouldVault(dropInRequest.getVaultVenmoDefaultValue());
+        venmoClient.tokenizeVenmoAccount(activity, dropInRequest.getVenmoRequest(), callback);
     }
 
     void deletePaymentMethod(FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, DeletePaymentMethodNonceCallback callback) {

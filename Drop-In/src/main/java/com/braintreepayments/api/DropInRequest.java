@@ -17,6 +17,7 @@ public class DropInRequest implements Parcelable {
 
     private GooglePayRequest googlePayRequest;
     private PayPalRequest payPalRequest;
+    private VenmoRequest venmoRequest;
 
     private boolean googlePayDisabled = false;
     private boolean maskCardNumber = false;
@@ -51,6 +52,15 @@ public class DropInRequest implements Parcelable {
      */
     public void setPayPalRequest(@Nullable PayPalRequest request) {
         payPalRequest = request;
+    }
+
+    /**
+     * This method is optional.
+     *
+     * @param request The Venmo Request {@link VenmoRequest} for the transaction.
+     */
+    public void setVenmoRequest(@Nullable VenmoRequest request) {
+        venmoRequest = request;
     }
 
     /**
@@ -213,6 +223,11 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * @return The Venmo Request {@link VenmoRequest} for the transaction.
+     */
+    public VenmoRequest getVenmoRequest() { return venmoRequest; }
+
+    /**
      * @return If card payments are disabled in Drop-in
      */
     public boolean isCardDisabled() {
@@ -304,6 +319,7 @@ public class DropInRequest implements Parcelable {
         dest.writeParcelable(googlePayRequest, 0);
         dest.writeByte(googlePayDisabled ? (byte) 1 : (byte) 0);
         dest.writeParcelable(payPalRequest, 0);
+        dest.writeParcelable(venmoRequest, 0);
         dest.writeByte(payPalDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(venmoDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(cardDisabled ? (byte) 1 : (byte) 0);
@@ -322,6 +338,7 @@ public class DropInRequest implements Parcelable {
         googlePayRequest = in.readParcelable(GooglePayRequest.class.getClassLoader());
         googlePayDisabled = in.readByte() != 0;
         payPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());
+        venmoRequest = in.readParcelable(VenmoRequest.class.getClassLoader());
         payPalDisabled = in.readByte() != 0;
         venmoDisabled = in.readByte() != 0;
         cardDisabled = in.readByte() != 0;
