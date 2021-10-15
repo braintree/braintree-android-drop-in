@@ -28,6 +28,8 @@ import com.braintreepayments.api.ThreeDSecureAdditionalInformation;
 import com.braintreepayments.api.ThreeDSecurePostalAddress;
 import com.braintreepayments.api.ThreeDSecureRequest;
 import com.braintreepayments.api.VenmoAccountNonce;
+import com.braintreepayments.api.VenmoPaymentMethodUsage;
+import com.braintreepayments.api.VenmoRequest;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
 
@@ -174,6 +176,7 @@ public class MainActivity extends BaseActivity {
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setRequestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this));
         dropInRequest.setGooglePayRequest(getGooglePaymentRequest());
+        dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
         dropInRequest.setMaskCardNumber(true);
         dropInRequest.setMaskSecurityCode(true);
         dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
