@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
 
@@ -1404,7 +1405,9 @@ public class DropInClientUnitTest {
         assertEquals("session-id", intent.getStringExtra(DropInClient.EXTRA_SESSION_ID));
         assertEquals("authorization", intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION));
 
-        DropInRequest dropInRequestExtra = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+        Bundle bundle = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE);
+        bundle.setClassLoader(DropInRequest.class.getClassLoader());
+        DropInRequest dropInRequestExtra = bundle.getParcelable(DropInClient.EXTRA_CHECKOUT_REQUEST);
         assertTrue(dropInRequestExtra.isVaultManagerEnabled());
     }
 

@@ -1,7 +1,5 @@
 package com.braintreepayments.api;
 
-import static com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST;
-
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -150,7 +148,7 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private DropInRequest getDropInRequest(Intent intent) {
-        Bundle bundle = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+        Bundle bundle = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE);
         bundle.setClassLoader(DropInRequest.class.getClassLoader());
         return bundle.getParcelable(DropInClient.EXTRA_CHECKOUT_REQUEST);
     }

@@ -387,9 +387,9 @@ public class DropInClient {
 
     public void launchDropInForResult(FragmentActivity activity, int requestCode) {
         Bundle dropInRequestBundle = new Bundle();
-        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequest);
+        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
         Intent intent = new Intent(activity, DropInActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST, dropInRequestBundle)
+                .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
                 .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
                 .putExtra(EXTRA_AUTHORIZATION, braintreeClient.getAuthorization().toString());
         activity.startActivityForResult(intent, requestCode);
