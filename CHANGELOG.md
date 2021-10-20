@@ -1,6 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
 ## unreleased
+* Bump braintree_android module dependency versions to `4.7.0`
+* Venmo
+  * Add `VenmoRequest` setter to `DropInRequest`
 * CardForm
   * Focus Cardholder Name field when adding card details if field not disabled (fixes #180)
 * Breaking Changes
@@ -12,6 +15,8 @@
     * Make `PaymentMethodItemView` package-private
     * Make `SupportedPaymentMethodsViewHolder` package-private
     * Make `VaultedPaymentMethodSelectedListener` package-private
+  * Venmo
+    * Remove `vaultVenmo` on `DropInRequest` in favor of setting `shouldVault` on `VenmoRequest`
 
 ## 6.0.0-beta2
 

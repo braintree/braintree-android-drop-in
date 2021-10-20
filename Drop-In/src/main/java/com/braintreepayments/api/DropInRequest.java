@@ -17,6 +17,7 @@ public class DropInRequest implements Parcelable {
 
     private GooglePayRequest googlePayRequest;
     private PayPalRequest payPalRequest;
+    private VenmoRequest venmoRequest;
 
     private boolean googlePayDisabled = false;
     private boolean maskCardNumber = false;
@@ -27,7 +28,6 @@ public class DropInRequest implements Parcelable {
     private boolean cardDisabled = false;
     private boolean vaultCardDefaultValue = true;
     private boolean allowVaultCardOverride = false;
-    private boolean vaultVenmoDefaultValue = false;
 
     private int cardholderNameStatus = CardForm.FIELD_DISABLED;
 
@@ -51,6 +51,17 @@ public class DropInRequest implements Parcelable {
      */
     public void setPayPalRequest(@Nullable PayPalRequest request) {
         payPalRequest = request;
+    }
+
+    /**
+     * This method is optional.
+     *
+     * @param request The Venmo Request {@link VenmoRequest} for the transaction. If the Venmo
+     *                Request is not set, Venmo will follow the single use flow without vaulting.
+     *
+     */
+    public void setVenmoRequest(@Nullable VenmoRequest request) {
+        venmoRequest = request;
     }
 
     /**
@@ -162,17 +173,6 @@ public class DropInRequest implements Parcelable {
     /**
      * This method is optional.
      *
-     * @param defaultValue the default value used to determine if Drop-in should vault the customer's Venmo payment method. Must be set to `false` when using a client token without a `customerId`.
-     *
-     * This value is {@code false} by default.
-     */
-    public void setVaultVenmoDefaultValue(boolean defaultValue) {
-        vaultVenmoDefaultValue = defaultValue;
-    }
-
-    /**
-     * This method is optional.
-     *
      * @param customerCheckBoxEnabled {@code true} shows save card CheckBox to allow user to choose whether or not to vault their card.
      * {@code false} does not show Save Card CheckBox. Default value is false.
      */
@@ -211,6 +211,12 @@ public class DropInRequest implements Parcelable {
     public boolean isVenmoDisabled() {
         return venmoDisabled;
     }
+
+    /**
+     * @return The Venmo Request {@link VenmoRequest} for the transaction.
+     */
+    @Nullable
+    public VenmoRequest getVenmoRequest() { return venmoRequest; }
 
     /**
      * @return If card payments are disabled in Drop-in
@@ -262,11 +268,6 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
-     * @return The default value used to determine if Drop-in should vault the customer's Venmo payment method
-     */
-    public boolean getVaultVenmoDefaultValue() { return vaultVenmoDefaultValue; }
-
-    /**
      * @return If vault manager is enabled to allow users manage their vaulted payment methods
      */
     public boolean isVaultManagerEnabled() {
@@ -304,6 +305,7 @@ public class DropInRequest implements Parcelable {
         dest.writeParcelable(googlePayRequest, 0);
         dest.writeByte(googlePayDisabled ? (byte) 1 : (byte) 0);
         dest.writeParcelable(payPalRequest, 0);
+        dest.writeParcelable(venmoRequest, 0);
         dest.writeByte(payPalDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(venmoDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(cardDisabled ? (byte) 1 : (byte) 0);
@@ -315,13 +317,13 @@ public class DropInRequest implements Parcelable {
         dest.writeInt(cardholderNameStatus);
         dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
-        dest.writeByte(vaultVenmoDefaultValue ? (byte) 1 : (byte) 0);
     }
 
     protected DropInRequest(Parcel in) {
         googlePayRequest = in.readParcelable(GooglePayRequest.class.getClassLoader());
         googlePayDisabled = in.readByte() != 0;
         payPalRequest = in.readParcelable(PayPalRequest.class.getClassLoader());
+        venmoRequest = in.readParcelable(VenmoRequest.class.getClassLoader());
         payPalDisabled = in.readByte() != 0;
         venmoDisabled = in.readByte() != 0;
         cardDisabled = in.readByte() != 0;
@@ -333,7 +335,6 @@ public class DropInRequest implements Parcelable {
         cardholderNameStatus = in.readInt();
         vaultCardDefaultValue = in.readByte() != 0;
         allowVaultCardOverride = in.readByte() != 0;
-        vaultVenmoDefaultValue = in.readByte() != 0;
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {

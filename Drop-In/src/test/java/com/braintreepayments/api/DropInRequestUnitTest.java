@@ -29,6 +29,11 @@ public class DropInRequestUnitTest {
         PayPalCheckoutRequest paypalRequest = new PayPalCheckoutRequest("10.00");
         paypalRequest.setCurrencyCode("USD");
 
+        VenmoRequest venmoRequest = new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE);
+        venmoRequest.setShouldVault(true);
+        venmoRequest.setProfileId("profile-id");
+        venmoRequest.setDisplayName("display-name");
+
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         threeDSecureRequest.setNonce("abc-123");
         threeDSecureRequest.setVersionRequested(ThreeDSecureRequest.VERSION_2);
@@ -57,6 +62,7 @@ public class DropInRequestUnitTest {
         dropInRequest.setGooglePayDisabled(true);
         dropInRequest.setPayPalRequest(paypalRequest);
         dropInRequest.setPayPalDisabled(true);
+        dropInRequest.setVenmoRequest(venmoRequest);
         dropInRequest.setVenmoDisabled(true);
         dropInRequest.setCardDisabled(true);
         dropInRequest.setRequestThreeDSecureVerification(true);
@@ -67,7 +73,6 @@ public class DropInRequestUnitTest {
         dropInRequest.setAllowVaultCardOverride(true);
         dropInRequest.setVaultCardDefaultValue(true);
         dropInRequest.setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
-        dropInRequest.setVaultVenmoDefaultValue(true);
 
         assertEquals("10", dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPrice());
         assertEquals("USD", dropInRequest.getGooglePayRequest().getTransactionInfo().getCurrencyCode());
@@ -78,6 +83,11 @@ public class DropInRequestUnitTest {
         PayPalCheckoutRequest checkoutRequest = (PayPalCheckoutRequest) dropInRequest.getPayPalRequest();
         assertEquals("10.00", checkoutRequest.getAmount());
         assertEquals("USD", checkoutRequest.getCurrencyCode());
+
+        assertEquals(VenmoPaymentMethodUsage.SINGLE_USE, dropInRequest.getVenmoRequest().getPaymentMethodUsage());
+        assertTrue(dropInRequest.getVenmoRequest().getShouldVault());
+        assertEquals("profile-id", dropInRequest.getVenmoRequest().getProfileId());
+        assertEquals("display-name", dropInRequest.getVenmoRequest().getDisplayName());
 
         assertTrue(dropInRequest.isPayPalDisabled());
         assertTrue(dropInRequest.isVenmoDisabled());
@@ -104,7 +114,6 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.getVaultCardDefaultValue());
         assertTrue(dropInRequest.getAllowVaultCardOverride());
         assertEquals(CardForm.FIELD_OPTIONAL, dropInRequest.getCardholderNameStatus());
-        assertTrue(dropInRequest.getVaultVenmoDefaultValue());
     }
 
     @Test
@@ -119,6 +128,11 @@ public class DropInRequestUnitTest {
 
         PayPalCheckoutRequest paypalRequest = new PayPalCheckoutRequest("10.00");
         paypalRequest.setCurrencyCode("USD");
+
+        VenmoRequest venmoRequest = new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE);
+        venmoRequest.setShouldVault(true);
+        venmoRequest.setProfileId("profile-id");
+        venmoRequest.setDisplayName("display-name");
 
         ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest();
         threeDSecureRequest.setNonce("abc-123");
@@ -149,6 +163,7 @@ public class DropInRequestUnitTest {
         dropInRequest.setGooglePayDisabled(true);
         dropInRequest.setPayPalRequest(paypalRequest);
         dropInRequest.setPayPalDisabled(true);
+        dropInRequest.setVenmoRequest(venmoRequest);
         dropInRequest.setVenmoDisabled(true);
         dropInRequest.setCardDisabled(true);
         dropInRequest.setRequestThreeDSecureVerification(true);
@@ -159,49 +174,52 @@ public class DropInRequestUnitTest {
         dropInRequest.setAllowVaultCardOverride(true);
         dropInRequest.setVaultCardDefaultValue(true);
         dropInRequest.setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
-        dropInRequest.setVaultVenmoDefaultValue(true);
 
         Parcel parcel = Parcel.obtain();
         dropInRequest.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
         DropInRequest parceledDropInRequest = DropInRequest.CREATOR.createFromParcel(parcel);
 
-        assertEquals("10", dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPrice());
-        assertEquals("USD", dropInRequest.getGooglePayRequest().getTransactionInfo().getCurrencyCode());
-        assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPriceStatus());
-        assertTrue(dropInRequest.getGooglePayRequest().isEmailRequired());
+        assertEquals("10", parceledDropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPrice());
+        assertEquals("USD", parceledDropInRequest.getGooglePayRequest().getTransactionInfo().getCurrencyCode());
+        assertEquals(WalletConstants.TOTAL_PRICE_STATUS_FINAL, parceledDropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPriceStatus());
+        assertTrue(parceledDropInRequest.getGooglePayRequest().isEmailRequired());
 
-        PayPalCheckoutRequest checkoutRequest = (PayPalCheckoutRequest) dropInRequest.getPayPalRequest();
+        PayPalCheckoutRequest checkoutRequest = (PayPalCheckoutRequest) parceledDropInRequest.getPayPalRequest();
         assertEquals("10.00", checkoutRequest.getAmount());
         assertEquals("USD", checkoutRequest.getCurrencyCode());
 
-        assertTrue(dropInRequest.isGooglePayDisabled());
+        assertEquals(VenmoPaymentMethodUsage.SINGLE_USE, parceledDropInRequest.getVenmoRequest().getPaymentMethodUsage());
+        assertTrue(parceledDropInRequest.getVenmoRequest().getShouldVault());
+        assertEquals("profile-id", parceledDropInRequest.getVenmoRequest().getProfileId());
+        assertEquals("display-name", parceledDropInRequest.getVenmoRequest().getDisplayName());
+
+        assertTrue(parceledDropInRequest.isGooglePayDisabled());
         assertTrue(parceledDropInRequest.isPayPalDisabled());
         assertTrue(parceledDropInRequest.isVenmoDisabled());
         assertTrue(parceledDropInRequest.isCardDisabled());
         assertTrue(parceledDropInRequest.getRequestThreeDSecureVerification());
-        assertEquals("abc-123", dropInRequest.getThreeDSecureRequest().getNonce());
-        assertEquals("2", dropInRequest.getThreeDSecureRequest().getVersionRequested());
-        assertEquals("10.00", dropInRequest.getThreeDSecureRequest().getAmount());
-        assertEquals("tester@example.com", dropInRequest.getThreeDSecureRequest().getEmail());
-        assertEquals("3125551234", dropInRequest.getThreeDSecureRequest().getMobilePhoneNumber());
-        assertEquals("Given", dropInRequest.getThreeDSecureRequest().getBillingAddress().getGivenName());
-        assertEquals("Surname", dropInRequest.getThreeDSecureRequest().getBillingAddress().getSurname());
-        assertEquals("555 Smith St.", dropInRequest.getThreeDSecureRequest().getBillingAddress().getStreetAddress());
-        assertEquals("#5", dropInRequest.getThreeDSecureRequest().getBillingAddress().getExtendedAddress());
-        assertEquals("Chicago", dropInRequest.getThreeDSecureRequest().getBillingAddress().getLocality());
-        assertEquals("IL", dropInRequest.getThreeDSecureRequest().getBillingAddress().getRegion());
-        assertEquals("54321", dropInRequest.getThreeDSecureRequest().getBillingAddress().getPostalCode());
-        assertEquals("US", dropInRequest.getThreeDSecureRequest().getBillingAddress().getCountryCodeAlpha2());
-        assertEquals("3125557890", dropInRequest.getThreeDSecureRequest().getBillingAddress().getPhoneNumber());
-        assertEquals("GEN", dropInRequest.getThreeDSecureRequest().getAdditionalInformation().getShippingMethodIndicator());
+        assertEquals("abc-123", parceledDropInRequest.getThreeDSecureRequest().getNonce());
+        assertEquals("2", parceledDropInRequest.getThreeDSecureRequest().getVersionRequested());
+        assertEquals("10.00", parceledDropInRequest.getThreeDSecureRequest().getAmount());
+        assertEquals("tester@example.com", parceledDropInRequest.getThreeDSecureRequest().getEmail());
+        assertEquals("3125551234", parceledDropInRequest.getThreeDSecureRequest().getMobilePhoneNumber());
+        assertEquals("Given", parceledDropInRequest.getThreeDSecureRequest().getBillingAddress().getGivenName());
+        assertEquals("Surname", parceledDropInRequest.getThreeDSecureRequest().getBillingAddress().getSurname());
+        assertEquals("555 Smith St.", parceledDropInRequest.getThreeDSecureRequest().getBillingAddress().getStreetAddress());
+        assertEquals("#5", parceledDropInRequest.getThreeDSecureRequest().getBillingAddress().getExtendedAddress());
+        assertEquals("Chicago", parceledDropInRequest.getThreeDSecureRequest().getBillingAddress().getLocality());
+        assertEquals("IL", parceledDropInRequest.getThreeDSecureRequest().getBillingAddress().getRegion());
+        assertEquals("54321", parceledDropInRequest.getThreeDSecureRequest().getBillingAddress().getPostalCode());
+        assertEquals("US", parceledDropInRequest.getThreeDSecureRequest().getBillingAddress().getCountryCodeAlpha2());
+        assertEquals("3125557890", parceledDropInRequest.getThreeDSecureRequest().getBillingAddress().getPhoneNumber());
+        assertEquals("GEN", parceledDropInRequest.getThreeDSecureRequest().getAdditionalInformation().getShippingMethodIndicator());
         assertTrue(parceledDropInRequest.getMaskCardNumber());
         assertTrue(parceledDropInRequest.getMaskSecurityCode());
         assertTrue(parceledDropInRequest.isVaultManagerEnabled());
         assertTrue(parceledDropInRequest.getVaultCardDefaultValue());
         assertTrue(parceledDropInRequest.getAllowVaultCardOverride());
         assertEquals(CardForm.FIELD_OPTIONAL, parceledDropInRequest.getCardholderNameStatus());
-        assertTrue(parceledDropInRequest.getVaultVenmoDefaultValue());
     }
 
     @Test
