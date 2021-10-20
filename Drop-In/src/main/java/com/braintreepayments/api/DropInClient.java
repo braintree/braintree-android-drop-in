@@ -140,11 +140,7 @@ public class DropInClient {
                     }
 
                     boolean hasAmount = (dropInRequest.getThreeDSecureRequest() != null && !TextUtils.isEmpty(dropInRequest.getThreeDSecureRequest().getAmount()));
-
-                    boolean shouldRequestThreeDSecureVerification =
-                            dropInRequest.getRequestThreeDSecureVerification()
-                                    && configuration.isThreeDSecureEnabled()
-                                    && hasAmount;
+                    boolean shouldRequestThreeDSecureVerification = configuration.isThreeDSecureEnabled() && hasAmount;
                     callback.onResult(shouldRequestThreeDSecureVerification);
                 }
             });

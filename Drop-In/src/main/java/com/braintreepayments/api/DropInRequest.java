@@ -12,9 +12,7 @@ import com.braintreepayments.cardform.view.CardForm;
  */
 public class DropInRequest implements Parcelable {
 
-    private boolean requestThreeDSecureVerification;
     private ThreeDSecureRequest threeDSecureRequest;
-
     private GooglePayRequest googlePayRequest;
     private PayPalRequest payPalRequest;
     private VenmoRequest venmoRequest;
@@ -98,20 +96,6 @@ public class DropInRequest implements Parcelable {
      */
     public void setCardDisabled(boolean disableCard) {
         cardDisabled = disableCard;
-    }
-
-    /**
-     * This method is optional.
-     *
-     * If 3D Secure has been enabled in the control panel and an amount is specified in
-     * a {@link ThreeDSecureRequest} that is provided, Drop-In will request a 3D Secure verification
-     * for any new cards added by the user.
-     *
-     * @param requestThreeDSecure {@code true} to request a 3D Secure verification as part of Drop-In,
-     * {@code false} to not request a 3D Secure verification. Defaults to {@code false}.
-     */
-    public void setRequestThreeDSecureVerification(boolean requestThreeDSecure) {
-        requestThreeDSecureVerification = requestThreeDSecure;
     }
 
     /**
@@ -241,13 +225,6 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
-     * @return If a 3D Secure verification should be requested as part of Drop-in
-     */
-    public boolean getRequestThreeDSecureVerification() {
-        return requestThreeDSecureVerification;
-    }
-
-    /**
      * @return The {@link ThreeDSecureRequest} for the transaction.
      */
     @Nullable
@@ -309,7 +286,6 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(payPalDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(venmoDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(cardDisabled ? (byte) 1 : (byte) 0);
-        dest.writeByte(requestThreeDSecureVerification ? (byte) 1 : (byte) 0);
         dest.writeParcelable(threeDSecureRequest, 0);
         dest.writeByte(maskCardNumber ? (byte) 1 : (byte) 0);
         dest.writeByte(maskSecurityCode ? (byte) 1 : (byte) 0);
@@ -327,7 +303,6 @@ public class DropInRequest implements Parcelable {
         payPalDisabled = in.readByte() != 0;
         venmoDisabled = in.readByte() != 0;
         cardDisabled = in.readByte() != 0;
-        requestThreeDSecureVerification = in.readByte() != 0;
         threeDSecureRequest = in.readParcelable(ThreeDSecureRequest.class.getClassLoader());
         maskCardNumber = in.readByte() != 0;
         maskSecurityCode = in.readByte() != 0;
