@@ -57,6 +57,11 @@ public class DropInClientUnitTest {
     }
 
     @Test
+    public void constructor_generatesSessionId() {
+
+    }
+
+    @Test
     public void getConfiguration_forwardsInvocationToBraintreeClient() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
         DropInClientParams params = new DropInClientParams()
