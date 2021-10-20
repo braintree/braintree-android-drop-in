@@ -2,6 +2,7 @@ package com.braintreepayments.api;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
@@ -384,8 +385,10 @@ public class DropInClient {
     }
 
     public void launchDropInForResult(FragmentActivity activity, int requestCode) {
+        Bundle dropInRequestBundle = new Bundle();
+        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
         Intent intent = new Intent(activity, DropInActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST, dropInRequest)
+                .putExtra(EXTRA_CHECKOUT_REQUEST, dropInRequestBundle)
                 .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
                 .putExtra(EXTRA_AUTHORIZATION, braintreeClient.getAuthorization().toString());
         activity.startActivityForResult(intent, requestCode);

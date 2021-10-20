@@ -1,5 +1,7 @@
 package com.braintreepayments.api;
 
+import static com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -90,8 +92,7 @@ public class DropInActivity extends AppCompatActivity {
         }
 
         alertPresenter = new AlertPresenter();
-        dropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
-        clientTokenPresent = dropInClient.getAuthorization() instanceof ClientToken;
+        dropInRequest = getIntent().getParcelableExtra(EXTRA_CHECKOUT_REQUEST);
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
