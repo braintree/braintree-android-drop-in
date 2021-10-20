@@ -4,6 +4,7 @@
 * Bump braintree_android module dependency versions to `4.7.0`
 * Venmo
   * Add `VenmoRequest` setter to `DropInRequest`
+  * Don't show Venmo payment method option when Venmo not installed on device
 * CardForm
   * Focus Cardholder Name field when adding card details if field not disabled (fixes #180)
 * Breaking Changes
