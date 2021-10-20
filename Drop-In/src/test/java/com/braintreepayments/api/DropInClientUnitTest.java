@@ -688,9 +688,14 @@ public class DropInClientUnitTest {
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
                 .isReadyToPaySuccess(true)
                 .build();
+        VenmoClient venmoClient = new MockVenmoClientBuilder()
+                .isVenmoAppInstalled(true)
+                .build();
+
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(new DropInRequest())
                 .googlePayClient(googlePayClient)
+                .venmoClient(venmoClient)
                 .braintreeClient(braintreeClient);
 
         DropInClient sut = new DropInClient(params);
@@ -871,9 +876,45 @@ public class DropInClientUnitTest {
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
                 .isReadyToPaySuccess(false)
                 .build();
+        VenmoClient venmoClient = new MockVenmoClientBuilder()
+                .isVenmoAppInstalled(true)
+                .build();
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
                 .googlePayClient(googlePayClient)
+                .venmoClient(venmoClient)
+                .braintreeClient(braintreeClient);
+
+        DropInClient sut = new DropInClient(params);
+        GetSupportedPaymentMethodsCallback callback = mock(GetSupportedPaymentMethodsCallback.class);
+        sut.getSupportedPaymentMethods(activity, callback);
+
+        verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
+
+        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        assertEquals(0, paymentMethodTypes.size());
+    }
+
+    @Test
+    public void getSupportedPaymentMethods_whenVenmoNotInstalled_doesNotReturnVenmo() {
+        Configuration configuration = mockConfiguration(false, true, false, false, false);
+        DropInRequest dropInRequest = new DropInRequest();
+
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .configuration(configuration)
+                .build();
+
+        GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
+                .isReadyToPaySuccess(false)
+                .build();
+        VenmoClient venmoClient = new MockVenmoClientBuilder()
+                .isVenmoAppInstalled(false)
+                .build();
+        DropInClientParams params = new DropInClientParams()
+                .dropInRequest(dropInRequest)
+                .googlePayClient(googlePayClient)
+                .venmoClient(venmoClient)
                 .braintreeClient(braintreeClient);
 
         DropInClient sut = new DropInClient(params);
