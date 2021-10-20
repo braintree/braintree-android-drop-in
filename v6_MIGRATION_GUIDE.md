@@ -79,7 +79,6 @@ Java:
     dropInRequest.setVenmoRequest(venmoRequest);
     dropInRequest.setVenmoDisabled(true);
     dropInRequest.setCardDisabled(true);
-    dropInRequest.setRequestThreeDSecureVerification(true);
     dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
     dropInRequest.setMaskCardNumber(true);
     dropInRequest.setMaskSecurityCode(true);
@@ -100,7 +99,6 @@ Kotlin:
     dropInRequest.venmoRequest = venmoRequest
     dropInRequest.isVenmoDisabled = true
     dropInRequest.isCardDisabled = true
-    dropInRequest.requestThreeDSecureVerification = true
     dropInRequest.threeDSecureRequest = threeDSecureRequest
     dropInRequest.maskCardNumber = true
     dropInRequest.maskSecurityCode = true
@@ -125,9 +123,11 @@ The full list of changed parameters is below:
 1. `vaultManager` -> `vaultManagerEnabled`
 1. `vaultCard` -> `vaultCardDefaultValue`
 1. `vaultVenmo` -> removed 
+1. `requestThreeDSecureVerification` -> removed
 
 The `collectDeviceData` field has been removed from `DropInRequest` in favor of always returning device data.
 The `vaultVenmo` field has been removed from `DropInRequest` in favor of setting `shouldVault` on a `VenmoRequest` that is set on the `DropInRequest`
+The `requestThreeDSecureVerification` field has been removed from `DropInRequest` in favor of requesting 3DS if a `ThreeDSecureRequest` with an `amount` is set on `DropInRequest` and the merchant is configured for 3DS.
 
 ## DropInClient
 
