@@ -190,7 +190,7 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
         val shadowActivity = shadowOf(activity)
 
-        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, mock(Intent::class.java))
+        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, RESULT_OK, mock(Intent::class.java))
         activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN)
 
         assertEquals(RESULT_OK, shadowActivity.resultCode)
@@ -207,7 +207,7 @@ class DropInActivityTest {
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
 
-        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, mock(Intent::class.java))
+        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, RESULT_OK, mock(Intent::class.java))
         assertFalse(activity.isFinishing)
         assertEquals(error, activity.dropInViewModel.userCanceledError.value)
     }
@@ -222,7 +222,7 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
         val shadowActivity = shadowOf(activity)
 
-        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, 1, mock(Intent::class.java))
+        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, RESULT_OK, mock(Intent::class.java))
 
         verify(dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error")
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
