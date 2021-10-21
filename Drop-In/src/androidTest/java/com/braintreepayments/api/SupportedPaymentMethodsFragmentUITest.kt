@@ -23,7 +23,7 @@ class SupportedPaymentMethodsFragmentUITest {
             DropInPaymentMethodType.PAYPAL,
             DropInPaymentMethodType.PAY_WITH_VENMO,
             DropInPaymentMethodType.UNKNOWN,
-            DropInPaymentMethodType.GOOGLE_PAYMENT
+            DropInPaymentMethodType.GOOGLE_PAY
     )
 
     private val vaultedPaymentMethods = listOf(CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)))

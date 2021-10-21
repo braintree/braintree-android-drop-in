@@ -175,7 +175,7 @@ public class MainActivity extends BaseActivity {
     protected void onAuthorizationFetched() {
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setRequestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this));
-        dropInRequest.setGooglePayRequest(getGooglePaymentRequest());
+        dropInRequest.setGooglePayRequest(getGooglePayRequest());
         dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
         dropInRequest.setMaskCardNumber(true);
         dropInRequest.setMaskSecurityCode(true);
@@ -240,12 +240,12 @@ public class MainActivity extends BaseActivity {
 
             details = "Username: " + venmoAccountNonce.getUsername();
         } else if (nonce instanceof GooglePayCardNonce) {
-            GooglePayCardNonce googlePaymentCardNonce = (GooglePayCardNonce) nonce;
+            GooglePayCardNonce googlePayCardNonce = (GooglePayCardNonce) nonce;
 
-            details = "Underlying Card Last Two: " + googlePaymentCardNonce.getLastTwo() + "\n";
-            details += "Email: " + googlePaymentCardNonce.getEmail() + "\n";
-            details += "Billing address: " + formatAddress(googlePaymentCardNonce.getBillingAddress()) + "\n";
-            details += "Shipping address: " + formatAddress(googlePaymentCardNonce.getShippingAddress());
+            details = "Underlying Card Last Two: " + googlePayCardNonce.getLastTwo() + "\n";
+            details += "Email: " + googlePayCardNonce.getEmail() + "\n";
+            details += "Billing address: " + formatAddress(googlePayCardNonce.getBillingAddress()) + "\n";
+            details += "Shipping address: " + formatAddress(googlePayCardNonce.getShippingAddress());
         }
 
         nonceDetails.setText(details);
@@ -272,7 +272,7 @@ public class MainActivity extends BaseActivity {
                 " " + address.getPostalCode() + " " + address.getCountryCodeAlpha2();
     }
 
-    private GooglePayRequest getGooglePaymentRequest() {
+    private GooglePayRequest getGooglePayRequest() {
         GooglePayRequest googlePayRequest = new GooglePayRequest();
         googlePayRequest.setTransactionInfo(TransactionInfo.newBuilder()
                 .setTotalPrice("1.00")

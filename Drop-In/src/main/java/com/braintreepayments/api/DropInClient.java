@@ -360,7 +360,7 @@ public class DropInClient {
 
         if (showGooglePay) {
             if (!dropInRequest.isGooglePayDisabled()) {
-                availablePaymentMethods.add(DropInPaymentMethodType.GOOGLE_PAYMENT);
+                availablePaymentMethods.add(DropInPaymentMethodType.GOOGLE_PAY);
             }
         }
         return availablePaymentMethods;
@@ -413,7 +413,7 @@ public class DropInClient {
         final DropInPaymentMethodType lastUsedPaymentMethodType = DropInPaymentMethodType.forType(BraintreeSharedPreferences.getSharedPreferences(activity)
                 .getString(LAST_USED_PAYMENT_METHOD_TYPE, null));
 
-        if (lastUsedPaymentMethodType == DropInPaymentMethodType.GOOGLE_PAYMENT) {
+        if (lastUsedPaymentMethodType == DropInPaymentMethodType.GOOGLE_PAY) {
             googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
                 @Override
                 public void onResult(boolean isReadyToPay, Exception error) {
