@@ -21,9 +21,6 @@ import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
 
 import android.os.Bundle
 
-
-
-
 @RunWith(RobolectricTestRunner::class)
 class DropInActivityTest {
 
