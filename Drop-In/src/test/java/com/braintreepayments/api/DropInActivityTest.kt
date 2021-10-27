@@ -298,7 +298,6 @@ class DropInActivityTest {
 
         val dropInRequest = DropInRequest()
         dropInRequest.threeDSecureRequest = threeDSecureRequest
-        dropInRequest.requestThreeDSecureVerification = true
 
         setupDropInActivity(dropInClient, dropInRequest)
         val shadowActivity = shadowOf(activity)
