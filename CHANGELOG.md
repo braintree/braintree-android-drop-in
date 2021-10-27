@@ -6,6 +6,9 @@
   * Add `VenmoRequest` setter to `DropInRequest`
 * CardForm
   * Focus Cardholder Name field when adding card details if field not disabled (fixes #180)
+* DropInRequest
+  * Set explicit class loader for `DropInRequest` (fixes #191)
+  * Wrap `DropInRequest` in Parcelable bundle (fixes #228)
 * Breaking Changes
   * Visibility
     * Make `BottomSheetState` package-private
