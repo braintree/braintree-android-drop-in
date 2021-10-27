@@ -59,7 +59,6 @@ public class DropInClient {
     }
 
     DropInClient(Context context, String authorization, String sessionId, DropInRequest dropInRequest) {
-        // TODO: instantiate a BraintreeClient with the input sessionId
         this(createDefaultParams(context, authorization, dropInRequest, sessionId));
     }
 
