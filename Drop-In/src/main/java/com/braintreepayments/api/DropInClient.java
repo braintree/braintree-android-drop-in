@@ -26,7 +26,8 @@ public class DropInClient {
     static final String LAST_USED_PAYMENT_METHOD_TYPE =
             "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
 
-    private final BraintreeClient braintreeClient;
+    @VisibleForTesting
+    final BraintreeClient braintreeClient;
     private final PaymentMethodClient paymentMethodClient;
     private final GooglePayClient googlePayClient;
     private final PayPalClient payPalClient;
@@ -38,8 +39,8 @@ public class DropInClient {
     private final ThreeDSecureClient threeDSecureClient;
     private final DataCollector dataCollector;
 
-    private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest) {
-        BraintreeClient braintreeClient = new BraintreeClient(context, authorization);
+    private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest, String sessionId) {
+        BraintreeClient braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
         return new DropInClientParams()
                 .dropInRequest(dropInRequest)
                 .braintreeClient(braintreeClient)
@@ -59,7 +60,7 @@ public class DropInClient {
 
     DropInClient(Context context, String authorization, String sessionId, DropInRequest dropInRequest) {
         // TODO: instantiate a BraintreeClient with the input sessionId
-        this(createDefaultParams(context, authorization, dropInRequest));
+        this(createDefaultParams(context, authorization, dropInRequest, sessionId));
     }
 
     @VisibleForTesting

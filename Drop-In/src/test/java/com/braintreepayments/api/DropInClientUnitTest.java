@@ -1,6 +1,7 @@
 package com.braintreepayments.api;
 
 import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -18,6 +19,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.test.core.app.ApplicationProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +56,18 @@ public class DropInClientUnitTest {
         ActivityController<FragmentActivity> activityController =
                 Robolectric.buildActivity(FragmentActivity.class);
         activity = activityController.get();
+    }
+
+    @Test
+    public void constructor_setsIntegrationTypeDropIn() {
+        DropInClient sut = new DropInClient(ApplicationProvider.getApplicationContext(), Fixtures.TOKENIZATION_KEY, new DropInRequest());
+        assertEquals(IntegrationType.DROP_IN, sut.braintreeClient.getIntegrationType());
+    }
+
+    @Test
+    public void constructor_setsBraintreeClientWithSessionId() {
+        DropInClient sut = new DropInClient(ApplicationProvider.getApplicationContext(), Fixtures.TOKENIZATION_KEY, new DropInRequest());
+        assertNotNull(sut.braintreeClient.getSessionId());
     }
 
     @Test
