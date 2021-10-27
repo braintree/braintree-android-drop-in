@@ -2,7 +2,7 @@
     <color name="bt_white_pressed">#F2F2F2</color>
     <color name="bt_base_background">#FAFAFA</color>
     <color name="bt_base_background_translucent">#AAFAFAFA</color>
-    <color name="bt_blue_pressed">#008BC7</color>
+    <color name="bt_blue_pressed">#0076A8</color>
     <color name="bt_very_light_gray">#E2E2E3</color>
     <color name="bt_button_disabled_color">#99999A</color>
     <color name="bt_paypal_monogram_button_background">#009CDE</color>
@@ -13,7 +13,8 @@
     <color name="bt_color_highlight">#9F9EA1</color>
     <color name="bt_color_primary_dark">#363439</color>
     <color name="bt_text_blue">#199DDC</color>
-    <color name="bt_error_red">#DD5555</color>
+    <color name="bt_error_red">#D73333</color>
+    <color name="bt_blue_contrast">#007DB3</color>
 
     <!-- HACK: make card form dark icons show up, but allow for full transparency of drop in activity window background -->
     <color name="bt_window_background">#00FFFFFF</color>
