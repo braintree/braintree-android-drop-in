@@ -90,6 +90,7 @@ public class DropInActivity extends AppCompatActivity {
         }
 
         alertPresenter = new AlertPresenter();
+        clientTokenPresent = dropInClient.getAuthorization() instanceof ClientToken;
         dropInRequest = getDropInRequest(getIntent());
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
