@@ -594,7 +594,7 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.GOOGLE_PAYMENT)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.GOOGLE_PAY)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         verify(dropInClient).requestGooglePayPayment(same(activity), any(GooglePayRequestPaymentCallback::class.java))
@@ -611,7 +611,7 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.GOOGLE_PAYMENT)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.GOOGLE_PAY)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
