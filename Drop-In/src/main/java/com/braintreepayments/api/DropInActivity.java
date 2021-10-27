@@ -56,7 +56,7 @@ public class DropInActivity extends AppCompatActivity {
             dropInViewModel.setDropInState(DropInState.WILL_FINISH);
         }
 
-        getDropInClient().deliverBrowserSwitchResult(this, new DropInResultCallback() {
+        dropInClient.deliverBrowserSwitchResult(this, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
                 onDropInResult(dropInResult, error);
@@ -75,7 +75,15 @@ public class DropInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
 
-        if (getDropInClient().getAuthorization() instanceof InvalidAuthorization) {
+        if (dropInClient == null) {
+            Intent intent = getIntent();
+            String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
+            String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
+            DropInRequest dropInRequest = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+            dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
+        }
+
+        if (dropInClient.getAuthorization() instanceof InvalidAuthorization) {
             finishDropInWithError(
                     new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
             return;
@@ -83,11 +91,12 @@ public class DropInActivity extends AppCompatActivity {
 
         alertPresenter = new AlertPresenter();
         dropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+        clientTokenPresent = dropInClient.getAuthorization() instanceof ClientToken;
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
 
-        getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
+        dropInClient.getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
             public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
                 if (paymentMethods != null) {
@@ -139,23 +148,6 @@ public class DropInActivity extends AppCompatActivity {
         finish();
     }
 
-    @VisibleForTesting
-    DropInClient getDropInClient() {
-        // lazily instantiate dropInClient for testing purposes
-        if (dropInClient != null) {
-            return dropInClient;
-        }
-        Intent intent = getIntent();
-        String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
-        String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
-        DropInRequest dropInRequest = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
-        dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
-
-        clientTokenPresent = dropInClient.getAuthorization() instanceof ClientToken;
-        return dropInClient;
-    }
-
-    @VisibleForTesting
     void onDropInEvent(DropInEvent event) {
         switch (event.getType()) {
             case ADD_CARD_SUBMIT:
@@ -185,14 +177,13 @@ public class DropInActivity extends AppCompatActivity {
         }
     }
 
-    @VisibleForTesting
-    void onSupportedPaymentMethodSelected(DropInEvent event) {
+    private void onSupportedPaymentMethodSelected(DropInEvent event) {
         DropInPaymentMethodType paymentMethodType =
                 event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD);
         startPaymentFlow(paymentMethodType);
     }
 
-    void startPaymentFlow(DropInPaymentMethodType paymentMethodType) {
+    private void startPaymentFlow(DropInPaymentMethodType paymentMethodType) {
         switch (paymentMethodType) {
             case GOOGLE_PAYMENT:
                 startGooglePayFlow();
@@ -238,7 +229,7 @@ public class DropInActivity extends AppCompatActivity {
         // proactively remove from view model
         dropInViewModel.removeVaultedPaymentMethodNonce(paymentMethodNonceToDelete);
 
-        getDropInClient().deletePaymentMethod(DropInActivity.this, paymentMethodNonceToDelete, new DeletePaymentMethodNonceCallback() {
+        dropInClient.deletePaymentMethod(DropInActivity.this, paymentMethodNonceToDelete, new DeletePaymentMethodNonceCallback() {
             @Override
             public void onResult(@Nullable PaymentMethodNonce deletedNonce, @Nullable Exception error) {
                 if (deletedNonce != null) {
@@ -266,13 +257,13 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void sendAnalyticsEvent(String eventName) {
-        getDropInClient().sendAnalyticsEvent(eventName);
+        dropInClient.sendAnalyticsEvent(eventName);
     }
 
-    void refreshVaultedPaymentMethods() {
+    private void refreshVaultedPaymentMethods() {
         // TODO: consider caching nonces or use a ViewModel for handling nonces
         // TODO: show loading indicator while fetching vaulted payment methods
-        getDropInClient().getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
+        dropInClient.getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
             @Override
             public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
                 if (paymentMethodNonceList != null) {
@@ -285,7 +276,7 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void onDidShowBottomSheet() {
-        getDropInClient().getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
+        dropInClient.getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
             @Override
             public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
                 if (paymentMethods != null) {
@@ -306,8 +297,7 @@ public class DropInActivity extends AppCompatActivity {
         finishDropInWithPendingResult(true);
     }
 
-    @VisibleForTesting
-    void finishDropInWithPendingResult(boolean cancelPendingActivityAnimation) {
+    private void finishDropInWithPendingResult(boolean cancelPendingActivityAnimation) {
         if (pendingDropInResult != null) {
             sendAnalyticsEvent("sdk.exit.success");
             DropInResult.setLastUsedPaymentMethodType(
@@ -329,9 +319,9 @@ public class DropInActivity extends AppCompatActivity {
         }
     }
 
-    void updateVaultedPaymentMethodNonces(boolean refetch) {
+    private void updateVaultedPaymentMethodNonces(boolean refetch) {
         if (clientTokenPresent) {
-            getDropInClient().getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
+            dropInClient.getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
                 @Override
                 public void onResult(@Nullable List<PaymentMethodNonce> vaultedPaymentMethods, @Nullable Exception error) {
                     if (vaultedPaymentMethods != null) {
@@ -375,13 +365,13 @@ public class DropInActivity extends AppCompatActivity {
 
     private void showCardDetailsFragment(final String cardNumber) {
         if (shouldAddFragment(CARD_DETAILS_TAG)) {
-            getDropInClient().getConfiguration(new ConfigurationCallback() {
+            dropInClient.getConfiguration(new ConfigurationCallback() {
                 @Override
                 public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
                     if (configuration != null) {
-                        // TODO: implement getDropInClient().hasAuthType(AuthType.TOKENIZATION_KEY)
+                        // TODO: implement dropInClient.hasAuthType(AuthType.TOKENIZATION_KEY)
                         boolean hasTokenizationKeyAuth =
-                                Authorization.isTokenizationKey(getDropInClient().getAuthorization().toString());
+                                Authorization.isTokenizationKey(dropInClient.getAuthorization().toString());
 
                         CardDetailsFragment cardDetailsFragment = CardDetailsFragment.from(
                                 dropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
@@ -392,6 +382,7 @@ public class DropInActivity extends AppCompatActivity {
         }
     }
 
+    @VisibleForTesting
     void onError(final Exception error) {
         if (error instanceof ErrorWithResponse) {
             ErrorWithResponse errorResponse = (ErrorWithResponse) error;
@@ -424,7 +415,7 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void startPayPalFlow() {
-        getDropInClient().tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {
+        dropInClient.tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {
             @Override
             public void onResult(@Nullable Exception error) {
                 if (error != null) {
@@ -435,7 +426,7 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void startGooglePayFlow() {
-        getDropInClient().requestGooglePayPayment(this, new GooglePayRequestPaymentCallback() {
+        dropInClient.requestGooglePayPayment(this, new GooglePayRequestPaymentCallback() {
             @Override
             public void onResult(Exception error) {
                 if (error != null) {
@@ -446,7 +437,7 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void startVenmoFlow() {
-        getDropInClient().tokenizeVenmoAccount(this, new VenmoTokenizeAccountCallback() {
+        dropInClient.tokenizeVenmoAccount(this, new VenmoTokenizeAccountCallback() {
             @Override
             public void onResult(@Nullable Exception error) {
                 if (error != null) {
@@ -461,7 +452,7 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void prefetchSupportedCardTypes() {
-        getDropInClient().getSupportedCardTypes(new GetSupportedCardTypesCallback() {
+        dropInClient.getSupportedCardTypes(new GetSupportedCardTypesCallback() {
             @Override
             public void onResult(List<String> supportedCardTypes, Exception error) {
                 if (error != null) {
@@ -483,7 +474,7 @@ public class DropInActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        getDropInClient().handleActivityResult(this, requestCode, resultCode, data, new DropInResultCallback() {
+        dropInClient.handleActivityResult(this, requestCode, resultCode, data, new DropInResultCallback() {
             @Override
             public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
                 onDropInResult(dropInResult, error);
@@ -501,8 +492,7 @@ public class DropInActivity extends AppCompatActivity {
         }
     }
 
-    @VisibleForTesting
-    void onVaultedPaymentMethodSelected(DropInEvent event) {
+    private void onVaultedPaymentMethodSelected(DropInEvent event) {
         final PaymentMethodNonce paymentMethodNonce =
                 event.getPaymentMethodNonce(DropInEventProperty.VAULTED_PAYMENT_METHOD);
 
@@ -511,12 +501,12 @@ public class DropInActivity extends AppCompatActivity {
         }
 
         dropInViewModel.setDropInState(DropInState.WILL_FINISH);
-        getDropInClient().shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
+        dropInClient.shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
                 if (shouldRequestThreeDSecureVerification) {
 
-                    getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new DropInResultCallback() {
+                    dropInClient.performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new DropInResultCallback() {
                         @Override
                         public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
                             if (dropInResult != null) {
@@ -530,7 +520,7 @@ public class DropInActivity extends AppCompatActivity {
                 } else {
                     final DropInResult dropInResult = new DropInResult();
                     dropInResult.paymentMethodNonce(paymentMethodNonce);
-                    getDropInClient().collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
+                    dropInClient.collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
                         @Override
                         public void onResult(@Nullable String deviceData, @Nullable Exception error) {
                             if (deviceData != null) {
@@ -547,12 +537,11 @@ public class DropInActivity extends AppCompatActivity {
         });
     }
 
-    @VisibleForTesting
-    void onCardDetailsSubmit(DropInEvent event) {
+    private void onCardDetailsSubmit(DropInEvent event) {
         Card card = event.getCard(DropInEventProperty.CARD);
         dropInViewModel.setDropInState(DropInState.WILL_FINISH);
 
-        getDropInClient().tokenizeCard(card, new CardTokenizeCallback() {
+        dropInClient.tokenizeCard(card, new CardTokenizeCallback() {
             @Override
             public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
                 if (error != null) {
@@ -568,25 +557,22 @@ public class DropInActivity extends AppCompatActivity {
         });
     }
 
-    void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
-        getDropInClient().shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
+    private void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
+        dropInClient.shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
             @Override
             public void onResult(boolean shouldRequestThreeDSecureVerification) {
                 if (shouldRequestThreeDSecureVerification) {
-                    getDropInClient().performThreeDSecureVerification(DropInActivity.this, paymentMethod, new DropInResultCallback() {
+                    dropInClient.performThreeDSecureVerification(DropInActivity.this, paymentMethod, new DropInResultCallback() {
                         @Override
                         public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
                             if (error != null) {
                                 onError(error);
                                 return;
                             }
-                            sendAnalyticsEvent("sdk.exit.success");
                             animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
                         }
                     });
                 } else {
-                    sendAnalyticsEvent("sdk.exit.success");
-
                     DropInResult dropInResult = new DropInResult();
                     dropInResult.paymentMethodNonce(paymentMethod);
                     animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
@@ -597,7 +583,7 @@ public class DropInActivity extends AppCompatActivity {
 
     private boolean willDeliverSuccessfulBrowserSwitchResult() {
         BrowserSwitchResult browserSwitchResult =
-                getDropInClient().getBrowserSwitchResult(this);
+                dropInClient.getBrowserSwitchResult(this);
         if (browserSwitchResult != null) {
             return (browserSwitchResult.getStatus() == BrowserSwitchStatus.SUCCESS);
         }

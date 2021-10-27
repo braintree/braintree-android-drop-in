@@ -12,8 +12,7 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import com.braintreepayments.api.CardNumber.VISA
 import com.braintreepayments.api.dropin.R
 import com.braintreepayments.cardform.view.CardForm
-import com.braintreepayments.cardform.view.CardForm.FIELD_OPTIONAL
-import com.braintreepayments.cardform.view.CardForm.FIELD_REQUIRED
+import com.braintreepayments.cardform.view.CardForm.*
 import junit.framework.TestCase.*
 import org.hamcrest.Matchers.not
 import org.junit.Before
