@@ -185,7 +185,7 @@ public class DropInActivity extends AppCompatActivity {
 
     private void startPaymentFlow(DropInPaymentMethodType paymentMethodType) {
         switch (paymentMethodType) {
-            case GOOGLE_PAYMENT:
+            case GOOGLE_PAY:
                 startGooglePayFlow();
                 break;
             case PAYPAL:

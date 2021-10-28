@@ -134,7 +134,7 @@ public class DropInClientUnitTest {
 
         List<DropInPaymentMethodType> paymentMethods = paymentMethodTypesCaptor.getValue();
         assertEquals(1, paymentMethods.size());
-        assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, paymentMethods.get(0));
+        assertEquals(DropInPaymentMethodType.GOOGLE_PAY, paymentMethods.get(0));
     }
 
     @Test
@@ -489,7 +489,7 @@ public class DropInClientUnitTest {
         BraintreeSharedPreferences.getSharedPreferences(activity)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
+                        DropInPaymentMethodType.GOOGLE_PAY.getCanonicalName())
                 .commit();
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
@@ -514,7 +514,7 @@ public class DropInClientUnitTest {
         verify(callback).onResult(captor.capture(), (Exception) isNull());
 
         DropInResult result = captor.getValue();
-        assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, result.getPaymentMethodType());
+        assertEquals(DropInPaymentMethodType.GOOGLE_PAY, result.getPaymentMethodType());
         assertNull(result.getPaymentMethodNonce());
     }
 
@@ -524,7 +524,7 @@ public class DropInClientUnitTest {
         BraintreeSharedPreferences.getSharedPreferences(activity)
                 .edit()
                 .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        DropInPaymentMethodType.GOOGLE_PAYMENT.getCanonicalName())
+                        DropInPaymentMethodType.GOOGLE_PAY.getCanonicalName())
                 .commit();
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
@@ -711,7 +711,7 @@ public class DropInClientUnitTest {
         assertEquals(DropInPaymentMethodType.PAYPAL, paymentMethodTypes.get(0));
         assertEquals(DropInPaymentMethodType.PAY_WITH_VENMO, paymentMethodTypes.get(1));
         assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodTypes.get(2));
-        assertEquals(DropInPaymentMethodType.GOOGLE_PAYMENT, paymentMethodTypes.get(3));
+        assertEquals(DropInPaymentMethodType.GOOGLE_PAY, paymentMethodTypes.get(3));
     }
 
     @Test

@@ -19,14 +19,14 @@ public class AvailablePaymentMethodNonceListUnitTest {
     private PaymentMethodNonce payPalAccountNonce;
     private PaymentMethodNonce venmoAccountNonce;
     private PaymentMethodNonce cardNonce;
-    private PaymentMethodNonce googlePaymentCardNonce;
+    private PaymentMethodNonce googlePayCardNonce;
 
     @Before
     public void beforeEach() {
         payPalAccountNonce = mock(PayPalAccountNonce.class);
         venmoAccountNonce = mock(VenmoAccountNonce.class);
         cardNonce = mock(CardNonce.class);
-        googlePaymentCardNonce = mock(GooglePayCardNonce.class);
+        googlePayCardNonce = mock(GooglePayCardNonce.class);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         Configuration configuration = getMockConfiguration(false, false, false, false);
 
         List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(
-                payPalAccountNonce, venmoAccountNonce, cardNonce, googlePaymentCardNonce);
+                payPalAccountNonce, venmoAccountNonce, cardNonce, googlePayCardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
                 configuration, paymentMethodNonces, new DropInRequest(), false);
@@ -47,7 +47,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         Configuration configuration = getMockConfiguration(true, true, true, true);
 
         List<PaymentMethodNonce> paymentMethodNonces = Arrays.asList(
-                payPalAccountNonce, venmoAccountNonce, cardNonce, googlePaymentCardNonce);
+                payPalAccountNonce, venmoAccountNonce, cardNonce, googlePayCardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
                 configuration, paymentMethodNonces, new DropInRequest(), true);
@@ -56,7 +56,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
         assertEquals(payPalAccountNonce, sut.get(0));
         assertEquals(venmoAccountNonce, sut.get(1));
         assertEquals(cardNonce, sut.get(2));
-        assertEquals(googlePaymentCardNonce, sut.get(3));
+        assertEquals(googlePayCardNonce, sut.get(3));
     }
 
     @Test
@@ -115,26 +115,12 @@ public class AvailablePaymentMethodNonceListUnitTest {
     }
 
     @Test
-    public void googlePaymentNotAvailableIfDisabledInDropInRequest() {
-        Configuration configuration = getMockConfiguration(false, false, false, true);
-        DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setGooglePayDisabled(true);
-
-        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
-
-        AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
-                configuration, paymentMethodNonces, dropInRequest, true);
-
-        assertEquals(0, sut.size());
-    }
-
-    @Test
     public void googlePayNotAvailableIfDisabledInDropInRequest() {
         Configuration configuration = getMockConfiguration(false, false, false, true);
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setGooglePayDisabled(true);
 
-        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePaymentCardNonce);
+        List<PaymentMethodNonce> paymentMethodNonces = Collections.singletonList((PaymentMethodNonce) googlePayCardNonce);
 
         AvailablePaymentMethodNonceList sut = new AvailablePaymentMethodNonceList(
                 configuration, paymentMethodNonces, dropInRequest, true);
@@ -142,12 +128,12 @@ public class AvailablePaymentMethodNonceListUnitTest {
         assertEquals(0, sut.size());
     }
 
-    private Configuration getMockConfiguration(boolean paypalEnabled, boolean venmoEnabled, boolean cardEnabled, boolean googlePaymentEnabled) {
+    private Configuration getMockConfiguration(boolean paypalEnabled, boolean venmoEnabled, boolean cardEnabled, boolean googlePayEnabled) {
         Configuration configuration = mock(Configuration.class);
 
         when(configuration.isPayPalEnabled()).thenReturn(paypalEnabled);
         when(configuration.isVenmoEnabled()).thenReturn(venmoEnabled);
-        when(configuration.isGooglePayEnabled()).thenReturn(googlePaymentEnabled);
+        when(configuration.isGooglePayEnabled()).thenReturn(googlePayEnabled);
 
         if (cardEnabled) {
             when(configuration.getSupportedCardTypes()).thenReturn(
