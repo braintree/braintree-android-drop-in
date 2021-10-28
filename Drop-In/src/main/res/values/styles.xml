@@ -90,7 +90,7 @@
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless.Colored</item>
         <item name="colorControlHighlight">@color/bt_color_highlight</item>
         <item name="android:textSize">16sp</item>
-        <item name="colorAccent">@color/bt_text_blue</item>
+        <item name="colorAccent">@color/bt_blue_contrast</item>
         <item name="android:textAllCaps">true</item>
     </style>
 </resources>
