@@ -22,7 +22,8 @@ import java.util.List;
 
 public class SupportedPaymentMethodsFragment extends DropInFragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
 
-    private enum ViewState {
+    @VisibleForTesting
+    enum ViewState {
         LOADING,
         SHOW_PAYMENT_METHODS,
         DROP_IN_FINISHING
@@ -47,7 +48,8 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
-    private ViewState viewState;
+    @VisibleForTesting
+    ViewState viewState;
 
     public SupportedPaymentMethodsFragment() {
     }

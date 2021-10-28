@@ -8,7 +8,7 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.braintreepayments.api.CardNumber.VISA
+import com.braintreepayments.api.CardNumber.*
 import com.braintreepayments.api.dropin.R
 import com.braintreepayments.cardform.utils.CardType
 import junit.framework.TestCase.assertNull
@@ -73,7 +73,7 @@ class AddCardFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_onSubmitButtonClick_showsLoader() {
+    fun whenStateIsRESUMED_onSubmitButtonClick_whenCardFormValid_showsLoader() {
         val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
@@ -85,6 +85,39 @@ class AddCardFragmentUITest {
         onView(withId(R.id.bt_card_form_card_number)).perform(typeText(VISA))
         onView(withId(R.id.bt_button)).perform(click())
         onView(withId(R.id.bt_button)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.bt_animated_button_loading_indicator)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_onSubmitButtonClick_whenCardFormNotValid_showsSubmitButton() {
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
+        }
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_card_form_card_number)).perform(typeText(INVALID_VISA))
+        onView(withId(R.id.bt_button)).perform(click())
+        onView(withId(R.id.bt_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_animated_button_loading_indicator)).check(matches(not(isDisplayed())))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_onSubmitButtonClick_whenCardTypeNotSupported_showsSubmitButton() {
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
+        }
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_card_form_card_number)).perform(typeText(AMEX))
+        onView(withId(R.id.bt_button)).perform(click())
+        onView(withId(R.id.bt_button)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_animated_button_loading_indicator)).check(matches(not(isDisplayed())))
     }
 
     @Test

@@ -240,8 +240,6 @@ public class DropInActivity extends AppCompatActivity {
                     int snackBarTextResId = R.string.bt_vault_manager_delete_failure;
                     alertPresenter.showSnackbarText(
                             fragmentContainerView, snackBarTextResId, Snackbar.LENGTH_LONG);
-                    // TODO: hide loading view switcher
-                    //mLoadingViewSwitcher.setDisplayedChild(0);
                 } else {
                     sendAnalyticsEvent("manager.unknown.failed");
                     // TODO: determine how to handle unexpected error when deleting payment method (previously finished drop in)
