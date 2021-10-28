@@ -323,27 +323,27 @@ public class DropInClient {
                         public void onResult(boolean isReadyToGooglePay, Exception error) {
 
                             List<DropInPaymentMethodType> availablePaymentMethods =
-                                filterSupportedPaymentMethods(configuration, isReadyToGooglePay);
+                                filterSupportedPaymentMethods(activity, configuration, isReadyToGooglePay);
                             callback.onResult(availablePaymentMethods, null);
                         }
                     });
                 } else {
                     List<DropInPaymentMethodType> availablePaymentMethods =
-                            filterSupportedPaymentMethods(configuration, false);
+                            filterSupportedPaymentMethods(activity, configuration, false);
                     callback.onResult(availablePaymentMethods, null);
                 }
             }
         });
     }
 
-    private List<DropInPaymentMethodType> filterSupportedPaymentMethods(Configuration configuration, boolean showGooglePay) {
+    private List<DropInPaymentMethodType> filterSupportedPaymentMethods(Context context, Configuration configuration, boolean showGooglePay) {
         List<DropInPaymentMethodType> availablePaymentMethods = new ArrayList<>();
 
         if (!dropInRequest.isPayPalDisabled() && configuration.isPayPalEnabled()) {
             availablePaymentMethods.add(DropInPaymentMethodType.PAYPAL);
         }
 
-        if (!dropInRequest.isVenmoDisabled() && configuration.isVenmoEnabled()) {
+        if (!dropInRequest.isVenmoDisabled() && configuration.isVenmoEnabled() && venmoClient.isVenmoAppSwitchAvailable(context)) {
             availablePaymentMethods.add(DropInPaymentMethodType.PAY_WITH_VENMO);
         }
 
