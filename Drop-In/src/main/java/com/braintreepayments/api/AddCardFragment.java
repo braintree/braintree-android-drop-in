@@ -80,6 +80,7 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
         });
 
         Toolbar toolbar = view.findViewById(R.id.bt_toolbar);
+        toolbar.setNavigationContentDescription(R.string.bt_back);
         toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         sendAnalyticsEvent("card.selected");

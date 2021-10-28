@@ -74,6 +74,11 @@ class PaymentMethodItemView extends LinearLayout {
 
     public void setOnDeleteIconClick(OnClickListener clickListener) {
         deleteIcon.setOnClickListener(clickListener);
+        String deleteString = getContext().getString(R.string.bt_delete);
+        String paymentType = nonceInspector.getTypeLabel(paymentMethodNonce);
+        String paymentDescription = nonceInspector.getDescription(paymentMethodNonce);
+        String contentDescription = String.format("%s %s %s", deleteString, paymentType, paymentDescription);
+        deleteIcon.setContentDescription(contentDescription);
     }
 
     public PaymentMethodNonce getPaymentMethodNonce() {
