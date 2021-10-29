@@ -1,6 +1,7 @@
 package com.braintreepayments.api;
 
 import static junit.framework.TestCase.assertFalse;
+import static junit.framework.TestCase.assertNotNull;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
@@ -553,6 +554,7 @@ public class DropInClientUnitTest {
 
         DropInResult result = captor.getValue();
         assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
+        assertNotNull(result.getPaymentMethodNonce());
         assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
     }
 
@@ -612,6 +614,7 @@ public class DropInClientUnitTest {
 
         DropInResult result = captor.getValue();
         assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
+        assertNotNull(result.getPaymentMethodNonce());
         assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
     }
 
