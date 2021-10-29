@@ -1,26 +1,17 @@
 package com.braintreepayments.api;
 
-import android.content.pm.ActivityInfo;
-
-import androidx.fragment.app.FragmentActivity;
-
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import org.mockito.stubbing.Answer;
+
 public class MockBraintreeClientBuilder {
 
     private String sendGETSuccess;
     private Exception sendGETError;
-
-    private String sendPOSTSuccess;
-    private Exception sendPOSTError;
 
     private String sendGraphQLPOSTSuccess;
     private Exception sendGraphQLPOSTError;
@@ -28,15 +19,10 @@ public class MockBraintreeClientBuilder {
     private Configuration configuration;
     private Exception configurationError;
 
-    private ActivityInfo activityInfo;
     private Authorization authorization;
 
     private String sessionId;
     private String integration;
-    private String returnUrlScheme;
-
-    private boolean urlSchemeInAndroidManifest = true;
-    private boolean canPerformBrowserSwitch = true;
 
     public MockBraintreeClientBuilder configuration(Configuration configuration) {
         this.configuration = configuration;
@@ -88,16 +74,8 @@ public class MockBraintreeClientBuilder {
         when(braintreeClient.getAuthorization()).thenReturn(authorization);
         when(braintreeClient.getSessionId()).thenReturn(sessionId);
         when(braintreeClient.getIntegrationType()).thenReturn(integration);
-
-        // HACK: some google pay tests fail when getReturnUrlScheme is stubbed but not invoked
-        // TODO: create a wrapper around google wallet api to avoid having to use Powermock and Robolectric at the same time, which seems to be causing this issue
-        if (returnUrlScheme != null) {
-            when(braintreeClient.getReturnUrlScheme()).thenReturn(returnUrlScheme);
-        }
-
-        when(braintreeClient.isUrlSchemeDeclaredInAndroidManifest(anyString(), any(Class.class))).thenReturn(urlSchemeInAndroidManifest);
-        when(braintreeClient.canPerformBrowserSwitch(any(FragmentActivity.class), anyInt())).thenReturn(canPerformBrowserSwitch);
-        when(braintreeClient.getManifestActivityInfo(any(Class.class))).thenReturn(activityInfo);
+//        when(braintreeClient.isUrlSchemeDeclaredInAndroidManifest(anyString(), any(Class.class))).thenReturn(true);
+//        when(braintreeClient.canPerformBrowserSwitch(any(FragmentActivity.class), anyInt())).thenReturn(true);
 
         doAnswer((Answer<Void>) invocation -> {
             ConfigurationCallback callback = (ConfigurationCallback) invocation.getArguments()[0];
@@ -118,16 +96,6 @@ public class MockBraintreeClientBuilder {
             }
             return null;
         }).when(braintreeClient).sendGET(anyString(), any(HttpResponseCallback.class));
-
-        doAnswer((Answer<Void>) invocation -> {
-            HttpResponseCallback callback = (HttpResponseCallback) invocation.getArguments()[2];
-            if (sendPOSTSuccess != null) {
-                callback.onResult(sendPOSTSuccess, null);
-            } else if (sendPOSTError != null) {
-                callback.onResult(null, sendPOSTError);
-            }
-            return null;
-        }).when(braintreeClient).sendPOST(anyString(), anyString(), any(HttpResponseCallback.class));
 
         doAnswer((Answer<Void>) invocation -> {
             HttpResponseCallback callback = (HttpResponseCallback) invocation.getArguments()[1];
