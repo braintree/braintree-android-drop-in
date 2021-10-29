@@ -1,13 +1,12 @@
 package com.braintreepayments.api;
 
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
-import java.util.List;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+
+import org.mockito.stubbing.Answer;
+
+import java.util.List;
 
 public class MockPaymentMethodClientBuilder {
 
@@ -27,17 +26,14 @@ public class MockPaymentMethodClientBuilder {
     public PaymentMethodClient build() {
         PaymentMethodClient paymentMethodClient = mock(PaymentMethodClient.class);
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                GetPaymentMethodNoncesCallback callback = (GetPaymentMethodNoncesCallback) invocation.getArguments()[0];
-                if (paymentMethodNonceList != null) {
-                    callback.onResult(paymentMethodNonceList, null);
-                } else if (getPaymentMethodNoncesError != null) {
-                    callback.onResult(null, getPaymentMethodNoncesError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            GetPaymentMethodNoncesCallback callback = (GetPaymentMethodNoncesCallback) invocation.getArguments()[0];
+            if (paymentMethodNonceList != null) {
+                callback.onResult(paymentMethodNonceList, null);
+            } else if (getPaymentMethodNoncesError != null) {
+                callback.onResult(null, getPaymentMethodNoncesError);
             }
+            return null;
         }).when(paymentMethodClient).getPaymentMethodNonces(any(GetPaymentMethodNoncesCallback.class));
 
         return paymentMethodClient;

@@ -1,13 +1,12 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
-
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+
+import android.content.Context;
+
+import org.mockito.stubbing.Answer;
 
 public class MockDataCollectorBuilder {
 
@@ -27,17 +26,14 @@ public class MockDataCollectorBuilder {
     public DataCollector build() {
         DataCollector dataCollector = mock(DataCollector.class);
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                DataCollectorCallback callback = (DataCollectorCallback) invocation.getArguments()[1];
-                if (collectDeviceDataSuccess != null) {
-                    callback.onResult(collectDeviceDataSuccess, null);
-                } else if (collectDeviceDataError != null) {
-                    callback.onResult(null, collectDeviceDataError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            DataCollectorCallback callback = (DataCollectorCallback) invocation.getArguments()[1];
+            if (collectDeviceDataSuccess != null) {
+                callback.onResult(collectDeviceDataSuccess, null);
+            } else if (collectDeviceDataError != null) {
+                callback.onResult(null, collectDeviceDataError);
             }
+            return null;
         }).when(dataCollector).collectDeviceData(any(Context.class), any(DataCollectorCallback.class));
 
         return dataCollector;

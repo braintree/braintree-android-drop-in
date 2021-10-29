@@ -1,16 +1,15 @@
 package com.braintreepayments.api;
 
-import android.content.Intent;
-
-import androidx.fragment.app.FragmentActivity;
-
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+
+import android.content.Intent;
+
+import androidx.fragment.app.FragmentActivity;
+
+import org.mockito.stubbing.Answer;
 
 public class MockThreeDSecureClientBuilder {
 
@@ -63,54 +62,42 @@ public class MockThreeDSecureClientBuilder {
     public ThreeDSecureClient build() {
         ThreeDSecureClient threeDSecureClient = mock(ThreeDSecureClient.class);
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                ThreeDSecureResultCallback callback = (ThreeDSecureResultCallback) invocation.getArguments()[2];
-                if (performVerificationSuccess != null) {
-                    callback.onResult(performVerificationSuccess, null);
-                } else if (performVerificationError != null) {
-                    callback.onResult(null, performVerificationError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            ThreeDSecureResultCallback callback = (ThreeDSecureResultCallback) invocation.getArguments()[2];
+            if (performVerificationSuccess != null) {
+                callback.onResult(performVerificationSuccess, null);
+            } else if (performVerificationError != null) {
+                callback.onResult(null, performVerificationError);
             }
+            return null;
         }).when(threeDSecureClient).performVerification(any(FragmentActivity.class), any(ThreeDSecureRequest.class), any(ThreeDSecureResultCallback.class));
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                ThreeDSecureResultCallback callback = (ThreeDSecureResultCallback) invocation.getArguments()[3];
-                if (continueVerificationSuccess != null) {
-                    callback.onResult(continueVerificationSuccess, null);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            ThreeDSecureResultCallback callback = (ThreeDSecureResultCallback) invocation.getArguments()[3];
+            if (continueVerificationSuccess != null) {
+                callback.onResult(continueVerificationSuccess, null);
             }
+            return null;
         }).when(threeDSecureClient).continuePerformVerification(any(FragmentActivity.class), any(ThreeDSecureRequest.class), any(ThreeDSecureResult.class), any(ThreeDSecureResultCallback.class));
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                ThreeDSecureResultCallback callback = (ThreeDSecureResultCallback) invocation.getArguments()[1];
-                if (browserSwitchResult != null) {
-                    callback.onResult(browserSwitchResult, null);
-                } else if (browserSwitchError != null) {
-                    callback.onResult(null, browserSwitchError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            ThreeDSecureResultCallback callback = (ThreeDSecureResultCallback) invocation.getArguments()[1];
+            if (browserSwitchResult != null) {
+                callback.onResult(browserSwitchResult, null);
+            } else if (browserSwitchError != null) {
+                callback.onResult(null, browserSwitchError);
             }
+            return null;
         }).when(threeDSecureClient).onBrowserSwitchResult(any(BrowserSwitchResult.class), any(ThreeDSecureResultCallback.class));
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                ThreeDSecureResultCallback callback = (ThreeDSecureResultCallback) invocation.getArguments()[2];
-                if (activityResult != null) {
-                    callback.onResult(activityResult, null);
-                } else if (activityResultError != null) {
-                    callback.onResult(null, activityResultError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            ThreeDSecureResultCallback callback = (ThreeDSecureResultCallback) invocation.getArguments()[2];
+            if (activityResult != null) {
+                callback.onResult(activityResult, null);
+            } else if (activityResultError != null) {
+                callback.onResult(null, activityResultError);
             }
+            return null;
         }).when(threeDSecureClient).onActivityResult(anyInt(), any(Intent.class), any(ThreeDSecureResultCallback.class));
 
         return threeDSecureClient;
