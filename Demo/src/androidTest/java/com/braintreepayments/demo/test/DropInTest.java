@@ -100,7 +100,6 @@ public class DropInTest extends TestHelper {
         onDevice(withText("Added Protection")).waitForExists();
         onDevice().typeText("1234").pressEnter();
 
-        onDevice(withText("RETURN TO APP")).waitForExists(5000);
         if (onDevice(withText("RETURN TO APP")).exists()) {
             clickWebViewText("RETURN TO APP");
         }

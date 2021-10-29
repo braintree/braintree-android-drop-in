@@ -44,7 +44,7 @@ public class OptionalVaultingDropInTest extends TestHelper {
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         onDevice(withText("Credit or Debit Card")).perform(click());
-        onDevice(withText("Card Number")).perform(setText(VISA));
+        onDevice(withText("Card Number")).waitForExists().perform(setText(VISA));
         onDevice(withText("Next")).perform(click());
         performCardDetailsEntry();
         onDevice(withText("Save card")).perform(click());
@@ -64,7 +64,7 @@ public class OptionalVaultingDropInTest extends TestHelper {
 
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
         onDevice(withText("Credit or Debit Card")).perform(click());
-        onDevice(withText("Card Number")).perform(setText(VISA));
+        onDevice(withText("Card Number")).waitForExists().perform(setText(VISA));
         onDevice(withText("Next")).perform(click());
         performCardDetailsEntry();
         onDevice(withText("Save card")).perform(click());
