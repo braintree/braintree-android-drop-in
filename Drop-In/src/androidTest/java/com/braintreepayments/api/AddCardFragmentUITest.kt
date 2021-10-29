@@ -64,7 +64,7 @@ class AddCardFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { requestKey, result ->
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
                 val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.SEND_ANALYTICS, event.type)
                 assertEquals("card.selected", event.getString(DropInEventProperty.ANALYTICS_EVENT_NAME))
@@ -136,7 +136,7 @@ class AddCardFragmentUITest {
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
-            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { requestKey, result ->
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
                 val event = DropInEvent.fromBundle(result)
                 assertEquals(DropInEventType.ADD_CARD_SUBMIT, event.type)
                 assertEquals(VISA, event.getString(DropInEventProperty.CARD_NUMBER))

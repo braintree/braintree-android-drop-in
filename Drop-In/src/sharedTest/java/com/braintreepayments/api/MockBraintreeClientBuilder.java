@@ -53,11 +53,6 @@ public class MockBraintreeClientBuilder {
         return this;
     }
 
-    public MockBraintreeClientBuilder activityInfo(ActivityInfo activityInfo) {
-        this.activityInfo = activityInfo;
-        return this;
-    }
-
     public MockBraintreeClientBuilder sendGETSuccessfulResponse(String response) {
         sendGETSuccess = response;
         return this;
@@ -68,15 +63,6 @@ public class MockBraintreeClientBuilder {
         return this;
     }
 
-    public MockBraintreeClientBuilder sendPOSTSuccessfulResponse(String response) {
-        sendPOSTSuccess = response;
-        return this;
-    }
-
-    public MockBraintreeClientBuilder sendPOSTErrorResponse(Exception error) {
-        sendPOSTError = error;
-        return this;
-    }
     public MockBraintreeClientBuilder sendGraphQLPOSTSuccessfulResponse(String response) {
         sendGraphQLPOSTSuccess = response;
         return this;
@@ -97,21 +83,6 @@ public class MockBraintreeClientBuilder {
         return this;
     }
 
-    public MockBraintreeClientBuilder returnUrlScheme(String returnUrlScheme) {
-        this.returnUrlScheme = returnUrlScheme;
-         return this;
-    }
-
-    public MockBraintreeClientBuilder urlSchemeDeclaredInManifest(boolean urlSchemeInAndroidManifest) {
-        this.urlSchemeInAndroidManifest = urlSchemeInAndroidManifest;
-        return this;
-    }
-
-    public MockBraintreeClientBuilder canPerformBrowserSwitch(boolean canPerformBrowserSwitch) {
-        this.canPerformBrowserSwitch = canPerformBrowserSwitch;
-        return this;
-    }
-
     public BraintreeClient build() {
         BraintreeClient braintreeClient = mock(BraintreeClient.class);
         when(braintreeClient.getAuthorization()).thenReturn(authorization);
@@ -128,56 +99,44 @@ public class MockBraintreeClientBuilder {
         when(braintreeClient.canPerformBrowserSwitch(any(FragmentActivity.class), anyInt())).thenReturn(canPerformBrowserSwitch);
         when(braintreeClient.getManifestActivityInfo(any(Class.class))).thenReturn(activityInfo);
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                ConfigurationCallback callback = (ConfigurationCallback) invocation.getArguments()[0];
-                if (configuration != null) {
-                    callback.onResult(configuration, null);
-                } else if (configurationError != null) {
-                    callback.onResult(null, configurationError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            ConfigurationCallback callback = (ConfigurationCallback) invocation.getArguments()[0];
+            if (configuration != null) {
+                callback.onResult(configuration, null);
+            } else if (configurationError != null) {
+                callback.onResult(null, configurationError);
             }
+            return null;
         }).when(braintreeClient).getConfiguration(any(ConfigurationCallback.class));
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                HttpResponseCallback callback = (HttpResponseCallback) invocation.getArguments()[1];
-                if (sendGETSuccess != null) {
-                    callback.onResult(sendGETSuccess, null);
-                } else if (sendGETError != null) {
-                    callback.onResult(null, sendGETError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            HttpResponseCallback callback = (HttpResponseCallback) invocation.getArguments()[1];
+            if (sendGETSuccess != null) {
+                callback.onResult(sendGETSuccess, null);
+            } else if (sendGETError != null) {
+                callback.onResult(null, sendGETError);
             }
+            return null;
         }).when(braintreeClient).sendGET(anyString(), any(HttpResponseCallback.class));
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                HttpResponseCallback callback = (HttpResponseCallback) invocation.getArguments()[2];
-                if (sendPOSTSuccess != null) {
-                    callback.onResult(sendPOSTSuccess, null);
-                } else if (sendPOSTError != null) {
-                    callback.onResult(null, sendPOSTError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            HttpResponseCallback callback = (HttpResponseCallback) invocation.getArguments()[2];
+            if (sendPOSTSuccess != null) {
+                callback.onResult(sendPOSTSuccess, null);
+            } else if (sendPOSTError != null) {
+                callback.onResult(null, sendPOSTError);
             }
+            return null;
         }).when(braintreeClient).sendPOST(anyString(), anyString(), any(HttpResponseCallback.class));
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                HttpResponseCallback callback = (HttpResponseCallback) invocation.getArguments()[1];
-                if (sendGraphQLPOSTSuccess != null) {
-                    callback.onResult(sendGraphQLPOSTSuccess, null);
-                } else if (sendGraphQLPOSTError != null) {
-                    callback.onResult(null, sendGraphQLPOSTError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            HttpResponseCallback callback = (HttpResponseCallback) invocation.getArguments()[1];
+            if (sendGraphQLPOSTSuccess != null) {
+                callback.onResult(sendGraphQLPOSTSuccess, null);
+            } else if (sendGraphQLPOSTError != null) {
+                callback.onResult(null, sendGraphQLPOSTError);
             }
+            return null;
         }).when(braintreeClient).sendGraphQLPOST(anyString(), any(HttpResponseCallback.class));
 
         return braintreeClient;

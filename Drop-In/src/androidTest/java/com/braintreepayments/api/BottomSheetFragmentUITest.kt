@@ -9,11 +9,10 @@ import androidx.test.espresso.matcher.ViewMatchers.isRoot
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import com.braintreepayments.api.dropin.R
-import org.junit.Assert.*
-import org.junit.Before
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4ClassRunner::class)
 class BottomSheetFragmentUITest {
