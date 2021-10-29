@@ -1,7 +1,6 @@
 package com.braintreepayments.api;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
@@ -20,18 +19,8 @@ class AlertPresenter {
                 .setTitle(R.string.bt_delete_confirmation_title)
                 .setMessage(R.string.bt_delete_confirmation_description)
                 .setView(dialogView)
-                .setPositiveButton(R.string.bt_delete, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        callback.onDialogInteraction(DialogInteraction.POSITIVE);
-                    }
-                })
-                .setOnDismissListener(new DialogInterface.OnDismissListener() {
-                    @Override
-                    public void onDismiss(DialogInterface dialog) {
-                        callback.onDialogInteraction(DialogInteraction.NEGATIVE);
-                    }
-                })
+                .setPositiveButton(R.string.bt_delete, (dialog, which) -> callback.onDialogInteraction(DialogInteraction.POSITIVE))
+                .setOnDismissListener(dialog -> callback.onDialogInteraction(DialogInteraction.NEGATIVE))
                 .setNegativeButton(R.string.bt_cancel, null)
                 .create()
                 .show();
