@@ -214,7 +214,6 @@ public class DropInClientUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -241,7 +240,6 @@ public class DropInClientUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -268,7 +266,6 @@ public class DropInClientUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -295,7 +292,6 @@ public class DropInClientUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
@@ -321,7 +317,6 @@ public class DropInClientUnitTest {
 
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
-        dropInRequest.setRequestThreeDSecureVerification(true);
 
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)

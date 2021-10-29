@@ -174,7 +174,6 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onAuthorizationFetched() {
         DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setRequestThreeDSecureVerification(Settings.isThreeDSecureEnabled(this));
         dropInRequest.setGooglePayRequest(getGooglePayRequest());
         dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
         dropInRequest.setMaskCardNumber(true);

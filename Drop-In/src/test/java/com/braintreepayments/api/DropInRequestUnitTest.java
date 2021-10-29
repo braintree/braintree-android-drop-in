@@ -65,7 +65,6 @@ public class DropInRequestUnitTest {
         dropInRequest.setVenmoRequest(venmoRequest);
         dropInRequest.setVenmoDisabled(true);
         dropInRequest.setCardDisabled(true);
-        dropInRequest.setRequestThreeDSecureVerification(true);
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
         dropInRequest.setMaskCardNumber(true);
         dropInRequest.setMaskSecurityCode(true);
@@ -92,7 +91,6 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.isPayPalDisabled());
         assertTrue(dropInRequest.isVenmoDisabled());
         assertTrue(dropInRequest.isCardDisabled());
-        assertTrue(dropInRequest.getRequestThreeDSecureVerification());
         assertEquals("abc-123", dropInRequest.getThreeDSecureRequest().getNonce());
         assertEquals("2", dropInRequest.getThreeDSecureRequest().getVersionRequested());
         assertEquals("10.00", dropInRequest.getThreeDSecureRequest().getAmount());
@@ -166,7 +164,6 @@ public class DropInRequestUnitTest {
         dropInRequest.setVenmoRequest(venmoRequest);
         dropInRequest.setVenmoDisabled(true);
         dropInRequest.setCardDisabled(true);
-        dropInRequest.setRequestThreeDSecureVerification(true);
         dropInRequest.setThreeDSecureRequest(threeDSecureRequest);
         dropInRequest.setMaskCardNumber(true);
         dropInRequest.setMaskSecurityCode(true);
@@ -198,7 +195,6 @@ public class DropInRequestUnitTest {
         assertTrue(parceledDropInRequest.isPayPalDisabled());
         assertTrue(parceledDropInRequest.isVenmoDisabled());
         assertTrue(parceledDropInRequest.isCardDisabled());
-        assertTrue(parceledDropInRequest.getRequestThreeDSecureVerification());
         assertEquals("abc-123", parceledDropInRequest.getThreeDSecureRequest().getNonce());
         assertEquals("2", parceledDropInRequest.getThreeDSecureRequest().getVersionRequested());
         assertEquals("10.00", parceledDropInRequest.getThreeDSecureRequest().getAmount());
