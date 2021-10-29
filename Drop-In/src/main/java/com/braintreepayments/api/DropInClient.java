@@ -147,6 +147,10 @@ public class DropInClient {
     }
 
     void requestGooglePayPayment(FragmentActivity activity, GooglePayRequestPaymentCallback callback) {
+        if (dropInRequest.getGooglePayRequest() == null) {
+            // TODO: unit test
+            callback.onResult(new BraintreeException("GooglePayRequest cannot be null."));
+        }
         googlePayClient.requestPayment(activity, dropInRequest.getGooglePayRequest(), callback);
     }
 
