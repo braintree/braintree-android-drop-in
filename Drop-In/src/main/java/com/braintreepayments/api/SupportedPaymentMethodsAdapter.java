@@ -34,12 +34,7 @@ class SupportedPaymentMethodsAdapter extends RecyclerView.Adapter<SupportedPayme
     public void onBindViewHolder(@NonNull SupportedPaymentMethodViewHolder holder, int position) {
         final DropInPaymentMethodType paymentMethodType = supportedPaymentMethods.get(position);
         holder.bind(paymentMethodType);
-        holder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onPaymentMethodSelected(paymentMethodType);
-            }
-        });
+        holder.setOnClickListener(v -> listener.onPaymentMethodSelected(paymentMethodType));
     }
 
     @Override

@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.VisibleForTesting;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -36,20 +35,10 @@ public class VaultManagerFragment extends DropInFragment implements View.OnClick
                 requireActivity(), RecyclerView.VERTICAL, false));
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
-        dropInViewModel.getVaultedPaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<PaymentMethodNonce>>() {
-            @Override
-            public void onChanged(List<PaymentMethodNonce> paymentMethodNonces) {
-                showVaultedPaymentMethods(paymentMethodNonces);
-            }
-        });
+        dropInViewModel.getVaultedPaymentMethods().observe(getViewLifecycleOwner(), this::showVaultedPaymentMethods);
 
         View closeButton = view.findViewById(R.id.bt_vault_manager_close);
-        closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                sendDropInEvent(new DropInEvent(DropInEventType.DISMISS_VAULT_MANAGER));
-            }
-        });
+        closeButton.setOnClickListener(v -> sendDropInEvent(new DropInEvent(DropInEventType.DISMISS_VAULT_MANAGER)));
 
         sendAnalyticsEvent("manager.appeared");
 

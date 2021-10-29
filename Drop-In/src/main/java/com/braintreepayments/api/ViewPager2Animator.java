@@ -42,12 +42,9 @@ class ViewPager2Animator {
             @Override
             public void onAnimationEnd(Animator animation) {
                 viewPager.endFakeDrag();
-                viewPager.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (callback != null) {
-                            callback.onAnimationComplete();
-                        }
+                viewPager.post(() -> {
+                    if (callback != null) {
+                        callback.onAnimationComplete();
                     }
                 });
             }
