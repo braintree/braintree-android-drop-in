@@ -74,8 +74,6 @@ public class MockBraintreeClientBuilder {
         when(braintreeClient.getAuthorization()).thenReturn(authorization);
         when(braintreeClient.getSessionId()).thenReturn(sessionId);
         when(braintreeClient.getIntegrationType()).thenReturn(integration);
-//        when(braintreeClient.isUrlSchemeDeclaredInAndroidManifest(anyString(), any(Class.class))).thenReturn(true);
-//        when(braintreeClient.canPerformBrowserSwitch(any(FragmentActivity.class), anyInt())).thenReturn(true);
 
         doAnswer((Answer<Void>) invocation -> {
             ConfigurationCallback callback = (ConfigurationCallback) invocation.getArguments()[0];
