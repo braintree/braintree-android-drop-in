@@ -86,14 +86,7 @@ public class DropInActivity extends AppCompatActivity {
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
-
-        dropInClient.getSupportedPaymentMethods(this, (paymentMethods, error) -> {
-            if (paymentMethods != null) {
-                dropInViewModel.setSupportedPaymentMethods(paymentMethods);
-            } else {
-                onError(error);
-            }
-        });
+        fetchPaymentMethods();
 
         getSupportFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this,
                 (requestKey, result) -> onDropInEvent(DropInEvent.fromBundle(result)));
@@ -122,7 +115,27 @@ public class DropInActivity extends AppCompatActivity {
 
         showBottomSheet();
     }
+    void fetchPaymentMethods(){
+        dropInClient.getVaultedPaymentMethods(this, (paymentMethodNonceList, error) -> {
+            if (error != null) {
+                onError(error);
+            } else {
+                dropInClient.getSupportedPaymentMethods(this, (paymentMethods, supportedPaymentMethodError) -> {
+                    if (supportedPaymentMethodError != null) {
+                        onError(supportedPaymentMethodError);
+                    }
+                    if (paymentMethods != null) {
+                        dropInViewModel.setSupportedPaymentMethods(paymentMethods);
+                    }
+                    if (paymentMethodNonceList != null){
+                        dropInViewModel.setVaultedPaymentMethods(paymentMethodNonceList);
+                    }
+                    dropInViewModel.setHasFetchedPaymentMethods(true);
+                });
+            }
+        });
 
+    }
     @VisibleForTesting
     void finishDropInWithError(Exception e) {
         setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInResult.EXTRA_ERROR, e));
@@ -246,18 +259,7 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void onDidShowBottomSheet() {
-        dropInClient.getSupportedPaymentMethods(this, (paymentMethods, error) -> {
-            if (paymentMethods != null) {
-                dropInViewModel.setSupportedPaymentMethods(paymentMethods);
-
-                // TODO: consider pull to refresh to allow user to request an updated
-                // instead of having this event respond to the visual presentation of supported
-                // payment methods
-                updateVaultedPaymentMethodNonces(false);
-            } else {
-                onError(error);
-            }
-        });
+        fetchPaymentMethods();
     }
 
     private void onDidHideBottomSheet() {
@@ -283,18 +285,6 @@ public class DropInActivity extends AppCompatActivity {
         if (cancelPendingActivityAnimation) {
             // prevent default Android Activity animation from running
             overridePendingTransition(0, 0);
-        }
-    }
-
-    private void updateVaultedPaymentMethodNonces(boolean refetch) {
-        if (clientTokenPresent) {
-            dropInClient.getVaultedPaymentMethods(this, (vaultedPaymentMethods, error) -> {
-                if (vaultedPaymentMethods != null) {
-                    dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods);
-                } else if (error != null) {
-                    onError(error);
-                }
-            });
         }
     }
 
@@ -451,7 +441,6 @@ public class DropInActivity extends AppCompatActivity {
                     if (dropInResult != null) {
                         animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
                     } else {
-                        updateVaultedPaymentMethodNonces(true);
                         onError(error);
                     }
                 });
@@ -463,7 +452,6 @@ public class DropInActivity extends AppCompatActivity {
                         dropInResult.deviceData(deviceData);
                         animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
                     } else {
-                        updateVaultedPaymentMethodNonces(true);
                         onError(error);
                     }
             });

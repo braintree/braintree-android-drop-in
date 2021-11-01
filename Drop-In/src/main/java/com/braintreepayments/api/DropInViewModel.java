@@ -21,6 +21,15 @@ public class DropInViewModel extends ViewModel {
     private final MutableLiveData<Exception> cardTokenizationError = new MutableLiveData<>();
     private final MutableLiveData<Exception> userCanceledError = new MutableLiveData<>();
 
+    public MutableLiveData<Boolean> getHasFetchedPaymentMethods() {
+        return hasFetchedPaymentMethods;
+    }
+    void setHasFetchedPaymentMethods(Boolean value) {
+        hasFetchedPaymentMethods.setValue(value);
+    }
+
+    private final MutableLiveData<Boolean> hasFetchedPaymentMethods = new MutableLiveData<>();
+
     LiveData<BottomSheetState> getBottomSheetState() {
         return bottomSheetState;
     }

@@ -93,21 +93,34 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
             setViewState(ViewState.LOADING);
         }
 
-        dropInViewModel.getSupportedPaymentMethods().observe(getViewLifecycleOwner(), paymentMethodTypes -> {
-            if (hasSupportedPaymentMethods()) {
-                setViewState(ViewState.SHOW_PAYMENT_METHODS);
-            }
-        });
+//        dropInViewModel.getSupportedPaymentMethods().observe(getViewLifecycleOwner(), paymentMethodTypes -> {
+//            if (hasSupportedPaymentMethods()) {
+//            }
+//        });
 
-        dropInViewModel.getVaultedPaymentMethods().observe(getViewLifecycleOwner(), paymentMethodNonces -> {
-            if (hasVaultedPaymentMethods()) {
+//        dropInViewModel.getVaultedPaymentMethods().observe(getViewLifecycleOwner(), paymentMethodNonces -> {
+//            if (hasVaultedPaymentMethods()) {
+//                setViewState(ViewState.SHOW_PAYMENT_METHODS);
+//                refreshView();
+//            }
+//        });
+
+        dropInViewModel.getHasFetchedPaymentMethods().observe(getViewLifecycleOwner(), hasFetched -> {
+            if (hasSupportedPaymentMethods() || hasVaultedPaymentMethods()) {
+                setViewState(ViewState.SHOW_PAYMENT_METHODS);
                 refreshView();
             }
-        });
 
+        });
         dropInViewModel.getDropInState().observe(getViewLifecycleOwner(), dropInState -> {
             if (dropInState == DropInState.WILL_FINISH) {
                 setViewState(ViewState.DROP_IN_FINISHING);
+            }
+        });
+
+        dropInViewModel.getUserCanceledError().observe(getViewLifecycleOwner(), exception -> {
+            if(exception instanceof UserCanceledException){
+                setViewState(ViewState.SHOW_PAYMENT_METHODS);
             }
         });
 
