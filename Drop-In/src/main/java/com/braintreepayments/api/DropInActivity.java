@@ -115,7 +115,7 @@ public class DropInActivity extends AppCompatActivity {
 
         showBottomSheet();
     }
-    void fetchPaymentMethods(){
+    void fetchPaymentMethods() {
         dropInClient.getVaultedPaymentMethods(this, (paymentMethodNonceList, error) -> {
             if (error != null) {
                 onError(error);

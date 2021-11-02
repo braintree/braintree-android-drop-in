@@ -17,6 +17,7 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.android.controller.ActivityController
 import java.util.*
+import kotlin.collections.ArrayList
 
 @RunWith(RobolectricTestRunner::class)
 class DropInActivityTest {
@@ -115,6 +116,8 @@ class DropInActivityTest {
         val error = UserCanceledException("User canceled 3DS.")
         val dropInClient = MockDropInClientBuilder()
             .deliverBrowseSwitchResultError(error)
+            .getSupportedPaymentMethodsSuccess(ArrayList())
+            .getVaultedPaymentMethodsSuccess(ArrayList())
             .build()
 
         setupDropInActivity(dropInClient, dropInRequest)
@@ -284,7 +287,7 @@ class DropInActivityTest {
     }
 
     @Test
-    fun onVaultedPaymentMethodSelectedEvent_when3DSFails_reloadsPaymentMethodsAndFinishes() {
+    fun onVaultedPaymentMethodSelectedEvent_when3DSFails_Finishes() {
         authorization = Authorization.fromString(UnitTestFixturesHelper.base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN))
         val error = Exception("three d secure failure")
         val dropInClient = MockDropInClientBuilder()
@@ -305,7 +308,6 @@ class DropInActivityTest {
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle())
 
-        verify(dropInClient).getVaultedPaymentMethods(same(activity), any(GetPaymentMethodNoncesCallback::class.java))
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
         assertEquals(error, shadowActivity.resultIntent.getSerializableExtra(DropInResult.EXTRA_ERROR))
         assertTrue(activity.isFinishing)
@@ -679,7 +681,7 @@ class DropInActivityTest {
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
             .authorization(authorization)
-            .getSupportedPaymentMethodsError(error)
+            .getSupportedCardTypesError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
         val shadowActivity = shadowOf(activity)
