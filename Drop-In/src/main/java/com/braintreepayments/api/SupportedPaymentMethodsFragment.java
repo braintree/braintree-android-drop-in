@@ -198,7 +198,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
         }
         
         if (paymentMethodNonces != null && paymentMethodNonces.size() > 0) {
-            supportedPaymentMethodsHeader.setText(R.string.bt_other);
+            supportedPaymentMethodsHeader.setVisibility(View.VISIBLE);
             vaultedPaymentMethodsContainer.setVisibility(View.VISIBLE);
 
             VaultedPaymentMethodsAdapter vaultedPaymentMethodsAdapter =
@@ -211,7 +211,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
             }
 
         } else {
-            supportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
+            supportedPaymentMethodsHeader.setVisibility(View.GONE);
             vaultedPaymentMethodsContainer.setVisibility(View.GONE);
         }
     }

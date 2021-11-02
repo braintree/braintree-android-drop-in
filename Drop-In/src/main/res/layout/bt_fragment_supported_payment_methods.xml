@@ -12,27 +12,32 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
         android:orientation="vertical">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/bt_cancel_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/bt_cancel"
+            android:theme="@style/bt_edit_button" />
 
-            <Button
-                android:id="@+id/bt_cancel_button"
-                style="@style/Widget.AppCompat.Button.Borderless.Colored"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/bt_cancel"
-                android:theme="@style/bt_edit_button" />
+        <TextView
+            android:id="@+id/bt_select_payment_method_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/bt_select_payment_method"
+            android:theme="@style/bt_select_payment_method_title" />
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/bt_select_payment_method_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:text="@string/bt_select_payment_method" />
-
-        </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/bt_vaulted_payment_methods_wrapper"
@@ -86,7 +91,9 @@
             style="@style/bt_choose_payment_label"
             android:paddingTop="@dimen/bt_choose_new_payment_label_padding_top"
             android:paddingBottom="@dimen/bt_payment_label_padding_bottom"
-            android:text="@string/bt_select_payment_method" />
+            android:text="@string/bt_other"
+            android:visibility="gone"
+            />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/bt_supported_payment_methods"
@@ -97,7 +104,7 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/bt_select_payment_method_loader_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -109,9 +116,10 @@
             android:id="@+id/bt_select_payment_method_loader"
             android:layout_width="@dimen/bt_progress_bar_diameter"
             android:layout_height="@dimen/bt_progress_bar_diameter"
-            android:layout_gravity="center"
+            android:layout_centerInParent="true"
             android:indeterminate="true" />
 
+    </RelativeLayout>
     </LinearLayout>
 
 </FrameLayout>
