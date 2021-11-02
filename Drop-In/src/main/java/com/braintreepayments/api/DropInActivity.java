@@ -126,6 +126,9 @@ public class DropInActivity extends AppCompatActivity {
                     }
                     if (paymentMethods != null) {
                         dropInViewModel.setSupportedPaymentMethods(paymentMethods);
+                    } else {
+                        onError(new BraintreeException("No payment methods supported"));
+                        return;
                     }
                     if (paymentMethodNonceList != null){
                         dropInViewModel.setVaultedPaymentMethods(paymentMethodNonceList);

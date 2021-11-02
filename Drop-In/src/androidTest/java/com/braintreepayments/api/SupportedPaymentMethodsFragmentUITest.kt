@@ -70,6 +70,7 @@ class SupportedPaymentMethodsFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
         }
 
         onView(isRoot()).perform(waitFor(500))
@@ -91,6 +92,7 @@ class SupportedPaymentMethodsFragmentUITest {
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
             fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
+            fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
         }
 
         onView(isRoot()).perform(waitFor(500))
@@ -109,6 +111,7 @@ class SupportedPaymentMethodsFragmentUITest {
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
             fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
+            fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
 
             val activity = fragment.requireActivity()
             val fragmentManager = fragment.parentFragmentManager
@@ -137,6 +140,7 @@ class SupportedPaymentMethodsFragmentUITest {
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
             fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
+            fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
         }
 
         onView(isRoot()).perform(waitFor(500))
@@ -157,8 +161,10 @@ class SupportedPaymentMethodsFragmentUITest {
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
             fragment.dropInViewModel.setVaultedPaymentMethods(emptyList())
+            fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
         }
 
+        onView(withId(R.id.bt_supported_payment_methods_header)).check(matches((isDisplayed())))
         onView(withId(R.id.bt_vaulted_payment_methods_header)).check(matches(not(isDisplayed())))
     }
 
@@ -176,6 +182,7 @@ class SupportedPaymentMethodsFragmentUITest {
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
             fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
+            fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
         }
 
         onView(withId(R.id.bt_vault_edit_button)).check(matches(isDisplayed()))
@@ -191,8 +198,11 @@ class SupportedPaymentMethodsFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods)
+            fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
         }
 
+        onView(withId(R.id.bt_vaulted_payment_methods_wrapper)).check(matches(isDisplayed()))
         onView(withId(R.id.bt_vault_edit_button)).check(matches(not(isDisplayed())))
     }
 
@@ -206,6 +216,7 @@ class SupportedPaymentMethodsFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
         }
 
         onView(isRoot()).perform(waitFor(500))
@@ -222,7 +233,6 @@ class SupportedPaymentMethodsFragmentUITest {
                 assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodType)
             }
         }
-
     }
 
     @Test
@@ -238,11 +248,12 @@ class SupportedPaymentMethodsFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
         }
 
         onView(isRoot()).perform(waitFor(500))
-        onView(withText("Credit or Debit Card")).perform(click())
-        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
+        onView(withText("PayPal")).perform(click())
+        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches((isDisplayed())))
     }
 
     @Test
@@ -257,17 +268,37 @@ class SupportedPaymentMethodsFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
             fragment.onPaymentMethodSelected(DropInPaymentMethodType.PAYPAL)
             fragment.dropInViewModel.setUserCanceledError(Exception("User canceled PayPal."))
         }
 
         scenario.recreate()
         onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.bt_supported_payment_methods)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_supported_payment_methods)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
 
     @Test
-    fun whenStateIsRESUMED_whenHasSupportedPaymentMethods_hidesLoader() {
+    fun whenStateIsRESUMED_userCanceledErrorPresentInViewModel_hidesLoader() {
+        dropInRequest.isVaultManagerEnabled = false
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(isDisplayed()))
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setUserCanceledError(UserCanceledException("User canceled 3DS."))
+        }
+
+        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.bt_supported_payment_methods)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenHasSupportedPaymentMethods_andHasFetchedPaymentMethods_hidesLoader() {
         dropInRequest.isVaultManagerEnabled = true
 
         val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
@@ -280,6 +311,7 @@ class SupportedPaymentMethodsFragmentUITest {
         scenario.onFragment { fragment ->
             fragment.loadingIndicatorWrapper.visibility = View.VISIBLE
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
         }
 
         onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
@@ -325,26 +357,5 @@ class SupportedPaymentMethodsFragmentUITest {
 
         onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(isDisplayed()))
         onView(withId(R.id.bt_supported_payment_methods)).check(matches(not(isDisplayed())))
-    }
-
-    @Test
-    fun whenStateIsRESUMED_whenStateLoadingAndHasSupportedPaymentMethods_hidesLoader() {
-        dropInRequest.isVaultManagerEnabled = true
-
-        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
-
-        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
-        scenario.moveToState(Lifecycle.State.RESUMED)
-
-        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(isDisplayed()))
-
-        scenario.onFragment { fragment ->
-            fragment.loadingIndicatorWrapper.visibility = View.VISIBLE
-            fragment.viewState = SupportedPaymentMethodsFragment.ViewState.LOADING
-            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
-        }
-
-        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
-        onView(withId(R.id.bt_supported_payment_methods)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
     }
 }
