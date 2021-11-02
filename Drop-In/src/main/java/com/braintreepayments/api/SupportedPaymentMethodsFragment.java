@@ -41,6 +41,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
 
     private View vaultedPaymentMethodsContainer;
     private Button vaultManagerButton;
+    private Button cancelButton;
 
     private DropInRequest dropInRequest;
 
@@ -73,6 +74,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
         vaultedPaymentMethodsContainer = view.findViewById(R.id.bt_vaulted_payment_methods_wrapper);
         vaultedPaymentMethodsView = view.findViewById(R.id.bt_vaulted_payment_methods);
         vaultManagerButton = view.findViewById(R.id.bt_vault_edit_button);
+//        cancelButton = view.findViewById(R.id.bt_cancel_button);
 
         LinearLayoutManager supportedPaymentMethodsLayoutManager =
                 new LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false);
