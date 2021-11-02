@@ -4,22 +4,18 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentResultListener;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class DropInActivity extends AppCompatActivity {
 
@@ -56,12 +52,7 @@ public class DropInActivity extends AppCompatActivity {
             dropInViewModel.setDropInState(DropInState.WILL_FINISH);
         }
 
-        dropInClient.deliverBrowserSwitchResult(this, new DropInResultCallback() {
-            @Override
-            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                onDropInResult(dropInResult, error);
-            }
-        });
+        dropInClient.deliverBrowserSwitchResult(this, this::onDropInResult);
     }
 
     @Override
@@ -96,23 +87,16 @@ public class DropInActivity extends AppCompatActivity {
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
 
-        dropInClient.getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
-            @Override
-            public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
-                if (paymentMethods != null) {
-                    dropInViewModel.setSupportedPaymentMethods(paymentMethods);
-                } else {
-                    onError(error);
-                }
+        dropInClient.getSupportedPaymentMethods(this, (paymentMethods, error) -> {
+            if (paymentMethods != null) {
+                dropInViewModel.setSupportedPaymentMethods(paymentMethods);
+            } else {
+                onError(error);
             }
         });
 
-        getSupportFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this, new FragmentResultListener() {
-            @Override
-            public void onFragmentResult(@NonNull String requestKey, @NonNull Bundle result) {
-                onDropInEvent(DropInEvent.fromBundle(result));
-            }
-        });
+        getSupportFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this,
+                (requestKey, result) -> onDropInEvent(DropInEvent.fromBundle(result)));
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
@@ -121,21 +105,18 @@ public class DropInActivity extends AppCompatActivity {
             }
         });
 
-        dropInViewModel.getBottomSheetState().observe(this, new Observer<BottomSheetState>() {
-            @Override
-            public void onChanged(BottomSheetState bottomSheetState) {
-                switch (bottomSheetState) {
-                    case SHOWN:
-                        onDidShowBottomSheet();
-                        break;
-                    case HIDDEN:
-                        onDidHideBottomSheet();
-                        break;
-                    case HIDE_REQUESTED:
-                    case SHOW_REQUESTED:
-                    default:
-                        // do nothing
-                }
+        dropInViewModel.getBottomSheetState().observe(this, bottomSheetState -> {
+            switch (bottomSheetState) {
+                case SHOWN:
+                    onDidShowBottomSheet();
+                    break;
+                case HIDDEN:
+                    onDidHideBottomSheet();
+                    break;
+                case HIDE_REQUESTED:
+                case SHOW_REQUESTED:
+                default:
+                    // do nothing
             }
         });
 
@@ -208,18 +189,15 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void deleteVaultedPaymentMethod(final PaymentMethodNonce paymentMethodNonceToDelete) {
-        alertPresenter.showConfirmNonceDeletionDialog(this, paymentMethodNonceToDelete, new DialogInteractionCallback() {
-            @Override
-            public void onDialogInteraction(DialogInteraction interaction) {
-                switch (interaction) {
-                    case POSITIVE:
-                        sendAnalyticsEvent("manager.delete.confirmation.positive");
-                        removePaymentMethodNonce(paymentMethodNonceToDelete);
-                        break;
-                    case NEGATIVE:
-                        sendAnalyticsEvent("manager.delete.confirmation.negative");
-                        break;
-                }
+        alertPresenter.showConfirmNonceDeletionDialog(this, paymentMethodNonceToDelete, interaction -> {
+            switch (interaction) {
+                case POSITIVE:
+                    sendAnalyticsEvent("manager.delete.confirmation.positive");
+                    removePaymentMethodNonce(paymentMethodNonceToDelete);
+                    break;
+                case NEGATIVE:
+                    sendAnalyticsEvent("manager.delete.confirmation.negative");
+                    break;
             }
         });
     }
@@ -229,22 +207,19 @@ public class DropInActivity extends AppCompatActivity {
         // proactively remove from view model
         dropInViewModel.removeVaultedPaymentMethodNonce(paymentMethodNonceToDelete);
 
-        dropInClient.deletePaymentMethod(DropInActivity.this, paymentMethodNonceToDelete, new DeletePaymentMethodNonceCallback() {
-            @Override
-            public void onResult(@Nullable PaymentMethodNonce deletedNonce, @Nullable Exception error) {
-                if (deletedNonce != null) {
-                    sendAnalyticsEvent("manager.delete.succeeded");
-                } else if (error instanceof PaymentMethodDeleteException) {
-                    sendAnalyticsEvent("manager.delete.failed");
+        dropInClient.deletePaymentMethod(DropInActivity.this, paymentMethodNonceToDelete, (deletedNonce, error) -> {
+            if (deletedNonce != null) {
+                sendAnalyticsEvent("manager.delete.succeeded");
+            } else if (error instanceof PaymentMethodDeleteException) {
+                sendAnalyticsEvent("manager.delete.failed");
 
-                    int snackBarTextResId = R.string.bt_vault_manager_delete_failure;
-                    alertPresenter.showSnackbarText(
-                            fragmentContainerView, snackBarTextResId, Snackbar.LENGTH_LONG);
-                } else {
-                    sendAnalyticsEvent("manager.unknown.failed");
-                    // TODO: determine how to handle unexpected error when deleting payment method (previously finished drop in)
-                    onError(error);
-                }
+                int snackBarTextResId = R.string.bt_vault_manager_delete_failure;
+                alertPresenter.showSnackbarText(
+                        fragmentContainerView, snackBarTextResId, Snackbar.LENGTH_LONG);
+            } else {
+                sendAnalyticsEvent("manager.unknown.failed");
+                // TODO: determine how to handle unexpected error when deleting payment method (previously finished drop in)
+                onError(error);
             }
         });
     }
@@ -261,32 +236,26 @@ public class DropInActivity extends AppCompatActivity {
     private void refreshVaultedPaymentMethods() {
         // TODO: consider caching nonces or use a ViewModel for handling nonces
         // TODO: show loading indicator while fetching vaulted payment methods
-        dropInClient.getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
-            @Override
-            public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
-                if (paymentMethodNonceList != null) {
-                    dropInViewModel.setVaultedPaymentMethods(paymentMethodNonceList);
-                } else if (error != null) {
-                    onError(error);
-                }
+        dropInClient.getVaultedPaymentMethods(this, (paymentMethodNonceList, error) -> {
+            if (paymentMethodNonceList != null) {
+                dropInViewModel.setVaultedPaymentMethods(paymentMethodNonceList);
+            } else if (error != null) {
+                onError(error);
             }
         });
     }
 
     private void onDidShowBottomSheet() {
-        dropInClient.getSupportedPaymentMethods(this, new GetSupportedPaymentMethodsCallback() {
-            @Override
-            public void onResult(@Nullable List<DropInPaymentMethodType> paymentMethods, @Nullable Exception error) {
-                if (paymentMethods != null) {
-                    dropInViewModel.setSupportedPaymentMethods(paymentMethods);
+        dropInClient.getSupportedPaymentMethods(this, (paymentMethods, error) -> {
+            if (paymentMethods != null) {
+                dropInViewModel.setSupportedPaymentMethods(paymentMethods);
 
-                    // TODO: consider pull to refresh to allow user to request an updated
-                    // instead of having this event respond to the visual presentation of supported
-                    // payment methods
-                    updateVaultedPaymentMethodNonces(false);
-                } else {
-                    onError(error);
-                }
+                // TODO: consider pull to refresh to allow user to request an updated
+                // instead of having this event respond to the visual presentation of supported
+                // payment methods
+                updateVaultedPaymentMethodNonces(false);
+            } else {
+                onError(error);
             }
         });
     }
@@ -319,14 +288,11 @@ public class DropInActivity extends AppCompatActivity {
 
     private void updateVaultedPaymentMethodNonces(boolean refetch) {
         if (clientTokenPresent) {
-            dropInClient.getVaultedPaymentMethods(this, new GetPaymentMethodNoncesCallback() {
-                @Override
-                public void onResult(@Nullable List<PaymentMethodNonce> vaultedPaymentMethods, @Nullable Exception error) {
-                    if (vaultedPaymentMethods != null) {
-                        dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods);
-                    } else if (error != null) {
-                        onError(error);
-                    }
+            dropInClient.getVaultedPaymentMethods(this, (vaultedPaymentMethods, error) -> {
+                if (vaultedPaymentMethods != null) {
+                    dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods);
+                } else if (error != null) {
+                    onError(error);
                 }
             });
         }
@@ -363,18 +329,15 @@ public class DropInActivity extends AppCompatActivity {
 
     private void showCardDetailsFragment(final String cardNumber) {
         if (shouldAddFragment(CARD_DETAILS_TAG)) {
-            dropInClient.getConfiguration(new ConfigurationCallback() {
-                @Override
-                public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
-                    if (configuration != null) {
-                        // TODO: implement dropInClient.hasAuthType(AuthType.TOKENIZATION_KEY)
-                        boolean hasTokenizationKeyAuth =
-                                Authorization.isTokenizationKey(dropInClient.getAuthorization().toString());
+            dropInClient.getConfiguration((configuration, error) -> {
+                if (configuration != null) {
+                    // TODO: implement dropInClient.hasAuthType(AuthType.TOKENIZATION_KEY)
+                    boolean hasTokenizationKeyAuth =
+                            Authorization.isTokenizationKey(dropInClient.getAuthorization().toString());
 
-                        CardDetailsFragment cardDetailsFragment = CardDetailsFragment.from(
-                                dropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
-                        replaceExistingFragment(cardDetailsFragment, CARD_DETAILS_TAG);
-                    }
+                    CardDetailsFragment cardDetailsFragment = CardDetailsFragment.from(
+                            dropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
+                    replaceExistingFragment(cardDetailsFragment, CARD_DETAILS_TAG);
                 }
             });
         }
@@ -413,34 +376,25 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void startPayPalFlow() {
-        dropInClient.tokenizePayPalRequest(this, new PayPalFlowStartedCallback() {
-            @Override
-            public void onResult(@Nullable Exception error) {
-                if (error != null) {
-                    onError(error);
-                }
+        dropInClient.tokenizePayPalRequest(this, error -> {
+            if (error != null) {
+                onError(error);
             }
         });
     }
 
     private void startGooglePayFlow() {
-        dropInClient.requestGooglePayPayment(this, new GooglePayRequestPaymentCallback() {
-            @Override
-            public void onResult(Exception error) {
-                if (error != null) {
-                    onError(error);
-                }
+        dropInClient.requestGooglePayPayment(this, error -> {
+            if (error != null) {
+                onError(error);
             }
         });
     }
 
     private void startVenmoFlow() {
-        dropInClient.tokenizeVenmoAccount(this, new VenmoTokenizeAccountCallback() {
-            @Override
-            public void onResult(@Nullable Exception error) {
-                if (error != null) {
-                    onError(error);
-                }
+        dropInClient.tokenizeVenmoAccount(this, error -> {
+            if (error != null) {
+                onError(error);
             }
         });
     }
@@ -450,14 +404,11 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void prefetchSupportedCardTypes() {
-        dropInClient.getSupportedCardTypes(new GetSupportedCardTypesCallback() {
-            @Override
-            public void onResult(List<String> supportedCardTypes, Exception error) {
-                if (error != null) {
-                    onError(error);
-                } else if (supportedCardTypes != null) {
-                    dropInViewModel.setSupportedCardTypes(Arrays.asList(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)));
-                }
+        dropInClient.getSupportedCardTypes((supportedCardTypes, error) -> {
+            if (error != null) {
+                onError(error);
+            } else if (supportedCardTypes != null) {
+                dropInViewModel.setSupportedCardTypes(Arrays.asList(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)));
             }
         });
     }
@@ -472,12 +423,7 @@ public class DropInActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        dropInClient.handleActivityResult(this, requestCode, resultCode, data, new DropInResultCallback() {
-            @Override
-            public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                onDropInResult(dropInResult, error);
-            }
-        });
+        dropInClient.handleActivityResult(this, requestCode, resultCode, data, this::onDropInResult);
     }
 
     private void onDropInResult(DropInResult dropInResult, Exception error) {
@@ -499,38 +445,28 @@ public class DropInActivity extends AppCompatActivity {
         }
 
         dropInViewModel.setDropInState(DropInState.WILL_FINISH);
-        dropInClient.shouldRequestThreeDSecureVerification(paymentMethodNonce, new ShouldRequestThreeDSecureVerification() {
-            @Override
-            public void onResult(boolean shouldRequestThreeDSecureVerification) {
-                if (shouldRequestThreeDSecureVerification) {
-
-                    dropInClient.performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, new DropInResultCallback() {
-                        @Override
-                        public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                            if (dropInResult != null) {
-                                animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
-                            } else {
-                                updateVaultedPaymentMethodNonces(true);
-                                onError(error);
-                            }
-                        }
-                    });
-                } else {
-                    final DropInResult dropInResult = new DropInResult();
-                    dropInResult.paymentMethodNonce(paymentMethodNonce);
-                    dropInClient.collectDeviceData(DropInActivity.this, new DataCollectorCallback() {
-                        @Override
-                        public void onResult(@Nullable String deviceData, @Nullable Exception error) {
-                            if (deviceData != null) {
-                                dropInResult.deviceData(deviceData);
-                                animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
-                            } else {
-                                updateVaultedPaymentMethodNonces(true);
-                                onError(error);
-                            }
+        dropInClient.shouldRequestThreeDSecureVerification(paymentMethodNonce, shouldRequestThreeDSecureVerification -> {
+            if (shouldRequestThreeDSecureVerification) {
+                dropInClient.performThreeDSecureVerification(DropInActivity.this, paymentMethodNonce, (dropInResult, error) -> {
+                    if (dropInResult != null) {
+                        animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
+                    } else {
+                        updateVaultedPaymentMethodNonces(true);
+                        onError(error);
                     }
                 });
-                }
+            } else {
+                final DropInResult dropInResult = new DropInResult();
+                dropInResult.paymentMethodNonce(paymentMethodNonce);
+                dropInClient.collectDeviceData(DropInActivity.this, (deviceData, error) -> {
+                    if (deviceData != null) {
+                        dropInResult.deviceData(deviceData);
+                        animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
+                    } else {
+                        updateVaultedPaymentMethodNonces(true);
+                        onError(error);
+                    }
+            });
             }
         });
     }
@@ -539,42 +475,33 @@ public class DropInActivity extends AppCompatActivity {
         Card card = event.getCard(DropInEventProperty.CARD);
         dropInViewModel.setDropInState(DropInState.WILL_FINISH);
 
-        dropInClient.tokenizeCard(card, new CardTokenizeCallback() {
-            @Override
-            public void onResult(@Nullable CardNonce cardNonce, @Nullable Exception error) {
-                if (error != null) {
-                    if (error instanceof ErrorWithResponse) {
-                        dropInViewModel.setCardTokenizationError(error);
-                    } else {
-                        onError(error);
-                    }
-                    return;
+        dropInClient.tokenizeCard(card, (cardNonce, error) -> {
+            if (error != null) {
+                if (error instanceof ErrorWithResponse) {
+                    dropInViewModel.setCardTokenizationError(error);
+                } else {
+                    onError(error);
                 }
-                onPaymentMethodNonceCreated(cardNonce);
+                return;
             }
+            onPaymentMethodNonceCreated(cardNonce);
         });
     }
 
     private void onPaymentMethodNonceCreated(final PaymentMethodNonce paymentMethod) {
-        dropInClient.shouldRequestThreeDSecureVerification(paymentMethod, new ShouldRequestThreeDSecureVerification() {
-            @Override
-            public void onResult(boolean shouldRequestThreeDSecureVerification) {
-                if (shouldRequestThreeDSecureVerification) {
-                    dropInClient.performThreeDSecureVerification(DropInActivity.this, paymentMethod, new DropInResultCallback() {
-                        @Override
-                        public void onResult(@Nullable DropInResult dropInResult, @Nullable Exception error) {
-                            if (error != null) {
-                                onError(error);
-                                return;
-                            }
-                            animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
-                        }
-                    });
-                } else {
-                    DropInResult dropInResult = new DropInResult();
-                    dropInResult.paymentMethodNonce(paymentMethod);
+        dropInClient.shouldRequestThreeDSecureVerification(paymentMethod, shouldRequestThreeDSecureVerification -> {
+            if (shouldRequestThreeDSecureVerification) {
+                dropInClient.performThreeDSecureVerification(DropInActivity.this, paymentMethod, (dropInResult, error) -> {
+                    if (error != null) {
+                        onError(error);
+                        return;
+                    }
                     animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
-                }
+                });
+            } else {
+                DropInResult dropInResult = new DropInResult();
+                dropInResult.paymentMethodNonce(paymentMethod);
+                animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
             }
         });
     }

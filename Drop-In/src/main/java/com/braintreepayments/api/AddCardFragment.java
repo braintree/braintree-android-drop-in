@@ -9,7 +9,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
@@ -18,8 +17,6 @@ import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
-
-import java.util.List;
 
 public class AddCardFragment extends DropInFragment implements OnCardFormSubmitListener,
         CardEditText.OnCardTypeChangedListener {
@@ -53,12 +50,7 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
         supportedCardTypesView = view.findViewById(R.id.bt_supported_card_types);
         animatedButtonView = view.findViewById(R.id.bt_animated_button_view);
 
-        animatedButtonView.setClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onCardFormSubmit();
-            }
-        });
+        animatedButtonView.setClickListener(v -> onCardFormSubmit());
 
         cardForm.getCardEditText().displayCardTypeIcon(false);
 
@@ -69,19 +61,12 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
-        dropInViewModel.getSupportedCardTypes().observe(getViewLifecycleOwner(), new Observer<List<CardType>>() {
-            @Override
-            public void onChanged(List<CardType> cardTypes) {
-                supportedCardTypesView.setSupportedCardTypes(cardTypes.toArray(new CardType[0]));
-            }
-        });
+        dropInViewModel.getSupportedCardTypes().observe(getViewLifecycleOwner(), cardTypes ->
+                supportedCardTypesView.setSupportedCardTypes(cardTypes.toArray(new CardType[0])));
 
-        dropInViewModel.getCardTokenizationError().observe(getViewLifecycleOwner(), new Observer<Exception>() {
-            @Override
-            public void onChanged(Exception error) {
-                if (error instanceof ErrorWithResponse) {
-                    setErrors((ErrorWithResponse) error);
-                }
+        dropInViewModel.getCardTokenizationError().observe(getViewLifecycleOwner(), error -> {
+            if (error instanceof ErrorWithResponse) {
+                setErrors((ErrorWithResponse) error);
             }
         });
 
@@ -94,12 +79,7 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
         });
 
         Toolbar toolbar = view.findViewById(R.id.bt_toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentFragmentManager().popBackStack();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         sendAnalyticsEvent("card.selected");
 
@@ -129,12 +109,16 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
     }
 
     private boolean isCardTypeValid() {
-        return (dropInViewModel.getSupportedCardTypes().getValue()).contains(cardForm.getCardEditText()
-                .getCardType());
+        if (dropInViewModel.getSupportedCardTypes().getValue() != null) {
+            return (dropInViewModel.getSupportedCardTypes().getValue()).contains(cardForm.getCardEditText()
+                    .getCardType());
+        } else {
+            return false;
+        }
     }
 
     private void showCardNotSupportedError() {
-        cardForm.getCardEditText().setError(getContext().getString(R.string.bt_card_not_accepted));
+        cardForm.getCardEditText().setError(requireContext().getString(R.string.bt_card_not_accepted));
         animatedButtonView.showButton();
     }
 
@@ -143,7 +127,7 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
 
         if (formErrors != null) {
             if (formErrors.errorFor("number") != null) {
-                cardForm.setCardNumberError(getContext().getString(R.string.bt_card_number_invalid));
+                cardForm.setCardNumberError(requireContext().getString(R.string.bt_card_number_invalid));
             }
         }
 
@@ -168,7 +152,7 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
 
     @Override
     public void onCardTypeChanged(CardType cardType) {
-        if (cardType == CardType.EMPTY) {
+        if (cardType == CardType.EMPTY && dropInViewModel.getSupportedCardTypes().getValue() != null) {
             supportedCardTypesView.setSupportedCardTypes(dropInViewModel.getSupportedCardTypes().getValue().toArray(new CardType[0]));
         } else {
             supportedCardTypesView.setSelected(cardType);

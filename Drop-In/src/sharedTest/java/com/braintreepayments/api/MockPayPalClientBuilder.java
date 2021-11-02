@@ -1,11 +1,10 @@
 package com.braintreepayments.api;
 
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+
+import org.mockito.stubbing.Answer;
 
 public class MockPayPalClientBuilder {
 
@@ -25,17 +24,14 @@ public class MockPayPalClientBuilder {
     PayPalClient build() {
         PayPalClient payPalClient = mock(PayPalClient.class);
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                PayPalBrowserSwitchResultCallback callback = (PayPalBrowserSwitchResultCallback) invocation.getArguments()[1];
-                if (browserSwitchResult != null) {
-                    callback.onResult(browserSwitchResult, null);
-                } else if (browserSwitchError != null) {
-                    callback.onResult(null, browserSwitchError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            PayPalBrowserSwitchResultCallback callback = (PayPalBrowserSwitchResultCallback) invocation.getArguments()[1];
+            if (browserSwitchResult != null) {
+                callback.onResult(browserSwitchResult, null);
+            } else if (browserSwitchError != null) {
+                callback.onResult(null, browserSwitchError);
             }
+            return null;
         }).when(payPalClient).onBrowserSwitchResult(any(BrowserSwitchResult.class), any(PayPalBrowserSwitchResultCallback.class));
 
         return payPalClient;

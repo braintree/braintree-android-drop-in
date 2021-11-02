@@ -1,16 +1,15 @@
 package com.braintreepayments.api;
 
-import android.content.Intent;
-
-import androidx.fragment.app.FragmentActivity;
-
-import org.mockito.invocation.InvocationOnMock;
-import org.mockito.stubbing.Answer;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+
+import android.content.Intent;
+
+import androidx.fragment.app.FragmentActivity;
+
+import org.mockito.stubbing.Answer;
 
 public class MockGooglePayClientBuilder {
 
@@ -42,30 +41,24 @@ public class MockGooglePayClientBuilder {
     public GooglePayClient build() {
         GooglePayClient googlePayClient = mock(GooglePayClient.class);
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                GooglePayIsReadyToPayCallback callback = (GooglePayIsReadyToPayCallback) invocation.getArguments()[1];
-                if (isReadyToPaySuccess != null) {
-                    callback.onResult(isReadyToPaySuccess, null);
-                } else if (isReadyToPayError != null) {
-                    callback.onResult(false, isReadyToPayError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            GooglePayIsReadyToPayCallback callback = (GooglePayIsReadyToPayCallback) invocation.getArguments()[1];
+            if (isReadyToPaySuccess != null) {
+                callback.onResult(isReadyToPaySuccess, null);
+            } else if (isReadyToPayError != null) {
+                callback.onResult(false, isReadyToPayError);
             }
+            return null;
         }).when(googlePayClient).isReadyToPay(any(FragmentActivity.class), any(GooglePayIsReadyToPayCallback.class));
 
-        doAnswer(new Answer<Void>() {
-            @Override
-            public Void answer(InvocationOnMock invocation) {
-                GooglePayOnActivityResultCallback callback = (GooglePayOnActivityResultCallback) invocation.getArguments()[2];
-                if (onActivityResultSuccess != null) {
-                    callback.onResult(onActivityResultSuccess, null);
-                } else if (onActivityResultError != null) {
-                    callback.onResult(null, onActivityResultError);
-                }
-                return null;
+        doAnswer((Answer<Void>) invocation -> {
+            GooglePayOnActivityResultCallback callback = (GooglePayOnActivityResultCallback) invocation.getArguments()[2];
+            if (onActivityResultSuccess != null) {
+                callback.onResult(onActivityResultSuccess, null);
+            } else if (onActivityResultError != null) {
+                callback.onResult(null, onActivityResultError);
             }
+            return null;
         }).when(googlePayClient).onActivityResult(anyInt(), any(Intent.class), any(GooglePayOnActivityResultCallback.class));
         return googlePayClient;
     }

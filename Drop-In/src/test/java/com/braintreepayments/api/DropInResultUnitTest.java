@@ -1,28 +1,16 @@
 package com.braintreepayments.api;
 
-import android.os.Parcel;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.TestCase.assertNotNull;
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.os.Parcel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
-
-import java.util.concurrent.CountDownLatch;
-
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
-import static junit.framework.Assert.fail;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 @RunWith(RobolectricTestRunner.class)
 public class DropInResultUnitTest {
@@ -84,6 +72,7 @@ public class DropInResultUnitTest {
         DropInResult parceled = DropInResult.CREATOR.createFromParcel(parcel);
 
         assertEquals(DropInPaymentMethodType.VISA, parceled.getPaymentMethodType());
+        assertNotNull(parceled.getPaymentMethodNonce());
         assertEquals(cardNonce.getString(), parceled.getPaymentMethodNonce().getString());
         assertEquals("device_data", parceled.getDeviceData());
         assertEquals("1111", parceled.getPaymentDescription());

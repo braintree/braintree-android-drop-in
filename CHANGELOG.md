@@ -8,6 +8,8 @@
 * CardForm
   * Focus Cardholder Name field when adding card details if field not disabled (fixes #180)
 * Breaking Changes
+  * Language Support
+    * Require Java 8 or higher
   * Visibility
     * Make `BottomSheetState` package-private
     * Make `DropInEventType` package-private

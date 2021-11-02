@@ -162,10 +162,9 @@ public class PaymentMethodClientUnitTest {
         GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
         sut.getPaymentMethodNonces(callback);
 
-        ArgumentCaptor<List<PaymentMethodNonce>> captor = ArgumentCaptor.forClass((Class) List.class);
-        verify(callback).onResult(captor.capture(), (Exception) isNull());
+        verify(callback).onResult(paymentMethodNoncesCaptor.capture(), (Exception) isNull());
 
-        assertEquals(0, captor.getValue().size());
+        assertEquals(0, paymentMethodNoncesCaptor.getValue().size());
     }
 
     @Test
@@ -219,10 +218,9 @@ public class PaymentMethodClientUnitTest {
         GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
         sut.getPaymentMethodNonces(callback);
 
-        ArgumentCaptor<List<PaymentMethodNonce>> captor = ArgumentCaptor.forClass((Class) List.class);
-        verify(callback).onResult(captor.capture(), (Exception) isNull());
+        verify(callback).onResult(paymentMethodNoncesCaptor.capture(), (Exception) isNull());
 
-        List<PaymentMethodNonce> paymentMethodNonces = captor.getValue();
+        List<PaymentMethodNonce> paymentMethodNonces = paymentMethodNoncesCaptor.getValue();
         assertEquals(3, paymentMethodNonces.size());
         assertTrue(paymentMethodNonces.get(0) instanceof CardNonce);
         assertTrue(paymentMethodNonces.get(1) instanceof PayPalAccountNonce);
@@ -239,10 +237,9 @@ public class PaymentMethodClientUnitTest {
         GetPaymentMethodNoncesCallback callback = mock(GetPaymentMethodNoncesCallback.class);
         sut.getPaymentMethodNonces(callback);
 
-        ArgumentCaptor<List<PaymentMethodNonce>> captor = ArgumentCaptor.forClass((Class) List.class);
-        verify(callback).onResult(captor.capture(), (Exception) isNull());
+        verify(callback).onResult(paymentMethodNoncesCaptor.capture(), (Exception) isNull());
 
-        List<PaymentMethodNonce> paymentMethodNonces = captor.getValue();
+        List<PaymentMethodNonce> paymentMethodNonces = paymentMethodNoncesCaptor.getValue();
         assertEquals(0, paymentMethodNonces.size());
     }
 

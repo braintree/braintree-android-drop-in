@@ -31,12 +31,9 @@ class VaultManagerPaymentMethodsAdapter extends RecyclerView.Adapter<VaultManage
         final PaymentMethodItemView paymentMethodItemView = ((PaymentMethodItemView)holder.itemView);
 
         paymentMethodItemView.setPaymentMethod(paymentMethodNonce, true);
-        paymentMethodItemView.setOnDeleteIconClick(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (clickListener != null) {
-                    clickListener.onClick(paymentMethodItemView);
-                }
+        paymentMethodItemView.setOnDeleteIconClick(v -> {
+            if (clickListener != null) {
+                clickListener.onClick(paymentMethodItemView);
             }
         });
     }

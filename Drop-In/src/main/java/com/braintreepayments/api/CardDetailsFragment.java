@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.widget.Toolbar;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
@@ -69,47 +68,30 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
         cardForm = view.findViewById(R.id.bt_card_form);
         animatedButtonView = view.findViewById(R.id.bt_animated_button_view);
 
-        animatedButtonView.setClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onCardFormSubmit();
-            }
-        });
+        animatedButtonView.setClickListener(v -> onCardFormSubmit());
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
-        dropInViewModel.getCardTokenizationError().observe(getViewLifecycleOwner(), new Observer<Exception>() {
-            @Override
-            public void onChanged(Exception error) {
-                if (error instanceof ErrorWithResponse) {
-                    setErrors((ErrorWithResponse) error);
-                }
-                animatedButtonView.showButton();
+        dropInViewModel.getCardTokenizationError().observe(getViewLifecycleOwner(), error -> {
+            if (error instanceof ErrorWithResponse) {
+                setErrors((ErrorWithResponse) error);
             }
+            animatedButtonView.showButton();
         });
 
-        dropInViewModel.getUserCanceledError().observe(getViewLifecycleOwner(), new Observer<Exception>() {
-            @Override
-            public void onChanged(Exception e) {
-                animatedButtonView.showButton();
-            }
-        });
+        dropInViewModel.getUserCanceledError().observe(getViewLifecycleOwner(), e -> animatedButtonView.showButton());
 
-        requireActivity().getOnBackPressedDispatcher().addCallback(requireActivity(), new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                getParentFragmentManager().popBackStack();
-                remove();
-            }
-        });
+        requireActivity().getOnBackPressedDispatcher().addCallback(requireActivity(),
+                new OnBackPressedCallback(true) {
+                    @Override
+                    public void handleOnBackPressed() {
+                        getParentFragmentManager().popBackStack();
+                        remove();
+                    }
+                });
 
         Toolbar toolbar = view.findViewById(R.id.bt_toolbar);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getParentFragmentManager().popBackStack();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         boolean showCardCheckbox = !isTokenizationKeyAuth && dropInRequest.getAllowVaultCardOverride();
 
@@ -151,25 +133,25 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
             if (formErrors.errorFor("expirationYear") != null ||
                     formErrors.errorFor("expirationMonth") != null ||
                     formErrors.errorFor("expirationDate") != null) {
-                cardForm.setExpirationError(getContext().getString(R.string.bt_expiration_invalid));
+                cardForm.setExpirationError(requireContext().getString(R.string.bt_expiration_invalid));
             }
 
             if (formErrors.errorFor("cvv") != null) {
-                cardForm.setCvvError(getContext().getString(R.string.bt_cvv_invalid,
-                        getContext().getString(
+                cardForm.setCvvError(requireContext().getString(R.string.bt_cvv_invalid,
+                        requireContext().getString(
                                 cardForm.getCardEditText().getCardType().getSecurityCodeName())));
             }
 
             if (formErrors.errorFor("billingAddress") != null) {
-                cardForm.setPostalCodeError(getContext().getString(R.string.bt_postal_code_invalid));
+                cardForm.setPostalCodeError(requireContext().getString(R.string.bt_postal_code_invalid));
             }
 
             if (formErrors.errorFor("mobileCountryCode") != null) {
-                cardForm.setCountryCodeError(getContext().getString(R.string.bt_country_code_invalid));
+                cardForm.setCountryCodeError(requireContext().getString(R.string.bt_country_code_invalid));
             }
 
             if (formErrors.errorFor("mobileNumber") != null) {
-                cardForm.setMobileNumberError(getContext().getString(R.string.bt_mobile_number_invalid));
+                cardForm.setMobileNumberError(requireContext().getString(R.string.bt_mobile_number_invalid));
             }
         }
     }

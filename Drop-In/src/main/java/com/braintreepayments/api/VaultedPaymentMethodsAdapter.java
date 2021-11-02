@@ -34,12 +34,7 @@ class VaultedPaymentMethodsAdapter extends RecyclerView.Adapter<VaultedPaymentMe
     public void onBindViewHolder(@NonNull VaultedPaymentMethodViewHolder holder, int position) {
         final PaymentMethodNonce paymentMethodNonce = paymentMethodNonces.get(position);
         holder.bind(paymentMethodNonce);
-        holder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onVaultedPaymentMethodSelected(paymentMethodNonce);
-            }
-        });
+        holder.setOnClickListener(v -> listener.onVaultedPaymentMethodSelected(paymentMethodNonce));
     }
 
     @Override

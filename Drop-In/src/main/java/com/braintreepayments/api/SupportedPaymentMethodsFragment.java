@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -94,39 +93,25 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
             setViewState(ViewState.LOADING);
         }
 
-        dropInViewModel.getSupportedPaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<DropInPaymentMethodType>>() {
-            @Override
-            public void onChanged(List<DropInPaymentMethodType> paymentMethodTypes) {
-                if (hasSupportedPaymentMethods()) {
-                    setViewState(ViewState.SHOW_PAYMENT_METHODS);
-                }
+        dropInViewModel.getSupportedPaymentMethods().observe(getViewLifecycleOwner(), paymentMethodTypes -> {
+            if (hasSupportedPaymentMethods()) {
+                setViewState(ViewState.SHOW_PAYMENT_METHODS);
             }
         });
 
-        dropInViewModel.getVaultedPaymentMethods().observe(getViewLifecycleOwner(), new Observer<List<PaymentMethodNonce>>() {
-            @Override
-            public void onChanged(List<PaymentMethodNonce> paymentMethodNonces) {
-                if (hasVaultedPaymentMethods()) {
-                    refreshView();
-                }
+        dropInViewModel.getVaultedPaymentMethods().observe(getViewLifecycleOwner(), paymentMethodNonces -> {
+            if (hasVaultedPaymentMethods()) {
+                refreshView();
             }
         });
 
-        dropInViewModel.getDropInState().observe(getViewLifecycleOwner(), new Observer<DropInState>() {
-            @Override
-            public void onChanged(DropInState dropInState) {
-                if (dropInState == DropInState.WILL_FINISH) {
-                    setViewState(ViewState.DROP_IN_FINISHING);
-                }
+        dropInViewModel.getDropInState().observe(getViewLifecycleOwner(), dropInState -> {
+            if (dropInState == DropInState.WILL_FINISH) {
+                setViewState(ViewState.DROP_IN_FINISHING);
             }
         });
 
-        vaultManagerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendDropInEvent(new DropInEvent(DropInEventType.SHOW_VAULT_MANAGER));
-            }
-        });
+        vaultManagerButton.setOnClickListener(v -> sendDropInEvent(new DropInEvent(DropInEventType.SHOW_VAULT_MANAGER)));
 
         sendAnalyticsEvent("appeared");
         return view;

@@ -140,28 +140,28 @@ public class TestConfigurationBuilder extends JSONBuilder {
 
     public TestVenmoConfigurationBuilder payWithVenmo() {
         try {
-            return new TestVenmoConfigurationBuilder(mJsonBody.getJSONObject("payWithVenmo"));
+            return new TestVenmoConfigurationBuilder(jsonBody.getJSONObject("payWithVenmo"));
         } catch (JSONException ignored) {}
         return new TestVenmoConfigurationBuilder();
     }
 
     public TestGooglePayConfigurationBuilder googlePay() {
         try {
-            return new TestGooglePayConfigurationBuilder(mJsonBody.getJSONObject("googlePayment"));
+            return new TestGooglePayConfigurationBuilder(jsonBody.getJSONObject("googlePayment"));
         } catch (JSONException ignored) {}
         return new TestGooglePayConfigurationBuilder();
     }
 
     public TestPayPalConfigurationBuilder paypal() {
         try {
-            return new TestPayPalConfigurationBuilder(mJsonBody.getJSONObject("paypal"));
+            return new TestPayPalConfigurationBuilder(jsonBody.getJSONObject("paypal"));
         } catch (JSONException ignored) {}
         return new TestPayPalConfigurationBuilder(true);
     }
 
     public TestKountConfigurationBuilder kount() {
         try {
-            return new TestKountConfigurationBuilder(mJsonBody.getJSONObject("kount"));
+            return new TestKountConfigurationBuilder(jsonBody.getJSONObject("kount"));
         } catch (JSONException ignored) {}
         return new TestKountConfigurationBuilder();
     }

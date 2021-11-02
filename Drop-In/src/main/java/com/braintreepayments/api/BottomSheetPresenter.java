@@ -176,18 +176,14 @@ class BottomSheetPresenter {
         }
 
         final ViewPager2 viewPager = viewHolder.getViewPager();
-        viewPagerAnimator.animateToPosition(viewPager, 0, new AnimationCompleteCallback() {
+        viewPagerAnimator.animateToPosition(viewPager, 0, () -> {
+            // revert layout height to wrap content
+            setViewGroupHeight(viewPager, ViewGroup.LayoutParams.WRAP_CONTENT);
+            viewHolder.requestLayout();
 
-            @Override
-            public void onAnimationComplete() {
-                // revert layout height to wrap content
-                setViewGroupHeight(viewPager, ViewGroup.LayoutParams.WRAP_CONTENT);
-                viewHolder.requestLayout();
-
-                // remove vault manager fragment
-                childFragmentList.remove(1);
-                viewPagerAdapter.notifyDataSetChanged();
-            }
+            // remove vault manager fragment
+            childFragmentList.remove(1);
+            viewPagerAdapter.notifyDataSetChanged();
         });
     }
 

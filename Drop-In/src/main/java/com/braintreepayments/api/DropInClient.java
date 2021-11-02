@@ -96,53 +96,41 @@ public class DropInClient {
         final ThreeDSecureRequest threeDSecureRequest = dropInRequest.getThreeDSecureRequest();
         threeDSecureRequest.setNonce(paymentMethodNonce.getString());
 
-        threeDSecureClient.performVerification(activity, threeDSecureRequest, new ThreeDSecureResultCallback() {
-            @Override
-            public void onResult(@Nullable ThreeDSecureResult lookupResult, @Nullable Exception error) {
-                if (lookupResult != null) {
-                    threeDSecureClient.continuePerformVerification(activity, threeDSecureRequest, lookupResult, new ThreeDSecureResultCallback() {
-                        @Override
-                        public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                            if (error != null) {
-                                callback.onResult(null, error);
-                            } else if (threeDSecureResult != null) {
-                                final DropInResult dropInResult = new DropInResult();
-                                dropInResult.paymentMethodNonce(threeDSecureResult.getTokenizedCard());
-                                dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
-                                    @Override
-                                    public void onResult(@Nullable String deviceData, @Nullable Exception error) {
-                                        if (deviceData != null) {
-                                            dropInResult.deviceData(deviceData);
-                                            callback.onResult(dropInResult, null);
-                                        } else {
-                                            callback.onResult(null, error);
-                                        }
-                                    }
-                                });
+        threeDSecureClient.performVerification(activity, threeDSecureRequest, (lookupResult, error) -> {
+            if (lookupResult != null) {
+                threeDSecureClient.continuePerformVerification(activity, threeDSecureRequest, lookupResult, (threeDSecureResult, continueError) -> {
+                    if (continueError != null) {
+                        callback.onResult(null, continueError);
+                    } else if (threeDSecureResult != null) {
+                        final DropInResult dropInResult = new DropInResult();
+                        dropInResult.paymentMethodNonce(threeDSecureResult.getTokenizedCard());
+                        dataCollector.collectDeviceData(activity, (deviceData, dataCollectionError) -> {
+                            if (deviceData != null) {
+                                dropInResult.deviceData(deviceData);
+                                callback.onResult(dropInResult, null);
+                            } else {
+                                callback.onResult(null, dataCollectionError);
                             }
-                        }
-                    });
-                } else {
-                    callback.onResult(null, error);
-                }
+                        });
+                    }
+                });
+            } else {
+                callback.onResult(null, error);
             }
         });
     }
 
     void shouldRequestThreeDSecureVerification(PaymentMethodNonce paymentMethodNonce, final ShouldRequestThreeDSecureVerification callback) {
         if (paymentMethodCanPerformThreeDSecureVerification(paymentMethodNonce)) {
-            braintreeClient.getConfiguration(new ConfigurationCallback() {
-                @Override
-                public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
-                    if (configuration == null) {
-                        callback.onResult(false);
-                        return;
-                    }
-
-                    boolean hasAmount = (dropInRequest.getThreeDSecureRequest() != null && !TextUtils.isEmpty(dropInRequest.getThreeDSecureRequest().getAmount()));
-                    boolean shouldRequestThreeDSecureVerification = configuration.isThreeDSecureEnabled() && hasAmount;
-                    callback.onResult(shouldRequestThreeDSecureVerification);
+            braintreeClient.getConfiguration((configuration, error) -> {
+                if (configuration == null) {
+                    callback.onResult(false);
+                    return;
                 }
+
+                boolean hasAmount = (dropInRequest.getThreeDSecureRequest() != null && !TextUtils.isEmpty(dropInRequest.getThreeDSecureRequest().getAmount()));
+                boolean shouldRequestThreeDSecureVerification = configuration.isThreeDSecureEnabled() && hasAmount;
+                callback.onResult(shouldRequestThreeDSecureVerification);
             });
 
         } else {
@@ -201,23 +189,16 @@ public class DropInClient {
 
             switch (requestCode) {
                 case BraintreeRequestCodes.PAYPAL:
-                    payPalClient.onBrowserSwitchResult(browserSwitchResult, new PayPalBrowserSwitchResultCallback() {
-                        @Override
-                        public void onResult(@Nullable PayPalAccountNonce payPalAccountNonce, @Nullable Exception error) {
-                            notifyDropInResult(activity, payPalAccountNonce, error, callback);
-                        }
-                    });
+                    payPalClient.onBrowserSwitchResult(browserSwitchResult, (payPalAccountNonce, error) ->
+                            notifyDropInResult(activity, payPalAccountNonce, error, callback));
                     break;
                 case BraintreeRequestCodes.THREE_D_SECURE:
-                    threeDSecureClient.onBrowserSwitchResult(browserSwitchResult, new ThreeDSecureResultCallback() {
-                        @Override
-                        public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                            PaymentMethodNonce paymentMethodNonce = null;
-                            if (threeDSecureResult != null) {
-                                paymentMethodNonce = threeDSecureResult.getTokenizedCard();
-                            }
-                            notifyDropInResult(activity, paymentMethodNonce, error, callback);
+                    threeDSecureClient.onBrowserSwitchResult(browserSwitchResult, (threeDSecureResult, error) -> {
+                        PaymentMethodNonce paymentMethodNonce = null;
+                        if (threeDSecureResult != null) {
+                            paymentMethodNonce = threeDSecureResult.getTokenizedCard();
                         }
+                        notifyDropInResult(activity, paymentMethodNonce, error, callback);
                     });
                     break;
             }
@@ -238,34 +219,23 @@ public class DropInClient {
     }
 
     void handleThreeDSecureActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
-        threeDSecureClient.onActivityResult(resultCode, data, new ThreeDSecureResultCallback() {
-            @Override
-            public void onResult(@Nullable ThreeDSecureResult threeDSecureResult, @Nullable Exception error) {
-                PaymentMethodNonce paymentMethodNonce = null;
-                if (threeDSecureResult != null) {
-                    paymentMethodNonce = threeDSecureResult.getTokenizedCard();
-                }
-                notifyDropInResult(activity, paymentMethodNonce, error, callback);
+        threeDSecureClient.onActivityResult(resultCode, data, (threeDSecureResult, error) -> {
+            PaymentMethodNonce paymentMethodNonce = null;
+            if (threeDSecureResult != null) {
+                paymentMethodNonce = threeDSecureResult.getTokenizedCard();
             }
+            notifyDropInResult(activity, paymentMethodNonce, error, callback);
         });
     }
 
     void handleGooglePayActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
-        googlePayClient.onActivityResult(resultCode, data, new GooglePayOnActivityResultCallback() {
-            @Override
-            public void onResult(@Nullable PaymentMethodNonce paymentMethodNonce, @Nullable Exception error) {
-               notifyDropInResult(activity, paymentMethodNonce, error, callback);
-            }
-        });
+        googlePayClient.onActivityResult(resultCode, data, (paymentMethodNonce, error) ->
+                notifyDropInResult(activity, paymentMethodNonce, error, callback));
     }
 
     void handleVenmoActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
-        venmoClient.onActivityResult(activity, resultCode, data, new VenmoOnActivityResultCallback() {
-            @Override
-            public void onResult(@Nullable VenmoAccountNonce venmoAccountNonce, @Nullable Exception error) {
-                notifyDropInResult(activity, venmoAccountNonce, error, callback);
-            }
-        });
+        venmoClient.onActivityResult(activity, resultCode, data, (venmoAccountNonce, error) ->
+                notifyDropInResult(activity, venmoAccountNonce, error, callback));
     }
 
     private void notifyDropInResult(FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, Exception dropInResultError, final DropInResultCallback callback) {
@@ -276,18 +246,15 @@ public class DropInClient {
 
         final DropInResult dropInResult = new DropInResult()
                 .paymentMethodNonce(paymentMethodNonce);
-        dataCollector.collectDeviceData(activity, new DataCollectorCallback() {
-            @Override
-            public void onResult(@Nullable String deviceData, @Nullable Exception dataCollectionError) {
-                if (dataCollectionError != null) {
-                    callback.onResult(null, dataCollectionError);
-                    return;
-                }
+        dataCollector.collectDeviceData(activity, (deviceData, dataCollectionError) -> {
+            if (dataCollectionError != null) {
+                callback.onResult(null, dataCollectionError);
+                return;
+            }
 
-                if (deviceData != null) {
-                    dropInResult.deviceData(deviceData);
-                    callback.onResult(dropInResult, null);
-                }
+            if (deviceData != null) {
+                dropInResult.deviceData(deviceData);
+                callback.onResult(dropInResult, null);
             }
         });
     }
@@ -305,29 +272,22 @@ public class DropInClient {
     }
 
     void getSupportedPaymentMethods(final FragmentActivity activity, final GetSupportedPaymentMethodsCallback callback) {
-        braintreeClient.getConfiguration(new ConfigurationCallback() {
-            @Override
-            public void onResult(@Nullable final Configuration configuration, @Nullable Exception error) {
-                if (error != null) {
-                    callback.onResult(null, error);
-                    return;
-                }
+        braintreeClient.getConfiguration((configuration, error) -> {
+            if (error != null) {
+                callback.onResult(null, error);
+                return;
+            }
 
-                if (!dropInRequest.isGooglePayDisabled()) {
-                    googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
-                        @Override
-                        public void onResult(boolean isReadyToGooglePay, Exception error) {
-
-                            List<DropInPaymentMethodType> availablePaymentMethods =
-                                filterSupportedPaymentMethods(activity, configuration, isReadyToGooglePay);
-                            callback.onResult(availablePaymentMethods, null);
-                        }
-                    });
-                } else {
+            if (!dropInRequest.isGooglePayDisabled()) {
+                googlePayClient.isReadyToPay(activity, (isReadyToGooglePay, isReadyToPayError) -> {
                     List<DropInPaymentMethodType> availablePaymentMethods =
-                            filterSupportedPaymentMethods(activity, configuration, false);
+                        filterSupportedPaymentMethods(activity, configuration, isReadyToGooglePay);
                     callback.onResult(availablePaymentMethods, null);
-                }
+                });
+            } else {
+                List<DropInPaymentMethodType> availablePaymentMethods =
+                        filterSupportedPaymentMethods(activity, configuration, false);
+                callback.onResult(availablePaymentMethods, null);
             }
         });
     }
@@ -363,18 +323,15 @@ public class DropInClient {
     }
 
     void getSupportedCardTypes(final GetSupportedCardTypesCallback callback) {
-        braintreeClient.getConfiguration(new ConfigurationCallback() {
-            @Override
-            public void onResult(@Nullable Configuration configuration, @Nullable Exception error) {
-                if (configuration != null) {
-                    List<String> supportedCardTypes = new ArrayList<>(configuration.getSupportedCardTypes());
-                    if (!configuration.isUnionPayEnabled()) {
-                        supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
-                    }
-                    callback.onResult(supportedCardTypes, null);
-                } else {
-                    callback.onResult(null, error);
+        braintreeClient.getConfiguration((configuration, error) -> {
+            if (configuration != null) {
+                List<String> supportedCardTypes = new ArrayList<>(configuration.getSupportedCardTypes());
+                if (!configuration.isUnionPayEnabled()) {
+                    supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
                 }
+                callback.onResult(supportedCardTypes, null);
+            } else {
+                callback.onResult(null, error);
             }
         });
     }
@@ -410,16 +367,13 @@ public class DropInClient {
                 .getString(LAST_USED_PAYMENT_METHOD_TYPE, null));
 
         if (lastUsedPaymentMethodType == DropInPaymentMethodType.GOOGLE_PAY) {
-            googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
-                @Override
-                public void onResult(boolean isReadyToPay, Exception error) {
-                    if (isReadyToPay) {
-                        DropInResult result = new DropInResult();
-                        result.setPaymentMethodType(lastUsedPaymentMethodType);
-                        callback.onResult(result, null);
-                    } else {
-                        getPaymentMethodNonces(callback);
-                    }
+            googlePayClient.isReadyToPay(activity, (isReadyToPay, error) -> {
+                if (isReadyToPay) {
+                    DropInResult result = new DropInResult();
+                    result.setPaymentMethodType(lastUsedPaymentMethodType);
+                    callback.onResult(result, null);
+                } else {
+                    getPaymentMethodNonces(callback);
                 }
             });
         } else {
@@ -428,19 +382,16 @@ public class DropInClient {
     }
 
     private void getPaymentMethodNonces(final FetchMostRecentPaymentMethodCallback callback) {
-        paymentMethodClient.getPaymentMethodNonces(new GetPaymentMethodNoncesCallback() {
-            @Override
-            public void onResult(@Nullable List<PaymentMethodNonce> paymentMethodNonceList, @Nullable Exception error) {
-                if (paymentMethodNonceList != null) {
-                    DropInResult result = new DropInResult();
-                    if (paymentMethodNonceList.size() > 0) {
-                        PaymentMethodNonce paymentMethod = paymentMethodNonceList.get(0);
-                        result.paymentMethodNonce(paymentMethod);
-                    }
-                    callback.onResult(result, null);
-                } else if (error != null) {
-                    callback.onResult(null, error);
+        paymentMethodClient.getPaymentMethodNonces((paymentMethodNonceList, error) -> {
+            if (paymentMethodNonceList != null) {
+                DropInResult result = new DropInResult();
+                if (paymentMethodNonceList.size() > 0) {
+                    PaymentMethodNonce paymentMethod = paymentMethodNonceList.get(0);
+                    result.paymentMethodNonce(paymentMethod);
                 }
+                callback.onResult(result, null);
+            } else if (error != null) {
+                callback.onResult(null, error);
             }
         });
     }
@@ -448,39 +399,29 @@ public class DropInClient {
     void getVaultedPaymentMethods(final FragmentActivity activity, final GetPaymentMethodNoncesCallback callback) {
         // TODO: cache nonces in ViewModel and allow refresh of vaulted payment methods instead of having a refetch parameter
 
-        braintreeClient.getConfiguration(new ConfigurationCallback() {
-            @Override
-            public void onResult(@Nullable final Configuration configuration, @Nullable Exception error) {
-                if (error != null) {
-                    callback.onResult(null, error);
-                    return;
-                }
-
-                paymentMethodClient.getPaymentMethodNonces(new GetPaymentMethodNoncesCallback() {
-
-                    @Override
-                    public void onResult(@Nullable final List<PaymentMethodNonce> paymentMethodNonces, @Nullable Exception error) {
-                        if (error != null) {
-                            callback.onResult(null, error);
-                        } else if (paymentMethodNonces != null) {
-                            if (!dropInRequest.isGooglePayDisabled()) {
-                                googlePayClient.isReadyToPay(activity, new GooglePayIsReadyToPayCallback() {
-                                    @Override
-                                    public void onResult(boolean isReadyToPay, Exception error) {
-                                        AvailablePaymentMethodNonceList availablePaymentMethodNonceList =
-                                                new AvailablePaymentMethodNonceList(configuration, paymentMethodNonces, dropInRequest, isReadyToPay);
-                                        callback.onResult(availablePaymentMethodNonceList.getItems(), null);
-                                    }
-                                });
-                            } else {
-                                AvailablePaymentMethodNonceList availablePaymentMethodNonceList =
-                                        new AvailablePaymentMethodNonceList(configuration, paymentMethodNonces, dropInRequest, false);
-                                callback.onResult(availablePaymentMethodNonceList.getItems(), null);
-                            }
-                        }
-                    }
-                });
+        braintreeClient.getConfiguration((configuration, error) -> {
+            if (error != null) {
+                callback.onResult(null, error);
+                return;
             }
+
+            paymentMethodClient.getPaymentMethodNonces((paymentMethodNonces, getPaymentMethodNoncesError) -> {
+                if (getPaymentMethodNoncesError != null) {
+                    callback.onResult(null, getPaymentMethodNoncesError);
+                } else if (paymentMethodNonces != null) {
+                    if (!dropInRequest.isGooglePayDisabled()) {
+                        googlePayClient.isReadyToPay(activity, (isReadyToPay, isReadyToPayError) -> {
+                            AvailablePaymentMethodNonceList availablePaymentMethodNonceList =
+                                    new AvailablePaymentMethodNonceList(configuration, paymentMethodNonces, dropInRequest, isReadyToPay);
+                            callback.onResult(availablePaymentMethodNonceList.getItems(), null);
+                        });
+                    } else {
+                        AvailablePaymentMethodNonceList availablePaymentMethodNonceList =
+                                new AvailablePaymentMethodNonceList(configuration, paymentMethodNonces, dropInRequest, false);
+                        callback.onResult(availablePaymentMethodNonceList.getItems(), null);
+                    }
+                }
+            });
         });
     }
 }
