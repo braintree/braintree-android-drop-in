@@ -358,4 +358,18 @@ class SupportedPaymentMethodsFragmentUITest {
         onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(isDisplayed()))
         onView(withId(R.id.bt_supported_payment_methods)).check(matches(not(isDisplayed())))
     }
+
+    @Test
+    fun whenCancelButtonClicked_setsBottomSheetStateToHideRequested() {
+        dropInRequest.isVaultManagerEnabled = true
+
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+        onView(withId(R.id.bt_cancel_button)).perform(click())
+        scenario.onFragment { fragment ->
+            assertEquals(BottomSheetState.HIDE_REQUESTED, fragment.dropInViewModel.bottomSheetState.value)
+        }
+    }
 }

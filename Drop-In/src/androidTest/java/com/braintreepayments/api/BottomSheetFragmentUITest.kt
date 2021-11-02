@@ -151,7 +151,7 @@ class BottomSheetFragmentUITest {
         }
 
         onView(isRoot()).perform(waitFor(1000))
-        onView(withId(R.id.back_button)).perform(click())
+        onView(withId(R.id.bt_cancel_button)).perform(click())
         onView(isRoot()).perform(waitFor(1000))
 
         assertEquals(BottomSheetState.HIDDEN, viewModel.bottomSheetState.value)
