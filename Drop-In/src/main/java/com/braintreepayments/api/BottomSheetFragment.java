@@ -95,9 +95,6 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
             }
         });
 
-        Button backButton = view.findViewById(R.id.back_button);
-        backButton.setOnClickListener(v -> slideDownBottomSheet());
-
         bottomSheetPresenter = new BottomSheetPresenter();
         bottomSheetPresenter.bind(this);
 
