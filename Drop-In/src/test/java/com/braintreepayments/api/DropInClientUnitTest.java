@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.net.Uri;
 
 import androidx.fragment.app.FragmentActivity;
+import androidx.test.core.app.ApplicationProvider;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,6 +56,24 @@ public class DropInClientUnitTest {
         ActivityController<FragmentActivity> activityController =
                 Robolectric.buildActivity(FragmentActivity.class);
         activity = activityController.get();
+    }
+
+    @Test
+    public void constructor_setsIntegrationTypeDropIn() {
+        DropInClient sut = new DropInClient(ApplicationProvider.getApplicationContext(), Fixtures.TOKENIZATION_KEY, new DropInRequest());
+        assertEquals(IntegrationType.DROP_IN, sut.braintreeClient.getIntegrationType());
+    }
+
+    @Test
+    public void publicConstructor_setsBraintreeClientWithSessionId() {
+        DropInClient sut = new DropInClient(ApplicationProvider.getApplicationContext(), Fixtures.TOKENIZATION_KEY, new DropInRequest());
+        assertNotNull(sut.braintreeClient.getSessionId());
+    }
+
+    @Test
+    public void internalConstructor_setsBraintreeClientWithSessionId() {
+        DropInClient sut = new DropInClient(ApplicationProvider.getApplicationContext(), Fixtures.TOKENIZATION_KEY, "session-id", new DropInRequest());
+        assertEquals("session-id", sut.braintreeClient.getSessionId());
     }
 
     @Test

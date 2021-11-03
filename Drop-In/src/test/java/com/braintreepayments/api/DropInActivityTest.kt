@@ -53,12 +53,20 @@ class DropInActivityTest {
     }
 
     @Test
-    fun onCreate_setsIntegrationTypeToDropinForDropinActivity() {
-        setupDropInActivity(mock(DropInClient::class.java), dropInRequest)
+    fun onCreate_createsClientsWithExtrasFromIntent() {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(context, DropInActivity::class.java)
+        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, dropInRequest)
+        intent.putExtra(DropInClient.EXTRA_AUTHORIZATION, Fixtures.TOKENIZATION_KEY)
+        intent.putExtra(DropInClient.EXTRA_SESSION_ID, "session-id")
 
-        // TODO: revisit integration type metadata and consider passing integration (core PR)
-        // type through BraintreeClient constructor instead of relying on reflection
-//        assertEquals("dropin3", mActivity.getDropInClient().getIntegrationType());
+        activityController = buildActivity(DropInActivity::class.java, intent)
+        activity = activityController.get()
+        activityController.setup()
+
+        assertSame(dropInRequest, activity.dropInRequest)
+        assertEquals("session-id", activity.dropInClient.braintreeClient.sessionId)
+        assertEquals(Fixtures.TOKENIZATION_KEY, activity.dropInClient.braintreeClient.authorization.toString())
     }
 
     // endregion
