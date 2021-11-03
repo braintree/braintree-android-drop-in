@@ -92,7 +92,7 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
 
         Toolbar toolbar = view.findViewById(R.id.bt_toolbar);
         toolbar.setNavigationContentDescription(R.string.bt_back);
-        toolbar.setTouchScreenBlocksFocus(false);
+        toolbar.setTouchscreenBlocksFocus(false);
         toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         boolean showCardCheckbox = !isTokenizationKeyAuth && dropInRequest.getAllowVaultCardOverride();
