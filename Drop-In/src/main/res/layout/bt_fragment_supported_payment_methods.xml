@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:contentDescription="@string/bt_select_payment_method" >
 
         <RelativeLayout
             android:layout_width="match_parent"
