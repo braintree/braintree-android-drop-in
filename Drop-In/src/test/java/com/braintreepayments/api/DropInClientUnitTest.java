@@ -65,9 +65,15 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void constructor_setsBraintreeClientWithSessionId() {
+    public void publicConstructor_setsBraintreeClientWithSessionId() {
         DropInClient sut = new DropInClient(ApplicationProvider.getApplicationContext(), Fixtures.TOKENIZATION_KEY, new DropInRequest());
         assertNotNull(sut.braintreeClient.getSessionId());
+    }
+
+    @Test
+    public void internalConstructor_setsBraintreeClientWithSessionId() {
+        DropInClient sut = new DropInClient(ApplicationProvider.getApplicationContext(), Fixtures.TOKENIZATION_KEY, "session-id", new DropInRequest());
+        assertEquals("session-id", sut.braintreeClient.getSessionId());
     }
 
     @Test
