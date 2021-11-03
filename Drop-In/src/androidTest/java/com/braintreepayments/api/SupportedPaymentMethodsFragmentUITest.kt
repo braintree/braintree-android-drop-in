@@ -164,7 +164,7 @@ class SupportedPaymentMethodsFragmentUITest {
             fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
         }
 
-        onView(withId(R.id.bt_supported_payment_methods_header)).check(matches((isDisplayed())))
+        onView(withId(R.id.bt_supported_payment_methods)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
         onView(withId(R.id.bt_vaulted_payment_methods_header)).check(matches(not(isDisplayed())))
     }
 
@@ -202,7 +202,7 @@ class SupportedPaymentMethodsFragmentUITest {
             fragment.dropInViewModel.setHasFetchedPaymentMethods(true)
         }
 
-        onView(withId(R.id.bt_vaulted_payment_methods_wrapper)).check(matches(isDisplayed()))
+        onView(withId(R.id.bt_vaulted_payment_methods_wrapper)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
         onView(withId(R.id.bt_vault_edit_button)).check(matches(not(isDisplayed())))
     }
 
