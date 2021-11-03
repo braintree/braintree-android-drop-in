@@ -98,11 +98,9 @@ public class DropInResult implements Parcelable {
 
     static void setLastUsedPaymentMethodType(Context context,
                                              PaymentMethodNonce paymentMethodNonce) {
-        BraintreeSharedPreferences.getSharedPreferences(context)
-                .edit()
-                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        DropInPaymentMethodType.forType(paymentMethodNonce).getCanonicalName())
-                .apply();
+        BraintreeSharedPreferences.getInstance().putString(context,
+                DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+                DropInPaymentMethodType.forType(paymentMethodNonce).getCanonicalName());
     }
 
     @Override

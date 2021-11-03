@@ -363,8 +363,8 @@ public class DropInClient {
             return;
         }
 
-        final DropInPaymentMethodType lastUsedPaymentMethodType = DropInPaymentMethodType.forType(BraintreeSharedPreferences.getSharedPreferences(activity)
-                .getString(LAST_USED_PAYMENT_METHOD_TYPE, null));
+        final DropInPaymentMethodType lastUsedPaymentMethodType = DropInPaymentMethodType.forType(BraintreeSharedPreferences.getInstance()
+                .getString(activity, LAST_USED_PAYMENT_METHOD_TYPE, null));
 
         if (lastUsedPaymentMethodType == DropInPaymentMethodType.GOOGLE_PAY) {
             googlePayClient.isReadyToPay(activity, (isReadyToPay, error) -> {

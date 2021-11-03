@@ -177,8 +177,8 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
 
         assertEquals(DropInPaymentMethodType.VISA.canonicalName,
-            BraintreeSharedPreferences.getSharedPreferences(activity)
-                .getString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null))
+            BraintreeSharedPreferences.getInstance()
+                .getString(activity, DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null))
     }
 
     // endregion
