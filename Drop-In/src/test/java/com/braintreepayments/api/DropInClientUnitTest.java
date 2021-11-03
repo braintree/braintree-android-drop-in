@@ -482,11 +482,9 @@ public class DropInClientUnitTest {
 
     @Test
     public void fetchMostRecentPaymentMethod_callsBackWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle() throws JSONException {
-        BraintreeSharedPreferences.getSharedPreferences(activity)
-                .edit()
-                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        DropInPaymentMethodType.GOOGLE_PAY.getCanonicalName())
-                .commit();
+        BraintreeSharedPreferences.getInstance().putString(activity,
+                DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+                DropInPaymentMethodType.GOOGLE_PAY.getCanonicalName());
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
                 .isReadyToPaySuccess(true)
@@ -517,11 +515,9 @@ public class DropInClientUnitTest {
     @Test
     public void fetchMostRecentPaymentMethod_doesNotCallBackWithPayWithGoogleIfPayWithGoogleIsNotAvailable()
             throws JSONException {
-        BraintreeSharedPreferences.getSharedPreferences(activity)
-                .edit()
-                .putString(DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                        DropInPaymentMethodType.GOOGLE_PAY.getCanonicalName())
-                .commit();
+        BraintreeSharedPreferences.getInstance().putString(activity,
+                DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+                DropInPaymentMethodType.GOOGLE_PAY.getCanonicalName());
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
                 .isReadyToPaySuccess(false)
