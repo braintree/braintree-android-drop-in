@@ -94,9 +94,8 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
         }
 
         dropInViewModel.getHasFetchedPaymentMethods().observe(getViewLifecycleOwner(), hasFetched -> {
-            if (hasSupportedPaymentMethods() || hasVaultedPaymentMethods()) {
+            if (hasSupportedPaymentMethods()) {
                 setViewState(ViewState.SHOW_PAYMENT_METHODS);
-                refreshView();
             }
         });
 
@@ -107,7 +106,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
         });
 
         dropInViewModel.getUserCanceledError().observe(getViewLifecycleOwner(), exception -> {
-            if(exception instanceof UserCanceledException){
+            if(exception instanceof UserCanceledException && hasSupportedPaymentMethods()){
                 setViewState(ViewState.SHOW_PAYMENT_METHODS);
             }
         });
