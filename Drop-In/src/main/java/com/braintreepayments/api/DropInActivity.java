@@ -260,7 +260,7 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void onDidHideBottomSheet() {
-        finishDropInWithPendingResult(true);
+        finishDropInWithPendingResult(false);
     }
 
     private void finishDropInWithPendingResult(boolean cancelPendingActivityAnimation) {
@@ -370,7 +370,7 @@ public class DropInActivity extends AppCompatActivity {
             dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
         } else {
             // no need to animate bottom sheet hidden; finish activity with default Android animation
-            finishDropInWithPendingResult(false);
+            finishDropInWithPendingResult(true);
         }
     }
 
