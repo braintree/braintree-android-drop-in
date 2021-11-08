@@ -87,14 +87,6 @@ public class DropInActivity extends AppCompatActivity {
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
 
-        dropInClient.getSupportedPaymentMethods(this, (paymentMethods, error) -> {
-            if (paymentMethods != null) {
-                dropInViewModel.setSupportedPaymentMethods(paymentMethods);
-            } else {
-                onError(error);
-            }
-        });
-
         getSupportFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this,
                 (requestKey, result) -> onDropInEvent(DropInEvent.fromBundle(result)));
 
