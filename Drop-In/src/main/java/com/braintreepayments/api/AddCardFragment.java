@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.utils.CardType;
+import com.braintreepayments.cardform.view.AccessibleSupportedCardTypesView;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 import com.braintreepayments.cardform.view.SupportedCardTypesView;
@@ -24,7 +25,7 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
     @VisibleForTesting
     CardForm cardForm;
 
-    private SupportedCardTypesView supportedCardTypesView;
+    private AccessibleSupportedCardTypesView supportedCardTypesView;
     private AnimatedButtonView animatedButtonView;
 
     @VisibleForTesting

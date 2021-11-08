@@ -31,14 +31,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
-            <com.braintreepayments.cardform.view.SupportedCardTypesView
+            <com.braintreepayments.cardform.view.AccessibleSupportedCardTypesView
                 android:id="@+id/bt_supported_card_types"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="52dp"
-                android:paddingLeft="52dp"
                 android:paddingTop="36dp"
-                android:paddingEnd="0dp"
                 tools:ignore="RtlCompat" />
 
             <com.braintreepayments.api.AnimatedButtonView
