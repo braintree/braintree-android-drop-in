@@ -267,6 +267,25 @@ class SupportedPaymentMethodsFragmentUITest {
     }
 
     @Test
+    fun whenStateIsRESUMED_userCanceledErrorPresentInViewModel_hidesLoader() {
+        dropInRequest.isVaultManagerEnabled = false
+        val bundle = bundleOf("EXTRA_DROP_IN_REQUEST" to dropInRequest)
+
+        val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(isDisplayed()))
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
+            fragment.dropInViewModel.setUserCanceledError(UserCanceledException("User canceled 3DS."))
+        }
+
+        onView(withId(R.id.bt_select_payment_method_loader_wrapper)).check(matches(not(isDisplayed())))
+        onView(withId(R.id.bt_supported_payment_methods)).check(matches(withEffectiveVisibility(Visibility.VISIBLE)))
+    }
+
+    @Test
     fun whenStateIsRESUMED_whenHasSupportedPaymentMethods_hidesLoader() {
         dropInRequest.isVaultManagerEnabled = true
 
