@@ -1017,15 +1017,10 @@ class DropInActivityTest {
         val intent = Intent(context, DropInActivity::class.java)
         intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
 
-        try {
-            activityController = buildActivity(DropInActivity::class.java, intent)
-            activity = activityController.get()
-            activity.dropInClient = dropInClient
-            activityController.setup()
-        } catch (e: java.lang.Exception) {
-            System.out.println(Log.getStackTraceString(e))
-            throw e
-        }
+        activityController = buildActivity(DropInActivity::class.java, intent)
+        activity = activityController.get()
+        activity.dropInClient = dropInClient
+        activityController.setup()
     }
 
     private fun assertExceptionIsReturned(analyticsEvent: String, exception: java.lang.Exception) {
