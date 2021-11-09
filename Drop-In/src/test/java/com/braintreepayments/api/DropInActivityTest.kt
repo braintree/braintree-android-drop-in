@@ -202,18 +202,18 @@ class DropInActivityTest {
         assertTrue(activity.isFinishing)
     }
 
-    @Test
-    fun onActivityResult_whenResultIsUserCanceledException_setsUserCanceledErrorInViewModel() {
-        val error = UserCanceledException("User canceled 3DS.")
-        val dropInClient = MockDropInClientBuilder()
-            .handleActivityResultError(error)
-            .build()
-        setupDropInActivity(dropInClient, dropInRequest)
-
-        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, RESULT_OK, mock(Intent::class.java))
-        assertFalse(activity.isFinishing)
-        assertEquals(error, activity.dropInViewModel.userCanceledError.value)
-    }
+//    @Test
+//    fun onActivityResult_whenResultIsUserCanceledException_setsUserCanceledErrorInViewModel() {
+//        val error = UserCanceledException("User canceled 3DS.")
+//        val dropInClient = MockDropInClientBuilder()
+//            .handleActivityResultError(error)
+//            .build()
+//        setupDropInActivity(dropInClient, dropInRequest)
+//
+//        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, RESULT_OK, mock(Intent::class.java))
+//        assertFalse(activity.isFinishing)
+//        assertEquals(error, activity.dropInViewModel.userCanceledError.value)
+//    }
 
     @Test
     fun onActivityResult_whenError_finishesWithError() {
