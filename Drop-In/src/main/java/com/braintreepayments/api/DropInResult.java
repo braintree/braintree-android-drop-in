@@ -140,4 +140,8 @@ public class DropInResult implements Parcelable {
             return new DropInResult[size];
         }
     };
+
+    public int getPaymentMethodDisplayName() {
+        return 0;
+    }
 }

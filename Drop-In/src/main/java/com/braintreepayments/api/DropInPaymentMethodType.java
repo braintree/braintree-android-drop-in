@@ -1,21 +1,39 @@
 package com.braintreepayments.api;
 
 public enum DropInPaymentMethodType {
-    AMEX,
-    GOOGLE_PAY,
-    DINERS,
-    DISCOVER,
-    JCB,
-    MAESTRO,
-    MASTERCARD,
-    PAYPAL,
-    VISA,
-    PAY_WITH_VENMO,
-    UNIONPAY,
-    HIPER,
-    HIPERCARD,
-    UNKNOWN,
+    AMEX("American Express"),
+    GOOGLE_PAY("Google Pay"),
+    DINERS("Diners"),
+    DISCOVER("Discover"),
+    JCB("JCB"),
+    MAESTRO("Maestro"),
+    MASTERCARD("MasterCard"),
+    PAYPAL("PayPal"),
+    VISA("Visa"),
+    PAY_WITH_VENMO("Venmo"),
+    UNIONPAY("UnionPay"),
+    HIPER("Hiper"),
+    HIPERCARD("Hipercard"),
+    UNKNOWN("Unknown"),
     ;
+
+    static DropInPaymentMethodType from(String value) {
+        for (DropInPaymentMethodType type : DropInPaymentMethodType.values()) {
+            if (type.canonicalName.equalsIgnoreCase(value)) {
+                return type;
+            }
+        }
+        return UNKNOWN;
+    }
+
+    private final String canonicalName;
+    DropInPaymentMethodType(String canonicalName) {
+        this.canonicalName = canonicalName;
+    }
+
+    String getCanonicalName() {
+        return canonicalName;
+    }
 
     // `getFrontResource` is pulling icons from android-card-form, `R.drawable` icons are drop-in internal
 //    AMEX(CardType.AMEX.getFrontResource(), R.drawable.bt_ic_vaulted_amex, R.string.bt_descriptor_amex, "American Express", CardType.AMEX),
@@ -122,9 +140,4 @@ public enum DropInPaymentMethodType {
 //    public String getCanonicalName() {
 //        return canonicalName;
 //    }
-
-    public int getDisplayName() {
-        // TODO: implement
-        return 0;
-    }
 }

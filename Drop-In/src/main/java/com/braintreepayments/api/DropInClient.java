@@ -305,15 +305,14 @@ public class DropInClient {
         }
 
         if (!dropInRequest.isCardDisabled()) {
-            // TODO: map config types to drop in payment method types
-//            Set<String> supportedCardTypes =
-//                    new HashSet<>(configuration.getSupportedCardTypes());
-//            if (!configuration.isUnionPayEnabled()) {
-//                supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
-//            }
-//            if (supportedCardTypes.size() > 0) {
-//                availablePaymentMethods.add(DropInPaymentMethodType.UNKNOWN);
-//            }
+            Set<String> supportedCardTypes =
+                    new HashSet<>(configuration.getSupportedCardTypes());
+            if (!configuration.isUnionPayEnabled()) {
+                supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
+            }
+            if (supportedCardTypes.size() > 0) {
+                availablePaymentMethods.add(DropInPaymentMethodType.UNKNOWN);
+            }
         }
 
         if (showGooglePay) {
@@ -326,16 +325,19 @@ public class DropInClient {
 
     void getSupportedCardTypes(final GetSupportedCardTypesCallback callback) {
         braintreeClient.getConfiguration((configuration, error) -> {
-            // TODO: map to DropInPaymentMethodTypes
-//            if (configuration != null) {
-//                List<String> supportedCardTypes = new ArrayList<>(configuration.getSupportedCardTypes());
-//                if (!configuration.isUnionPayEnabled()) {
-//                    supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
-//                }
-//                callback.onResult(supportedCardTypes, null);
-//            } else {
-//                callback.onResult(null, error);
-//            }
+            if (configuration != null) {
+                Set<DropInPaymentMethodType> supportedPaymentMethods = new HashSet<>();
+                for (String cardType : configuration.getSupportedCardTypes()) {
+                    supportedPaymentMethods.add(DropInPaymentMethodType.from(cardType));
+                }
+
+                if (!configuration.isUnionPayEnabled()) {
+                    supportedPaymentMethods.remove(DropInPaymentMethodType.UNIONPAY);
+                }
+                callback.onResult(new ArrayList<>(supportedPaymentMethods), null);
+            } else {
+                callback.onResult(null, error);
+            }
         });
     }
 
