@@ -2,6 +2,7 @@ package com.braintreepayments.api;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
@@ -20,6 +21,7 @@ import java.util.Set;
 public class DropInClient {
 
     public static final String EXTRA_CHECKOUT_REQUEST = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST";
+    public static final String EXTRA_CHECKOUT_REQUEST_BUNDLE = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST_BUNDLE";
     public static final String EXTRA_SESSION_ID = "com.braintreepayments.api.EXTRA_SESSION_ID";
     public static final String EXTRA_AUTHORIZATION = "com.braintreepayments.api.EXTRA_AUTHORIZATION";
 
@@ -337,8 +339,10 @@ public class DropInClient {
     }
 
     public void launchDropInForResult(FragmentActivity activity, int requestCode) {
+        Bundle dropInRequestBundle = new Bundle();
+        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
         Intent intent = new Intent(activity, DropInActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST, dropInRequest)
+                .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
                 .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
                 .putExtra(EXTRA_AUTHORIZATION, braintreeClient.getAuthorization().toString());
         activity.startActivityForResult(intent, requestCode);

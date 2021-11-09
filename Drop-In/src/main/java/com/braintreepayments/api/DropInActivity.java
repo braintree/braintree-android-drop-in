@@ -70,7 +70,7 @@ public class DropInActivity extends AppCompatActivity {
             Intent intent = getIntent();
             String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
             String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
-            DropInRequest dropInRequest = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+            DropInRequest dropInRequest = getDropInRequest(intent);
             dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
         }
 
@@ -81,7 +81,7 @@ public class DropInActivity extends AppCompatActivity {
         }
 
         alertPresenter = new AlertPresenter();
-        dropInRequest = getIntent().getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST);
+        dropInRequest = getDropInRequest(getIntent());
         clientTokenPresent = dropInClient.getAuthorization() instanceof ClientToken;
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
@@ -129,6 +129,13 @@ public class DropInActivity extends AppCompatActivity {
         finish();
     }
 
+    private DropInRequest getDropInRequest(Intent intent) {
+        Bundle bundle = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE);
+        bundle.setClassLoader(DropInRequest.class.getClassLoader());
+        return bundle.getParcelable(DropInClient.EXTRA_CHECKOUT_REQUEST);
+    }
+
+    @VisibleForTesting
     void onDropInEvent(DropInEvent event) {
         switch (event.getType()) {
             case ADD_CARD_SUBMIT:

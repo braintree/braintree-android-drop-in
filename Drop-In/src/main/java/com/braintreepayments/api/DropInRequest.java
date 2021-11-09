@@ -1,11 +1,14 @@
 package com.braintreepayments.api;
 
+import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
 import com.braintreepayments.cardform.view.CardForm;
+
+import java.io.Serializable;
 
 /**
  * Used to start {@link DropInActivity} with specified options.
