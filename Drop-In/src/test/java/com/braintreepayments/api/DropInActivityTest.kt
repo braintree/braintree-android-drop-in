@@ -1022,7 +1022,7 @@ class DropInActivityTest {
             activity.dropInClient = dropInClient
             activityController.setup()
         } catch (e: java.lang.Exception) {
-            println(Log.getStackTraceString(e))
+            System.out.println(Log.getStackTraceString(e))
             throw e
         }
     }
