@@ -29,4 +29,9 @@ class PaymentMethodNonceInspector {
             return "";
         }
     }
+
+    public DropInPaymentMethodType getPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
+        // TODO: implement
+        return null;
+    }
 }

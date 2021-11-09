@@ -4,5 +4,5 @@ import java.util.List;
 
 interface GetSupportedCardTypesCallback {
 
-    void onResult(List<String> supportedCardTypes, Exception error);
+    void onResult(List<DropInPaymentMethodType> supportedCardTypes, Exception error);
 }

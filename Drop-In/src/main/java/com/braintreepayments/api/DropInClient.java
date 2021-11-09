@@ -305,14 +305,15 @@ public class DropInClient {
         }
 
         if (!dropInRequest.isCardDisabled()) {
-            Set<String> supportedCardTypes =
-                    new HashSet<>(configuration.getSupportedCardTypes());
-            if (!configuration.isUnionPayEnabled()) {
-                supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
-            }
-            if (supportedCardTypes.size() > 0) {
-                availablePaymentMethods.add(DropInPaymentMethodType.UNKNOWN);
-            }
+            // TODO: map config types to drop in payment method types
+//            Set<String> supportedCardTypes =
+//                    new HashSet<>(configuration.getSupportedCardTypes());
+//            if (!configuration.isUnionPayEnabled()) {
+//                supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
+//            }
+//            if (supportedCardTypes.size() > 0) {
+//                availablePaymentMethods.add(DropInPaymentMethodType.UNKNOWN);
+//            }
         }
 
         if (showGooglePay) {
@@ -325,15 +326,16 @@ public class DropInClient {
 
     void getSupportedCardTypes(final GetSupportedCardTypesCallback callback) {
         braintreeClient.getConfiguration((configuration, error) -> {
-            if (configuration != null) {
-                List<String> supportedCardTypes = new ArrayList<>(configuration.getSupportedCardTypes());
-                if (!configuration.isUnionPayEnabled()) {
-                    supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
-                }
-                callback.onResult(supportedCardTypes, null);
-            } else {
-                callback.onResult(null, error);
-            }
+            // TODO: map to DropInPaymentMethodTypes
+//            if (configuration != null) {
+//                List<String> supportedCardTypes = new ArrayList<>(configuration.getSupportedCardTypes());
+//                if (!configuration.isUnionPayEnabled()) {
+//                    supportedCardTypes.remove(DropInPaymentMethodType.UNIONPAY.getCanonicalName());
+//                }
+//                callback.onResult(supportedCardTypes, null);
+//            } else {
+//                callback.onResult(null, error);
+//            }
         });
     }
 
@@ -372,8 +374,10 @@ public class DropInClient {
             return;
         }
 
-        final DropInPaymentMethodType lastUsedPaymentMethodType = DropInPaymentMethodType.forType(BraintreeSharedPreferences.getInstance()
-                .getString(activity, LAST_USED_PAYMENT_METHOD_TYPE, null));
+        String paymentMethodAsString = BraintreeSharedPreferences.getInstance()
+                .getString(activity, LAST_USED_PAYMENT_METHOD_TYPE, null);
+        DropInPaymentMethodType lastUsedPaymentMethodType =
+            DropInPaymentMethodType.valueOf(paymentMethodAsString);
 
         if (lastUsedPaymentMethodType == DropInPaymentMethodType.GOOGLE_PAY) {
             googlePayClient.isReadyToPay(activity, (isReadyToPay, error) -> {
@@ -432,5 +436,9 @@ public class DropInClient {
                 }
             });
         });
+    }
+
+    public void setLastUsedPaymentMethodType(DropInActivity dropInActivity, PaymentMethodNonce paymentMethodNonce) {
+        // TODO: implement
     }
 }

@@ -139,7 +139,7 @@ public class MainActivity extends BaseActivity {
         } else {
             addPaymentMethodButton.setVisibility(GONE);
 
-            paymentMethodIcon.setImageResource(result.getPaymentMethodType().getDrawable());
+            paymentMethodIcon.setImageResource(result.getPaymentMethodDrawable());
             if (result.getPaymentMethodNonce() != null) {
                 displayResult(result);
             }
@@ -202,12 +202,11 @@ public class MainActivity extends BaseActivity {
 
     private void displayResult(DropInResult dropInResult) {
         nonce = dropInResult.getPaymentMethodNonce();
-        DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(nonce);
 
-        paymentMethodIcon.setImageResource(paymentMethodType.getDrawable());
+        paymentMethodIcon.setImageResource(dropInResult.getPaymentMethodDrawable());
 
         if (dropInResult.getPaymentMethodType() != null) {
-            paymentMethodTitle.setText(dropInResult.getPaymentMethodType().getCanonicalName());
+            paymentMethodTitle.setText(dropInResult.getPaymentMethodType().getDisplayName());
         }
         paymentMethodDescription.setText(dropInResult.getPaymentDescription());
 

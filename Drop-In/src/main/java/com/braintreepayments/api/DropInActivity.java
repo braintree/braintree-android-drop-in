@@ -266,8 +266,10 @@ public class DropInActivity extends AppCompatActivity {
     private void finishDropInWithPendingResult(DropInExitTransition transition) {
         if (pendingDropInResult != null) {
             sendAnalyticsEvent("sdk.exit.success");
-            DropInResult.setLastUsedPaymentMethodType(
+            dropInClient.setLastUsedPaymentMethodType(
                     DropInActivity.this, pendingDropInResult.getPaymentMethodNonce());
+//            DropInResult.setLastUsedPaymentMethodType(
+//                    DropInActivity.this, pendingDropInResult.getPaymentMethodNonce());
 
             Intent intent = new Intent()
                     .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, pendingDropInResult);
@@ -411,7 +413,8 @@ public class DropInActivity extends AppCompatActivity {
             if (error != null) {
                 onError(error);
             } else if (supportedCardTypes != null) {
-                dropInViewModel.setSupportedCardTypes(Arrays.asList(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)));
+                // TODO: map DropInPaymentMethodType to CardTypes
+//                dropInViewModel.setSupportedCardTypes(Arrays.asList(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)));
             }
         });
     }

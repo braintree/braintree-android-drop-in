@@ -38,36 +38,45 @@ public class DropInResult implements Parcelable {
 
     DropInResult() {}
 
-    void setPaymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
-        setPaymentMethodNonce(paymentMethodNonce, new PaymentMethodNonceInspector());
+    DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
+        return paymentMethodNonce(paymentMethodNonce, new PaymentMethodNonceInspector());
     }
 
     @VisibleForTesting
-    void setPaymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce, PaymentMethodNonceInspector nonceInspector) {
+    DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce, PaymentMethodNonceInspector nonceInspector) {
         if (paymentMethodNonce != null) {
-            this.paymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
-            this.paymentDescription = nonceInspector.getDescription(paymentMethodNonce);
+//            paymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
+            paymentMethodType = nonceInspector.getPaymentMethodType(paymentMethodNonce);
+            paymentDescription = nonceInspector.getDescription(paymentMethodNonce);
         }
         this.paymentMethodNonce = paymentMethodNonce;
+
+        return this;
     }
 
-    void setDeviceData(@Nullable String deviceData) {
+    DropInResult deviceData(@Nullable String deviceData) {
         this.deviceData = deviceData;
+        return this;
     }
 
-    void setPaymentMethodType(@Nullable DropInPaymentMethodType paymentMethodType) {
-        this.paymentMethodType = paymentMethodType;
+    void setPaymentMethodType(DropInPaymentMethodType mPaymentMethodType) {
+        this.paymentMethodType = mPaymentMethodType;
     }
 
     /**
      * @return The previously used {@link DropInPaymentMethodType} or {@code null} if there was no
-     * previous payment method. If the type is {@link DropInPaymentMethodType#GOOGLE_PAY} the Google
+     * previous payment method. If the type is {@link DropInPaymentMethodType#GOOGLE_PAY} the Android
      * Pay flow will need to be performed by the user again at the time of checkout,
      * {@link #getPaymentMethodNonce()} will return {@code null} in this case.
      */
     @Nullable
     public DropInPaymentMethodType getPaymentMethodType() {
         return paymentMethodType;
+    }
+
+    public int getPaymentMethodDrawable() {
+        // TODO: implement
+        return 0;
     }
 
     /**
@@ -88,20 +97,16 @@ public class DropInResult implements Parcelable {
         return deviceData;
     }
 
-    /**
-     * @return A {@link String} description of the payment method.
-     */
     @Nullable
     public String getPaymentDescription() {
         return paymentDescription;
     }
 
-    static void setLastUsedPaymentMethodType(Context context,
-                                             PaymentMethodNonce paymentMethodNonce) {
-        BraintreeSharedPreferences.getInstance().putString(context,
-                DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                DropInPaymentMethodType.forType(paymentMethodNonce).getCanonicalName());
-    }
+//    static void setLastUsedPaymentMethodType(Context context, PaymentMethodNonce paymentMethodNonce) {
+//        BraintreeSharedPreferences.getInstance().putString(context,
+//                DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+//                DropInPaymentMethodType.forType(paymentMethodNonce).getCanonicalName());
+//    }
 
     @Override
     public int describeContents() {

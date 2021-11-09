@@ -15,6 +15,8 @@ class SupportedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
     private final ImageView icon;
     private final TextView name;
 
+    private final DropInPaymentMethodHelper paymentMethodHelper = new DropInPaymentMethodHelper();
+
     SupportedPaymentMethodViewHolder(@NonNull View itemView) {
         super(itemView);
 
@@ -23,10 +25,10 @@ class SupportedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
     }
 
     void bind(DropInPaymentMethodType paymentMethodType) {
-        icon.setImageResource(paymentMethodType.getDrawable());
+        icon.setImageResource(paymentMethodHelper.getDrawable(paymentMethodType));
 
         Context context = name.getContext();
-        name.setText(context.getString(paymentMethodType.getLocalizedName()));
+        name.setText(context.getString(paymentMethodHelper.getLocalizedName(paymentMethodType)));
     }
 
     void setOnClickListener(View.OnClickListener listener) {
