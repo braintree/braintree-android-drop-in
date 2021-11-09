@@ -1,6 +1,6 @@
 package com.braintreepayments.api;
 
-public enum DropInExitTransition {
+enum DropInExitTransition {
     NO_ANIMATION,
     FADE_OUT
 }
