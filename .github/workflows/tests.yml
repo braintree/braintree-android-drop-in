@@ -12,6 +12,6 @@ jobs:
         with:
           java-version: '11'
           distribution: 'zulu'
-	  check-latest: true
+          check-latest: true
       - name: Unit Tests
         run: ./gradlew --stacktrace testRelease
