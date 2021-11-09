@@ -2,6 +2,7 @@
 
 ## unreleased
 * Bump braintree_android module dependency versions to `4.7.0`
+* Bump `card-form` to `5.3.0` 
 * Venmo
   * Add `VenmoRequest` setter to `DropInRequest`
   * Don't show Venmo payment method option when Venmo not installed on device
