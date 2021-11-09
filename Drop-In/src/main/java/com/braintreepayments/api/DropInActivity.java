@@ -15,8 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.braintreepayments.api.dropin.R;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Arrays;
-
 public class DropInActivity extends AppCompatActivity {
 
     private static final String ADD_CARD_TAG = "ADD_CARD";
@@ -266,10 +264,7 @@ public class DropInActivity extends AppCompatActivity {
     private void finishDropInWithPendingResult(DropInExitTransition transition) {
         if (pendingDropInResult != null) {
             sendAnalyticsEvent("sdk.exit.success");
-            dropInClient.setLastUsedPaymentMethodType(
-                    DropInActivity.this, pendingDropInResult.getPaymentMethodNonce());
-//            DropInResult.setLastUsedPaymentMethodType(
-//                    DropInActivity.this, pendingDropInResult.getPaymentMethodNonce());
+            dropInClient.setLastUsedPaymentMethodType(pendingDropInResult.getPaymentMethodNonce());
 
             Intent intent = new Intent()
                     .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, pendingDropInResult);
