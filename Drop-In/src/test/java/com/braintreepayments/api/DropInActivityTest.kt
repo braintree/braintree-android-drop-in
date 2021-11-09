@@ -5,6 +5,7 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import junit.framework.TestCase.*
 import org.json.JSONObject
@@ -1015,10 +1016,15 @@ class DropInActivityTest {
         val intent = Intent(context, DropInActivity::class.java)
         intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
 
-        activityController = buildActivity(DropInActivity::class.java, intent)
-        activity = activityController.get()
-        activity.dropInClient = dropInClient
-        activityController.setup()
+        try {
+            activityController = buildActivity(DropInActivity::class.java, intent)
+            activity = activityController.get()
+            activity.dropInClient = dropInClient
+            activityController.setup()
+        } catch (e: java.lang.Exception) {
+            println(Log.getStackTraceString(e))
+            throw e
+        }
     }
 
     private fun assertExceptionIsReturned(analyticsEvent: String, exception: java.lang.Exception) {
