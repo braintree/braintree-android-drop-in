@@ -49,38 +49,6 @@ public class DropInPaymentMethodUnitTest {
     }
 
     @Test
-    public void getCardTypes_returnsCorrectCardTypeArray() {
-        List<String> supportedCardTypes = new LinkedList<>();
-        supportedCardTypes.add(DropInPaymentMethod.VISA.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.MASTERCARD.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.DISCOVER.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.AMEX.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.JCB.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.DINERS.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.MAESTRO.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.UNIONPAY.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.PAYPAL.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.UNKNOWN.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.PAY_WITH_VENMO.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.HIPER.getCanonicalName());
-        supportedCardTypes.add(DropInPaymentMethod.HIPERCARD.getCanonicalName());
-
-        CardType[] cardTypes = DropInPaymentMethod.getCardsTypes(supportedCardTypes);
-
-        assertEquals(10, cardTypes.length);
-        assertEquals(CardType.VISA, cardTypes[0]);
-        assertEquals(CardType.MASTERCARD, cardTypes[1]);
-        assertEquals(CardType.DISCOVER, cardTypes[2]);
-        assertEquals(CardType.AMEX, cardTypes[3]);
-        assertEquals(CardType.JCB, cardTypes[4]);
-        assertEquals(CardType.DINERS_CLUB, cardTypes[5]);
-        assertEquals(CardType.MAESTRO, cardTypes[6]);
-        assertEquals(CardType.UNIONPAY, cardTypes[7]);
-        assertEquals(CardType.HIPER, cardTypes[8]);
-        assertEquals(CardType.HIPERCARD, cardTypes[9]);
-    }
-
-    @Test
     public void getDrawable_returnsCorrectDrawables() {
         assertEquals(R.drawable.bt_ic_visa, DropInPaymentMethod.VISA.getDrawable());
         assertEquals(R.drawable.bt_ic_mastercard, DropInPaymentMethod.MASTERCARD.getDrawable());
