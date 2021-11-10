@@ -78,11 +78,19 @@ public class DropInResult implements Parcelable {
         return paymentMethodType;
     }
 
+    /**
+     * @return An id representing a {@link android.graphics.drawable.Drawable} icon for the resulting
+     * {@link DropInPaymentMethodType}.
+     */
     @DrawableRes
     public int getPaymentMethodDrawable() {
         return paymentMethodHelper.getDrawable(paymentMethodType);
     }
 
+    /**
+     * @return An id representing a localized {@link String} for the resulting {@link
+     * DropInPaymentMethodType}.
+     */
     @StringRes
     public int getPaymentMethodDisplayName() {
         return paymentMethodHelper.getLocalizedName(paymentMethodType);
