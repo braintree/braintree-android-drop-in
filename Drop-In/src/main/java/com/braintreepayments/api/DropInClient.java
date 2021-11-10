@@ -20,10 +20,10 @@ import java.util.Set;
  */
 public class DropInClient {
 
-    public static final String EXTRA_CHECKOUT_REQUEST = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST";
-    public static final String EXTRA_CHECKOUT_REQUEST_BUNDLE = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST_BUNDLE";
-    public static final String EXTRA_SESSION_ID = "com.braintreepayments.api.EXTRA_SESSION_ID";
-    public static final String EXTRA_AUTHORIZATION = "com.braintreepayments.api.EXTRA_AUTHORIZATION";
+    static final String EXTRA_CHECKOUT_REQUEST = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST";
+    static final String EXTRA_CHECKOUT_REQUEST_BUNDLE = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST_BUNDLE";
+    static final String EXTRA_SESSION_ID = "com.braintreepayments.api.EXTRA_SESSION_ID";
+    static final String EXTRA_AUTHORIZATION = "com.braintreepayments.api.EXTRA_AUTHORIZATION";
 
     static final String LAST_USED_PAYMENT_METHOD_TYPE =
             "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
@@ -184,7 +184,7 @@ public class DropInClient {
         return braintreeClient.getBrowserSwitchResult(activity);
     }
 
-    public void deliverBrowserSwitchResult(final FragmentActivity activity, final DropInResultCallback callback) {
+    void deliverBrowserSwitchResult(final FragmentActivity activity, final DropInResultCallback callback) {
         BrowserSwitchResult browserSwitchResult = braintreeClient.deliverBrowserSwitchResult(activity);
         if (browserSwitchResult != null) {
             int requestCode = browserSwitchResult.getRequestCode();
@@ -338,6 +338,12 @@ public class DropInClient {
         });
     }
 
+    /**
+     * Called to launch a {@link DropInActivity}
+     *
+     * @param activity the current {@link FragmentActivity}
+     * @param requestCode the request code for the activity that will be launched
+     */
     public void launchDropInForResult(FragmentActivity activity, int requestCode) {
         Bundle dropInRequestBundle = new Bundle();
         dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
@@ -355,7 +361,7 @@ public class DropInClient {
      * Note: a client token must be used and will only return a payment method if it contains a
      * customer id.
      *
-     * @param activity the current {@link AppCompatActivity}
+     * @param activity the current {@link FragmentActivity}
      * @param callback callback for handling result
      */
     public void fetchMostRecentPaymentMethod(FragmentActivity activity, final FetchMostRecentPaymentMethodCallback callback) {
