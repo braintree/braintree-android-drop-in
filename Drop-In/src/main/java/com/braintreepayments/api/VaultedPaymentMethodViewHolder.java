@@ -14,7 +14,7 @@ class VaultedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
     private final TextView title;
     private final TextView description;
 
-    private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
+    private final PaymentMethodParser nonceInspector = new PaymentMethodParser();
 
     VaultedPaymentMethodViewHolder(View view) {
         super(view);
@@ -25,11 +25,11 @@ class VaultedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
     }
 
     void bind(PaymentMethodNonce paymentMethodNonce) {
-        DropInPaymentMethodType paymentMethodType = nonceInspector.getPaymentMethodType(paymentMethodNonce);
+        DropInPaymentMethodType paymentMethodType = nonceInspector.parseNoncePaymentMethodType(paymentMethodNonce);
 
         title.setText(paymentMethodType.getLocalizedName());
         icon.setImageResource(paymentMethodType.getVaultedDrawable());
-        description.setText(nonceInspector.getDescription(paymentMethodNonce));
+        description.setText(nonceInspector.parseNonceDescription(paymentMethodNonce));
     }
 
     void setOnClickListener(View.OnClickListener listener) {

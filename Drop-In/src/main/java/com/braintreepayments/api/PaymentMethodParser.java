@@ -2,9 +2,9 @@ package com.braintreepayments.api;
 
 import com.braintreepayments.cardform.utils.CardType;
 
-class PaymentMethodNonceInspector {
+class PaymentMethodParser {
 
-    String getDescription(PaymentMethodNonce paymentMethodNonce) {
+    String parseNonceDescription(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             return ((CardNonce) paymentMethodNonce).getLastFour();
         } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
@@ -18,7 +18,7 @@ class PaymentMethodNonceInspector {
         }
     }
 
-    private String getCanonicalName(PaymentMethodNonce paymentMethodNonce) {
+    private String parseNonceCanonicalName(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             return ((CardNonce) paymentMethodNonce).getCardType();
         } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
@@ -32,8 +32,8 @@ class PaymentMethodNonceInspector {
         }
     }
 
-    DropInPaymentMethodType getPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
-        String canonicalName = getCanonicalName(paymentMethodNonce);
+    DropInPaymentMethodType parseNoncePaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
+        String canonicalName = parseNonceCanonicalName(paymentMethodNonce);
         if (canonicalName != null) {
             switch (canonicalName) {
                 case PaymentMethodCanonicalName.AMEX:

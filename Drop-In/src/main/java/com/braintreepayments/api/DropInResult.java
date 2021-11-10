@@ -1,12 +1,9 @@
 package com.braintreepayments.api;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
 
@@ -41,15 +38,15 @@ public class DropInResult implements Parcelable {
     DropInResult() {}
 
     DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
-        return paymentMethodNonce(paymentMethodNonce, new PaymentMethodNonceInspector());
+        return paymentMethodNonce(paymentMethodNonce, new PaymentMethodParser());
     }
 
     @VisibleForTesting
-    DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce, PaymentMethodNonceInspector nonceInspector) {
+    DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce, PaymentMethodParser nonceInspector) {
         if (paymentMethodNonce != null) {
 //            paymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
-            paymentMethodType = nonceInspector.getPaymentMethodType(paymentMethodNonce);
-            paymentDescription = nonceInspector.getDescription(paymentMethodNonce);
+            paymentMethodType = nonceInspector.parseNoncePaymentMethodType(paymentMethodNonce);
+            paymentDescription = nonceInspector.parseNonceDescription(paymentMethodNonce);
         }
         this.paymentMethodNonce = paymentMethodNonce;
 

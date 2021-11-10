@@ -7,7 +7,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class PaymentMethodNonceInspectorTest {
+public class PaymentMethodParserTest {
 
     private CardNonce cardNonce;
     private PayPalAccountNonce payPalNonce;
@@ -24,46 +24,46 @@ public class PaymentMethodNonceInspectorTest {
 
     @Test
     public void getDescription_whenCardNonce_returnsCardLastFour() {
-        PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
+        PaymentMethodParser sut = new PaymentMethodParser();
 
         when(cardNonce.getLastFour()).thenReturn("1234");
-        assertEquals("1234", sut.getDescription(cardNonce));
+        assertEquals("1234", sut.parseNonceDescription(cardNonce));
     }
 
     @Test
     public void getDescription_whenPayPalAccountNonce_returnsEmail() {
-        PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
+        PaymentMethodParser sut = new PaymentMethodParser();
 
         when(payPalNonce.getEmail()).thenReturn("sample@user.com");
-        assertEquals("sample@user.com", sut.getDescription(payPalNonce));
+        assertEquals("sample@user.com", sut.parseNonceDescription(payPalNonce));
     }
 
     @Test
     public void getDescription_whenVenmoAccountNonce_returnsUsername() {
-        PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
+        PaymentMethodParser sut = new PaymentMethodParser();
 
         when(venmoNonce.getUsername()).thenReturn("@sample_user");
-        assertEquals("@sample_user", sut.getDescription(venmoNonce));
+        assertEquals("@sample_user", sut.parseNonceDescription(venmoNonce));
     }
 
     @Test
     public void getDescription_whenGooglePayCardNonce_returnsLastFour() {
-        PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
+        PaymentMethodParser sut = new PaymentMethodParser();
 
         when(googlePayNonce.getLastFour()).thenReturn("5678");
-        assertEquals("5678", sut.getDescription(googlePayNonce));
+        assertEquals("5678", sut.parseNonceDescription(googlePayNonce));
     }
 
     @Test
     public void getDescription_whenNonceUnrecognized_returnsEmptyString() {
-        PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
+        PaymentMethodParser sut = new PaymentMethodParser();
 
-        assertEquals("", sut.getDescription(mock(PaymentMethodNonce.class)));
+        assertEquals("", sut.parseNonceDescription(mock(PaymentMethodNonce.class)));
     }
 
     @Test
     public void getTypeLabel_whenCardNonce_returnsCardType() {
-        PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
+        PaymentMethodParser sut = new PaymentMethodParser();
 
         when(cardNonce.getCardType()).thenReturn("Visa");
         assertEquals("Visa", sut.getCanonicalName(cardNonce));
@@ -71,28 +71,28 @@ public class PaymentMethodNonceInspectorTest {
 
     @Test
     public void getTypeLabel_whenPayPalAccountNonce_returnsPayPal() {
-        PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
+        PaymentMethodParser sut = new PaymentMethodParser();
 
         assertEquals("PayPal", sut.getCanonicalName(payPalNonce));
     }
 
     @Test
     public void getTypeLabel_whenVenmoAccountNonce_returnsVenmo() {
-        PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
+        PaymentMethodParser sut = new PaymentMethodParser();
 
         assertEquals("Venmo", sut.getCanonicalName(venmoNonce));
     }
 
     @Test
     public void getTypeLabel_whenGooglePayCardNonce_returnsGooglePay() {
-        PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
+        PaymentMethodParser sut = new PaymentMethodParser();
 
         assertEquals("Google Pay", sut.getCanonicalName(googlePayNonce));
     }
 
     @Test
     public void getTypeLabel_whenNonceUnrecognized_returnsEmptyString() {
-        PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
+        PaymentMethodParser sut = new PaymentMethodParser();
 
         assertEquals("", sut.getCanonicalName(mock(PaymentMethodNonce.class)));
     }

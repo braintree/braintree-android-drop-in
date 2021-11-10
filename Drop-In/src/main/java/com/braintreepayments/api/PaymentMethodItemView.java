@@ -19,7 +19,7 @@ class PaymentMethodItemView extends LinearLayout {
     private PaymentMethodNonce paymentMethodNonce;
     private View divider;
 
-    private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
+    private final PaymentMethodParser nonceInspector = new PaymentMethodParser();
 
     public PaymentMethodItemView(Context context) {
         super(context);
@@ -56,7 +56,7 @@ class PaymentMethodItemView extends LinearLayout {
         this.paymentMethodNonce = paymentMethodNonce;
 
         DropInPaymentMethodType paymentMethodType =
-            nonceInspector.getPaymentMethodType(paymentMethodNonce);
+            nonceInspector.parseNoncePaymentMethodType(paymentMethodNonce);
 
         if (usedInList) {
             icon.setImageResource(paymentMethodType.getDrawable());
@@ -69,7 +69,7 @@ class PaymentMethodItemView extends LinearLayout {
         }
 
         title.setText(paymentMethodType.getLocalizedName());
-        description.setText(nonceInspector.getDescription(paymentMethodNonce));
+        description.setText(nonceInspector.parseNonceDescription(paymentMethodNonce));
     }
 
     public void setOnDeleteIconClick(OnClickListener clickListener) {
