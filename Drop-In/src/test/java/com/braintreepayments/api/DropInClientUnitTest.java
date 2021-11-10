@@ -503,7 +503,7 @@ public class DropInClientUnitTest {
     @Test
     public void fetchMostRecentPaymentMethod_callsBackWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle() throws JSONException {
         BraintreeSharedPreferences.getInstance().putString(activity,
-                DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+                "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE",
                 DropInPaymentMethod.GOOGLE_PAY.name());
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
@@ -536,7 +536,7 @@ public class DropInClientUnitTest {
     public void fetchMostRecentPaymentMethod_doesNotCallBackWithPayWithGoogleIfPayWithGoogleIsNotAvailable()
             throws JSONException {
         BraintreeSharedPreferences.getInstance().putString(activity,
-                DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
+                "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE",
                 DropInPaymentMethod.GOOGLE_PAY.name());
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
@@ -762,7 +762,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenOnlyUnionPayPresentAndNotSupported_callsBackWithNoCards() {
         Configuration configuration = mockConfiguration(false, false, true, false, false);
         when(configuration.getSupportedCardTypes())
-                .thenReturn(Collections.singletonList(DropInPaymentMethod.UNIONPAY.name()));
+                .thenReturn(Collections.singletonList("UnionPay"));
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))

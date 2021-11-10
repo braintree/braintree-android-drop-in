@@ -169,10 +169,7 @@ class DropInActivityTest {
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
 
-        assertEquals(
-            DropInPaymentMethod.VISA.name,
-            BraintreeSharedPreferences.getInstance()
-                .getString(activity, DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null))
+        verify(dropInClient).setLastUsedPaymentMethodType(paymentMethodNonce)
     }
 
     // endregion
@@ -653,7 +650,7 @@ class DropInActivityTest {
             DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.UNKNOWN)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
-        assertSame(DropInPaymentMethod.VISA, activity.dropInViewModel.supportedCardTypes.value!![0])
+        assertEquals(CardType.VISA, activity.dropInViewModel.supportedCardTypes.value!![0])
     }
 
     @Test

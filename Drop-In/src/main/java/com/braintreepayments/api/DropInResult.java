@@ -26,9 +26,6 @@ public class DropInResult implements Parcelable {
      */
     public static final String EXTRA_ERROR = "com.braintreepayments.api.dropin.EXTRA_ERROR";
 
-    static final String LAST_USED_PAYMENT_METHOD_TYPE =
-            "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
-
     private String deviceData;
     private String paymentDescription;
 
