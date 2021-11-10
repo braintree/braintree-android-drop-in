@@ -58,8 +58,10 @@ class DropInActivityTest {
     @Test
     fun onCreate_createsClientsWithExtrasFromIntent() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val dropInRequestBundle = Bundle()
+        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest)
         val intent = Intent(context, DropInActivity::class.java)
-        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, dropInRequest)
+        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
         intent.putExtra(DropInClient.EXTRA_AUTHORIZATION, Fixtures.TOKENIZATION_KEY)
         intent.putExtra(DropInClient.EXTRA_SESSION_ID, "session-id")
 
