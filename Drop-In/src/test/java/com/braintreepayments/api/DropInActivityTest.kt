@@ -95,19 +95,19 @@ class DropInActivityTest {
 
         verify(dropInClient).deliverBrowserSwitchResult(same(activity), any(DropInResultCallback::class.java))
     }
-//
-//    @Test
-//    fun onResume_whenBrowserSwitchSuccessResultWillBeDelivered_updatesDropInStateToFINISHING() {
-//        val dropInClient = MockDropInClientBuilder()
-//            .authorization(authorization)
-//            .getBrowserSwitchResult(createBrowserSwitchSuccessResult())
-//            .build()
-//
-//        setupDropInActivity(dropInClient, dropInRequest)
-//
-//        assertEquals(DropInState.WILL_FINISH, activity.dropInViewModel.dropInState.value)
-//    }
-//
+
+    @Test
+    fun onResume_whenBrowserSwitchSuccessResultWillBeDelivered_updatesDropInStateToFINISHING() {
+        val dropInClient = MockDropInClientBuilder()
+            .authorization(authorization)
+            .getBrowserSwitchResult(createBrowserSwitchSuccessResult())
+            .build()
+
+        setupDropInActivity(dropInClient, dropInRequest)
+
+        assertEquals(DropInState.WILL_FINISH, activity.dropInViewModel.dropInState.value)
+    }
+
 //    @Test
 //    fun onResume_whenBrowserSwitchResultExists_finishesWithResult() {
 //        dropInRequest.threeDSecureRequest = ThreeDSecureRequest()
