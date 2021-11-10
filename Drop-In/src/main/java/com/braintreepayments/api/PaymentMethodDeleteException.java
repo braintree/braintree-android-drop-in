@@ -6,7 +6,7 @@ import android.content.Context;
  * Error class thrown when a {@link PaymentMethodClient#deletePaymentMethod(Context, PaymentMethodNonce, DeletePaymentMethodNonceCallback)}
  * fails to delete a payment method.
  */
-public class PaymentMethodDeleteException extends Exception {
+class PaymentMethodDeleteException extends Exception {
 
     private final PaymentMethodNonce paymentMethodNonce;
 
@@ -18,7 +18,7 @@ public class PaymentMethodDeleteException extends Exception {
     /**
      * @return The {@link PaymentMethodNonce} that failed to be deleted.
      */
-    public PaymentMethodNonce getPaymentMethodNonce() {
+    PaymentMethodNonce getPaymentMethodNonce() {
         return paymentMethodNonce;
     }
 }
