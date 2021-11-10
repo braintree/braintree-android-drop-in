@@ -2,9 +2,9 @@ package com.braintreepayments.api;
 
 import com.braintreepayments.cardform.utils.CardType;
 
-class PaymentMethodParser {
+class PaymentMethodInspector {
 
-    String parseNonceDescription(PaymentMethodNonce paymentMethodNonce) {
+    String getPaymentMethodDescription(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
             return ((CardNonce) paymentMethodNonce).getLastFour();
         } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
@@ -18,22 +18,8 @@ class PaymentMethodParser {
         }
     }
 
-    private String parseNonceCanonicalName(PaymentMethodNonce paymentMethodNonce) {
-        if (paymentMethodNonce instanceof CardNonce) {
-            return ((CardNonce) paymentMethodNonce).getCardType();
-        } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
-            return PaymentMethodCanonicalName.PAYPAL;
-        } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
-            return PaymentMethodCanonicalName.VENMO;
-        } else if (paymentMethodNonce instanceof GooglePayCardNonce) {
-            return PaymentMethodCanonicalName.GOOGLE_PAY;
-        } else {
-            return null;
-        }
-    }
-
-    DropInPaymentMethodType parseNoncePaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
-        String canonicalName = parseNonceCanonicalName(paymentMethodNonce);
+    DropInPaymentMethodType getPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
+        String canonicalName = getPaymentMethodCanonicalName(paymentMethodNonce);
         if (canonicalName != null) {
             switch (canonicalName) {
                 case PaymentMethodCanonicalName.AMEX:
@@ -69,7 +55,21 @@ class PaymentMethodParser {
         return null;
     }
 
-    static CardType parseCardType(String cardType) {
+    private String getPaymentMethodCanonicalName(PaymentMethodNonce paymentMethodNonce) {
+        if (paymentMethodNonce instanceof CardNonce) {
+            return ((CardNonce) paymentMethodNonce).getCardType();
+        } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
+            return PaymentMethodCanonicalName.PAYPAL;
+        } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
+            return PaymentMethodCanonicalName.VENMO;
+        } else if (paymentMethodNonce instanceof GooglePayCardNonce) {
+            return PaymentMethodCanonicalName.GOOGLE_PAY;
+        } else {
+            return null;
+        }
+    }
+
+    CardType parseCardType(String cardType) {
         switch (cardType) {
             case PaymentMethodCanonicalName.AMEX:
                 return CardType.AMEX;

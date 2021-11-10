@@ -44,7 +44,7 @@ public class DropInClient {
     private final ThreeDSecureClient threeDSecureClient;
     private final DataCollector dataCollector;
 
-    private final PaymentMethodParser nonceInspector = new PaymentMethodParser();
+    private final PaymentMethodInspector paymentMethodInspector = new PaymentMethodInspector();
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest, String sessionId) {
         BraintreeClient braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
@@ -334,7 +334,7 @@ public class DropInClient {
             if (configuration != null) {
                 Set<CardType> supportedCardTypes = new HashSet<>();
                 for (String cardTypeAsString : configuration.getSupportedCardTypes()) {
-                    CardType cardType = nonceInspector.parseCardType(cardTypeAsString);
+                    CardType cardType = paymentMethodInspector.parseCardType(cardTypeAsString);
                     if (cardType != null) {
                         supportedCardTypes.add(cardType);
                     }
@@ -457,7 +457,7 @@ public class DropInClient {
     void setLastUsedPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
         Context context = braintreeClient.getApplicationContext();
         String key = DropInResult.LAST_USED_PAYMENT_METHOD_TYPE;
-        String value = nonceInspector.parseNoncePaymentMethodType(paymentMethodNonce).name();
+        String value = paymentMethodInspector.getPaymentMethodType(paymentMethodNonce).name();
         BraintreeSharedPreferences.getInstance().putString(context, key, value);
     }
 }
