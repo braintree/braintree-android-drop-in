@@ -129,18 +129,18 @@ class DropInActivityTest {
         assertEquals(dropInResult, shadowActivity.resultIntent
             .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT))
     }
-//
-//    @Test
-//    fun onResume_whenBrowserSwitchReturnsUserCanceledException_setsUserCanceledErrorInViewModel() {
-//        val error = UserCanceledException("User canceled 3DS.")
-//        val dropInClient = MockDropInClientBuilder()
-//            .deliverBrowseSwitchResultError(error)
-//            .build()
-//
-//        setupDropInActivity(dropInClient, dropInRequest)
-//
-//        assertEquals(error, activity.dropInViewModel.userCanceledError.value)
-//    }
+
+    @Test
+    fun onResume_whenBrowserSwitchReturnsUserCanceledException_setsUserCanceledErrorInViewModel() {
+        val error = UserCanceledException("User canceled 3DS.")
+        val dropInClient = MockDropInClientBuilder()
+            .deliverBrowseSwitchResultError(error)
+            .build()
+
+        setupDropInActivity(dropInClient, dropInRequest)
+
+        assertEquals(error, activity.dropInViewModel.userCanceledError.value)
+    }
 //
 //    @Test
 //    fun onResume_whenBrowserSwitchError_forwardsError() {
