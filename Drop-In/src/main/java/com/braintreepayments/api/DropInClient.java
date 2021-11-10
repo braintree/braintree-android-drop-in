@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
 import java.util.ArrayList;
@@ -105,10 +104,10 @@ public class DropInClient {
                         callback.onResult(null, continueError);
                     } else if (threeDSecureResult != null) {
                         final DropInResult dropInResult = new DropInResult();
-                        dropInResult.paymentMethodNonce(threeDSecureResult.getTokenizedCard());
+                        dropInResult.setPaymentMethodNonce(threeDSecureResult.getTokenizedCard());
                         dataCollector.collectDeviceData(activity, (deviceData, dataCollectionError) -> {
                             if (deviceData != null) {
-                                dropInResult.deviceData(deviceData);
+                                dropInResult.setDeviceData(deviceData);
                                 callback.onResult(dropInResult, null);
                             } else {
                                 callback.onResult(null, dataCollectionError);
@@ -246,8 +245,8 @@ public class DropInClient {
             return;
         }
 
-        final DropInResult dropInResult = new DropInResult()
-                .paymentMethodNonce(paymentMethodNonce);
+        final DropInResult dropInResult = new DropInResult();
+        dropInResult.setPaymentMethodNonce(paymentMethodNonce);
         dataCollector.collectDeviceData(activity, (deviceData, dataCollectionError) -> {
             if (dataCollectionError != null) {
                 callback.onResult(null, dataCollectionError);
@@ -255,7 +254,7 @@ public class DropInClient {
             }
 
             if (deviceData != null) {
-                dropInResult.deviceData(deviceData);
+                dropInResult.setDeviceData(deviceData);
                 callback.onResult(dropInResult, null);
             }
         });
@@ -397,7 +396,7 @@ public class DropInClient {
                 DropInResult result = new DropInResult();
                 if (paymentMethodNonceList.size() > 0) {
                     PaymentMethodNonce paymentMethod = paymentMethodNonceList.get(0);
-                    result.paymentMethodNonce(paymentMethod);
+                    result.setPaymentMethodNonce(paymentMethod);
                 }
                 callback.onResult(result, null);
             } else if (error != null) {

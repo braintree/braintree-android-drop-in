@@ -38,27 +38,24 @@ public class DropInResult implements Parcelable {
 
     DropInResult() {}
 
-    DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
-        return paymentMethodNonce(paymentMethodNonce, new PaymentMethodNonceInspector());
+    void setPaymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
+        setPaymentMethodNonce(paymentMethodNonce, new PaymentMethodNonceInspector());
     }
 
     @VisibleForTesting
-    DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce, PaymentMethodNonceInspector nonceInspector) {
+    void setPaymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce, PaymentMethodNonceInspector nonceInspector) {
         if (paymentMethodNonce != null) {
-            paymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
-            paymentDescription = nonceInspector.getDescription(paymentMethodNonce);
+            this.paymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
+            this.paymentDescription = nonceInspector.getDescription(paymentMethodNonce);
         }
         this.paymentMethodNonce = paymentMethodNonce;
-
-        return this;
     }
 
-    DropInResult deviceData(@Nullable String deviceData) {
+    void setDeviceData(@Nullable String deviceData) {
         this.deviceData = deviceData;
-        return this;
     }
 
-    void setPaymentMethodType(DropInPaymentMethodType paymentMethodType) {
+    void setPaymentMethodType(@Nullable DropInPaymentMethodType paymentMethodType) {
         this.paymentMethodType = paymentMethodType;
     }
 
@@ -91,6 +88,9 @@ public class DropInResult implements Parcelable {
         return deviceData;
     }
 
+    /**
+     * @return A {@link String} description of the payment method.
+     */
     @Nullable
     public String getPaymentDescription() {
         return paymentDescription;

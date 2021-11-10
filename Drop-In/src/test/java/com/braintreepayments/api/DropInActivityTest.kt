@@ -96,8 +96,8 @@ class DropInActivityTest {
 
         val paymentMethodNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInResult = DropInResult()
-            .paymentMethodNonce(paymentMethodNonce)
-            .deviceData("device data")
+        dropInResult.paymentMethodNonce = paymentMethodNonce
+        dropInResult.deviceData = "device data"
 
         val dropInClient = MockDropInClientBuilder()
             .authorization(authorization)
@@ -145,8 +145,8 @@ class DropInActivityTest {
     fun onResume_whenBrowserSwitchResultExists_sendAnalyticsEvent() {
         val paymentMethodNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInResult = DropInResult()
-            .paymentMethodNonce(paymentMethodNonce)
-            .deviceData("device data")
+        dropInResult.paymentMethodNonce = paymentMethodNonce
+        dropInResult.deviceData = "device data"
 
         val dropInClient = MockDropInClientBuilder()
             .authorization(authorization)
@@ -161,8 +161,8 @@ class DropInActivityTest {
     fun onResume_whenBrowserSwitchResultExists_storesResult() {
         val paymentMethodNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInResult = DropInResult()
-            .paymentMethodNonce(paymentMethodNonce)
-            .deviceData("device data")
+        dropInResult.paymentMethodNonce = paymentMethodNonce
+        dropInResult.deviceData = "device data"
 
         val dropInClient = MockDropInClientBuilder()
             .authorization(authorization)
@@ -183,8 +183,8 @@ class DropInActivityTest {
     fun onActivityResult_whenDropInResultExists_finishesActivity() {
         val paymentMethodNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInResult = DropInResult()
-            .paymentMethodNonce(paymentMethodNonce)
-            .deviceData("device data")
+        dropInResult.paymentMethodNonce = paymentMethodNonce
+        dropInResult.deviceData = "device data"
 
         val dropInClient = MockDropInClientBuilder()
             .handleActivityResultSuccess(dropInResult)
