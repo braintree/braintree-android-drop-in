@@ -13,11 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.cardform.utils.CardType;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DropInActivity extends AppCompatActivity {
 
@@ -408,24 +404,13 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void prefetchSupportedCardTypes() {
-        dropInClient.getSupportedPaymentMethods((supportedCardTypes, error) -> {
+        dropInClient.getSupportedCardTypes((supportedCardTypes, error) -> {
             if (error != null) {
                 onError(error);
             } else if (supportedCardTypes != null) {
-                dropInViewModel.setSupportedCardTypes(
-                        mapPaymentMethodsToCardTypes(supportedCardTypes));
+                dropInViewModel.setSupportedCardTypes(supportedCardTypes);
             }
         });
-    }
-
-    static List<CardType> mapPaymentMethodsToCardTypes(List<DropInPaymentMethodType> supportedPaymentMethods) {
-        List<CardType> convertedCardTypes = new ArrayList<>();
-        for (DropInPaymentMethodType paymentMethod : supportedPaymentMethods) {
-            if (paymentMethod != DropInPaymentMethodType.UNKNOWN && paymentMethod.getCardType() != null) {
-                convertedCardTypes.add(paymentMethod.getCardType());
-            }
-        }
-        return convertedCardTypes;
     }
 
     private void startAddCardFlow(@Nullable String cardNumber) {

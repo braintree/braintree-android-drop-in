@@ -231,14 +231,14 @@ public class MockDropInClientBuilder {
 
 
         doAnswer((Answer<Void>) invocation -> {
-            GetSupportedPaymentMethods callback = (GetSupportedPaymentMethods) invocation.getArguments()[0];
+            GetSupportedCardTypesCallback callback = (GetSupportedCardTypesCallback) invocation.getArguments()[0];
             if (getSupportedCardTypesSuccess != null) {
                 callback.onResult(getSupportedCardTypesSuccess, null);
             } else if (getSupportedCardTypesError != null) {
                 callback.onResult(null, getSupportedCardTypesError);
             }
             return null;
-        }).when(dropInClient).getSupportedPaymentMethods(any(GetSupportedPaymentMethods.class));
+        }).when(dropInClient).getSupportedCardTypes(any(GetSupportedCardTypesCallback.class));
 
         doAnswer((Answer<Void>) invocation -> {
             DataCollectorCallback callback = (DataCollectorCallback) invocation.getArguments()[1];

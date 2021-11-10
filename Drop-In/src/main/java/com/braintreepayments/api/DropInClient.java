@@ -9,6 +9,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
 
+import com.braintreepayments.cardform.utils.CardType;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -295,6 +297,34 @@ public class DropInClient {
         });
     }
 
+    void getSupportedCardTypes(final GetSupportedCardTypesCallback callback) {
+        braintreeClient.getConfiguration((configuration, error) -> {
+            if (configuration != null) {
+                Set<DropInPaymentMethodType> supportedPaymentMethods = new HashSet<>();
+                for (String cardType : configuration.getSupportedCardTypes()) {
+                    supportedPaymentMethods.add(DropInPaymentMethodType.from(cardType));
+                }
+
+                if (!configuration.isUnionPayEnabled()) {
+                    supportedPaymentMethods.remove(DropInPaymentMethodType.UNIONPAY);
+                }
+                callback.onResult(mapPaymentMethodsToCardTypes(supportedPaymentMethods), null);
+            } else {
+                callback.onResult(null, error);
+            }
+        });
+    }
+
+    static List<CardType> mapPaymentMethodsToCardTypes(Set<DropInPaymentMethodType> supportedPaymentMethods) {
+        List<CardType> convertedCardTypes = new ArrayList<>();
+        for (DropInPaymentMethodType paymentMethod : supportedPaymentMethods) {
+            if (paymentMethod != DropInPaymentMethodType.UNKNOWN && paymentMethod.getCardType() != null) {
+                convertedCardTypes.add(paymentMethod.getCardType());
+            }
+        }
+        return convertedCardTypes;
+    }
+
     private List<DropInPaymentMethodType> filterSupportedPaymentMethods(Context context, Configuration configuration, boolean showGooglePay) {
         List<DropInPaymentMethodType> availablePaymentMethods = new ArrayList<>();
 
@@ -323,24 +353,6 @@ public class DropInClient {
             }
         }
         return availablePaymentMethods;
-    }
-
-    void getSupportedPaymentMethods(final GetSupportedPaymentMethods callback) {
-        braintreeClient.getConfiguration((configuration, error) -> {
-            if (configuration != null) {
-                Set<DropInPaymentMethodType> supportedPaymentMethods = new HashSet<>();
-                for (String cardType : configuration.getSupportedCardTypes()) {
-                    supportedPaymentMethods.add(DropInPaymentMethodType.from(cardType));
-                }
-
-                if (!configuration.isUnionPayEnabled()) {
-                    supportedPaymentMethods.remove(DropInPaymentMethodType.UNIONPAY);
-                }
-                callback.onResult(new ArrayList<>(supportedPaymentMethods), null);
-            } else {
-                callback.onResult(null, error);
-            }
-        });
     }
 
     /**
