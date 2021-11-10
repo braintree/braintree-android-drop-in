@@ -7,9 +7,6 @@
   * Don't show Venmo payment method option when Venmo not installed on device
 * CardForm
   * Focus Cardholder Name field when adding card details if field not disabled (fixes #180)
-* DropInRequest
-  * Set explicit class loader for `DropInRequest` (fixes #191)
-  * Wrap `DropInRequest` in Parcelable bundle (fixes #228)
 * Breaking Changes
   * Language Support
     * Require Java 8 or higher

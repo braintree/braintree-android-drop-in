@@ -17,9 +17,6 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.android.controller.ActivityController
 import java.util.*
-import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
-
-import android.os.Bundle
 
 @RunWith(RobolectricTestRunner::class)
 class DropInActivityTest {
@@ -1018,10 +1015,8 @@ class DropInActivityTest {
 
     private fun setupDropInActivity(dropInClient: DropInClient, dropInRequest:DropInRequest) {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val dropInRequestBundle = Bundle()
-        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest)
         val intent = Intent(context, DropInActivity::class.java)
-        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
+        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, dropInRequest)
 
         activityController = buildActivity(DropInActivity::class.java, intent)
         activity = activityController.get()
