@@ -108,27 +108,27 @@ class DropInActivityTest {
         assertEquals(DropInState.WILL_FINISH, activity.dropInViewModel.dropInState.value)
     }
 
-//    @Test
-//    fun onResume_whenBrowserSwitchResultExists_finishesWithResult() {
-//        dropInRequest.threeDSecureRequest = ThreeDSecureRequest()
-//
-//        val paymentMethodNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
-//        val dropInResult = DropInResult()
-//            .paymentMethodNonce(paymentMethodNonce)
-//            .deviceData("device data")
-//
-//        val dropInClient = MockDropInClientBuilder()
-//            .authorization(authorization)
-//            .deliverBrowserSwitchResultSuccess(dropInResult)
-//            .build()
-//
-//        setupDropInActivity(dropInClient, dropInRequest)
-//        val shadowActivity = shadowOf(activity)
-//
-//        assertEquals(RESULT_OK, shadowActivity.resultCode)
-//        assertEquals(dropInResult, shadowActivity.resultIntent
-//            .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT))
-//    }
+    @Test
+    fun onResume_whenBrowserSwitchResultExists_finishesWithResult() {
+        dropInRequest.threeDSecureRequest = ThreeDSecureRequest()
+
+        val paymentMethodNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        val dropInResult = DropInResult()
+            .paymentMethodNonce(paymentMethodNonce)
+            .deviceData("device data")
+
+        val dropInClient = MockDropInClientBuilder()
+            .authorization(authorization)
+            .deliverBrowserSwitchResultSuccess(dropInResult)
+            .build()
+
+        setupDropInActivity(dropInClient, dropInRequest)
+        val shadowActivity = shadowOf(activity)
+
+        assertEquals(RESULT_OK, shadowActivity.resultCode)
+        assertEquals(dropInResult, shadowActivity.resultIntent
+            .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT))
+    }
 //
 //    @Test
 //    fun onResume_whenBrowserSwitchReturnsUserCanceledException_setsUserCanceledErrorInViewModel() {
