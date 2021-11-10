@@ -1,19 +1,115 @@
 package com.braintreepayments.api;
 
-public class DropInPaymentMethodHelper {
+import androidx.annotation.DrawableRes;
+import androidx.annotation.StringRes;
 
-    public int getDrawable(DropInPaymentMethodType paymentMethodType) {
-        // TODO: implement
-        return 0;
+import com.braintreepayments.api.dropin.R;
+import com.braintreepayments.cardform.utils.CardType;
+
+class DropInPaymentMethodHelper {
+
+    @DrawableRes
+    int getDrawable(DropInPaymentMethodType paymentMethodType) {
+        switch (paymentMethodType) {
+            case AMEX:
+                return CardType.AMEX.getFrontResource();
+            case GOOGLE_PAY:
+                return R.drawable.bt_ic_google_pay;
+            case DINERS:
+                return CardType.DINERS_CLUB.getFrontResource();
+            case DISCOVER:
+                return CardType.DISCOVER.getFrontResource();
+            case JCB:
+                return CardType.JCB.getFrontResource();
+            case MAESTRO:
+                return CardType.MAESTRO.getFrontResource();
+            case MASTERCARD:
+                return CardType.MASTERCARD.getFrontResource();
+            case PAYPAL:
+                return R.drawable.bt_ic_paypal;
+            case VISA:
+                return CardType.VISA.getFrontResource();
+            case PAY_WITH_VENMO:
+                return R.drawable.bt_ic_venmo;
+            case UNIONPAY:
+                return CardType.UNIONPAY.getFrontResource();
+            case HIPER:
+                return CardType.HIPER.getFrontResource();
+            case HIPERCARD:
+                return CardType.HIPERCARD.getFrontResource();
+            case UNKNOWN:
+            default:
+                return CardType.UNKNOWN.getFrontResource();
+        }
     }
 
-    public int getLocalizedName(DropInPaymentMethodType paymentMethodType) {
-        // TODO: implement
-        return 0;
+    @StringRes
+    int getLocalizedName(DropInPaymentMethodType paymentMethodType) {
+        switch (paymentMethodType) {
+            case AMEX:
+                return R.string.bt_descriptor_amex;
+            case GOOGLE_PAY:
+                return R.string.bt_descriptor_google_pay;
+            case DINERS:
+                return R.string.bt_descriptor_diners;
+            case DISCOVER:
+                return R.string.bt_descriptor_discover;
+            case JCB:
+                return R.string.bt_descriptor_jcb;
+            case MAESTRO:
+                return R.string.bt_descriptor_maestro;
+            case MASTERCARD:
+                return R.string.bt_descriptor_mastercard;
+            case PAYPAL:
+                return R.string.bt_descriptor_paypal;
+            case VISA:
+                return R.string.bt_descriptor_visa;
+            case PAY_WITH_VENMO:
+                return R.string.bt_descriptor_pay_with_venmo;
+            case UNIONPAY:
+                return R.string.bt_descriptor_unionpay;
+            case HIPER:
+                return R.string.bt_descriptor_hiper;
+            case HIPERCARD:
+                return R.string.bt_descriptor_hipercard;
+            case UNKNOWN:
+            default:
+                return R.string.bt_descriptor_unknown;
+        }
     }
 
-    public int getVaultedDrawable(DropInPaymentMethodType paymentMethodType) {
-        // TODO: implement
-        return 0;
+    @DrawableRes
+    int getVaultedDrawable(DropInPaymentMethodType paymentMethodType) {
+        switch (paymentMethodType) {
+            case AMEX:
+                return R.drawable.bt_ic_vaulted_amex;
+            case GOOGLE_PAY:
+                return 0;
+            case DINERS:
+                return R.drawable.bt_ic_vaulted_diners_club;
+            case DISCOVER:
+                return R.drawable.bt_ic_vaulted_discover;
+            case JCB:
+                return R.drawable.bt_ic_vaulted_jcb;
+            case MAESTRO:
+                return R.drawable.bt_ic_vaulted_maestro;
+            case MASTERCARD:
+                return R.drawable.bt_ic_vaulted_mastercard;
+            case PAYPAL:
+                return R.drawable.bt_ic_vaulted_paypal;
+            case VISA:
+                return R.drawable.bt_ic_vaulted_visa;
+            case PAY_WITH_VENMO:
+                return R.drawable.bt_ic_vaulted_venmo;
+            case UNIONPAY:
+                return R.drawable.bt_ic_vaulted_unionpay;
+            case HIPER:
+                return R.drawable.bt_ic_vaulted_hiper;
+            case HIPERCARD:
+                return R.drawable.bt_ic_vaulted_hipercard;
+            case UNKNOWN:
+            default:
+                return R.drawable.bt_ic_vaulted_unknown;
+        }
     }
 }
