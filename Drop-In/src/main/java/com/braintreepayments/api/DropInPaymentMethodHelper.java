@@ -114,32 +114,28 @@ class DropInPaymentMethodHelper {
         }
     }
 
-    public CardType getCardType(DropInPaymentMethodType paymentMethod) {
-        switch (paymentMethod) {
-            case AMEX:
+    CardType parseCardType(String cardType) {
+        switch (cardType) {
+            case PaymentMethodCanonicalName.AMEX:
                 return CardType.AMEX;
-            case DINERS:
+            case PaymentMethodCanonicalName.DINERS_CLUB:
                 return CardType.DINERS_CLUB;
-            case DISCOVER:
+            case PaymentMethodCanonicalName.DISCOVER:
                 return CardType.DISCOVER;
-            case JCB:
+            case PaymentMethodCanonicalName.JCB:
                 return CardType.JCB;
-            case MAESTRO:
+            case PaymentMethodCanonicalName.MAESTRO:
                 return CardType.MAESTRO;
-            case MASTERCARD:
+            case PaymentMethodCanonicalName.MASTERCARD:
                 return CardType.MASTERCARD;
-            case VISA:
+            case PaymentMethodCanonicalName.VISA:
                 return CardType.VISA;
-            case UNIONPAY:
+            case PaymentMethodCanonicalName.UNION_PAY:
                 return CardType.UNIONPAY;
-            case HIPER:
+            case PaymentMethodCanonicalName.HIPER:
                 return CardType.HIPER;
-            case HIPERCARD:
+            case PaymentMethodCanonicalName.HIPERCARD:
                 return CardType.HIPERCARD;
-            case GOOGLE_PAY:
-            case PAYPAL:
-            case PAY_WITH_VENMO:
-            case UNKNOWN:
             default:
                 return null;
         }

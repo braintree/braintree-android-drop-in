@@ -66,34 +66,34 @@ public class PaymentMethodNonceInspectorTest {
         PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
 
         when(cardNonce.getCardType()).thenReturn("Visa");
-        assertEquals("Visa", sut.getTypeLabel(cardNonce));
+        assertEquals("Visa", sut.getCanonicalName(cardNonce));
     }
 
     @Test
     public void getTypeLabel_whenPayPalAccountNonce_returnsPayPal() {
         PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
 
-        assertEquals("PayPal", sut.getTypeLabel(payPalNonce));
+        assertEquals("PayPal", sut.getCanonicalName(payPalNonce));
     }
 
     @Test
     public void getTypeLabel_whenVenmoAccountNonce_returnsVenmo() {
         PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
 
-        assertEquals("Venmo", sut.getTypeLabel(venmoNonce));
+        assertEquals("Venmo", sut.getCanonicalName(venmoNonce));
     }
 
     @Test
     public void getTypeLabel_whenGooglePayCardNonce_returnsGooglePay() {
         PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
 
-        assertEquals("Google Pay", sut.getTypeLabel(googlePayNonce));
+        assertEquals("Google Pay", sut.getCanonicalName(googlePayNonce));
     }
 
     @Test
     public void getTypeLabel_whenNonceUnrecognized_returnsEmptyString() {
         PaymentMethodNonceInspector sut = new PaymentMethodNonceInspector();
 
-        assertEquals("", sut.getTypeLabel(mock(PaymentMethodNonce.class)));
+        assertEquals("", sut.getCanonicalName(mock(PaymentMethodNonce.class)));
     }
 }

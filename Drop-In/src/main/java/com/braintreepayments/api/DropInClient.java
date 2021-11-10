@@ -333,30 +333,19 @@ public class DropInClient {
     void getSupportedCardTypes(final GetSupportedCardTypesCallback callback) {
         braintreeClient.getConfiguration((configuration, error) -> {
             if (configuration != null) {
-                Set<DropInPaymentMethodType> supportedPaymentMethods = new HashSet<>();
+                Set<CardType> supportedCardTypes = new HashSet<>();
                 for (String cardType : configuration.getSupportedCardTypes()) {
-                    supportedPaymentMethods.add(DropInPaymentMethodType.from(cardType));
+                    supportedCardTypes.add(paymentMethodHelper.parseCardType(cardType));
                 }
 
                 if (!configuration.isUnionPayEnabled()) {
-                    supportedPaymentMethods.remove(DropInPaymentMethodType.UNIONPAY);
+                    supportedCardTypes.remove(CardType.UNIONPAY);
                 }
-                callback.onResult(mapPaymentMethodsToCardTypes(supportedPaymentMethods), null);
+                callback.onResult(new ArrayList<>(supportedCardTypes), null);
             } else {
                 callback.onResult(null, error);
             }
         });
-    }
-
-    List<CardType> mapPaymentMethodsToCardTypes(Set<DropInPaymentMethodType> supportedPaymentMethods) {
-        List<CardType> convertedCardTypes = new ArrayList<>();
-        for (DropInPaymentMethodType paymentMethod : supportedPaymentMethods) {
-            CardType cardType = paymentMethodHelper.getCardType(paymentMethod);
-            if (cardType != null) {
-                convertedCardTypes.add(cardType);
-            }
-        }
-        return convertedCardTypes;
     }
 
 
