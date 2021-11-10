@@ -4,19 +4,19 @@ import com.braintreepayments.cardform.utils.CardType;
 
 class PaymentMethodInspector {
 
-    private static final String CANONICAL_NAME_AMEX = "American Express";
-    private static final String CANONICAL_NAME_DINERS_CLUB = "Diners";
-    private static final String CANONICAL_NAME_DISCOVER = "Discover";
-    private static final String CANONICAL_NAME_GOOGLE_PAY = "Google Pay";
-    private static final String CANONICAL_NAME_HIPER = "Hiper";
-    private static final String CANONICAL_NAME_HIPERCARD = "Hipercard";
-    private static final String CANONICAL_NAME_JCB = "JCB";
-    private static final String CANONICAL_NAME_MAESTRO = "Maestro";
-    private static final String CANONICAL_NAME_MASTERCARD = "MasterCard";
-    private static final String CANONICAL_NAME_PAYPAL = "PayPal";
-    private static final String CANONICAL_NAME_UNION_PAY = "UnionPay";
-    private static final String CANONICAL_NAME_VENMO = "Venmo";
-    private static final String CANONICAL_NAME_VISA = "Visa";
+    private static final String PAYMENT_METHOD_AMEX = "American Express";
+    private static final String PAYMENT_METHOD_DINERS_CLUB = "Diners";
+    private static final String PAYMENT_METHOD_DISCOVER = "Discover";
+    private static final String PAYMENT_METHOD_GOOGLE_PAY = "Google Pay";
+    private static final String PAYMENT_METHOD_HIPER = "Hiper";
+    private static final String PAYMENT_METHOD_HIPERCARD = "Hipercard";
+    private static final String PAYMENT_METHOD_JCB = "JCB";
+    private static final String PAYMENT_METHOD_MAESTRO = "Maestro";
+    private static final String PAYMENT_METHOD_MASTERCARD = "MasterCard";
+    private static final String PAYMENT_METHOD_PAYPAL = "PayPal";
+    private static final String PAYMENT_METHOD_UNION_PAY = "UnionPay";
+    private static final String PAYMENT_METHOD_VENMO = "Venmo";
+    private static final String PAYMENT_METHOD_VISA = "Visa";
 
     String getPaymentMethodDescription(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
@@ -36,31 +36,31 @@ class PaymentMethodInspector {
         String canonicalName = getPaymentMethodCanonicalName(paymentMethodNonce);
         if (canonicalName != null) {
             switch (canonicalName) {
-                case CANONICAL_NAME_AMEX:
+                case PAYMENT_METHOD_AMEX:
                     return DropInPaymentMethodType.AMEX;
-                case CANONICAL_NAME_DINERS_CLUB:
+                case PAYMENT_METHOD_DINERS_CLUB:
                     return DropInPaymentMethodType.DINERS;
-                case CANONICAL_NAME_DISCOVER:
+                case PAYMENT_METHOD_DISCOVER:
                     return DropInPaymentMethodType.DISCOVER;
-                case CANONICAL_NAME_JCB:
+                case PAYMENT_METHOD_JCB:
                     return DropInPaymentMethodType.JCB;
-                case CANONICAL_NAME_MAESTRO:
+                case PAYMENT_METHOD_MAESTRO:
                     return DropInPaymentMethodType.MAESTRO;
-                case CANONICAL_NAME_MASTERCARD:
+                case PAYMENT_METHOD_MASTERCARD:
                     return DropInPaymentMethodType.MASTERCARD;
-                case CANONICAL_NAME_VISA:
+                case PAYMENT_METHOD_VISA:
                     return DropInPaymentMethodType.VISA;
-                case CANONICAL_NAME_UNION_PAY:
+                case PAYMENT_METHOD_UNION_PAY:
                     return DropInPaymentMethodType.UNIONPAY;
-                case CANONICAL_NAME_HIPER:
+                case PAYMENT_METHOD_HIPER:
                     return DropInPaymentMethodType.HIPER;
-                case CANONICAL_NAME_HIPERCARD:
+                case PAYMENT_METHOD_HIPERCARD:
                     return DropInPaymentMethodType.HIPERCARD;
-                case CANONICAL_NAME_PAYPAL:
+                case PAYMENT_METHOD_PAYPAL:
                     return DropInPaymentMethodType.PAYPAL;
-                case CANONICAL_NAME_VENMO:
+                case PAYMENT_METHOD_VENMO:
                     return DropInPaymentMethodType.PAY_WITH_VENMO;
-                case CANONICAL_NAME_GOOGLE_PAY:
+                case PAYMENT_METHOD_GOOGLE_PAY:
                     return DropInPaymentMethodType.GOOGLE_PAY;
                 default:
                     return null;
@@ -73,11 +73,11 @@ class PaymentMethodInspector {
         if (paymentMethodNonce instanceof CardNonce) {
             return ((CardNonce) paymentMethodNonce).getCardType();
         } else if (paymentMethodNonce instanceof PayPalAccountNonce) {
-            return CANONICAL_NAME_PAYPAL;
+            return PAYMENT_METHOD_PAYPAL;
         } else if (paymentMethodNonce instanceof VenmoAccountNonce) {
-            return CANONICAL_NAME_VENMO;
+            return PAYMENT_METHOD_VENMO;
         } else if (paymentMethodNonce instanceof GooglePayCardNonce) {
-            return CANONICAL_NAME_GOOGLE_PAY;
+            return PAYMENT_METHOD_GOOGLE_PAY;
         } else {
             return null;
         }
@@ -85,25 +85,25 @@ class PaymentMethodInspector {
 
     CardType parseCardType(String cardType) {
         switch (cardType) {
-            case CANONICAL_NAME_AMEX:
+            case PAYMENT_METHOD_AMEX:
                 return CardType.AMEX;
-            case CANONICAL_NAME_DINERS_CLUB:
+            case PAYMENT_METHOD_DINERS_CLUB:
                 return CardType.DINERS_CLUB;
-            case CANONICAL_NAME_DISCOVER:
+            case PAYMENT_METHOD_DISCOVER:
                 return CardType.DISCOVER;
-            case CANONICAL_NAME_JCB:
+            case PAYMENT_METHOD_JCB:
                 return CardType.JCB;
-            case CANONICAL_NAME_MAESTRO:
+            case PAYMENT_METHOD_MAESTRO:
                 return CardType.MAESTRO;
-            case CANONICAL_NAME_MASTERCARD:
+            case PAYMENT_METHOD_MASTERCARD:
                 return CardType.MASTERCARD;
-            case CANONICAL_NAME_VISA:
+            case PAYMENT_METHOD_VISA:
                 return CardType.VISA;
-            case CANONICAL_NAME_UNION_PAY:
+            case PAYMENT_METHOD_UNION_PAY:
                 return CardType.UNIONPAY;
-            case CANONICAL_NAME_HIPER:
+            case PAYMENT_METHOD_HIPER:
                 return CardType.HIPER;
-            case CANONICAL_NAME_HIPERCARD:
+            case PAYMENT_METHOD_HIPERCARD:
                 return CardType.HIPERCARD;
             default:
                 return null;
