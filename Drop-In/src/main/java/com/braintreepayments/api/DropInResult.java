@@ -38,8 +38,6 @@ public class DropInResult implements Parcelable {
     private DropInPaymentMethodType paymentMethodType;
     private PaymentMethodNonce paymentMethodNonce;
 
-    private DropInPaymentMethodHelper paymentMethodHelper = new DropInPaymentMethodHelper();
-
     DropInResult() {}
 
     DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {

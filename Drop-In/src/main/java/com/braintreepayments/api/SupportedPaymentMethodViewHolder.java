@@ -15,8 +15,6 @@ class SupportedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
     private final ImageView icon;
     private final TextView name;
 
-    private final DropInPaymentMethodHelper paymentMethodHelper = new DropInPaymentMethodHelper();
-
     SupportedPaymentMethodViewHolder(@NonNull View itemView) {
         super(itemView);
 

@@ -15,7 +15,6 @@ class VaultedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
     private final TextView description;
 
     private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
-    private final DropInPaymentMethodHelper paymentMethodHelper = new DropInPaymentMethodHelper();
 
     VaultedPaymentMethodViewHolder(View view) {
         super(view);

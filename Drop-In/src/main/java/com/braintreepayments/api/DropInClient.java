@@ -45,7 +45,6 @@ public class DropInClient {
     private final DataCollector dataCollector;
 
     private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
-    private final DropInPaymentMethodHelper paymentMethodHelper = new DropInPaymentMethodHelper();
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest, String sessionId) {
         BraintreeClient braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
@@ -289,7 +288,7 @@ public class DropInClient {
             if (!dropInRequest.isGooglePayDisabled()) {
                 googlePayClient.isReadyToPay(activity, (isReadyToGooglePay, isReadyToPayError) -> {
                     List<DropInPaymentMethodType> availablePaymentMethods =
-                        filterSupportedPaymentMethods(activity, configuration, isReadyToGooglePay);
+                            filterSupportedPaymentMethods(activity, configuration, isReadyToGooglePay);
                     callback.onResult(availablePaymentMethods, null);
                 });
             } else {
@@ -335,7 +334,7 @@ public class DropInClient {
             if (configuration != null) {
                 Set<CardType> supportedCardTypes = new HashSet<>();
                 for (String cardTypeAsString : configuration.getSupportedCardTypes()) {
-                    CardType cardType = paymentMethodHelper.parseCardType(cardTypeAsString) ;
+                    CardType cardType = parseCardType(cardTypeAsString);
                     if (cardType != null) {
                         supportedCardTypes.add(cardType);
                     }
@@ -460,5 +459,32 @@ public class DropInClient {
         String key = DropInResult.LAST_USED_PAYMENT_METHOD_TYPE;
         String value = nonceInspector.getPaymentMethodType(paymentMethodNonce).name();
         BraintreeSharedPreferences.getInstance().putString(context, key, value);
+    }
+
+    static CardType parseCardType(String cardType) {
+        switch (cardType) {
+            case PaymentMethodCanonicalName.AMEX:
+                return CardType.AMEX;
+            case PaymentMethodCanonicalName.DINERS_CLUB:
+                return CardType.DINERS_CLUB;
+            case PaymentMethodCanonicalName.DISCOVER:
+                return CardType.DISCOVER;
+            case PaymentMethodCanonicalName.JCB:
+                return CardType.JCB;
+            case PaymentMethodCanonicalName.MAESTRO:
+                return CardType.MAESTRO;
+            case PaymentMethodCanonicalName.MASTERCARD:
+                return CardType.MASTERCARD;
+            case PaymentMethodCanonicalName.VISA:
+                return CardType.VISA;
+            case PaymentMethodCanonicalName.UNION_PAY:
+                return CardType.UNIONPAY;
+            case PaymentMethodCanonicalName.HIPER:
+                return CardType.HIPER;
+            case PaymentMethodCanonicalName.HIPERCARD:
+                return CardType.HIPERCARD;
+            default:
+                return null;
+        }
     }
 }

@@ -20,7 +20,6 @@ class PaymentMethodItemView extends LinearLayout {
     private View divider;
 
     private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
-    private final DropInPaymentMethodHelper paymentMethodHelper = new DropInPaymentMethodHelper();
 
     public PaymentMethodItemView(Context context) {
         super(context);
