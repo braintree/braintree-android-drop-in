@@ -20,6 +20,7 @@ import java.util.*
 import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
 
 import android.os.Bundle
+import org.junit.After
 
 @RunWith(RobolectricTestRunner::class)
 class DropInActivityTest {
@@ -33,6 +34,12 @@ class DropInActivityTest {
     fun beforeEach() {
         authorization = Authorization.fromString(Fixtures.TOKENIZATION_KEY)
         dropInRequest = DropInRequest()
+    }
+
+    @After
+    fun afterEach() {
+        activityController.stop()
+        activityController.destroy()
     }
 
     // region onCreate
