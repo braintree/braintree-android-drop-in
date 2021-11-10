@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="DemoAppTheme" parent="Theme.AppCompat.Light">
-        <item name="colorAccent">@color/bt_blue_contrast</item>
+        <item name="colorAccent">@color/bt_black_contrast</item>
     </style>
 </resources>

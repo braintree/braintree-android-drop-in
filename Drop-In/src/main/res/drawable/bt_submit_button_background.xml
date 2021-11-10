@@ -4,5 +4,5 @@
     tools:ignore="UnusedAttribute"
     android:exitFadeDuration="@android:integer/config_shortAnimTime" >
     <item android:drawable="@color/bt_blue_pressed" android:state_pressed="true" />
-    <item android:drawable="@color/bt_blue_contrast" />
+    <item android:drawable="@color/bt_black_contrast" />
 </selector>
