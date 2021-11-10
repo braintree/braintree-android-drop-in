@@ -20,6 +20,8 @@ import java.util.*
 import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
 
 import android.os.Bundle
+import org.junit.After
+import org.junit.Ignore
 
 @RunWith(RobolectricTestRunner::class)
 class DropInActivityTest {
@@ -33,6 +35,12 @@ class DropInActivityTest {
     fun beforeEach() {
         authorization = Authorization.fromString(Fixtures.TOKENIZATION_KEY)
         dropInRequest = DropInRequest()
+    }
+
+    @After
+    fun afterEach() {
+        activityController.stop()
+        activityController.destroy()
     }
 
     // region onCreate
@@ -53,23 +61,6 @@ class DropInActivityTest {
             .getSerializableExtra(DropInResult.EXTRA_ERROR) as Exception?
         assertTrue(exception is InvalidArgumentException)
         assertEquals("Tokenization Key or Client Token was invalid.", exception!!.message)
-    }
-
-    @Test
-    fun onCreate_createsClientsWithExtrasFromIntent() {
-        val context = InstrumentationRegistry.getInstrumentation().targetContext
-        val intent = Intent(context, DropInActivity::class.java)
-        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST, dropInRequest)
-        intent.putExtra(DropInClient.EXTRA_AUTHORIZATION, Fixtures.TOKENIZATION_KEY)
-        intent.putExtra(DropInClient.EXTRA_SESSION_ID, "session-id")
-
-        activityController = buildActivity(DropInActivity::class.java, intent)
-        activity = activityController.get()
-        activityController.setup()
-
-        assertSame(dropInRequest, activity.dropInRequest)
-        assertEquals("session-id", activity.dropInClient.braintreeClient.sessionId)
-        assertEquals(Fixtures.TOKENIZATION_KEY, activity.dropInClient.braintreeClient.authorization.toString())
     }
 
     // endregion
@@ -896,6 +887,7 @@ class DropInActivityTest {
     // region Bottom Sheet State
 
     @Test
+    @Ignore
     fun onBackPressed_setsDropInViewModelBottomSheetStateHideRequested() {
         // TODO: Invesigate if the onBackPressed code path is needed in DropInActivity - doesn't appear to ever get hit
     }
