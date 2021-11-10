@@ -18,37 +18,6 @@ import static junit.framework.Assert.assertEquals;
 public class DropInPaymentMethodUnitTest {
 
     @Test
-    public void forType_returnsCorrectPaymentMethodType() throws JSONException {
-        assertEquals(DropInPaymentMethod.VISA, DropInPaymentMethod.forType("Visa"));
-        assertEquals(DropInPaymentMethod.MASTERCARD, DropInPaymentMethod.forType("MasterCard"));
-        assertEquals(DropInPaymentMethod.DISCOVER, DropInPaymentMethod.forType("Discover"));
-        assertEquals(DropInPaymentMethod.AMEX, DropInPaymentMethod.forType("American Express"));
-        assertEquals(DropInPaymentMethod.JCB, DropInPaymentMethod.forType("JCB"));
-        assertEquals(DropInPaymentMethod.DINERS, DropInPaymentMethod.forType("Diners"));
-        assertEquals(DropInPaymentMethod.MAESTRO, DropInPaymentMethod.forType("Maestro"));
-        assertEquals(DropInPaymentMethod.UNIONPAY, DropInPaymentMethod.forType("UnionPay"));
-        assertEquals(DropInPaymentMethod.PAYPAL, DropInPaymentMethod.forType("PayPal"));
-        assertEquals(DropInPaymentMethod.UNKNOWN, DropInPaymentMethod.forType("unknown"));
-        assertEquals(DropInPaymentMethod.PAY_WITH_VENMO, DropInPaymentMethod.forType("Venmo"));
-        assertEquals(DropInPaymentMethod.HIPER, DropInPaymentMethod.forType("Hiper"));
-        assertEquals(DropInPaymentMethod.HIPERCARD, DropInPaymentMethod.forType("Hipercard"));
-
-        assertEquals(DropInPaymentMethod.VISA, DropInPaymentMethod.forType(
-                CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))));
-        assertEquals(DropInPaymentMethod.PAYPAL, DropInPaymentMethod.forType(
-                PayPalAccountNonce.fromJSON(new JSONObject(Fixtures.PAYPAL_ACCOUNT_JSON))));
-        assertEquals(DropInPaymentMethod.UNKNOWN, DropInPaymentMethod.forType(
-                new PaymentMethodNonce("unknown-nonce", false)));
-        assertEquals(DropInPaymentMethod.PAY_WITH_VENMO, DropInPaymentMethod.forType(
-                new VenmoAccountNonce("venmo-nonce", "@venmo_user", false)));
-    }
-
-    @Test
-    public void forType_returnsUnknownForRandomString() {
-        assertEquals(DropInPaymentMethod.UNKNOWN, DropInPaymentMethod.forType("payment method"));
-    }
-
-    @Test
     public void getDrawable_returnsCorrectDrawables() {
         assertEquals(R.drawable.bt_ic_visa, DropInPaymentMethod.VISA.getDrawable());
         assertEquals(R.drawable.bt_ic_mastercard, DropInPaymentMethod.MASTERCARD.getDrawable());
@@ -97,23 +66,6 @@ public class DropInPaymentMethodUnitTest {
         assertEquals(R.string.bt_descriptor_pay_with_venmo, DropInPaymentMethod.PAY_WITH_VENMO.getLocalizedName());
         assertEquals(R.string.bt_descriptor_hiper, DropInPaymentMethod.HIPER.getLocalizedName());
         assertEquals(R.string.bt_descriptor_hipercard, DropInPaymentMethod.HIPERCARD.getLocalizedName());
-    }
-
-    @Test
-    public void getCanonicalName_returnsCorrectString() {
-        assertEquals("Visa", DropInPaymentMethod.VISA.getCanonicalName());
-        assertEquals("MasterCard", DropInPaymentMethod.MASTERCARD.getCanonicalName());
-        assertEquals("Discover", DropInPaymentMethod.DISCOVER.getCanonicalName());
-        assertEquals("American Express", DropInPaymentMethod.AMEX.getCanonicalName());
-        assertEquals("JCB", DropInPaymentMethod.JCB.getCanonicalName());
-        assertEquals("Diners", DropInPaymentMethod.DINERS.getCanonicalName());
-        assertEquals("Maestro", DropInPaymentMethod.MAESTRO.getCanonicalName());
-        assertEquals("UnionPay", DropInPaymentMethod.UNIONPAY.getCanonicalName());
-        assertEquals("PayPal", DropInPaymentMethod.PAYPAL.getCanonicalName());
-        assertEquals("Unknown", DropInPaymentMethod.UNKNOWN.getCanonicalName());
-        assertEquals("Venmo", DropInPaymentMethod.PAY_WITH_VENMO.getCanonicalName());
-        assertEquals("Hiper", DropInPaymentMethod.HIPER.getCanonicalName());
-        assertEquals("Hipercard", DropInPaymentMethod.HIPERCARD.getCanonicalName());
     }
 
     @Test

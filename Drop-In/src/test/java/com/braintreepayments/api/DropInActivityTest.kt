@@ -7,7 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.test.platform.app.InstrumentationRegistry
-import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
+import com.braintreepayments.cardform.utils.CardType
 import junit.framework.TestCase.*
 import org.json.JSONObject
 import org.junit.After
@@ -170,7 +170,7 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
 
         assertEquals(
-            DropInPaymentMethod.VISA.canonicalName,
+            DropInPaymentMethod.VISA.name,
             BraintreeSharedPreferences.getInstance()
                 .getString(activity, DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null))
     }
@@ -642,7 +642,7 @@ class DropInActivityTest {
 
     @Test
     fun onSupportedPaymentMethodSelectedEvent_withTypeUnknown_prefetchesSupportedCardTypes() {
-        val supportedCardTypes = arrayListOf("Visa")
+        val supportedCardTypes = arrayListOf(CardType.VISA)
         val dropInClient = MockDropInClientBuilder()
             .authorization(authorization)
             .getSupportedCardTypesSuccess(supportedCardTypes)
@@ -653,7 +653,7 @@ class DropInActivityTest {
             DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.UNKNOWN)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
-        assertSame(DropInPaymentMethod.getCardsTypes(supportedCardTypes)[0], activity.dropInViewModel.supportedCardTypes.value!![0])
+        assertSame(DropInPaymentMethod.VISA, activity.dropInViewModel.supportedCardTypes.value!![0])
     }
 
     @Test

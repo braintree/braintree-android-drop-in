@@ -32,7 +32,7 @@ class PaymentMethodInspector {
         }
     }
 
-    DropInPaymentMethod getPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
+    DropInPaymentMethod getPaymentMethod(PaymentMethodNonce paymentMethodNonce) {
         String canonicalName = getPaymentMethodCanonicalName(paymentMethodNonce);
         if (canonicalName != null) {
             switch (canonicalName) {

@@ -504,7 +504,7 @@ public class DropInClientUnitTest {
     public void fetchMostRecentPaymentMethod_callsBackWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle() throws JSONException {
         BraintreeSharedPreferences.getInstance().putString(activity,
                 DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                DropInPaymentMethod.GOOGLE_PAY.getCanonicalName());
+                DropInPaymentMethod.GOOGLE_PAY.name());
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
                 .isReadyToPaySuccess(true)
@@ -537,7 +537,7 @@ public class DropInClientUnitTest {
             throws JSONException {
         BraintreeSharedPreferences.getInstance().putString(activity,
                 DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                DropInPaymentMethod.GOOGLE_PAY.getCanonicalName());
+                DropInPaymentMethod.GOOGLE_PAY.name());
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
                 .isReadyToPaySuccess(false)
@@ -732,7 +732,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenUnionPayNotSupportedAndOtherCardsPresent_callsBackWithOtherCards() {
         Configuration configuration = mockConfiguration(false, false, true, false, false);
         when(configuration.getSupportedCardTypes())
-                .thenReturn(Arrays.asList(DropInPaymentMethod.UNIONPAY.getCanonicalName(), DropInPaymentMethod.VISA.getCanonicalName()));
+                .thenReturn(Arrays.asList(DropInPaymentMethod.UNIONPAY.name(), DropInPaymentMethod.VISA.name()));
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
@@ -762,7 +762,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenOnlyUnionPayPresentAndNotSupported_callsBackWithNoCards() {
         Configuration configuration = mockConfiguration(false, false, true, false, false);
         when(configuration.getSupportedCardTypes())
-                .thenReturn(Collections.singletonList(DropInPaymentMethod.UNIONPAY.getCanonicalName()));
+                .thenReturn(Collections.singletonList(DropInPaymentMethod.UNIONPAY.name()));
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -791,7 +791,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenOnlyUnionPayPresentAndSupported_callsBackWithCards() {
         Configuration configuration = mockConfiguration(false, false, true, false, true);
         when(configuration.getSupportedCardTypes())
-                .thenReturn(Collections.singletonList(DropInPaymentMethod.UNIONPAY.getCanonicalName()));
+                .thenReturn(Collections.singletonList(DropInPaymentMethod.UNIONPAY.name()));
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -1777,7 +1777,7 @@ public class DropInClientUnitTest {
         when(configuration.isUnionPayEnabled()).thenReturn(unionPayEnabled);
 
         if (cardEnabled) {
-            when(configuration.getSupportedCardTypes()).thenReturn(Collections.singletonList(DropInPaymentMethod.VISA.getCanonicalName()));
+            when(configuration.getSupportedCardTypes()).thenReturn(Collections.singletonList(DropInPaymentMethod.VISA.name()));
         }
 
         return configuration;

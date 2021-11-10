@@ -56,7 +56,7 @@ class PaymentMethodItemView extends LinearLayout {
         this.paymentMethodNonce = paymentMethodNonce;
 
         DropInPaymentMethod paymentMethodType =
-            nonceInspector.getPaymentMethodType(paymentMethodNonce);
+            nonceInspector.getPaymentMethod(paymentMethodNonce);
 
         if (usedInList) {
             icon.setImageResource(paymentMethodType.getDrawable());

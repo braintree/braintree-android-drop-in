@@ -137,7 +137,7 @@ public class AvailablePaymentMethodNonceListUnitTest {
 
         if (cardEnabled) {
             when(configuration.getSupportedCardTypes()).thenReturn(
-                    Collections.singletonList(DropInPaymentMethod.VISA.getCanonicalName()));
+                    Collections.singletonList(DropInPaymentMethod.VISA.name()));
         }
 
         return configuration;
