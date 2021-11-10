@@ -190,6 +190,7 @@ public class DropInRequest implements Parcelable {
     /**
      * @return The PayPal Request {@link PayPalRequest} for the transaction.
      */
+    @Nullable
     public PayPalRequest getPayPalRequest() { return payPalRequest; }
 
     /**
