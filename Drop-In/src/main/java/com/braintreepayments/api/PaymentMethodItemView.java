@@ -64,7 +64,7 @@ class PaymentMethodItemView extends LinearLayout {
             deleteIcon.setVisibility(View.VISIBLE);
             divider.setVisibility(View.VISIBLE);
         } else {
-            icon.setImageResource(paymentMethodHelper.getVaultedDrawable(paymentMethodType));
+            icon.setImageResource(paymentMethodType.getVaultedDrawable());
             deleteIcon.setVisibility(View.GONE);
             divider.setVisibility(View.GONE);
         }

@@ -29,7 +29,7 @@ class VaultedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
         DropInPaymentMethodType paymentMethodType = nonceInspector.getPaymentMethodType(paymentMethodNonce);
 
         title.setText(paymentMethodHelper.getLocalizedName(paymentMethodType));
-        icon.setImageResource(paymentMethodHelper.getVaultedDrawable(paymentMethodType));
+        icon.setImageResource(paymentMethodType.getVaultedDrawable());
         description.setText(nonceInspector.getDescription(paymentMethodNonce));
     }
 

@@ -334,8 +334,11 @@ public class DropInClient {
         braintreeClient.getConfiguration((configuration, error) -> {
             if (configuration != null) {
                 Set<CardType> supportedCardTypes = new HashSet<>();
-                for (String cardType : configuration.getSupportedCardTypes()) {
-                    supportedCardTypes.add(paymentMethodHelper.parseCardType(cardType));
+                for (String cardTypeAsString : configuration.getSupportedCardTypes()) {
+                    CardType cardType = paymentMethodHelper.parseCardType(cardTypeAsString) ;
+                    if (cardType != null) {
+                        supportedCardTypes.add(cardType);
+                    }
                 }
 
                 if (!configuration.isUnionPayEnabled()) {

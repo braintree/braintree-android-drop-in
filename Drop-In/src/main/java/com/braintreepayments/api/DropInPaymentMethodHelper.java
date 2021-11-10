@@ -43,41 +43,6 @@ class DropInPaymentMethodHelper {
         }
     }
 
-    @DrawableRes
-    int getVaultedDrawable(DropInPaymentMethodType paymentMethodType) {
-        switch (paymentMethodType) {
-            case AMEX:
-                return R.drawable.bt_ic_vaulted_amex;
-            case GOOGLE_PAY:
-                return 0;
-            case DINERS:
-                return R.drawable.bt_ic_vaulted_diners_club;
-            case DISCOVER:
-                return R.drawable.bt_ic_vaulted_discover;
-            case JCB:
-                return R.drawable.bt_ic_vaulted_jcb;
-            case MAESTRO:
-                return R.drawable.bt_ic_vaulted_maestro;
-            case MASTERCARD:
-                return R.drawable.bt_ic_vaulted_mastercard;
-            case PAYPAL:
-                return R.drawable.bt_ic_vaulted_paypal;
-            case VISA:
-                return R.drawable.bt_ic_vaulted_visa;
-            case PAY_WITH_VENMO:
-                return R.drawable.bt_ic_vaulted_venmo;
-            case UNIONPAY:
-                return R.drawable.bt_ic_vaulted_unionpay;
-            case HIPER:
-                return R.drawable.bt_ic_vaulted_hiper;
-            case HIPERCARD:
-                return R.drawable.bt_ic_vaulted_hipercard;
-            case UNKNOWN:
-            default:
-                return R.drawable.bt_ic_vaulted_unknown;
-        }
-    }
-
     CardType parseCardType(String cardType) {
         switch (cardType) {
             case PaymentMethodCanonicalName.AMEX:
