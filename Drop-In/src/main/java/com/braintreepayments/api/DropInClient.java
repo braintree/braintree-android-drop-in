@@ -43,6 +43,7 @@ public class DropInClient {
     private final DataCollector dataCollector;
 
     private final PaymentMethodNonceInspector nonceInspector = new PaymentMethodNonceInspector();
+    private final DropInPaymentMethodHelper paymentMethodHelper = new DropInPaymentMethodHelper();
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest, String sessionId) {
         BraintreeClient braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
@@ -345,11 +346,12 @@ public class DropInClient {
         });
     }
 
-    static List<CardType> mapPaymentMethodsToCardTypes(Set<DropInPaymentMethodType> supportedPaymentMethods) {
+    List<CardType> mapPaymentMethodsToCardTypes(Set<DropInPaymentMethodType> supportedPaymentMethods) {
         List<CardType> convertedCardTypes = new ArrayList<>();
         for (DropInPaymentMethodType paymentMethod : supportedPaymentMethods) {
-            if (paymentMethod != DropInPaymentMethodType.UNKNOWN && paymentMethod.getCardType() != null) {
-                convertedCardTypes.add(paymentMethod.getCardType());
+            CardType cardType = paymentMethodHelper.getCardType(paymentMethod);
+            if (cardType != null) {
+                convertedCardTypes.add(cardType);
             }
         }
         return convertedCardTypes;

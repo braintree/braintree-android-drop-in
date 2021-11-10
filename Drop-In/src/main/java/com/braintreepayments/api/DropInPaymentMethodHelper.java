@@ -113,4 +113,35 @@ class DropInPaymentMethodHelper {
                 return R.drawable.bt_ic_vaulted_unknown;
         }
     }
+
+    public CardType getCardType(DropInPaymentMethodType paymentMethod) {
+        switch (paymentMethod) {
+            case AMEX:
+                return CardType.AMEX;
+            case DINERS:
+                return CardType.DINERS_CLUB;
+            case DISCOVER:
+                return CardType.DISCOVER;
+            case JCB:
+                return CardType.JCB;
+            case MAESTRO:
+                return CardType.MAESTRO;
+            case MASTERCARD:
+                return CardType.MASTERCARD;
+            case VISA:
+                return CardType.VISA;
+            case UNIONPAY:
+                return CardType.UNIONPAY;
+            case HIPER:
+                return CardType.HIPER;
+            case HIPERCARD:
+                return CardType.HIPERCARD;
+            case GOOGLE_PAY:
+            case PAYPAL:
+            case PAY_WITH_VENMO:
+            case UNKNOWN:
+            default:
+                return null;
+        }
+    }
 }
