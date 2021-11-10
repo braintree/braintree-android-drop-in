@@ -21,6 +21,7 @@ import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
 
 import android.os.Bundle
 import org.junit.After
+import org.junit.Ignore
 
 @RunWith(RobolectricTestRunner::class)
 class DropInActivityTest {
@@ -65,11 +66,12 @@ class DropInActivityTest {
 //    @Test
 //    fun onCreate_createsClientsWithExtrasFromIntent() {
 //        val context = InstrumentationRegistry.getInstrumentation().targetContext
+//        val authorization = Fixtures.TOKENIZATION_KEY
 //        val dropInRequestBundle = Bundle()
 //        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest)
 //        val intent = Intent(context, DropInActivity::class.java)
 //        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
-//        intent.putExtra(DropInClient.EXTRA_AUTHORIZATION, Fixtures.TOKENIZATION_KEY)
+//        intent.putExtra(DropInClient.EXTRA_AUTHORIZATION, authorization)
 //        intent.putExtra(DropInClient.EXTRA_SESSION_ID, "session-id")
 //
 //        activityController = buildActivity(DropInActivity::class.java, intent)
@@ -78,7 +80,7 @@ class DropInActivityTest {
 //
 //        assertSame(dropInRequest, activity.dropInRequest)
 //        assertEquals("session-id", activity.dropInClient.braintreeClient.sessionId)
-//        assertEquals(Fixtures.TOKENIZATION_KEY, activity.dropInClient.braintreeClient.authorization.toString())
+//        assertEquals(authorization, activity.dropInClient.braintreeClient.authorization.toString())
 //    }
 
     // endregion
@@ -905,6 +907,7 @@ class DropInActivityTest {
     // region Bottom Sheet State
 
     @Test
+    @Ignore
     fun onBackPressed_setsDropInViewModelBottomSheetStateHideRequested() {
         // TODO: Invesigate if the onBackPressed code path is needed in DropInActivity - doesn't appear to ever get hit
     }
