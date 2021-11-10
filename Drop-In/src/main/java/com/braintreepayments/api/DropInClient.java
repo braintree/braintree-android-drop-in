@@ -28,9 +28,6 @@ public class DropInClient {
 
     private static final String CARD_TYPE_UNION_PAY = "UnionPay";
 
-    static final String LAST_USED_PAYMENT_METHOD_TYPE =
-            "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
-
     @VisibleForTesting
     final BraintreeClient braintreeClient;
     private final PaymentMethodClient paymentMethodClient;
@@ -386,16 +383,10 @@ public class DropInClient {
             return;
         }
 
-        // TODO: catch exception when enum cannot be found with name
-        DropInPaymentMethod lastUsedPaymentMethodType = null;
+        DropInPaymentMethod lastUsedPaymentMethod =
+            DropInSharedPreferences.getInstance().getLastUsedPaymentMethod(activity);
 
-        String paymentMethodName = BraintreeSharedPreferences.getInstance()
-                .getString(activity, LAST_USED_PAYMENT_METHOD_TYPE, null);
-        if (paymentMethodName != null) {
-            lastUsedPaymentMethodType = DropInPaymentMethod.valueOf(paymentMethodName);
-        }
-
-        if (lastUsedPaymentMethodType == DropInPaymentMethod.GOOGLE_PAY) {
+        if (lastUsedPaymentMethod == DropInPaymentMethod.GOOGLE_PAY) {
             googlePayClient.isReadyToPay(activity, (isReadyToPay, error) -> {
                 if (isReadyToPay) {
                     DropInResult result = new DropInResult();
@@ -456,8 +447,6 @@ public class DropInClient {
 
     void setLastUsedPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
         Context context = braintreeClient.getApplicationContext();
-        String key = DropInResult.LAST_USED_PAYMENT_METHOD_TYPE;
-        String value = paymentMethodInspector.getPaymentMethodType(paymentMethodNonce).name();
-        BraintreeSharedPreferences.getInstance().putString(context, key, value);
+        DropInSharedPreferences.getInstance().setLastUsedPaymentMethod(context, paymentMethodNonce);
     }
 }
