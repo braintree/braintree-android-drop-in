@@ -205,7 +205,7 @@ public class MainActivity extends BaseActivity {
 
         DropInPaymentMethodType paymentMethodType = dropInResult.getPaymentMethodType();
         if (paymentMethodType != null) {
-            paymentMethodTitle.setText(dropInResult.getPaymentMethodDisplayName());
+            paymentMethodTitle.setText(paymentMethodType.getLocalizedName());
             paymentMethodIcon.setImageResource(paymentMethodType.getDrawable());
         }
         paymentMethodDescription.setText(dropInResult.getPaymentDescription());

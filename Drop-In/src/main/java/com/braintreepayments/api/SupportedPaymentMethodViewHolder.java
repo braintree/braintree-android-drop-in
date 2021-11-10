@@ -28,7 +28,7 @@ class SupportedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
         icon.setImageResource(paymentMethodType.getDrawable());
 
         Context context = name.getContext();
-        name.setText(context.getString(paymentMethodHelper.getLocalizedName(paymentMethodType)));
+        name.setText(context.getString(paymentMethodType.getLocalizedName()));
     }
 
     void setOnClickListener(View.OnClickListener listener) {

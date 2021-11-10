@@ -69,7 +69,7 @@ class PaymentMethodItemView extends LinearLayout {
             divider.setVisibility(View.GONE);
         }
 
-        title.setText(paymentMethodHelper.getLocalizedName(paymentMethodType));
+        title.setText(paymentMethodType.getLocalizedName());
         description.setText(nonceInspector.getDescription(paymentMethodNonce));
     }
 

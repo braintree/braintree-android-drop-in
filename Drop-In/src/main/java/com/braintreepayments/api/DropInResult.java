@@ -79,15 +79,6 @@ public class DropInResult implements Parcelable {
     }
 
     /**
-     * @return An id representing a localized {@link String} for the resulting {@link
-     * DropInPaymentMethodType}.
-     */
-    @StringRes
-    public int getPaymentMethodDisplayName() {
-        return paymentMethodHelper.getLocalizedName(paymentMethodType);
-    }
-
-    /**
      * @return The previous {@link PaymentMethodNonce} or {@code null} if there is no previous
      * payment method or the previous payment method was
      * {@link com.braintreepayments.api.GooglePayCardNonce}.
