@@ -21,7 +21,7 @@ public class DropInResultUnitTest {
         DropInResult result = new DropInResult();
         result.setPaymentMethodNonce(cardNonce);
 
-        assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
+        assertEquals(DropInPaymentMethod.VISA, result.getPaymentMethodType());
         assertEquals(cardNonce, result.getPaymentMethodNonce());
     }
 
@@ -71,7 +71,7 @@ public class DropInResultUnitTest {
 
         DropInResult parceled = DropInResult.CREATOR.createFromParcel(parcel);
 
-        assertEquals(DropInPaymentMethodType.VISA, parceled.getPaymentMethodType());
+        assertEquals(DropInPaymentMethod.VISA, parceled.getPaymentMethodType());
         assertNotNull(parceled.getPaymentMethodNonce());
         assertEquals(cardNonce.getString(), parceled.getPaymentMethodNonce().getString());
         assertEquals("device_data", parceled.getDeviceData());

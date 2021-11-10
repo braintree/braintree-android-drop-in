@@ -13,10 +13,10 @@ import java.util.List;
 
 class SupportedPaymentMethodsAdapter extends RecyclerView.Adapter<SupportedPaymentMethodViewHolder> {
 
-    private final List<DropInPaymentMethodType> supportedPaymentMethods;
+    private final List<DropInPaymentMethod> supportedPaymentMethods;
     private final SupportedPaymentMethodSelectedListener listener;
 
-    SupportedPaymentMethodsAdapter(List<DropInPaymentMethodType> supportedPaymentMethods, SupportedPaymentMethodSelectedListener listener) {
+    SupportedPaymentMethodsAdapter(List<DropInPaymentMethod> supportedPaymentMethods, SupportedPaymentMethodSelectedListener listener) {
         this.listener = listener;
         this.supportedPaymentMethods = supportedPaymentMethods;
     }
@@ -32,7 +32,7 @@ class SupportedPaymentMethodsAdapter extends RecyclerView.Adapter<SupportedPayme
 
     @Override
     public void onBindViewHolder(@NonNull SupportedPaymentMethodViewHolder holder, int position) {
-        final DropInPaymentMethodType paymentMethodType = supportedPaymentMethods.get(position);
+        final DropInPaymentMethod paymentMethodType = supportedPaymentMethods.get(position);
         holder.bind(paymentMethodType);
         holder.setOnClickListener(v -> listener.onPaymentMethodSelected(paymentMethodType));
     }

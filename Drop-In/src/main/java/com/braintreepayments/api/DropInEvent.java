@@ -46,7 +46,7 @@ class DropInEvent {
         return event;
     }
 
-    static DropInEvent createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType type) {
+    static DropInEvent createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod type) {
         DropInEvent event = new DropInEvent(DropInEventType.SUPPORTED_PAYMENT_METHOD_SELECTED);
         event.putString(DropInEventProperty.SUPPORTED_PAYMENT_METHOD, type.name());
         return event;
@@ -84,9 +84,9 @@ class DropInEvent {
         return bundle.getString(property.getBundleKey());
     }
 
-    DropInPaymentMethodType getDropInPaymentMethodType(DropInEventProperty property) {
+    DropInPaymentMethod getDropInPaymentMethodType(DropInEventProperty property) {
         String paymentMethodTypeString = bundle.getString(property.getBundleKey());
-        return DropInPaymentMethodType.valueOf(paymentMethodTypeString);
+        return DropInPaymentMethod.valueOf(paymentMethodTypeString);
     }
 
     PaymentMethodNonce getPaymentMethodNonce(DropInEventProperty property) {

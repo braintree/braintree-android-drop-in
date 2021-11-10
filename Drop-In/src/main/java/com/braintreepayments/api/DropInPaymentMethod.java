@@ -6,7 +6,7 @@ import com.braintreepayments.cardform.utils.CardType;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.StringRes;
 
-public enum DropInPaymentMethodType {
+public enum DropInPaymentMethod {
 
     // `getFrontResource` is pulling icons from android-card-form, `R.drawable` icons are drop-in internal
     AMEX(CardType.AMEX.getFrontResource(), R.drawable.bt_ic_vaulted_amex, R.string.bt_descriptor_amex),
@@ -34,7 +34,7 @@ public enum DropInPaymentMethodType {
     @StringRes
     private final int localizedName;
 
-    DropInPaymentMethodType(@DrawableRes int drawable, @DrawableRes int vaultedDrawable, @StringRes int localizedName) {
+    DropInPaymentMethod(@DrawableRes int drawable, @DrawableRes int vaultedDrawable, @StringRes int localizedName) {
         this.drawable = drawable;
         this.vaultedDrawable = vaultedDrawable;
         this.localizedName = localizedName;
@@ -42,7 +42,7 @@ public enum DropInPaymentMethodType {
 
     /**
      * @return An id representing a {@link android.graphics.drawable.Drawable} icon for the current
-     * {@link DropInPaymentMethodType}.
+     * {@link DropInPaymentMethod}.
      */
     @DrawableRes
     public int getDrawable() {
@@ -51,7 +51,7 @@ public enum DropInPaymentMethodType {
 
     /**
      * @return An id representing a localized {@link String} for the current {@link
-     * DropInPaymentMethodType}.
+     * DropInPaymentMethod}.
      */
     @StringRes
     public int getLocalizedName() {

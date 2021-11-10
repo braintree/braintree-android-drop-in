@@ -287,27 +287,27 @@ public class DropInClient {
 
             if (!dropInRequest.isGooglePayDisabled()) {
                 googlePayClient.isReadyToPay(activity, (isReadyToGooglePay, isReadyToPayError) -> {
-                    List<DropInPaymentMethodType> availablePaymentMethods =
+                    List<DropInPaymentMethod> availablePaymentMethods =
                             filterSupportedPaymentMethods(activity, configuration, isReadyToGooglePay);
                     callback.onResult(availablePaymentMethods, null);
                 });
             } else {
-                List<DropInPaymentMethodType> availablePaymentMethods =
+                List<DropInPaymentMethod> availablePaymentMethods =
                         filterSupportedPaymentMethods(activity, configuration, false);
                 callback.onResult(availablePaymentMethods, null);
             }
         });
     }
 
-    private List<DropInPaymentMethodType> filterSupportedPaymentMethods(Context context, Configuration configuration, boolean showGooglePay) {
-        List<DropInPaymentMethodType> availablePaymentMethods = new ArrayList<>();
+    private List<DropInPaymentMethod> filterSupportedPaymentMethods(Context context, Configuration configuration, boolean showGooglePay) {
+        List<DropInPaymentMethod> availablePaymentMethods = new ArrayList<>();
 
         if (!dropInRequest.isPayPalDisabled() && configuration.isPayPalEnabled()) {
-            availablePaymentMethods.add(DropInPaymentMethodType.PAYPAL);
+            availablePaymentMethods.add(DropInPaymentMethod.PAYPAL);
         }
 
         if (!dropInRequest.isVenmoDisabled() && configuration.isVenmoEnabled() && venmoClient.isVenmoAppSwitchAvailable(context)) {
-            availablePaymentMethods.add(DropInPaymentMethodType.PAY_WITH_VENMO);
+            availablePaymentMethods.add(DropInPaymentMethod.PAY_WITH_VENMO);
         }
 
         if (!dropInRequest.isCardDisabled()) {
@@ -317,13 +317,13 @@ public class DropInClient {
                 supportedCardTypes.remove(CARD_TYPE_UNION_PAY);
             }
             if (supportedCardTypes.size() > 0) {
-                availablePaymentMethods.add(DropInPaymentMethodType.UNKNOWN);
+                availablePaymentMethods.add(DropInPaymentMethod.UNKNOWN);
             }
         }
 
         if (showGooglePay) {
             if (!dropInRequest.isGooglePayDisabled()) {
-                availablePaymentMethods.add(DropInPaymentMethodType.GOOGLE_PAY);
+                availablePaymentMethods.add(DropInPaymentMethod.GOOGLE_PAY);
             }
         }
         return availablePaymentMethods;
@@ -387,19 +387,19 @@ public class DropInClient {
         }
 
         // TODO: catch exception when enum cannot be found with name
-        DropInPaymentMethodType lastUsedPaymentMethodType = null;
+        DropInPaymentMethod lastUsedPaymentMethodType = null;
 
         String paymentMethodName = BraintreeSharedPreferences.getInstance()
                 .getString(activity, LAST_USED_PAYMENT_METHOD_TYPE, null);
         if (paymentMethodName != null) {
-            lastUsedPaymentMethodType = DropInPaymentMethodType.valueOf(paymentMethodName);
+            lastUsedPaymentMethodType = DropInPaymentMethod.valueOf(paymentMethodName);
         }
 
-        if (lastUsedPaymentMethodType == DropInPaymentMethodType.GOOGLE_PAY) {
+        if (lastUsedPaymentMethodType == DropInPaymentMethod.GOOGLE_PAY) {
             googlePayClient.isReadyToPay(activity, (isReadyToPay, error) -> {
                 if (isReadyToPay) {
                     DropInResult result = new DropInResult();
-                    result.setPaymentMethodType(DropInPaymentMethodType.GOOGLE_PAY);
+                    result.setPaymentMethodType(DropInPaymentMethod.GOOGLE_PAY);
                     callback.onResult(result, null);
                 } else {
                     getPaymentMethodNonces(callback);

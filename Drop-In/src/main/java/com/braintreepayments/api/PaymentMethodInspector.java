@@ -32,36 +32,36 @@ class PaymentMethodInspector {
         }
     }
 
-    DropInPaymentMethodType getPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
+    DropInPaymentMethod getPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
         String canonicalName = getPaymentMethodCanonicalName(paymentMethodNonce);
         if (canonicalName != null) {
             switch (canonicalName) {
                 case PAYMENT_METHOD_AMEX:
-                    return DropInPaymentMethodType.AMEX;
+                    return DropInPaymentMethod.AMEX;
                 case PAYMENT_METHOD_DINERS_CLUB:
-                    return DropInPaymentMethodType.DINERS;
+                    return DropInPaymentMethod.DINERS;
                 case PAYMENT_METHOD_DISCOVER:
-                    return DropInPaymentMethodType.DISCOVER;
+                    return DropInPaymentMethod.DISCOVER;
                 case PAYMENT_METHOD_JCB:
-                    return DropInPaymentMethodType.JCB;
+                    return DropInPaymentMethod.JCB;
                 case PAYMENT_METHOD_MAESTRO:
-                    return DropInPaymentMethodType.MAESTRO;
+                    return DropInPaymentMethod.MAESTRO;
                 case PAYMENT_METHOD_MASTERCARD:
-                    return DropInPaymentMethodType.MASTERCARD;
+                    return DropInPaymentMethod.MASTERCARD;
                 case PAYMENT_METHOD_VISA:
-                    return DropInPaymentMethodType.VISA;
+                    return DropInPaymentMethod.VISA;
                 case PAYMENT_METHOD_UNION_PAY:
-                    return DropInPaymentMethodType.UNIONPAY;
+                    return DropInPaymentMethod.UNIONPAY;
                 case PAYMENT_METHOD_HIPER:
-                    return DropInPaymentMethodType.HIPER;
+                    return DropInPaymentMethod.HIPER;
                 case PAYMENT_METHOD_HIPERCARD:
-                    return DropInPaymentMethodType.HIPERCARD;
+                    return DropInPaymentMethod.HIPERCARD;
                 case PAYMENT_METHOD_PAYPAL:
-                    return DropInPaymentMethodType.PAYPAL;
+                    return DropInPaymentMethod.PAYPAL;
                 case PAYMENT_METHOD_VENMO:
-                    return DropInPaymentMethodType.PAY_WITH_VENMO;
+                    return DropInPaymentMethod.PAY_WITH_VENMO;
                 case PAYMENT_METHOD_GOOGLE_PAY:
-                    return DropInPaymentMethodType.GOOGLE_PAY;
+                    return DropInPaymentMethod.GOOGLE_PAY;
                 default:
                     return null;
             }

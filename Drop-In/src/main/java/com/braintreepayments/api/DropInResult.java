@@ -32,7 +32,7 @@ public class DropInResult implements Parcelable {
     private String deviceData;
     private String paymentDescription;
 
-    private DropInPaymentMethodType paymentMethodType;
+    private DropInPaymentMethod paymentMethodType;
     private PaymentMethodNonce paymentMethodNonce;
 
     DropInResult() {}
@@ -58,18 +58,18 @@ public class DropInResult implements Parcelable {
         return this;
     }
 
-    void setPaymentMethodType(DropInPaymentMethodType mPaymentMethodType) {
+    void setPaymentMethodType(DropInPaymentMethod mPaymentMethodType) {
         this.paymentMethodType = mPaymentMethodType;
     }
 
     /**
-     * @return The previously used {@link DropInPaymentMethodType} or {@code null} if there was no
-     * previous payment method. If the type is {@link DropInPaymentMethodType#GOOGLE_PAY} the Android
+     * @return The previously used {@link DropInPaymentMethod} or {@code null} if there was no
+     * previous payment method. If the type is {@link DropInPaymentMethod#GOOGLE_PAY} the Android
      * Pay flow will need to be performed by the user again at the time of checkout,
      * {@link #getPaymentMethodNonce()} will return {@code null} in this case.
      */
     @Nullable
-    public DropInPaymentMethodType getPaymentMethodType() {
+    public DropInPaymentMethod getPaymentMethodType() {
         return paymentMethodType;
     }
 
@@ -111,7 +111,7 @@ public class DropInResult implements Parcelable {
 
     protected DropInResult(Parcel in) {
         int paymentMethodType = in.readInt();
-        this.paymentMethodType = paymentMethodType == -1 ? null : DropInPaymentMethodType.values()[paymentMethodType];
+        this.paymentMethodType = paymentMethodType == -1 ? null : DropInPaymentMethod.values()[paymentMethodType];
         paymentMethodNonce = in.readParcelable(PaymentMethodNonce.class.getClassLoader());
         paymentDescription = in.readString();
         deviceData = in.readString();

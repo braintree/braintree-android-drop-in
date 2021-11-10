@@ -55,7 +55,7 @@ class PaymentMethodItemView extends LinearLayout {
     public void setPaymentMethod(PaymentMethodNonce paymentMethodNonce, boolean usedInList) {
         this.paymentMethodNonce = paymentMethodNonce;
 
-        DropInPaymentMethodType paymentMethodType =
+        DropInPaymentMethod paymentMethodType =
             nonceInspector.getPaymentMethodType(paymentMethodNonce);
 
         if (usedInList) {

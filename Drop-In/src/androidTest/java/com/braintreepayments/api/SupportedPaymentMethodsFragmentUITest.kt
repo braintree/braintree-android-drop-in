@@ -25,10 +25,10 @@ import org.mockito.Mockito.mock
 class SupportedPaymentMethodsFragmentUITest {
 
     private val supportedPaymentMethods = listOf(
-            DropInPaymentMethodType.PAYPAL,
-            DropInPaymentMethodType.PAY_WITH_VENMO,
-            DropInPaymentMethodType.UNKNOWN,
-            DropInPaymentMethodType.GOOGLE_PAY
+            DropInPaymentMethod.PAYPAL,
+            DropInPaymentMethod.PAY_WITH_VENMO,
+            DropInPaymentMethod.UNKNOWN,
+            DropInPaymentMethod.GOOGLE_PAY
     )
 
     private val vaultedPaymentMethods = listOf(CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)))
@@ -219,7 +219,7 @@ class SupportedPaymentMethodsFragmentUITest {
 
                 val paymentMethodType =
                     event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD)
-                assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodType)
+                assertEquals(DropInPaymentMethod.UNKNOWN, paymentMethodType)
             }
         }
 
@@ -257,7 +257,7 @@ class SupportedPaymentMethodsFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedPaymentMethods(supportedPaymentMethods)
-            fragment.onPaymentMethodSelected(DropInPaymentMethodType.PAYPAL)
+            fragment.onPaymentMethodSelected(DropInPaymentMethod.PAYPAL)
             fragment.dropInViewModel.setUserCanceledError(Exception("User canceled PayPal."))
         }
 

@@ -156,12 +156,12 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void onSupportedPaymentMethodSelected(DropInEvent event) {
-        DropInPaymentMethodType paymentMethodType =
+        DropInPaymentMethod paymentMethodType =
                 event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD);
         startPaymentFlow(paymentMethodType);
     }
 
-    private void startPaymentFlow(DropInPaymentMethodType paymentMethodType) {
+    private void startPaymentFlow(DropInPaymentMethod paymentMethodType) {
         switch (paymentMethodType) {
             case GOOGLE_PAY:
                 startGooglePayFlow();

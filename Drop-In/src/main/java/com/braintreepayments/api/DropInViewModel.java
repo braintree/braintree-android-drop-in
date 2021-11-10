@@ -15,7 +15,7 @@ public class DropInViewModel extends ViewModel {
     private final MutableLiveData<BottomSheetState> bottomSheetState = new MutableLiveData<>(BottomSheetState.HIDDEN);
     private final MutableLiveData<DropInState> dropInState = new MutableLiveData<>(DropInState.IDLE);
 
-    private final MutableLiveData<List<DropInPaymentMethodType>> supportedPaymentMethods = new MutableLiveData<>();
+    private final MutableLiveData<List<DropInPaymentMethod>> supportedPaymentMethods = new MutableLiveData<>();
     private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethods = new MutableLiveData<>();
     private final MutableLiveData<List<CardType>> supportedCardTypes = new MutableLiveData<>();
     private final MutableLiveData<Exception> cardTokenizationError = new MutableLiveData<>();
@@ -37,11 +37,11 @@ public class DropInViewModel extends ViewModel {
         return vaultedPaymentMethods;
     }
 
-    void setSupportedPaymentMethods(List<DropInPaymentMethodType> value) {
+    void setSupportedPaymentMethods(List<DropInPaymentMethod> value) {
         this.supportedPaymentMethods.setValue(value);
     }
 
-    LiveData<List<DropInPaymentMethodType>> getSupportedPaymentMethods() {
+    LiveData<List<DropInPaymentMethod>> getSupportedPaymentMethods() {
         return supportedPaymentMethods;
     }
 

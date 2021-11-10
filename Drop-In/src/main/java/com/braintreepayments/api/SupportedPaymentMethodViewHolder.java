@@ -22,7 +22,7 @@ class SupportedPaymentMethodViewHolder extends RecyclerView.ViewHolder {
         name = itemView.findViewById(R.id.bt_payment_method_type);
     }
 
-    void bind(DropInPaymentMethodType paymentMethodType) {
+    void bind(DropInPaymentMethod paymentMethodType) {
         icon.setImageResource(paymentMethodType.getDrawable());
 
         Context context = name.getContext();
