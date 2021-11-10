@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
 
@@ -35,6 +37,8 @@ public class DropInResult implements Parcelable {
 
     private DropInPaymentMethodType paymentMethodType;
     private PaymentMethodNonce paymentMethodNonce;
+
+    private DropInPaymentMethodHelper paymentMethodHelper = new DropInPaymentMethodHelper();
 
     DropInResult() {}
 
@@ -74,9 +78,14 @@ public class DropInResult implements Parcelable {
         return paymentMethodType;
     }
 
+    @DrawableRes
     public int getPaymentMethodDrawable() {
-        // TODO: implement
-        return 0;
+        return paymentMethodHelper.getDrawable(paymentMethodType);
+    }
+
+    @StringRes
+    public int getPaymentMethodDisplayName() {
+        return paymentMethodHelper.getLocalizedName(paymentMethodType);
     }
 
     /**
@@ -134,8 +143,4 @@ public class DropInResult implements Parcelable {
             return new DropInResult[size];
         }
     };
-
-    public int getPaymentMethodDisplayName() {
-        return 0;
-    }
 }

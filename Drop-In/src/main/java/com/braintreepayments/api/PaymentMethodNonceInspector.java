@@ -30,8 +30,7 @@ class PaymentMethodNonceInspector {
         }
     }
 
-    public DropInPaymentMethodType getPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
-        // TODO: implement
-        return null;
+    DropInPaymentMethodType getPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
+        return DropInPaymentMethodType.from(getTypeLabel(paymentMethodNonce));
     }
 }
