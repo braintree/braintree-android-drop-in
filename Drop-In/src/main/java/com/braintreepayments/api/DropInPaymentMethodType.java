@@ -31,6 +31,10 @@ public enum DropInPaymentMethodType {
         this.drawable = drawable;
     }
 
+    /**
+     * @return An id representing a {@link android.graphics.drawable.Drawable} icon for the current
+     * {@link DropInPaymentMethodType}.
+     */
     @DrawableRes
     public int getDrawable() {
         return drawable;
