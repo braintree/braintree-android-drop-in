@@ -2,6 +2,9 @@ package com.braintreepayments.api;
 
 import com.braintreepayments.cardform.utils.CardType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 class PaymentMethodInspector {
 
     private static final String PAYMENT_METHOD_AMEX = "American Express";
@@ -17,6 +20,38 @@ class PaymentMethodInspector {
     private static final String PAYMENT_METHOD_UNION_PAY = "UnionPay";
     private static final String PAYMENT_METHOD_VENMO = "Venmo";
     private static final String PAYMENT_METHOD_VISA = "Visa";
+
+    private final Map<String, CardType> cardTypes;
+    private final Map<String, DropInPaymentMethodType> paymentMethodTypes;
+
+    PaymentMethodInspector() {
+        paymentMethodTypes = new HashMap<>();
+        paymentMethodTypes.put(PAYMENT_METHOD_AMEX, DropInPaymentMethodType.AMEX);
+        paymentMethodTypes.put(PAYMENT_METHOD_DINERS_CLUB, DropInPaymentMethodType.DINERS);
+        paymentMethodTypes.put(PAYMENT_METHOD_DISCOVER, DropInPaymentMethodType.DISCOVER);
+        paymentMethodTypes.put(PAYMENT_METHOD_GOOGLE_PAY, DropInPaymentMethodType.GOOGLE_PAY);
+        paymentMethodTypes.put(PAYMENT_METHOD_HIPER, DropInPaymentMethodType.HIPER);
+        paymentMethodTypes.put(PAYMENT_METHOD_HIPERCARD, DropInPaymentMethodType.HIPERCARD);
+        paymentMethodTypes.put(PAYMENT_METHOD_JCB, DropInPaymentMethodType.JCB);
+        paymentMethodTypes.put(PAYMENT_METHOD_MAESTRO, DropInPaymentMethodType.MAESTRO);
+        paymentMethodTypes.put(PAYMENT_METHOD_MASTERCARD, DropInPaymentMethodType.MASTERCARD);
+        paymentMethodTypes.put(PAYMENT_METHOD_PAYPAL, DropInPaymentMethodType.PAYPAL);
+        paymentMethodTypes.put(PAYMENT_METHOD_UNION_PAY, DropInPaymentMethodType.UNIONPAY);
+        paymentMethodTypes.put(PAYMENT_METHOD_VENMO, DropInPaymentMethodType.PAY_WITH_VENMO);
+        paymentMethodTypes.put(PAYMENT_METHOD_VISA, DropInPaymentMethodType.VISA);
+
+        cardTypes = new HashMap<>();
+        cardTypes.put(PAYMENT_METHOD_AMEX, CardType.AMEX);
+        cardTypes.put(PAYMENT_METHOD_DINERS_CLUB, CardType.DINERS_CLUB);
+        cardTypes.put(PAYMENT_METHOD_DISCOVER, CardType.DISCOVER);
+        cardTypes.put(PAYMENT_METHOD_HIPER, CardType.HIPER);
+        cardTypes.put(PAYMENT_METHOD_HIPERCARD, CardType.HIPERCARD);
+        cardTypes.put(PAYMENT_METHOD_JCB, CardType.JCB);
+        cardTypes.put(PAYMENT_METHOD_MAESTRO, CardType.MAESTRO);
+        cardTypes.put(PAYMENT_METHOD_MASTERCARD, CardType.MASTERCARD);
+        cardTypes.put(PAYMENT_METHOD_UNION_PAY, CardType.UNIONPAY);
+        cardTypes.put(PAYMENT_METHOD_VISA, CardType.VISA);
+    }
 
     String getPaymentMethodDescription(PaymentMethodNonce paymentMethodNonce) {
         if (paymentMethodNonce instanceof CardNonce) {
@@ -35,36 +70,16 @@ class PaymentMethodInspector {
     DropInPaymentMethodType getPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
         String canonicalName = getPaymentMethodCanonicalName(paymentMethodNonce);
         if (canonicalName != null) {
-            switch (canonicalName) {
-                case PAYMENT_METHOD_AMEX:
-                    return DropInPaymentMethodType.AMEX;
-                case PAYMENT_METHOD_DINERS_CLUB:
-                    return DropInPaymentMethodType.DINERS;
-                case PAYMENT_METHOD_DISCOVER:
-                    return DropInPaymentMethodType.DISCOVER;
-                case PAYMENT_METHOD_JCB:
-                    return DropInPaymentMethodType.JCB;
-                case PAYMENT_METHOD_MAESTRO:
-                    return DropInPaymentMethodType.MAESTRO;
-                case PAYMENT_METHOD_MASTERCARD:
-                    return DropInPaymentMethodType.MASTERCARD;
-                case PAYMENT_METHOD_VISA:
-                    return DropInPaymentMethodType.VISA;
-                case PAYMENT_METHOD_UNION_PAY:
-                    return DropInPaymentMethodType.UNIONPAY;
-                case PAYMENT_METHOD_HIPER:
-                    return DropInPaymentMethodType.HIPER;
-                case PAYMENT_METHOD_HIPERCARD:
-                    return DropInPaymentMethodType.HIPERCARD;
-                case PAYMENT_METHOD_PAYPAL:
-                    return DropInPaymentMethodType.PAYPAL;
-                case PAYMENT_METHOD_VENMO:
-                    return DropInPaymentMethodType.PAY_WITH_VENMO;
-                case PAYMENT_METHOD_GOOGLE_PAY:
-                    return DropInPaymentMethodType.GOOGLE_PAY;
-                default:
-                    return null;
+            if (paymentMethodTypes.containsKey(canonicalName)) {
+                return paymentMethodTypes.get(canonicalName);
             }
+        }
+        return null;
+    }
+
+    CardType parseCardType(String cardType) {
+        if (cardTypes.containsKey(cardType)) {
+            return cardTypes.get(cardType);
         }
         return null;
     }
@@ -80,33 +95,6 @@ class PaymentMethodInspector {
             return PAYMENT_METHOD_GOOGLE_PAY;
         } else {
             return null;
-        }
-    }
-
-    CardType parseCardType(String cardType) {
-        switch (cardType) {
-            case PAYMENT_METHOD_AMEX:
-                return CardType.AMEX;
-            case PAYMENT_METHOD_DINERS_CLUB:
-                return CardType.DINERS_CLUB;
-            case PAYMENT_METHOD_DISCOVER:
-                return CardType.DISCOVER;
-            case PAYMENT_METHOD_JCB:
-                return CardType.JCB;
-            case PAYMENT_METHOD_MAESTRO:
-                return CardType.MAESTRO;
-            case PAYMENT_METHOD_MASTERCARD:
-                return CardType.MASTERCARD;
-            case PAYMENT_METHOD_VISA:
-                return CardType.VISA;
-            case PAYMENT_METHOD_UNION_PAY:
-                return CardType.UNIONPAY;
-            case PAYMENT_METHOD_HIPER:
-                return CardType.HIPER;
-            case PAYMENT_METHOD_HIPERCARD:
-                return CardType.HIPERCARD;
-            default:
-                return null;
         }
     }
 }
