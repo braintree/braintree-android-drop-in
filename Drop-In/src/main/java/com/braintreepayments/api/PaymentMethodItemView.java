@@ -60,7 +60,7 @@ class PaymentMethodItemView extends LinearLayout {
             nonceInspector.getPaymentMethodType(paymentMethodNonce);
 
         if (usedInList) {
-            icon.setImageResource(paymentMethodHelper.getDrawable(paymentMethodType));
+            icon.setImageResource(paymentMethodType.getDrawable());
             deleteIcon.setVisibility(View.VISIBLE);
             divider.setVisibility(View.VISIBLE);
         } else {

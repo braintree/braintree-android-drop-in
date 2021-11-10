@@ -8,42 +8,6 @@ import com.braintreepayments.cardform.utils.CardType;
 
 class DropInPaymentMethodHelper {
 
-    @DrawableRes
-    int getDrawable(DropInPaymentMethodType paymentMethodType) {
-        // `getFrontResource` is pulling icons from android-card-form, `R.drawable` icons are drop-in internal
-        switch (paymentMethodType) {
-            case AMEX:
-                return CardType.AMEX.getFrontResource();
-            case GOOGLE_PAY:
-                return R.drawable.bt_ic_google_pay;
-            case DINERS:
-                return CardType.DINERS_CLUB.getFrontResource();
-            case DISCOVER:
-                return CardType.DISCOVER.getFrontResource();
-            case JCB:
-                return CardType.JCB.getFrontResource();
-            case MAESTRO:
-                return CardType.MAESTRO.getFrontResource();
-            case MASTERCARD:
-                return CardType.MASTERCARD.getFrontResource();
-            case PAYPAL:
-                return R.drawable.bt_ic_paypal;
-            case VISA:
-                return CardType.VISA.getFrontResource();
-            case PAY_WITH_VENMO:
-                return R.drawable.bt_ic_venmo;
-            case UNIONPAY:
-                return CardType.UNIONPAY.getFrontResource();
-            case HIPER:
-                return CardType.HIPER.getFrontResource();
-            case HIPERCARD:
-                return CardType.HIPERCARD.getFrontResource();
-            case UNKNOWN:
-            default:
-                return CardType.UNKNOWN.getFrontResource();
-        }
-    }
-
     @StringRes
     int getLocalizedName(DropInPaymentMethodType paymentMethodType) {
         switch (paymentMethodType) {

@@ -84,7 +84,7 @@ public class DropInResult implements Parcelable {
      */
     @DrawableRes
     public int getPaymentMethodDrawable() {
-        return paymentMethodHelper.getDrawable(paymentMethodType);
+        return paymentMethodType.getDrawable();
     }
 
     /**
