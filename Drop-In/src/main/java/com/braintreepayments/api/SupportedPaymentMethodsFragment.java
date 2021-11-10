@@ -111,6 +111,12 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
             }
         });
 
+        dropInViewModel.getUserCanceledError().observe(getViewLifecycleOwner(), exception -> {
+            if (exception instanceof UserCanceledException && hasSupportedPaymentMethods()) {
+                setViewState(ViewState.SHOW_PAYMENT_METHODS);
+            }
+        });
+
         vaultManagerButton.setOnClickListener(v -> sendDropInEvent(new DropInEvent(DropInEventType.SHOW_VAULT_MANAGER)));
 
         sendAnalyticsEvent("appeared");
