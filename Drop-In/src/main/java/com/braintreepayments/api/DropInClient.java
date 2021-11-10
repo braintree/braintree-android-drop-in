@@ -325,7 +325,7 @@ public class DropInClient {
         return availablePaymentMethods;
     }
 
-    void getSupportedCardTypes(final GetSupportedCardTypesCallback callback) {
+    void getSupportedPaymentMethods(final GetSupportedPaymentMethods callback) {
         braintreeClient.getConfiguration((configuration, error) -> {
             if (configuration != null) {
                 Set<DropInPaymentMethodType> supportedPaymentMethods = new HashSet<>();
