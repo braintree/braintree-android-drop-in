@@ -10,6 +10,7 @@ class DropInPaymentMethodHelper {
 
     @DrawableRes
     int getDrawable(DropInPaymentMethodType paymentMethodType) {
+        // `getFrontResource` is pulling icons from android-card-form, `R.drawable` icons are drop-in internal
         switch (paymentMethodType) {
             case AMEX:
                 return CardType.AMEX.getFrontResource();
