@@ -63,26 +63,6 @@ class DropInActivityTest {
         assertEquals("Tokenization Key or Client Token was invalid.", exception!!.message)
     }
 
-//    @Test
-//    fun onCreate_createsClientsWithExtrasFromIntent() {
-//        val context = InstrumentationRegistry.getInstrumentation().targetContext
-//        val authorization = Fixtures.TOKENIZATION_KEY
-//        val dropInRequestBundle = Bundle()
-//        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest)
-//        val intent = Intent(context, DropInActivity::class.java)
-//        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
-//        intent.putExtra(DropInClient.EXTRA_AUTHORIZATION, authorization)
-//        intent.putExtra(DropInClient.EXTRA_SESSION_ID, "session-id")
-//
-//        activityController = buildActivity(DropInActivity::class.java, intent)
-//        activity = activityController.get()
-//        activityController.setup()
-//
-//        assertSame(dropInRequest, activity.dropInRequest)
-//        assertEquals("session-id", activity.dropInClient.braintreeClient.sessionId)
-//        assertEquals(authorization, activity.dropInClient.braintreeClient.authorization.toString())
-//    }
-
     // endregion
 
     // region Browser Switch Results
