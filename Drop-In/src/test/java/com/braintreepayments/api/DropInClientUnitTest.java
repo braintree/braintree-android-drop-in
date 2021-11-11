@@ -503,7 +503,7 @@ public class DropInClientUnitTest {
     @Test
     public void fetchMostRecentPaymentMethod_callsBackWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle() throws JSONException {
         BraintreeSharedPreferences.getInstance().putString(activity,
-                "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE",
+                "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD",
                 DropInPaymentMethod.GOOGLE_PAY.name());
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
@@ -536,7 +536,7 @@ public class DropInClientUnitTest {
     public void fetchMostRecentPaymentMethod_doesNotCallBackWithPayWithGoogleIfPayWithGoogleIsNotAvailable()
             throws JSONException {
         BraintreeSharedPreferences.getInstance().putString(activity,
-                "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE",
+                "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD",
                 DropInPaymentMethod.GOOGLE_PAY.name());
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
