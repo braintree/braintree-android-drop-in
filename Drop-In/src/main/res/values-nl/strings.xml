@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="bt_descriptor_visa">Visa</string>
-    <string name="bt_descriptor_mastercard">MasterCard</string>
+    <string name="bt_descriptor_mastercard">Mastercard</string>
     <string name="bt_descriptor_amex">Amex</string>
     <string name="bt_descriptor_jcb">JCB</string>
     <string name="bt_descriptor_discover">Discover</string>
@@ -9,37 +9,40 @@
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
     <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
-    <string name="bt_descriptor_hiper">Hiper</string>
-    <string name="bt_descriptor_hipercard">Hipercard</string>
-    <string name="bt_descriptor_unknown">Creditcard</string>
+    <string name="bt_descriptor_unknown">Creditcard of bankpas</string>
 
     <string name="bt_recent">Recent</string>
     <string name="bt_other">Overige</string>
     <string name="bt_select_payment_method">Betaalmethode selecteren</string>
-    <string name="bt_add_card">Creditcard toevoegen</string>
+    <string name="bt_add_card">Kaart toevoegen</string>
     <string name="bt_next">Volgende</string>
     <string name="bt_confirm">Bevestigen</string>
-    <string name="bt_scan_with_card_io">Met card.io scannen</string>
-    <string name="bt_sms_code">SMS-code</string>
-    <string name="bt_sms_code_required">Sms-code is verplicht</string>
-    <string name="bt_use_a_different_phone_number">Ander telefoonnummer gebruiken</string>
+    <string name="bt_scan_with_card_io">Scannen met card.io</string>
+    <string name="bt_sms_code">Sms-code</string>
+    <string name="bt_sms_code_required">Sms-code is vereist</string>
+    <string name="bt_use_a_different_phone_number">Een ander telefoonnummer gebruiken</string>
     <string name="bt_sms_code_sent_to">Voer de sms-code in die naar %s is gestuurd</string>
     <string name="bt_card_details">Kaartgegevens</string>
-    <string name="bt_confirm_enrollment">Aanmelding bevestigen</string>
+    <string name="bt_confirm_enrollment">Inschrijving bevestigen</string>
     <string name="bt_postal_code_invalid">Postcode is ongeldig</string>
     <string name="bt_country_code_invalid">Landcode is ongeldig</string>
     <string name="bt_mobile_number_invalid">Mobiel nummer is ongeldig</string>
     <string name="bt_card_not_accepted">Kaart niet geaccepteerd</string>
     <string name="bt_unionpay_sms_code_invalid">Sms-code is ongeldig</string>
-    <string name="bt_unionpay_mobile_number_explanation">Aanmelding kan vereist zijn voor deze kaart. Indien nodig wordt er een sms-code verzonden naar dit nummer.</string>
+    <string name="bt_unionpay_mobile_number_explanation">Inschrijving kan vereist zijn voor deze kaart. Indien nodig wordt er een sms-code naar dit nummer gestuurd.</string>
     <string name="bt_edit">Bewerken</string>
     <string name="bt_delete">Verwijderen</string>
     <string name="bt_cancel">Annuleren</string>
     <string name="bt_vault_manager_title">Bewerking opgeslagen</string>
     <string name="bt_delete_confirmation_title">Betaalmethode verwijderen?</string>
-    <string name="bt_delete_confirmation_description">U kunt deze betaalmethode niet meer gebruiken in deze app.</string>
-    <string name="bt_done">Gereed</string>
-    <string name="bt_vault_manager_delete_failure">We kunnen uw betaalmethode op dit moment niet verwijderen. Probeer het later opnieuw.</string>
+    <string name="bt_delete_confirmation_description">Je kunt deze betaalmethode dan niet meer gebruiken in deze app.</string>
+    <string name="bt_done">Klaar</string>
+    <string name="bt_vault_manager_delete_failure">We kunnen je betaalmethode op dit moment niet verwijderen. Probeer het later opnieuw.</string>
+    <string name="bt_back">Terug</string>
+    <string name="bt_saved_payments">Opgeslagen betaalmethoden</string>
+    <string name="bt_supported_payments">Ondersteunde betaalmethoden</string>
+    <string name="bt_edit_button_description">Opgeslagen betaalmethoden bewerken</string>
 </resources>

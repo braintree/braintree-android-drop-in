@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
@@ -9,37 +9,40 @@
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
     <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
-    <string name="bt_descriptor_hiper">Hiper</string>
-    <string name="bt_descriptor_hipercard">Hipercard</string>
     <string name="bt_descriptor_unknown">信用卡或扣帳卡</string>
 
-    <string name="bt_recent">最近使用</string>
+    <string name="bt_recent">近期</string>
     <string name="bt_other">其他</string>
     <string name="bt_select_payment_method">選擇付款方式</string>
     <string name="bt_add_card">新增卡</string>
-    <string name="bt_next">下一步</string>
+    <string name="bt_next">下一頁</string>
     <string name="bt_confirm">確認</string>
-    <string name="bt_scan_with_card_io">使用 card.io 功能掃瞄</string>
-    <string name="bt_sms_code">短訊確認碼</string>
-    <string name="bt_sms_code_required">必須填寫短訊確認碼</string>
-    <string name="bt_use_a_different_phone_number">使用其他手機號碼</string>
-    <string name="bt_sms_code_sent_to">請輸入我們傳送到 %s 的短訊確認碼</string>
-    <string name="bt_card_details">卡資料</string>
+    <string name="bt_scan_with_card_io">透過 card.io 掃描</string>
+    <string name="bt_sms_code">SMS 代碼</string>
+    <string name="bt_sms_code_required">必須填寫 SMS 代碼</string>
+    <string name="bt_use_a_different_phone_number">使用其他電話號碼</string>
+    <string name="bt_sms_code_sent_to">請輸入發送到 %s 的代碼</string>
+    <string name="bt_card_details">信用卡詳細資料</string>
     <string name="bt_confirm_enrollment">確認登記</string>
     <string name="bt_postal_code_invalid">郵遞區號無效</string>
     <string name="bt_country_code_invalid">國家或地區代碼無效</string>
     <string name="bt_mobile_number_invalid">手機號碼無效</string>
-    <string name="bt_card_not_accepted">卡不獲接受</string>
-    <string name="bt_unionpay_sms_code_invalid">短訊確認碼無效</string>
-    <string name="bt_unionpay_mobile_number_explanation">此卡或需要進行登記。如需要的話，系統將會發送短訊確認碼到這個手機號碼。</string>
+    <string name="bt_card_not_accepted">系統不接受此卡</string>
+    <string name="bt_unionpay_sms_code_invalid">SMS 代碼無效</string>
+    <string name="bt_unionpay_mobile_number_explanation">此卡可能需要登記。如有需要，將會發送 SMS 代碼至此號碼。</string>
     <string name="bt_edit">編輯</string>
     <string name="bt_delete">刪除</string>
     <string name="bt_cancel">取消</string>
-    <string name="bt_vault_manager_title">已儲存編輯內容</string>
+    <string name="bt_vault_manager_title">已儲存編輯</string>
     <string name="bt_delete_confirmation_title">要刪除付款方式嗎？</string>
-    <string name="bt_delete_confirmation_description">你將無法再於這個應用程式使用此付款方式。</string>
+    <string name="bt_delete_confirmation_description">你將無法在應用程式中使用此付款方式。</string>
     <string name="bt_done">完成</string>
-    <string name="bt_vault_manager_delete_failure">暫時無法刪除付款方式，請稍後再試。</string>
+    <string name="bt_vault_manager_delete_failure">我們目前無法刪除你的付款方式，請稍後再試。</string>
+    <string name="bt_back">返回</string>
+    <string name="bt_saved_payments">已儲存的付款方式</string>
+    <string name="bt_supported_payments">支援的付款方式</string>
+    <string name="bt_edit_button_description">編輯已儲存的付款方式</string>
 </resources>

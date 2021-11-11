@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="bt_descriptor_visa">Visa</string>
+    <string name="bt_descriptor_mastercard">Mastercard</string>
+    <string name="bt_descriptor_amex">Amex</string>
+    <string name="bt_descriptor_jcb">JCB</string>
+    <string name="bt_descriptor_discover">Přehled funkcí</string>
+    <string name="bt_descriptor_diners">Diners</string>
+    <string name="bt_descriptor_maestro">Maestro</string>
+    <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_android_pay">Android Pay</string>
+    <string name="bt_descriptor_google_pay">Google Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_unknown">Kreditní nebo debetní karta</string>
+
+    <string name="bt_recent">Poslední</string>
+    <string name="bt_other">Jiné</string>
+    <string name="bt_select_payment_method">Vybrat způsob platby</string>
+    <string name="bt_add_card">Přidat kartu</string>
+    <string name="bt_next">Další</string>
+    <string name="bt_confirm">Potvrdit</string>
+    <string name="bt_scan_with_card_io">Naskenovat pomocí aplikace card.io</string>
+    <string name="bt_sms_code">Kód SMS</string>
+    <string name="bt_sms_code_required">Je požadován kód SMS.</string>
+    <string name="bt_use_a_different_phone_number">Použít jiné telefonní číslo</string>
+    <string name="bt_sms_code_sent_to">Zadejte kód SMS zaslaný na číslo %s.</string>
+    <string name="bt_card_details">Údaje o kartě</string>
+    <string name="bt_confirm_enrollment">Potvrdit registraci</string>
+    <string name="bt_postal_code_invalid">PSČ není platné.</string>
+    <string name="bt_country_code_invalid">Kód země není platný.</string>
+    <string name="bt_mobile_number_invalid">Číslo mobilního telefonu není platné.</string>
+    <string name="bt_card_not_accepted">Karta nebyla přijata.</string>
+    <string name="bt_unionpay_sms_code_invalid">Kód SMS není platný.</string>
+    <string name="bt_unionpay_mobile_number_explanation">U této karty může být požadována registrace. Kód SMS bude v případě potřeby zaslán na toto číslo.</string>
+    <string name="bt_edit">Upravit</string>
+    <string name="bt_delete">Odstranit</string>
+    <string name="bt_cancel">Zrušit</string>
+    <string name="bt_vault_manager_title">Úprava uložena</string>
+    <string name="bt_delete_confirmation_title">Chcete způsob platby odstranit?</string>
+    <string name="bt_delete_confirmation_description">Tento způsob platby již nebudete moci v této aplikaci používat.</string>
+    <string name="bt_done">Hotovo</string>
+    <string name="bt_vault_manager_delete_failure">Požadovaný způsob platby se nám teď nepodařilo odstranit. Zkuste to znovu později.</string>
+    <string name="bt_back">Zpět</string>
+    <string name="bt_saved_payments">Uložené způsoby platby</string>
+    <string name="bt_supported_payments">Podporované způsoby platby</string>
+    <string name="bt_edit_button_description">Upravit uložené způsoby platby</string>
+</resources>

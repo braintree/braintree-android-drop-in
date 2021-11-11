@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="bt_descriptor_visa">Visa</string>
-    <string name="bt_descriptor_mastercard">MasterCard</string>
+    <string name="bt_descriptor_mastercard">Mastercard</string>
     <string name="bt_descriptor_amex">Amex</string>
     <string name="bt_descriptor_jcb">JCB</string>
     <string name="bt_descriptor_discover">Discover</string>
@@ -12,33 +12,37 @@
     <string name="bt_descriptor_android_pay">Android Pay</string>
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
-    <string name="bt_descriptor_unknown">Credit or Debit Card</string>
+    <string name="bt_descriptor_unknown">Credit or debit card</string>
 
     <string name="bt_recent">Recent</string>
     <string name="bt_other">Other</string>
-    <string name="bt_select_payment_method">Select Payment Method</string>
+    <string name="bt_select_payment_method">Select payment method</string>
     <string name="bt_add_card">Add card</string>
     <string name="bt_next">Next</string>
     <string name="bt_confirm">Confirm</string>
     <string name="bt_scan_with_card_io">Scan with card.io</string>
-    <string name="bt_sms_code">SMS Code</string>
+    <string name="bt_sms_code">SMS code</string>
     <string name="bt_sms_code_required">SMS code is required</string>
     <string name="bt_use_a_different_phone_number">Use a different phone number</string>
     <string name="bt_sms_code_sent_to">Enter the SMS code sent to %s</string>
-    <string name="bt_card_details">Card Details</string>
-    <string name="bt_confirm_enrollment">Confirm Enrollment</string>
-    <string name="bt_postal_code_invalid">Postal code is invalid</string>
+    <string name="bt_card_details">Card details</string>
+    <string name="bt_confirm_enrollment">Confirm enrolment</string>
+    <string name="bt_postal_code_invalid">PIN code is invalid</string>
     <string name="bt_country_code_invalid">Country code is invalid</string>
     <string name="bt_mobile_number_invalid">Mobile number is invalid</string>
     <string name="bt_card_not_accepted">Card not accepted</string>
     <string name="bt_unionpay_sms_code_invalid">SMS code is invalid</string>
-    <string name="bt_unionpay_mobile_number_explanation">Enrollment may be required for this card. An SMS code will be sent to this number if required.</string>
+    <string name="bt_unionpay_mobile_number_explanation">Enrolment may be required for this card. An SMS code will be sent to this number if required.</string>
     <string name="bt_edit">Edit</string>
     <string name="bt_delete">Delete</string>
     <string name="bt_cancel">Cancel</string>
-    <string name="bt_vault_manager_title">Edit Saved</string>
+    <string name="bt_vault_manager_title">Edit saved</string>
     <string name="bt_delete_confirmation_title">Delete payment method?</string>
-    <string name="bt_delete_confirmation_description">You will no longer be able to use this payment method in this app.</string>
+    <string name="bt_delete_confirmation_description">You\'ll no longer be able to use this payment method in this app.</string>
     <string name="bt_done">Done</string>
-    <string name="bt_vault_manager_delete_failure">We couldn\'t delete your payment method right now, try again later</string>
+    <string name="bt_vault_manager_delete_failure">We couldn\'t delete your payment method. Please try again later.</string>
+    <string name="bt_back">Back</string>
+    <string name="bt_saved_payments">Saved payment methods</string>
+    <string name="bt_supported_payments">Supported payment methods</string>
+    <string name="bt_edit_button_description">Edit saved payment methods</string>
 </resources>
