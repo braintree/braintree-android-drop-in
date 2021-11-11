@@ -52,7 +52,12 @@ class DropInSharedPreferences {
     }
 
     void setLastUsedPaymentMethod(Context context, PaymentMethodNonce paymentMethodNonce) {
-        String value = paymentMethodInspector.getPaymentMethod(paymentMethodNonce).name();
-        braintreeSharedPreferences.putString(context, LAST_USED_PAYMENT_METHOD, value);
+        DropInPaymentMethod paymentMethod =
+            paymentMethodInspector.getPaymentMethod(paymentMethodNonce);
+
+        if (paymentMethod != null) {
+            String value = paymentMethod.name();
+            braintreeSharedPreferences.putString(context, LAST_USED_PAYMENT_METHOD, value);
+        }
     }
 }

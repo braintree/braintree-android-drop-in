@@ -1,7 +1,10 @@
 package com.braintreepayments.api;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
@@ -42,9 +45,28 @@ public class DropInSharedPreferencesUnitTest {
     }
 
     @Test
-    public void getLastUsedPaymentMethod_whenPaymentMethodIsNull_returnsNull() {
+    public void getLastUsedPaymentMethod_whenPaymentMethodDoesNotExist_returnsNull() {
         String key = "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
         when(braintreeSharedPreferences.getString(context, key, null)).thenReturn(null);
         assertNull(sut.getLastUsedPaymentMethod(context));
+    }
+
+    @Test
+    public void setLastUsedPaymentMethod_whenPaymentMethodExists_setsPaymentMethodInSharedPrefs() {
+        PaymentMethodNonce nonce = mock(PaymentMethodNonce.class);
+        when(paymentMethodInspector.getPaymentMethod(nonce)).thenReturn(DropInPaymentMethod.VISA);
+
+        sut.setLastUsedPaymentMethod(context, nonce);
+        String key = "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
+        verify(braintreeSharedPreferences).putString(context, key, "VISA");
+    }
+
+    @Test
+    public void setLastUsedPaymentMethod_whenPaymentMethodDoesNotExist_setsPaymentMethodInSharedPrefs() {
+        PaymentMethodNonce nonce = mock(PaymentMethodNonce.class);
+        when(paymentMethodInspector.getPaymentMethod(nonce)).thenReturn(null);
+
+        sut.setLastUsedPaymentMethod(context, nonce);
+        verifyZeroInteractions(braintreeSharedPreferences);
     }
 }
