@@ -41,6 +41,8 @@ public class DropInClient {
     private final ThreeDSecureClient threeDSecureClient;
     private final DataCollector dataCollector;
 
+    private final DropInSharedPreferences dropInSharedPreferences;
+
     private final PaymentMethodInspector paymentMethodInspector = new PaymentMethodInspector();
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest, String sessionId) {
@@ -55,7 +57,8 @@ public class DropInClient {
                 .cardClient(new CardClient(braintreeClient))
                 .unionPayClient(new UnionPayClient(braintreeClient))
                 .dataCollector(new DataCollector(braintreeClient))
-                .googlePayClient(new GooglePayClient(braintreeClient));
+                .googlePayClient(new GooglePayClient(braintreeClient))
+                .dropInSharedPreferences(DropInSharedPreferences.getInstance());
     }
 
     public DropInClient(Context context, String authorization, DropInRequest dropInRequest) {
@@ -78,6 +81,7 @@ public class DropInClient {
         this.cardClient = params.getCardClient();
         this.unionPayClient = params.getUnionPayClient();
         this.dataCollector = params.getDataCollector();
+        this.dropInSharedPreferences = params.getDropInSharedPreferences();
     }
 
     Authorization getAuthorization() {
@@ -384,7 +388,7 @@ public class DropInClient {
         }
 
         DropInPaymentMethod lastUsedPaymentMethod =
-            DropInSharedPreferences.getInstance().getLastUsedPaymentMethod(activity);
+            dropInSharedPreferences.getLastUsedPaymentMethod(activity);
 
         if (lastUsedPaymentMethod == DropInPaymentMethod.GOOGLE_PAY) {
             googlePayClient.isReadyToPay(activity, (isReadyToPay, error) -> {
@@ -447,6 +451,6 @@ public class DropInClient {
 
     void setLastUsedPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
         Context context = braintreeClient.getApplicationContext();
-        DropInSharedPreferences.getInstance().setLastUsedPaymentMethod(context, paymentMethodNonce);
+        dropInSharedPreferences.setLastUsedPaymentMethod(context, paymentMethodNonce);
     }
 }

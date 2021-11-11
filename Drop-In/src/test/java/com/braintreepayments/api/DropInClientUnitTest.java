@@ -49,10 +49,13 @@ public class DropInClientUnitTest {
     ArgumentCaptor<List<PaymentMethodNonce>> paymentMethodNoncesCaptor;
 
     private FragmentActivity activity;
+    private DropInSharedPreferences dropInSharedPreferences;
 
     @Before
     public void beforeEach() {
         MockitoAnnotations.initMocks(this);
+
+        dropInSharedPreferences = mock(DropInSharedPreferences.class);
 
         ActivityController<FragmentActivity> activityController =
                 Robolectric.buildActivity(FragmentActivity.class);
@@ -502,9 +505,6 @@ public class DropInClientUnitTest {
 
     @Test
     public void fetchMostRecentPaymentMethod_callsBackWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle() throws JSONException {
-        BraintreeSharedPreferences.getInstance().putString(activity,
-                "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD",
-                DropInPaymentMethod.GOOGLE_PAY.name());
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
                 .isReadyToPaySuccess(true)
@@ -517,7 +517,12 @@ public class DropInClientUnitTest {
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(new DropInRequest())
                 .braintreeClient(braintreeClient)
+                .dropInSharedPreferences(dropInSharedPreferences)
                 .googlePayClient(googlePayClient);
+
+        when(
+                dropInSharedPreferences.getLastUsedPaymentMethod(activity)
+        ).thenReturn(DropInPaymentMethod.GOOGLE_PAY);
 
         DropInClient sut = new DropInClient(params);
 
@@ -533,11 +538,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void fetchMostRecentPaymentMethod_doesNotCallBackWithPayWithGoogleIfPayWithGoogleIsNotAvailable()
-            throws JSONException {
-        BraintreeSharedPreferences.getInstance().putString(activity,
-                "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD",
-                DropInPaymentMethod.GOOGLE_PAY.name());
+    public void fetchMostRecentPaymentMethod_doesNotCallBackWithPayWithGoogleIfPayWithGoogleIsNotAvailable() throws JSONException {
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
                 .isReadyToPaySuccess(false)
@@ -558,7 +559,12 @@ public class DropInClientUnitTest {
                 .dropInRequest(new DropInRequest())
                 .braintreeClient(braintreeClient)
                 .paymentMethodClient(paymentMethodClient)
-                .googlePayClient(googlePayClient);
+                .googlePayClient(googlePayClient)
+                .dropInSharedPreferences(dropInSharedPreferences);
+
+        when(
+                dropInSharedPreferences.getLastUsedPaymentMethod(activity)
+        ).thenReturn(DropInPaymentMethod.GOOGLE_PAY);
 
         DropInClient sut = new DropInClient(params);
 
@@ -586,6 +592,7 @@ public class DropInClientUnitTest {
         DropInClientParams params = new DropInClientParams()
                 .braintreeClient(braintreeClient)
                 .paymentMethodClient(paymentMethodClient)
+                .dropInSharedPreferences(dropInSharedPreferences)
                 .dropInRequest(new DropInRequest());
 
         DropInClient sut = new DropInClient(params);
@@ -618,6 +625,7 @@ public class DropInClientUnitTest {
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(new DropInRequest())
                 .braintreeClient(braintreeClient)
+                .dropInSharedPreferences(dropInSharedPreferences)
                 .paymentMethodClient(paymentMethodClient);
 
         DropInClient sut = new DropInClient(params);
@@ -635,8 +643,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void fetchMostRecentPaymentMethod_callsBackWithNullResultWhenThereAreNoPaymentMethods()
-            throws JSONException {
+    public void fetchMostRecentPaymentMethod_callsBackWithNullResultWhenThereAreNoPaymentMethods() throws JSONException {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
@@ -651,6 +658,7 @@ public class DropInClientUnitTest {
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(new DropInRequest())
                 .braintreeClient(braintreeClient)
+                .dropInSharedPreferences(dropInSharedPreferences)
                 .paymentMethodClient(paymentMethodClient);
 
         DropInClient sut = new DropInClient(params);
