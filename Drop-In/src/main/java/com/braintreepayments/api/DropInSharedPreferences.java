@@ -13,7 +13,7 @@ class DropInSharedPreferences {
 
     static DropInSharedPreferences getInstance() {
         if (INSTANCE == null) {
-            synchronized (BraintreeSharedPreferences.class) {
+            synchronized (DropInSharedPreferences.class) {
                 // double check that instance was not created in another thread
                 if (INSTANCE == null) {
                     INSTANCE = new DropInSharedPreferences();
@@ -24,13 +24,18 @@ class DropInSharedPreferences {
     }
 
     private final PaymentMethodInspector paymentMethodInspector;
+    private final BraintreeSharedPreferences braintreeSharedPreferences;
 
     private DropInSharedPreferences() {
-        this(new PaymentMethodInspector());
+        this(BraintreeSharedPreferences.getInstance(), new PaymentMethodInspector());
     }
 
     @VisibleForTesting
-    DropInSharedPreferences(PaymentMethodInspector paymentMethodInspector) {
+    DropInSharedPreferences(
+            BraintreeSharedPreferences braintreeSharedPreferences,
+            PaymentMethodInspector paymentMethodInspector
+    ) {
+        this.braintreeSharedPreferences = braintreeSharedPreferences;
         this.paymentMethodInspector = paymentMethodInspector;
     }
 
@@ -46,7 +51,6 @@ class DropInSharedPreferences {
 
     void setLastUsedPaymentMethod(Context context, PaymentMethodNonce paymentMethodNonce) {
         String value = paymentMethodInspector.getPaymentMethod(paymentMethodNonce).name();
-        BraintreeSharedPreferences.getInstance()
-                .putString(context, LAST_USED_PAYMENT_METHOD_TYPE, value);
+        braintreeSharedPreferences.putString(context, LAST_USED_PAYMENT_METHOD_TYPE, value);
     }
 }
