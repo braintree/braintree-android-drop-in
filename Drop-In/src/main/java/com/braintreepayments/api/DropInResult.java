@@ -41,7 +41,6 @@ public class DropInResult implements Parcelable {
     @VisibleForTesting
     DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce, PaymentMethodInspector nonceInspector) {
         if (paymentMethodNonce != null) {
-//            paymentMethodType = DropInPaymentMethodType.forType(nonceInspector.getTypeLabel(paymentMethodNonce));
             paymentMethodType = nonceInspector.getPaymentMethod(paymentMethodNonce);
             paymentDescription = nonceInspector.getPaymentMethodDescription(paymentMethodNonce);
         }
