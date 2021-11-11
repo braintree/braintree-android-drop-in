@@ -6,8 +6,8 @@ import androidx.annotation.VisibleForTesting;
 
 class DropInSharedPreferences {
 
-    private static final String LAST_USED_PAYMENT_METHOD_TYPE =
-            "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD_TYPE";
+    private static final String LAST_USED_PAYMENT_METHOD =
+            "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
 
     private static volatile DropInSharedPreferences INSTANCE;
 
@@ -40,17 +40,19 @@ class DropInSharedPreferences {
     }
 
     DropInPaymentMethod getLastUsedPaymentMethod(Context context) {
-        String paymentMethodName = BraintreeSharedPreferences.getInstance()
-                .getString(context, LAST_USED_PAYMENT_METHOD_TYPE, null);
+        String paymentMethodName = braintreeSharedPreferences.getString(
+                context, LAST_USED_PAYMENT_METHOD, null);
         if (paymentMethodName != null) {
             // TODO: catch exception when enum cannot be found with name
-            return DropInPaymentMethod.valueOf(paymentMethodName);
+            try {
+                return DropInPaymentMethod.valueOf(paymentMethodName);
+            } catch (IllegalArgumentException e) { /* ignore */ }
         }
         return null;
     }
 
     void setLastUsedPaymentMethod(Context context, PaymentMethodNonce paymentMethodNonce) {
         String value = paymentMethodInspector.getPaymentMethod(paymentMethodNonce).name();
-        braintreeSharedPreferences.putString(context, LAST_USED_PAYMENT_METHOD_TYPE, value);
+        braintreeSharedPreferences.putString(context, LAST_USED_PAYMENT_METHOD, value);
     }
 }
