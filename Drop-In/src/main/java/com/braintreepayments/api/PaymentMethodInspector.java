@@ -39,7 +39,7 @@ class PaymentMethodInspector {
                 case PAYMENT_METHOD_AMEX:
                     return DropInPaymentMethod.AMEX;
                 case PAYMENT_METHOD_DINERS_CLUB:
-                    return DropInPaymentMethod.DINERS;
+                    return DropInPaymentMethod.DINERS_CLUB;
                 case PAYMENT_METHOD_DISCOVER:
                     return DropInPaymentMethod.DISCOVER;
                 case PAYMENT_METHOD_JCB:

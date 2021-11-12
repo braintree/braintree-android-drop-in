@@ -11,7 +11,7 @@ public enum DropInPaymentMethod {
     // `getFrontResource` is pulling icons from android-card-form, `R.drawable` icons are drop-in internal
     AMEX(CardType.AMEX.getFrontResource(), R.drawable.bt_ic_vaulted_amex, R.string.bt_descriptor_amex),
     GOOGLE_PAY(R.drawable.bt_ic_google_pay, 0, R.string.bt_descriptor_google_pay),
-    DINERS(CardType.DINERS_CLUB.getFrontResource(), R.drawable.bt_ic_vaulted_diners_club, R.string.bt_descriptor_diners),
+    DINERS_CLUB(CardType.DINERS_CLUB.getFrontResource(), R.drawable.bt_ic_vaulted_diners_club, R.string.bt_descriptor_diners),
     DISCOVER(CardType.DISCOVER.getFrontResource(), R.drawable.bt_ic_vaulted_discover, R.string.bt_descriptor_discover),
     JCB(CardType.JCB.getFrontResource(), R.drawable.bt_ic_vaulted_jcb, R.string.bt_descriptor_jcb),
     MAESTRO(CardType.MAESTRO.getFrontResource(), R.drawable.bt_ic_vaulted_maestro, R.string.bt_descriptor_maestro),

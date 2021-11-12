@@ -18,7 +18,7 @@ public class DropInPaymentMethodUnitTest {
         assertEquals(R.drawable.bt_ic_discover, DropInPaymentMethod.DISCOVER.getDrawable());
         assertEquals(R.drawable.bt_ic_amex, DropInPaymentMethod.AMEX.getDrawable());
         assertEquals(R.drawable.bt_ic_jcb, DropInPaymentMethod.JCB.getDrawable());
-        assertEquals(R.drawable.bt_ic_diners_club, DropInPaymentMethod.DINERS.getDrawable());
+        assertEquals(R.drawable.bt_ic_diners_club, DropInPaymentMethod.DINERS_CLUB.getDrawable());
         assertEquals(R.drawable.bt_ic_maestro, DropInPaymentMethod.MAESTRO.getDrawable());
         assertEquals(R.drawable.bt_ic_unionpay, DropInPaymentMethod.UNIONPAY.getDrawable());
         assertEquals(R.drawable.bt_ic_paypal, DropInPaymentMethod.PAYPAL.getDrawable());
@@ -35,7 +35,7 @@ public class DropInPaymentMethodUnitTest {
         assertEquals(R.drawable.bt_ic_vaulted_discover, DropInPaymentMethod.DISCOVER.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_amex, DropInPaymentMethod.AMEX.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_jcb, DropInPaymentMethod.JCB.getVaultedDrawable());
-        assertEquals(R.drawable.bt_ic_vaulted_diners_club, DropInPaymentMethod.DINERS.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_diners_club, DropInPaymentMethod.DINERS_CLUB.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_maestro, DropInPaymentMethod.MAESTRO.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_unionpay, DropInPaymentMethod.UNIONPAY.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_paypal, DropInPaymentMethod.PAYPAL.getVaultedDrawable());
@@ -52,7 +52,7 @@ public class DropInPaymentMethodUnitTest {
         assertEquals(R.string.bt_descriptor_discover, DropInPaymentMethod.DISCOVER.getLocalizedName());
         assertEquals(R.string.bt_descriptor_amex, DropInPaymentMethod.AMEX.getLocalizedName());
         assertEquals(R.string.bt_descriptor_jcb, DropInPaymentMethod.JCB.getLocalizedName());
-        assertEquals(R.string.bt_descriptor_diners, DropInPaymentMethod.DINERS.getLocalizedName());
+        assertEquals(R.string.bt_descriptor_diners, DropInPaymentMethod.DINERS_CLUB.getLocalizedName());
         assertEquals(R.string.bt_descriptor_maestro, DropInPaymentMethod.MAESTRO.getLocalizedName());
         assertEquals(R.string.bt_descriptor_unionpay, DropInPaymentMethod.UNIONPAY.getLocalizedName());
         assertEquals(R.string.bt_descriptor_paypal, DropInPaymentMethod.PAYPAL.getLocalizedName());
