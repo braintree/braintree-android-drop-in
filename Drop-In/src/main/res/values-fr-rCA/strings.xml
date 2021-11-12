@@ -12,6 +12,8 @@
     <string name="bt_descriptor_android_pay">Android Pay</string>
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_hiper">Hiper</string>
+    <string name="bt_descriptor_hipercard">Hipercard</string>
     <string name="bt_descriptor_unknown">Carte de crédit ou de débit</string>
 
     <string name="bt_recent">Récent</string>
