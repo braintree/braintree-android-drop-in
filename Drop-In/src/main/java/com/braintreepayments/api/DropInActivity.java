@@ -169,7 +169,7 @@ public class DropInActivity extends AppCompatActivity {
             case PAYPAL:
                 startPayPalFlow();
                 break;
-            case PAY_WITH_VENMO:
+            case VENMO:
                 startVenmoFlow();
                 break;
             default:

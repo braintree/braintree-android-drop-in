@@ -731,7 +731,7 @@ public class DropInClientUnitTest {
 
         assertEquals(4, paymentMethodTypes.size());
         assertEquals(DropInPaymentMethod.PAYPAL, paymentMethodTypes.get(0));
-        assertEquals(DropInPaymentMethod.PAY_WITH_VENMO, paymentMethodTypes.get(1));
+        assertEquals(DropInPaymentMethod.VENMO, paymentMethodTypes.get(1));
         assertEquals(DropInPaymentMethod.UNKNOWN, paymentMethodTypes.get(2));
         assertEquals(DropInPaymentMethod.GOOGLE_PAY, paymentMethodTypes.get(3));
     }

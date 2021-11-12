@@ -127,7 +127,7 @@ public class PaymentMethodInspectorTest {
     @Test
     public void getPaymentMethod_whenGivenVenmoNonce_returnsVenmo() {
         VenmoAccountNonce venmoNonce = mock(VenmoAccountNonce.class);
-        assertEquals(DropInPaymentMethod.PAY_WITH_VENMO, sut.getPaymentMethod(venmoNonce));
+        assertEquals(DropInPaymentMethod.VENMO, sut.getPaymentMethod(venmoNonce));
     }
 
     @Test

@@ -59,7 +59,7 @@ class PaymentMethodInspector {
                 case PAYMENT_METHOD_PAYPAL:
                     return DropInPaymentMethod.PAYPAL;
                 case PAYMENT_METHOD_VENMO:
-                    return DropInPaymentMethod.PAY_WITH_VENMO;
+                    return DropInPaymentMethod.VENMO;
                 case PAYMENT_METHOD_GOOGLE_PAY:
                     return DropInPaymentMethod.GOOGLE_PAY;
                 default:

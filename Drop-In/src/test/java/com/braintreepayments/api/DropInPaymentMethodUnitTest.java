@@ -1,16 +1,10 @@
 package com.braintreepayments.api;
 
 import com.braintreepayments.api.dropin.R;
-import com.braintreepayments.cardform.utils.CardType;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-
-import java.util.LinkedList;
-import java.util.List;
 
 import static junit.framework.Assert.assertEquals;
 
@@ -29,7 +23,7 @@ public class DropInPaymentMethodUnitTest {
         assertEquals(R.drawable.bt_ic_unionpay, DropInPaymentMethod.UNIONPAY.getDrawable());
         assertEquals(R.drawable.bt_ic_paypal, DropInPaymentMethod.PAYPAL.getDrawable());
         assertEquals(R.drawable.bt_ic_unknown, DropInPaymentMethod.UNKNOWN.getDrawable());
-        assertEquals(R.drawable.bt_ic_venmo, DropInPaymentMethod.PAY_WITH_VENMO.getDrawable());
+        assertEquals(R.drawable.bt_ic_venmo, DropInPaymentMethod.VENMO.getDrawable());
         assertEquals(R.drawable.bt_ic_hiper, DropInPaymentMethod.HIPER.getDrawable());
         assertEquals(R.drawable.bt_ic_hipercard, DropInPaymentMethod.HIPERCARD.getDrawable());
     }
@@ -46,7 +40,7 @@ public class DropInPaymentMethodUnitTest {
         assertEquals(R.drawable.bt_ic_vaulted_unionpay, DropInPaymentMethod.UNIONPAY.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_paypal, DropInPaymentMethod.PAYPAL.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_unknown, DropInPaymentMethod.UNKNOWN.getVaultedDrawable());
-        assertEquals(R.drawable.bt_ic_vaulted_venmo, DropInPaymentMethod.PAY_WITH_VENMO.getVaultedDrawable());
+        assertEquals(R.drawable.bt_ic_vaulted_venmo, DropInPaymentMethod.VENMO.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_hiper, DropInPaymentMethod.HIPER.getVaultedDrawable());
         assertEquals(R.drawable.bt_ic_vaulted_hipercard, DropInPaymentMethod.HIPERCARD.getVaultedDrawable());
     }
@@ -63,7 +57,7 @@ public class DropInPaymentMethodUnitTest {
         assertEquals(R.string.bt_descriptor_unionpay, DropInPaymentMethod.UNIONPAY.getLocalizedName());
         assertEquals(R.string.bt_descriptor_paypal, DropInPaymentMethod.PAYPAL.getLocalizedName());
         assertEquals(R.string.bt_descriptor_unknown, DropInPaymentMethod.UNKNOWN.getLocalizedName());
-        assertEquals(R.string.bt_descriptor_pay_with_venmo, DropInPaymentMethod.PAY_WITH_VENMO.getLocalizedName());
+        assertEquals(R.string.bt_descriptor_pay_with_venmo, DropInPaymentMethod.VENMO.getLocalizedName());
         assertEquals(R.string.bt_descriptor_hiper, DropInPaymentMethod.HIPER.getLocalizedName());
         assertEquals(R.string.bt_descriptor_hipercard, DropInPaymentMethod.HIPERCARD.getLocalizedName());
     }

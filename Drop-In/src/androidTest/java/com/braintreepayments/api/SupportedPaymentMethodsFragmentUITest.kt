@@ -26,7 +26,7 @@ class SupportedPaymentMethodsFragmentUITest {
 
     private val supportedPaymentMethods = listOf(
             DropInPaymentMethod.PAYPAL,
-            DropInPaymentMethod.PAY_WITH_VENMO,
+            DropInPaymentMethod.VENMO,
             DropInPaymentMethod.UNKNOWN,
             DropInPaymentMethod.GOOGLE_PAY
     )

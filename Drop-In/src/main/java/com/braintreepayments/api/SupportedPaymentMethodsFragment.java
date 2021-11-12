@@ -183,7 +183,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
     @Override
     public void onPaymentMethodSelected(DropInPaymentMethod type) {
         boolean paymentTypeWillInitiateAsyncRequest = (type == DropInPaymentMethod.PAYPAL)
-                || (type == DropInPaymentMethod.PAY_WITH_VENMO);
+                || (type == DropInPaymentMethod.VENMO);
 
         if (paymentTypeWillInitiateAsyncRequest) {
             setViewState(ViewState.LOADING);

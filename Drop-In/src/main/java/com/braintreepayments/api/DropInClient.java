@@ -308,7 +308,7 @@ public class DropInClient {
         }
 
         if (!dropInRequest.isVenmoDisabled() && configuration.isVenmoEnabled() && venmoClient.isVenmoAppSwitchAvailable(context)) {
-            availablePaymentMethods.add(DropInPaymentMethod.PAY_WITH_VENMO);
+            availablePaymentMethods.add(DropInPaymentMethod.VENMO);
         }
 
         if (!dropInRequest.isCardDisabled()) {

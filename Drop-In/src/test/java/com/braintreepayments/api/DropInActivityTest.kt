@@ -556,7 +556,7 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.PAY_WITH_VENMO)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.VENMO)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         verify(dropInClient).tokenizeVenmoAccount(same(activity), any(VenmoTokenizeAccountCallback::class.java))
@@ -573,7 +573,7 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.PAY_WITH_VENMO)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.VENMO)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
