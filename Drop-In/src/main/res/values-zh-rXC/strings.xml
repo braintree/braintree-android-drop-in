@@ -9,7 +9,6 @@
     <string name="bt_descriptor_maestro">Maestro</string>
     <string name="bt_descriptor_paypal">PayPal</string>
     <string name="bt_descriptor_pay_with_venmo">Venmo</string>
-    <string name="bt_descriptor_android_pay">Android Pay</string>
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">银联</string>
     <string name="bt_descriptor_hiper">Hiper</string>
