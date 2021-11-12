@@ -32,8 +32,7 @@
     * Make `PaymentMethodDeleteException` package-private
   * Venmo
     * Remove `vaultVenmo` on `DropInRequest` in favor of setting `shouldVault` on `VenmoRequest`
-  * DropInPaymentMethodType
-    * Rename `DropInPaymentMethodType.GOOGLE_PAYMENT` to `DropInPaymentMethodType.GOOGLE_PAY`
+  * Rename `DropInPaymentMethodType` to `DropInPaymentMethod`
   * DropInRequest
     * Remove `requestThreeDSecureVerification` from `DropInRequest`
 
