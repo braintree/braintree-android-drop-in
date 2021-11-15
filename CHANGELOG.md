@@ -2,7 +2,9 @@
 
 ## unreleased
 * Bump braintree_android module dependency versions to `4.7.0`
-* Bump `card-form` to `5.3.0` 
+* Bump `card-form` to `5.3.0`
+* Localization
+  * Add support for Czech, Greek, Finnish, Hebrew, Hungrian, and Slovak localization
 * Venmo
   * Add `VenmoRequest` setter to `DropInRequest`
   * Don't show Venmo payment method option when Venmo not installed on device
@@ -14,6 +16,8 @@
 * Breaking Changes
   * Language Support
     * Require Java 8 or higher
+  * Localization
+    * Remove support for Turkish localization
   * Visibility
     * Make `BottomSheetState` package-private
     * Make `DropInEventType` package-private

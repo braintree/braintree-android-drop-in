@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="bt_descriptor_visa">Visa</string>
-    <string name="bt_descriptor_mastercard">MasterCard</string>
+    <string name="bt_descriptor_mastercard">Mastercard</string>
     <string name="bt_descriptor_amex">Amex</string>
     <string name="bt_descriptor_jcb">JCB</string>
     <string name="bt_descriptor_discover">Discover</string>
@@ -16,30 +16,34 @@
     <string name="bt_descriptor_unknown">Betalingskort</string>
 
     <string name="bt_recent">Seneste</string>
-    <string name="bt_other">Andre</string>
-    <string name="bt_select_payment_method">Vælg betalingsmetode</string>
+    <string name="bt_other">Andet</string>
+    <string name="bt_select_payment_method">Vælg betalingsmetode.</string>
     <string name="bt_add_card">Tilknyt kort</string>
     <string name="bt_next">Næste</string>
     <string name="bt_confirm">Bekræft</string>
     <string name="bt_scan_with_card_io">Scan med card.io</string>
-    <string name="bt_sms_code">Kode</string>
-    <string name="bt_sms_code_required">Koden skal angives</string>
+    <string name="bt_sms_code">Sms-kode</string>
+    <string name="bt_sms_code_required">Sms-kode er påkrævet.</string>
     <string name="bt_use_a_different_phone_number">Brug et andet telefonnummer</string>
-    <string name="bt_sms_code_sent_to">Angiv den kode, der er sendt til %s</string>
+    <string name="bt_sms_code_sent_to">Indtast den sms-kode, der er blevet sendt til %s.</string>
     <string name="bt_card_details">Kortoplysninger</string>
-    <string name="bt_confirm_enrollment">Bekræft oprettelse</string>
-    <string name="bt_postal_code_invalid">Postnr er ugyldigt</string>
-    <string name="bt_country_code_invalid">Landekoden er ugyldig</string>
-    <string name="bt_mobile_number_invalid">Mobilnummeret er ugyldigt</string>
-    <string name="bt_card_not_accepted">Kortet accepteres ikke</string>
-    <string name="bt_unionpay_sms_code_invalid">Koden er ugyldig</string>
-    <string name="bt_unionpay_mobile_number_explanation">Du skal muligvis oprette en konto, hvis du bruger dette kort. Der sendes en kode til dette nummer, hvis det er nødvendigt.</string>
+    <string name="bt_confirm_enrollment">Bekræft tilmelding.</string>
+    <string name="bt_postal_code_invalid">Postnummeret er ugyldigt.</string>
+    <string name="bt_country_code_invalid">Landekoden er ugyldig.</string>
+    <string name="bt_mobile_number_invalid">Mobilnummeret er ugyldigt.</string>
+    <string name="bt_card_not_accepted">Kortet blev ikke godkendt.</string>
+    <string name="bt_unionpay_sms_code_invalid">Sms-koden er ugyldig.</string>
+    <string name="bt_unionpay_mobile_number_explanation">Du kan blive bedt om at tilmelde dig for at tilknytte dette kort. Der vil blive sendt en sms-kode til dette nummer, hvis det er nødvendigt.</string>
     <string name="bt_edit">Rediger</string>
     <string name="bt_delete">Slet</string>
     <string name="bt_cancel">Annuller</string>
-    <string name="bt_vault_manager_title">Redigering er gemt</string>
-    <string name="bt_delete_confirmation_title">Vil du slette betalingsmetoden?</string>
+    <string name="bt_vault_manager_title">Ændring gemt</string>
+    <string name="bt_delete_confirmation_title">Slet betalingsmetode?</string>
     <string name="bt_delete_confirmation_description">Du vil ikke længere kunne bruge denne betalingsmetode i denne app.</string>
     <string name="bt_done">Udført</string>
     <string name="bt_vault_manager_delete_failure">Vi kunne ikke slette din betalingsmetode lige nu. Prøv igen senere.</string>
+    <string name="bt_back">Tilbage</string>
+    <string name="bt_saved_payments">Gemte betalingsmetoder</string>
+    <string name="bt_supported_payments">Understøttede betalingsmetoder</string>
+    <string name="bt_edit_button_description">Rediger gemte betalingsmetoder</string>
 </resources>

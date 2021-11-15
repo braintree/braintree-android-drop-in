@@ -78,7 +78,7 @@ public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 ### Localization
 
-Drop-In is currently localized for [23 languages](https://github.com/braintree/braintree-android-drop-in/tree/master/Drop-In/src/main/res). To view localized text for a specific locale, open its corresponding `values-<LOCALE_NAME>/strings.xml` resource file.
+Drop-In is currently localized for [25 languages](https://github.com/braintree/braintree-android-drop-in/tree/master/Drop-In/src/main/res). To view localized text for a specific locale, open its corresponding `values-<LOCALE_NAME>/strings.xml` resource file.
 
 ### 3D Secure + Drop-in
 

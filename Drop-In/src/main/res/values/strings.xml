@@ -36,10 +36,14 @@
     <string name="bt_unionpay_mobile_number_explanation">Enrollment may be required for this card. An SMS code will be sent to this number if required.</string>
     <string name="bt_edit">Edit</string>
     <string name="bt_delete">Delete</string>
-    <string name="bt_cancel">@android:string/cancel</string>
+    <string name="bt_cancel">Cancel</string>
     <string name="bt_vault_manager_title">Edit Saved</string>
     <string name="bt_delete_confirmation_title">Delete payment method?</string>
     <string name="bt_delete_confirmation_description">You will no longer be able to use this payment method in this app.</string>
     <string name="bt_done">Done</string>
-    <string name="bt_vault_manager_delete_failure">We couldn\'t delete your payment method right now, try again later</string>
+    <string name="bt_vault_manager_delete_failure">We couldn\'t delete your payment method right now, try again later.</string>
+    <string name="bt_back">Back</string>
+    <string name="bt_saved_payments">Saved payment methods</string>
+    <string name="bt_supported_payments">Supported payment methods</string>
+    <string name="bt_edit_button_description">Edit saved payment methods</string>
 </resources>

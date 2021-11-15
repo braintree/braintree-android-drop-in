@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="bt_descriptor_visa">Visa</string>
-    <string name="bt_descriptor_mastercard">MasterCard</string>
+    <string name="bt_descriptor_mastercard">Mastercard</string>
     <string name="bt_descriptor_amex">Amex</string>
     <string name="bt_descriptor_jcb">JCB</string>
     <string name="bt_descriptor_discover">Discover</string>
@@ -25,21 +25,25 @@
     <string name="bt_sms_code">SMS 코드</string>
     <string name="bt_sms_code_required">SMS 코드가 필요합니다.</string>
     <string name="bt_use_a_different_phone_number">다른 전화번호 사용하기</string>
-    <string name="bt_sms_code_sent_to">SMS 코드를 입력하고 %s 에 보냅니다.</string>
+    <string name="bt_sms_code_sent_to">%s에 전송된 SMS 코드를 입력하세요.</string>
     <string name="bt_card_details">카드 세부정보</string>
     <string name="bt_confirm_enrollment">등록 확인</string>
-    <string name="bt_postal_code_invalid">우편번호가 올바르지 않습니다</string>
-    <string name="bt_country_code_invalid">국가코드가 올바르지 않습니다</string>
-    <string name="bt_mobile_number_invalid">휴대폰 번호가 올바르지 않습니다</string>
+    <string name="bt_postal_code_invalid">우편번호가 올바르지 않습니다.</string>
+    <string name="bt_country_code_invalid">국가 코드가 올바르지 않습니다.</string>
+    <string name="bt_mobile_number_invalid">휴대폰 번호가 올바르지 않습니다.</string>
     <string name="bt_card_not_accepted">카드 수락되지 않음</string>
-    <string name="bt_unionpay_sms_code_invalid">SMS 코드가 올바르지 않습니다</string>
-    <string name="bt_unionpay_mobile_number_explanation">이 카드는 등록이 필요할 수 있습니다. 필요할 경우 이 번호로 SMS 코드가 전송됩니다.</string>
+    <string name="bt_unionpay_sms_code_invalid">SMS 코드가 올바르지 않습니다.</string>
+    <string name="bt_unionpay_mobile_number_explanation">이 카드에 대한 등록이 필요할 수 있습니다. 필요한 경우 이 번호로 SMS 코드가 전송됩니다.</string>
     <string name="bt_edit">편집</string>
     <string name="bt_delete">삭제</string>
     <string name="bt_cancel">취소</string>
     <string name="bt_vault_manager_title">편집 저장됨</string>
-    <string name="bt_delete_confirmation_title">결제수단을 삭제하시겠어요?</string>
-    <string name="bt_delete_confirmation_description">더 이상 이 앱에서 이 결제수단을 사용할 수 없게 됩니다.</string>
+    <string name="bt_delete_confirmation_title">결제수단을 삭제하시겠습니까?</string>
+    <string name="bt_delete_confirmation_description">이 앱에서는 더 이상 이 결제수단을 사용할 수 없습니다.</string>
     <string name="bt_done">완료</string>
-    <string name="bt_vault_manager_delete_failure">지금은 결제수단을 삭제할 수 없으므로 나중에 다시 시도해 주세요.</string>
+    <string name="bt_vault_manager_delete_failure">현재 결제수단을 삭제할 수 없습니다. 나중에 다시 시도해 주세요.</string>
+    <string name="bt_back">뒤로</string>
+    <string name="bt_saved_payments">저장된 결제수단</string>
+    <string name="bt_supported_payments">지원되는 결제수단</string>
+    <string name="bt_edit_button_description">저장된 결제수단 편집</string>
 </resources>

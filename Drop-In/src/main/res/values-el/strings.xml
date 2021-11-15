@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="bt_descriptor_visa">Visa</string>
+    <string name="bt_descriptor_mastercard">Mastercard</string>
+    <string name="bt_descriptor_amex">Amex</string>
+    <string name="bt_descriptor_jcb">JCB</string>
+    <string name="bt_descriptor_discover">Discover</string>
+    <string name="bt_descriptor_diners">Diners</string>
+    <string name="bt_descriptor_maestro">Maestro</string>
+    <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_pay_with_venmo">Venmo</string>
+    <string name="bt_descriptor_google_pay">Google Pay</string>
+    <string name="bt_descriptor_unionpay">UnionPay</string>
+    <string name="bt_descriptor_hiper">Hiper</string>
+    <string name="bt_descriptor_hipercard">Hipercard</string>
+    <string name="bt_descriptor_unknown">Πιστωτική ή χρεωστική κάρτα</string>
+
+    <string name="bt_recent">Πρόσφατα</string>
+    <string name="bt_other">Άλλο</string>
+    <string name="bt_select_payment_method">Επιλογή μεθόδου πληρωμής</string>
+    <string name="bt_add_card">Σύνδεση κάρτας</string>
+    <string name="bt_next">Επόμενο</string>
+    <string name="bt_confirm">Επιβεβαίωση</string>
+    <string name="bt_scan_with_card_io">Σάρωση με το card.io</string>
+    <string name="bt_sms_code">Κωδικός SMS</string>
+    <string name="bt_sms_code_required">Ο κωδικός SMS είναι υποχρεωτικός</string>
+    <string name="bt_use_a_different_phone_number">Χρησιμοποιήστε διαφορετικό αριθμό τηλεφώνου</string>
+    <string name="bt_sms_code_sent_to">Εισαγάγετε τον κωδικό SMS που στάλθηκε στο %s</string>
+    <string name="bt_card_details">Στοιχεία κάρτας</string>
+    <string name="bt_confirm_enrollment">Επιβεβαίωση εγγραφής</string>
+    <string name="bt_postal_code_invalid">Ο ταχυδρομικός κώδικας δεν είναι έγκυρος</string>
+    <string name="bt_country_code_invalid">Ο κωδικός χώρας δεν είναι έγκυρος</string>
+    <string name="bt_mobile_number_invalid">Ο αριθμός κινητού τηλεφώνου δεν είναι έγκυρος</string>
+    <string name="bt_card_not_accepted">Η κάρτα δεν έγινε αποδεκτή</string>
+    <string name="bt_unionpay_sms_code_invalid">Ο κωδικός SMS δεν είναι έγκυρος</string>
+    <string name="bt_unionpay_mobile_number_explanation">Ενδέχεται να απαιτείται εγγραφή για αυτήν την κάρτα. Αν χρειαστεί, θα αποσταλεί κωδικός SMS σε αυτόν τον αριθμό.</string>
+    <string name="bt_edit">Επεξεργασία</string>
+    <string name="bt_delete">Διαγραφή</string>
+    <string name="bt_cancel">Ακύρωση</string>
+    <string name="bt_vault_manager_title">Η επεξεργασία αποθηκεύτηκε</string>
+    <string name="bt_delete_confirmation_title">Να διαγράψω τη μέθοδο πληρωμής;</string>
+    <string name="bt_delete_confirmation_description">Δεν θα μπορείτε πλέον να χρησιμοποιείτε αυτήν τη μέθοδο πληρωμής σε αυτήν την εφαρμογή.</string>
+    <string name="bt_done">Τέλος</string>
+    <string name="bt_vault_manager_delete_failure">Δεν μπορέσαμε να διαγράψουμε τη μέθοδο πληρωμής σας αυτήν τη στιγμή. δοκιμάστε ξανά αργότερα.</string>
+    <string name="bt_back">Επιστροφή</string>
+    <string name="bt_saved_payments">Αποθηκευμένες μέθοδοι πληρωμής</string>
+    <string name="bt_supported_payments">Υποστηριζόμενες μέθοδοι πληρωμής</string>
+    <string name="bt_edit_button_description">Επεξεργασία αποθηκευμένων μεθόδων πληρωμής</string>
+</resources>

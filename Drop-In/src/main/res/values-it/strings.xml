@@ -1,7 +1,7 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <string name="bt_descriptor_visa">Visa</string>
-    <string name="bt_descriptor_mastercard">MasterCard</string>
+    <string name="bt_descriptor_mastercard">Mastercard</string>
     <string name="bt_descriptor_amex">Amex</string>
     <string name="bt_descriptor_jcb">JCB</string>
     <string name="bt_descriptor_discover">Discover</string>
@@ -13,33 +13,37 @@
     <string name="bt_descriptor_unionpay">UnionPay</string>
     <string name="bt_descriptor_hiper">Hiper</string>
     <string name="bt_descriptor_hipercard">Hipercard</string>
-    <string name="bt_descriptor_unknown">Carta di credito o di debito (bancomat)</string>
+    <string name="bt_descriptor_unknown">Carta di credito o di debito</string>
 
     <string name="bt_recent">Recenti</string>
     <string name="bt_other">Altro</string>
-    <string name="bt_select_payment_method">Seleziona il metodo di pagamento</string>
+    <string name="bt_select_payment_method">Seleziona metodo di pagamento</string>
     <string name="bt_add_card">Aggiungi carta</string>
-    <string name="bt_next">Successiva</string>
+    <string name="bt_next">Avanti</string>
     <string name="bt_confirm">Conferma</string>
-    <string name="bt_scan_with_card_io">Fai scansione con card.io</string>
-    <string name="bt_sms_code">Codice tramite SMS</string>
-    <string name="bt_sms_code_required">Il codice ricevuto tramite SMS è obbligatorio</string>
+    <string name="bt_scan_with_card_io">Scansiona con card.io</string>
+    <string name="bt_sms_code">Codice SMS</string>
+    <string name="bt_sms_code_required">Il codice SMS è obbligatorio</string>
     <string name="bt_use_a_different_phone_number">Usa un altro numero di telefono</string>
-    <string name="bt_sms_code_sent_to">Immetti il codice ricevuto tramite SMS al numero %s</string>
-    <string name="bt_card_details">Dati carta</string>
-    <string name="bt_confirm_enrollment">Conferma la registrazione</string>
+    <string name="bt_sms_code_sent_to">Immetti il codice SMS inviato a %s</string>
+    <string name="bt_card_details">Dati della carta</string>
+    <string name="bt_confirm_enrollment">Conferma registrazione</string>
     <string name="bt_postal_code_invalid">Il CAP non è valido</string>
     <string name="bt_country_code_invalid">Il codice Paese non è valido</string>
     <string name="bt_mobile_number_invalid">Il numero di cellulare non è valido</string>
     <string name="bt_card_not_accepted">Carta non accettata</string>
-    <string name="bt_unionpay_sms_code_invalid">Il codice ricevuto tramite SMS non è valido</string>
-    <string name="bt_unionpay_mobile_number_explanation">Questa carta potrebbe richiedere la registrazione. Se necessario, verrà inviato un codice tramite SMS a questo numero.</string>
+    <string name="bt_unionpay_sms_code_invalid">Il codice SMS non è valido</string>
+    <string name="bt_unionpay_mobile_number_explanation">Per questa carta potrebbe essere necessaria la registrazione. Se necessario, invieremo un codice SMS a questo numero.</string>
     <string name="bt_edit">Modifica</string>
     <string name="bt_delete">Rimuovi</string>
     <string name="bt_cancel">Annulla</string>
     <string name="bt_vault_manager_title">Modifica salvata</string>
-    <string name="bt_delete_confirmation_title">Vuoi eliminare il metodo di pagamento?</string>
-    <string name="bt_delete_confirmation_description">Non potrai più utilizzare questo metodo di pagamento con questa app.</string>
+    <string name="bt_delete_confirmation_title">Eliminare metodo di pagamento?</string>
+    <string name="bt_delete_confirmation_description">Non potrai più usare questo metodo di pagamento in questa app.</string>
     <string name="bt_done">Fine</string>
-    <string name="bt_vault_manager_delete_failure">Al momento non è possibile eliminare il tuo metodo di pagamento; riprova più tardi.</string>
+    <string name="bt_vault_manager_delete_failure">Impossibile eliminare il tuo metodo di pagamento in questo momento, riprova più tardi.</string>
+    <string name="bt_back">Indietro</string>
+    <string name="bt_saved_payments">Metodi di pagamento salvati</string>
+    <string name="bt_supported_payments">Metodi di pagamento supportati</string>
+    <string name="bt_edit_button_description">Modifica metodi di pagamento salvati</string>
 </resources>
