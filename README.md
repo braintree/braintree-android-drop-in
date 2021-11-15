@@ -110,16 +110,16 @@ If your user already has an existing payment method, you may not need to show Dr
 
 ```kotlin
 val dropInClient = DropInClient(this, "<#CLIENT_TOKEN_WITH_CUSTOMER_ID>", dropInRequest)
-    dropInClient.fetchMostRecentPaymentMethod(this) { dropInResult, error ->
-        error?.let {
-            // an error occurred
-        }
-        dropInResult?.let { result ->
-            result.paymentMethodType?.let { paymentMethodType ->
+dropInClient.fetchMostRecentPaymentMethod(this) { dropInResult, error ->
+    error?.let {
+        // an error occurred
+    }
+    dropInResult?.let { result ->
+        result.paymentMethodType?.let { paymentMethodType ->
             // use the icon and name to show in your UI
             val icon = paymentMethodType.drawable
             val name = paymentMethodType.localizedName
-                
+
             if (paymentMethodType == DropInPaymentMethod.GOOGLE_PAY) {
                 // The last payment method the user used was Google Pay.
                 // The Google Pay flow will need to be performed by the
@@ -129,9 +129,9 @@ val dropInClient = DropInClient(this, "<#CLIENT_TOKEN_WITH_CUSTOMER_ID>", dropIn
                 // at the time of checkout.
                 val paymentMethod = result.paymentMethodNonce
             }
-        } ?: run {
-            // there was no existing payment method
         }
+    } ?: run {
+        // there was no existing payment method
     }
 }
 ```
