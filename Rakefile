@@ -158,7 +158,7 @@ end
 def update_readme_version(version)
   IO.write("README.md",
     File.open("README.md") do |file|
-        file.read.gsub(/com.braintreepayments.api:drop-in:\d+\.\d+\.\d+(-.*)?'/, "com.braintreepayments.api:drop-in:#{version}'")
+      file.read.gsub(/com.braintreepayments.api:drop-in:\d+\.\d+\.\d+(-.*)?'/, "com.braintreepayments.api:drop-in:#{version}'")
     end
   )
 end
