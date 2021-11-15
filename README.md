@@ -125,7 +125,7 @@ val dropInClient = DropInClient(this, "<#CLIENT_TOKEN_WITH_CUSTOMER_ID>", dropIn
                 // The Google Pay flow will need to be performed by the
                 // user again at the time of checkout.
             } else {
-                // Use the payment method show in your UI and charge the user
+                // show the payment method in your UI and charge the user
                 // at the time of checkout.
                 val paymentMethod = result.paymentMethodNonce
             }
