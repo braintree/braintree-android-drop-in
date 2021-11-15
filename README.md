@@ -1,6 +1,7 @@
 # Braintree Android Drop-In
 
 [![Tests](https://github.com/braintree/braintree-android-drop-in/actions/workflows/tests.yml/badge.svg)](https://github.com/braintree/braintree-android-drop-in/actions/workflows/tests.yml)
+
 Braintree Android Drop-In is a readymade UI that allows you to accept card and alternative payments in your Android app.
 
 :mega:&nbsp;&nbsp;A new major version of the SDK is now available. See the [v6 migration guide](v6_MIGRATION_GUIDE.md) for details.
