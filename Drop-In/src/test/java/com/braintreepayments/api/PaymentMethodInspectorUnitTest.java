@@ -10,7 +10,7 @@ import com.braintreepayments.cardform.utils.CardType;
 import org.junit.Before;
 import org.junit.Test;
 
-public class PaymentMethodInspectorTest {
+public class PaymentMethodInspectorUnitTest {
 
     private CardNonce cardNonce;
     private PayPalAccountNonce payPalNonce;
