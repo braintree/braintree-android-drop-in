@@ -142,87 +142,87 @@ public class PaymentMethodInspectorUnitTest {
         assertNull(sut.getPaymentMethod(unknownNonce));
     }
 
-    private static CardNonce createCardNonce(String cardType) {
-        CardNonce cardNonce = mock(CardNonce.class);
-        when(cardNonce.getCardType()).thenReturn(cardType);
-        return cardNonce;
-    }
-
     @Test
-    public void getCardType_whenIsVisa_returnsVisaCardType() {
+    public void parseCardType_whenIsVisa_returnsVisaCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertEquals(CardType.VISA, sut.parseCardType("Visa"));
     }
 
     @Test
-    public void getCardType_whenIsMasterCard_returnsMasterCardCardType() {
+    public void parseCardType_whenIsMasterCard_returnsMasterCardCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertEquals(CardType.MASTERCARD, sut.parseCardType("MasterCard"));
     }
 
     @Test
-    public void getCardType_whenIsDiscover_returnsDiscoverCardType() {
+    public void parseCardType_whenIsDiscover_returnsDiscoverCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertEquals(CardType.DISCOVER, sut.parseCardType("Discover"));
     }
 
     @Test
-    public void getCardType_whenIsAmex_returnsAmexCardType() {
+    public void parseCardType_whenIsAmex_returnsAmexCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertEquals(CardType.AMEX, sut.parseCardType("American Express"));
     }
 
     @Test
-    public void getCardType_whenIsJCB_returnsJCBCardType() {
+    public void parseCardType_whenIsJCB_returnsJCBCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertEquals(CardType.JCB, sut.parseCardType("JCB"));
     }
 
     @Test
-    public void getCardType_whenIsDinersClub_returnsDinersClubCardType() {
+    public void parseCardType_whenIsDinersClub_returnsDinersClubCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertEquals(CardType.DINERS_CLUB, sut.parseCardType("Diners"));
     }
 
     @Test
-    public void getCardType_whenIsMaestro_returnsMaestroCardType() {
+    public void parseCardType_whenIsMaestro_returnsMaestroCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertEquals(CardType.MAESTRO, sut.parseCardType("Maestro"));
     }
 
     @Test
-    public void getCardType_whenIsUnionPay_returnsUnionPayCardType() {
+    public void parseCardType_whenIsUnionPay_returnsUnionPayCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertEquals(CardType.UNIONPAY, sut.parseCardType("UnionPay"));
     }
 
     @Test
-    public void getCardType_whenIsPayPal_returnsNull() {
+    public void parseCardType_whenIsPayPal_returnsNull() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertNull(sut.parseCardType("PayPal"));
     }
 
     @Test
-    public void getCardType_whenIsUnknown_returnsNull() {
+    public void parseCardType_whenIsUnknown_returnsNull() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertNull(sut.parseCardType("Unknown"));
     }
 
     @Test
-    public void getCardType_whenIsVenmo_returnsNull() {
+    public void parseCardType_whenIsVenmo_returnsNull() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertNull(sut.parseCardType("Venmo"));
     }
 
     @Test
-    public void getCardType_whenIsHiper_returnsHiperCardType() {
+    public void parseCardType_whenIsHiper_returnsHiperCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertEquals(CardType.HIPER, sut.parseCardType("Hiper"));
     }
 
     @Test
-    public void getCardType_whenIsHipercard_returnsHipercardCardType() {
+    public void parseCardType_whenIsHipercard_returnsHipercardCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
         assertEquals(CardType.HIPERCARD, sut.parseCardType("Hipercard"));
+    }
+
+    private static CardNonce createCardNonce(String cardType) {
+        CardNonce cardNonce = mock(CardNonce.class);
+        when(cardNonce.getCardType()).thenReturn(cardType);
+        return cardNonce;
     }
 }
