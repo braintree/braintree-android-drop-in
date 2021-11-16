@@ -40,8 +40,7 @@ public enum DropInPaymentMethod {
     }
 
     /**
-     * @return An id representing a {@link android.graphics.drawable.Drawable} icon for the current
-     * {@link DropInPaymentMethod}.
+     * @return An id representing the {@link android.graphics.drawable.Drawable} icon resource for this payment method.
      */
     @DrawableRes
     public int getDrawable() {
@@ -49,8 +48,7 @@ public enum DropInPaymentMethod {
     }
 
     /**
-     * @return An id representing a localized {@link String} for the current {@link
-     * DropInPaymentMethod}.
+     * @return An id representing the localized {@link String} string resource for this payment method.
      */
     @StringRes
     public int getLocalizedName() {
