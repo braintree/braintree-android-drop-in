@@ -43,10 +43,11 @@ class DropInSharedPreferences {
         String paymentMethodName = braintreeSharedPreferences.getString(
                 context, LAST_USED_PAYMENT_METHOD, null);
         if (paymentMethodName != null) {
-            // TODO: catch exception when enum cannot be found with name
             try {
                 return DropInPaymentMethod.valueOf(paymentMethodName);
-            } catch (IllegalArgumentException e) { /* ignore */ }
+            } catch (IllegalArgumentException e) {
+                // no enums found for paymentMethodName
+            }
         }
         return null;
     }
