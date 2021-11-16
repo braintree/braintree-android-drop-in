@@ -38,7 +38,7 @@ public class DropInSharedPreferencesUnitTest {
     }
 
     @Test
-    public void getLastUsedPaymentMethod_whenPaymentMethodIsInvalid_returnsPaymentMethod() {
+    public void getLastUsedPaymentMethod_whenPaymentMethodIsInvalid_returnsNull() {
         String key = "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
         when(braintreeSharedPreferences.getString(context, key, null)).thenReturn("UNKNOWN_PAYMENT_METHOD");
         assertNull(sut.getLastUsedPaymentMethod(context));
