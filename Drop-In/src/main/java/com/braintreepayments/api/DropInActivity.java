@@ -264,7 +264,7 @@ public class DropInActivity extends AppCompatActivity {
     private void finishDropInWithPendingResult(DropInExitTransition transition) {
         if (pendingDropInResult != null) {
             sendAnalyticsEvent("sdk.exit.success");
-            dropInClient.setLastUsedPaymentMethodType(pendingDropInResult.getPaymentMethodNonce());
+            dropInClient.setLastUsedPaymentMethodType(this, pendingDropInResult.getPaymentMethodNonce());
 
             Intent intent = new Intent()
                     .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, pendingDropInResult);

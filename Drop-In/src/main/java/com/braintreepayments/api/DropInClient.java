@@ -448,8 +448,8 @@ public class DropInClient {
         });
     }
 
-    void setLastUsedPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
-        Context context = braintreeClient.getApplicationContext();
-        dropInSharedPreferences.setLastUsedPaymentMethod(context, paymentMethodNonce);
+    void setLastUsedPaymentMethodType(Context context, PaymentMethodNonce paymentMethodNonce) {
+        Context appContext = context.getApplicationContext();
+        dropInSharedPreferences.setLastUsedPaymentMethod(appContext, paymentMethodNonce);
     }
 }
