@@ -22,8 +22,7 @@ public enum DropInPaymentMethod {
     UNIONPAY(CardType.UNIONPAY.getFrontResource(), R.drawable.bt_ic_vaulted_unionpay, R.string.bt_descriptor_unionpay),
     HIPER(CardType.HIPER.getFrontResource(), R.drawable.bt_ic_vaulted_hiper, R.string.bt_descriptor_hiper),
     HIPERCARD(CardType.HIPERCARD.getFrontResource(), R.drawable.bt_ic_vaulted_hipercard, R.string.bt_descriptor_hipercard),
-    UNKNOWN(CardType.UNKNOWN.getFrontResource(), R.drawable.bt_ic_vaulted_unknown, R.string.bt_descriptor_unknown),
-    ;
+    UNKNOWN(CardType.UNKNOWN.getFrontResource(), R.drawable.bt_ic_vaulted_unknown, R.string.bt_descriptor_unknown);
 
     @DrawableRes
     private final int drawable;
