@@ -62,7 +62,7 @@ public class DropInSharedPreferencesUnitTest {
     }
 
     @Test
-    public void setLastUsedPaymentMethod_whenPaymentMethodDoesNotExist_setsPaymentMethodInSharedPrefs() {
+    public void setLastUsedPaymentMethod_whenPaymentMethodDoesNotExist_doesNotSetPaymentMethodInSharedPrefs() {
         PaymentMethodNonce nonce = mock(PaymentMethodNonce.class);
         when(paymentMethodInspector.getPaymentMethod(nonce)).thenReturn(null);
 
