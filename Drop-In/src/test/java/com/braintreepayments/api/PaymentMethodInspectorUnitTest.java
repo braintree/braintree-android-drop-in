@@ -143,81 +143,81 @@ public class PaymentMethodInspectorUnitTest {
     }
 
     @Test
-    public void parseCardType_whenIsVisa_returnsVisaCardType() {
+    public void getCardTypeFromString_whenIsVisa_returnsVisaCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertEquals(CardType.VISA, sut.parseCardType("Visa"));
+        assertEquals(CardType.VISA, sut.getCardTypeFromString("Visa"));
     }
 
     @Test
-    public void parseCardType_whenIsMasterCard_returnsMasterCardCardType() {
+    public void getCardTypeFromString_whenIsMasterCard_returnsMasterCardCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertEquals(CardType.MASTERCARD, sut.parseCardType("MasterCard"));
+        assertEquals(CardType.MASTERCARD, sut.getCardTypeFromString("MasterCard"));
     }
 
     @Test
-    public void parseCardType_whenIsDiscover_returnsDiscoverCardType() {
+    public void getCardTypeFromString_whenIsDiscover_returnsDiscoverCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertEquals(CardType.DISCOVER, sut.parseCardType("Discover"));
+        assertEquals(CardType.DISCOVER, sut.getCardTypeFromString("Discover"));
     }
 
     @Test
-    public void parseCardType_whenIsAmex_returnsAmexCardType() {
+    public void getCardTypeFromString_whenIsAmex_returnsAmexCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertEquals(CardType.AMEX, sut.parseCardType("American Express"));
+        assertEquals(CardType.AMEX, sut.getCardTypeFromString("American Express"));
     }
 
     @Test
-    public void parseCardType_whenIsJCB_returnsJCBCardType() {
+    public void getCardTypeFromString_whenIsJCB_returnsJCBCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertEquals(CardType.JCB, sut.parseCardType("JCB"));
+        assertEquals(CardType.JCB, sut.getCardTypeFromString("JCB"));
     }
 
     @Test
-    public void parseCardType_whenIsDinersClub_returnsDinersClubCardType() {
+    public void getCardTypeFromString_whenIsDinersClub_returnsDinersClubCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertEquals(CardType.DINERS_CLUB, sut.parseCardType("Diners"));
+        assertEquals(CardType.DINERS_CLUB, sut.getCardTypeFromString("Diners"));
     }
 
     @Test
-    public void parseCardType_whenIsMaestro_returnsMaestroCardType() {
+    public void getCardTypeFromString_whenIsMaestro_returnsMaestroCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertEquals(CardType.MAESTRO, sut.parseCardType("Maestro"));
+        assertEquals(CardType.MAESTRO, sut.getCardTypeFromString("Maestro"));
     }
 
     @Test
-    public void parseCardType_whenIsUnionPay_returnsUnionPayCardType() {
+    public void getCardTypeFromString_whenIsUnionPay_returnsUnionPayCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertEquals(CardType.UNIONPAY, sut.parseCardType("UnionPay"));
+        assertEquals(CardType.UNIONPAY, sut.getCardTypeFromString("UnionPay"));
     }
 
     @Test
-    public void parseCardType_whenIsPayPal_returnsNull() {
+    public void getCardTypeFromString_whenIsPayPal_returnsNull() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertNull(sut.parseCardType("PayPal"));
+        assertNull(sut.getCardTypeFromString("PayPal"));
     }
 
     @Test
-    public void parseCardType_whenIsUnknown_returnsNull() {
+    public void getCardTypeFromString_whenIsUnknown_returnsNull() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertNull(sut.parseCardType("Unknown"));
+        assertNull(sut.getCardTypeFromString("Unknown"));
     }
 
     @Test
-    public void parseCardType_whenIsVenmo_returnsNull() {
+    public void getCardTypeFromString_whenIsVenmo_returnsNull() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertNull(sut.parseCardType("Venmo"));
+        assertNull(sut.getCardTypeFromString("Venmo"));
     }
 
     @Test
-    public void parseCardType_whenIsHiper_returnsHiperCardType() {
+    public void getCardTypeFromString_whenIsHiper_returnsHiperCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertEquals(CardType.HIPER, sut.parseCardType("Hiper"));
+        assertEquals(CardType.HIPER, sut.getCardTypeFromString("Hiper"));
     }
 
     @Test
-    public void parseCardType_whenIsHipercard_returnsHipercardCardType() {
+    public void getCardTypeFromString_whenIsHipercard_returnsHipercardCardType() {
         PaymentMethodInspector sut = new PaymentMethodInspector();
-        assertEquals(CardType.HIPERCARD, sut.parseCardType("Hipercard"));
+        assertEquals(CardType.HIPERCARD, sut.getCardTypeFromString("Hipercard"));
     }
 
     private static CardNonce createCardNonce(String cardType) {

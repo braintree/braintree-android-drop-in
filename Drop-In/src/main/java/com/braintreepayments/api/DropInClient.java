@@ -335,7 +335,7 @@ public class DropInClient {
             if (configuration != null) {
                 List<CardType> supportedCardTypes = new ArrayList<>();
                 for (String cardTypeAsString : configuration.getSupportedCardTypes()) {
-                    CardType cardType = paymentMethodInspector.parseCardType(cardTypeAsString);
+                    CardType cardType = paymentMethodInspector.getCardTypeFromString(cardTypeAsString);
                     if (cardType != null) {
                         supportedCardTypes.add(cardType);
                     }

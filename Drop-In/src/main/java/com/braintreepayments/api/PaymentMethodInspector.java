@@ -83,7 +83,7 @@ class PaymentMethodInspector {
         }
     }
 
-    CardType parseCardType(String cardType) {
+    CardType getCardTypeFromString(String cardType) {
         switch (cardType) {
             case PAYMENT_METHOD_AMEX:
                 return CardType.AMEX;
