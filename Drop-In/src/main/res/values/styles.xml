@@ -21,7 +21,7 @@
 
         <item name="colorPrimary">@color/bt_color_primary</item>
         <item name="colorPrimaryDark">@color/bt_color_primary_dark</item>
-        <item name="colorAccent">@color/bt_blue</item>
+        <item name="colorAccent">@color/bt_black_contrast</item>
         <item name="titleTextColor">@color/bt_white</item>
         <item name="colorError">@color/bt_error_red</item>
     </style>
@@ -30,7 +30,7 @@
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/bt_color_primary</item>
         <item name="colorPrimaryDark">@color/bt_color_primary_dark</item>
-        <item name="colorAccent">@color/bt_blue</item>
+        <item name="colorAccent">@color/bt_black_contrast</item>
         <item name="titleTextColor">@color/bt_white</item>
         <item name="colorError">@color/bt_error_red</item>
     </style>
@@ -45,7 +45,7 @@
         <item name="android:windowAnimationStyle">@style/bt_activity_slide_animation</item>
         <item name="colorPrimary">@color/bt_color_primary</item>
         <item name="colorPrimaryDark">@color/bt_color_primary_dark</item>
-        <item name="colorAccent">@color/bt_blue</item>
+        <item name="colorAccent">@color/bt_black_contrast</item>
     </style>
 
     <style name="bt_three_d_secure_theme" parent="@android:style/Theme.Holo.Light">
@@ -90,7 +90,7 @@
         <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless.Colored</item>
         <item name="colorControlHighlight">@color/bt_color_highlight</item>
         <item name="android:textSize">16sp</item>
-        <item name="colorAccent">@color/bt_text_blue</item>
+        <item name="colorAccent">@color/bt_black_contrast</item>
         <item name="android:textAllCaps">true</item>
     </style>
 </resources>

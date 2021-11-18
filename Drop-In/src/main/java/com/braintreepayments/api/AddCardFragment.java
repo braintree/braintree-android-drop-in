@@ -80,6 +80,9 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
         });
 
         Toolbar toolbar = view.findViewById(R.id.bt_toolbar);
+        // Add a label to the toolbar back button for the screen reader and make it accessible via tab navigation
+        toolbar.setNavigationContentDescription(R.string.bt_back);
+        toolbar.setTouchscreenBlocksFocus(false);
         toolbar.setNavigationOnClickListener(v -> getParentFragmentManager().popBackStack());
 
         sendAnalyticsEvent("card.selected");

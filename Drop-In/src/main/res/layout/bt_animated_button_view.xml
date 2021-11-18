@@ -10,7 +10,7 @@
             android:id="@+id/bt_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/bt_blue"
+            android:background="@color/bt_black_contrast"
             android:textColor="@color/bt_white"/>
 
         <ProgressBar

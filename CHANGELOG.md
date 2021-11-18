@@ -13,6 +13,8 @@
 * DropInRequest
   * Set explicit class loader for `DropInRequest` (fixes #191)
   * Wrap `DropInRequest` in Parcelable bundle (fixes #228)
+* Accessibility
+  * Increase color contrast and add content descriptions for screen readers
 * Breaking Changes
   * Language Support
     * Require Java 8 or higher
