@@ -47,7 +47,7 @@ val dropInClient = DropInClient(this, "<#CLIENT_AUTHORIZATION#>", dropInRequest)
 dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE)
 ```
 
-To handle the result of the Drop-in flow, you should override `onActivityResult`:
+To handle the result of the Drop-in flow, override `onActivityResult`:
 
 ```kotlin
 override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
