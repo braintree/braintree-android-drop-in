@@ -87,14 +87,6 @@ public class DropInActivity extends AppCompatActivity {
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
 
-        dropInClient.getSupportedPaymentMethods(this, (paymentMethods, error) -> {
-            if (paymentMethods != null) {
-                dropInViewModel.setSupportedPaymentMethods(paymentMethods);
-            } else {
-                onError(error);
-            }
-        });
-
         getSupportFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this,
                 (requestKey, result) -> onDropInEvent(DropInEvent.fromBundle(result)));
 
@@ -268,10 +260,10 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void onDidHideBottomSheet() {
-        finishDropInWithPendingResult(true);
+        finishDropInWithPendingResult(DropInExitTransition.FADE_OUT);
     }
 
-    private void finishDropInWithPendingResult(boolean cancelPendingActivityAnimation) {
+    private void finishDropInWithPendingResult(DropInExitTransition transition) {
         if (pendingDropInResult != null) {
             sendAnalyticsEvent("sdk.exit.success");
             DropInResult.setLastUsedPaymentMethodType(
@@ -287,9 +279,13 @@ public class DropInActivity extends AppCompatActivity {
         }
 
         finish();
-        if (cancelPendingActivityAnimation) {
-            // prevent default Android Activity animation from running
-            overridePendingTransition(0, 0);
+        switch (transition) {
+            case NO_ANIMATION:
+                overridePendingTransition(0, 0);
+                break;
+            case FADE_OUT:
+                overridePendingTransition(R.anim.bt_fade_in, R.anim.bt_fade_out);
+                break;
         }
     }
 
@@ -320,7 +316,7 @@ public class DropInActivity extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentManager
                 .beginTransaction()
-                .setCustomAnimations(R.anim.bt_fragment_fade_in, R.anim.bt_fragment_fade_out)
+                .setCustomAnimations(R.anim.bt_fade_in, R.anim.bt_fade_out)
                 .replace(R.id.fragment_container_view, fragment, tag)
                 .addToBackStack(null)
                 .commit();
@@ -377,8 +373,8 @@ public class DropInActivity extends AppCompatActivity {
             // when the bottom sheet transitions to the "HIDDEN" state; the activity will finish
             dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
         } else {
-            // no need to animate bottom sheet hidden; finish activity with default Android animation
-            finishDropInWithPendingResult(false);
+            // no need to animate activity hidden since bottom sheet is not visible
+            finishDropInWithPendingResult(DropInExitTransition.NO_ANIMATION);
         }
     }
 

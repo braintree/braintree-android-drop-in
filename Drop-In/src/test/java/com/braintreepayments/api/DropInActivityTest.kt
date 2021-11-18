@@ -5,10 +5,14 @@ import android.app.Activity.RESULT_OK
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
 import androidx.test.platform.app.InstrumentationRegistry
+import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
 import junit.framework.TestCase.*
 import org.json.JSONObject
+import org.junit.After
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
@@ -17,11 +21,6 @@ import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.android.controller.ActivityController
 import java.util.*
-import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
-
-import android.os.Bundle
-import org.junit.After
-import org.junit.Ignore
 
 @RunWith(RobolectricTestRunner::class)
 class DropInActivityTest {
@@ -205,6 +204,7 @@ class DropInActivityTest {
     fun onActivityResult_whenResultIsUserCanceledException_setsUserCanceledErrorInViewModel() {
         val error = UserCanceledException("User canceled 3DS.")
         val dropInClient = MockDropInClientBuilder()
+            .authorization(authorization)
             .handleActivityResultError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
