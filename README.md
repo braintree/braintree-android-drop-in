@@ -125,7 +125,7 @@ dropInClient.fetchMostRecentPaymentMethod(this) { dropInResult, error ->
                 // The Google Pay flow will need to be performed by the
                 // user again at the time of checkout.
             } else {
-                // show the payment method in your UI and charge the user
+                // Show the payment method in your UI and charge the user
                 // at the time of checkout.
                 val paymentMethod = result.paymentMethodNonce
             }
