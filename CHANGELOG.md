@@ -26,6 +26,10 @@
     * Make `PaymentMethodItemView` package-private
     * Make `SupportedPaymentMethodsViewHolder` package-private
     * Make `VaultedPaymentMethodSelectedListener` package-private
+    * Make static strings in `DropInClient` package-private
+    * Make `DropInClient#deliverBrowserSwitchResult` package-private
+    * Make `DropInResultCallback` package-private
+    * Make `PaymentMethodDeleteException` package-private
   * Venmo
     * Remove `vaultVenmo` on `DropInRequest` in favor of setting `shouldVault` on `VenmoRequest`
   * DropInPaymentMethodType

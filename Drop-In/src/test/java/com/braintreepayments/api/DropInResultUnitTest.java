@@ -18,8 +18,8 @@ public class DropInResultUnitTest {
     @Test
     public void paymentMethodNonce_setsPaymentMethodTypeAndNonce() throws JSONException {
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-        DropInResult result = new DropInResult()
-                .paymentMethodNonce(cardNonce);
+        DropInResult result = new DropInResult();
+        result.setPaymentMethodNonce(cardNonce);
 
         assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
         assertEquals(cardNonce, result.getPaymentMethodNonce());
@@ -28,16 +28,16 @@ public class DropInResultUnitTest {
     @Test
     public void paymentMethodNonce_setsPaymentDescription() throws JSONException {
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-        DropInResult result = new DropInResult()
-                .paymentMethodNonce(cardNonce);
+        DropInResult result = new DropInResult();
+        result.setPaymentMethodNonce(cardNonce);
 
         assertEquals("1111", result.getPaymentDescription());
     }
 
     @Test
     public void paymentMethodNonce_isNullable() {
-        DropInResult result = new DropInResult()
-                .paymentMethodNonce(null);
+        DropInResult result = new DropInResult();
+        result.setPaymentMethodNonce(null);
 
         assertNull(result.getPaymentMethodType());
         assertNull(result.getPaymentMethodNonce());
@@ -45,16 +45,16 @@ public class DropInResultUnitTest {
 
     @Test
     public void deviceData_setsDeviceData() {
-        DropInResult result = new DropInResult()
-                .deviceData("device_data");
+        DropInResult result = new DropInResult();
+        result.setDeviceData("device_data");
 
         assertEquals("device_data", result.getDeviceData());
     }
 
     @Test
     public void deviceData_isNullable() {
-        DropInResult result = new DropInResult()
-                .deviceData(null);
+        DropInResult result = new DropInResult();
+        result.setDeviceData(null);
 
         assertNull(result.getDeviceData());
     }
@@ -62,9 +62,9 @@ public class DropInResultUnitTest {
     @Test
     public void isParcelable() throws JSONException {
         CardNonce cardNonce = CardNonce.fromJSON(new JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE));
-        DropInResult result = new DropInResult()
-                .paymentMethodNonce(cardNonce)
-                .deviceData("device_data");
+        DropInResult result = new DropInResult();
+        result.setPaymentMethodNonce(cardNonce);
+        result.setDeviceData("device_data");
         Parcel parcel = Parcel.obtain();
         result.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);

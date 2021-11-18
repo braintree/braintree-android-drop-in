@@ -17,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
 
 import com.braintreepayments.api.DropInClient;
-import com.braintreepayments.api.internal.SignatureVerificationOverrides;
 import com.braintreepayments.demo.models.ClientToken;
 
 import retrofit.Callback;
@@ -53,9 +52,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
             setupActionBar();
             actionBarSetup = true;
         }
-
-        SignatureVerificationOverrides.disableAppSwitchSignatureVerification(
-                Settings.isPayPalSignatureVerificationDisabled(this));
 
         handleAuthorizationState();
     }

@@ -464,10 +464,10 @@ public class DropInActivity extends AppCompatActivity {
                 });
             } else {
                 final DropInResult dropInResult = new DropInResult();
-                dropInResult.paymentMethodNonce(paymentMethodNonce);
+                dropInResult.setPaymentMethodNonce(paymentMethodNonce);
                 dropInClient.collectDeviceData(DropInActivity.this, (deviceData, error) -> {
                     if (deviceData != null) {
-                        dropInResult.deviceData(deviceData);
+                        dropInResult.setDeviceData(deviceData);
                         animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
                     } else {
                         updateVaultedPaymentMethodNonces(true);
@@ -507,7 +507,7 @@ public class DropInActivity extends AppCompatActivity {
                 });
             } else {
                 DropInResult dropInResult = new DropInResult();
-                dropInResult.paymentMethodNonce(paymentMethod);
+                dropInResult.setPaymentMethodNonce(paymentMethod);
                 animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
             }
         });
