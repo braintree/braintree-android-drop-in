@@ -351,7 +351,6 @@ public class DropInClient {
         });
     }
 
-
     /**
      * Called to launch a {@link DropInActivity}
      *
