@@ -15,7 +15,7 @@ import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
 import com.braintreepayments.api.DropInClient;
-import com.braintreepayments.api.DropInPaymentMethodType;
+import com.braintreepayments.api.DropInPaymentMethod;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
 import com.braintreepayments.api.FetchMostRecentPaymentMethodCallback;
@@ -202,12 +202,11 @@ public class MainActivity extends BaseActivity {
 
     private void displayResult(DropInResult dropInResult) {
         nonce = dropInResult.getPaymentMethodNonce();
-        DropInPaymentMethodType paymentMethodType = DropInPaymentMethodType.forType(nonce);
 
-        paymentMethodIcon.setImageResource(paymentMethodType.getDrawable());
-
-        if (dropInResult.getPaymentMethodType() != null) {
-            paymentMethodTitle.setText(dropInResult.getPaymentMethodType().getCanonicalName());
+        DropInPaymentMethod paymentMethodType = dropInResult.getPaymentMethodType();
+        if (paymentMethodType != null) {
+            paymentMethodTitle.setText(paymentMethodType.getLocalizedName());
+            paymentMethodIcon.setImageResource(paymentMethodType.getDrawable());
         }
         paymentMethodDescription.setText(dropInResult.getPaymentDescription());
 

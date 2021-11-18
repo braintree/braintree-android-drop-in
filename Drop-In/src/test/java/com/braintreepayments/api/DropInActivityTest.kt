@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.test.platform.app.InstrumentationRegistry
 import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
+import com.braintreepayments.cardform.utils.CardType
 import junit.framework.TestCase.*
 import org.json.JSONObject
 import org.junit.After
@@ -169,9 +170,7 @@ class DropInActivityTest {
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
 
-        assertEquals(DropInPaymentMethodType.VISA.canonicalName,
-            BraintreeSharedPreferences.getInstance()
-                .getString(activity, DropInResult.LAST_USED_PAYMENT_METHOD_TYPE, null))
+        verify(dropInClient).setLastUsedPaymentMethodType(activity, paymentMethodNonce)
     }
 
     // endregion
@@ -521,7 +520,7 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAYPAL)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.PAYPAL)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         verify(dropInClient).tokenizePayPalRequest(same(activity), any(PayPalFlowStartedCallback::class.java))
@@ -538,7 +537,7 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAYPAL)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.PAYPAL)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
@@ -558,7 +557,7 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAY_WITH_VENMO)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.VENMO)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         verify(dropInClient).tokenizeVenmoAccount(same(activity), any(VenmoTokenizeAccountCallback::class.java))
@@ -575,7 +574,7 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.PAY_WITH_VENMO)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.VENMO)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
@@ -595,7 +594,7 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.GOOGLE_PAY)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.GOOGLE_PAY)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         verify(dropInClient).requestGooglePayPayment(same(activity), any(GooglePayRequestPaymentCallback::class.java))
@@ -612,7 +611,7 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.GOOGLE_PAY)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.GOOGLE_PAY)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
@@ -632,7 +631,7 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.UNKNOWN)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.UNKNOWN)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
         activity.supportFragmentManager.executePendingTransactions()
 
@@ -641,7 +640,7 @@ class DropInActivityTest {
 
     @Test
     fun onSupportedPaymentMethodSelectedEvent_withTypeUnknown_prefetchesSupportedCardTypes() {
-        val supportedCardTypes = arrayListOf("Visa")
+        val supportedCardTypes = arrayListOf(CardType.VISA)
         val dropInClient = MockDropInClientBuilder()
             .authorization(authorization)
             .getSupportedCardTypesSuccess(supportedCardTypes)
@@ -649,10 +648,10 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.UNKNOWN)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.UNKNOWN)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
-        assertSame(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)[0], activity.dropInViewModel.supportedCardTypes.value!![0])
+        assertEquals(CardType.VISA, activity.dropInViewModel.supportedCardTypes.value!![0])
     }
 
     @Test
@@ -666,7 +665,7 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.UNKNOWN)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.UNKNOWN)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
@@ -687,7 +686,7 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         val event =
-            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethodType.UNKNOWN)
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.UNKNOWN)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)

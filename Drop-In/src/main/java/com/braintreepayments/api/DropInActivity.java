@@ -15,8 +15,6 @@ import androidx.lifecycle.ViewModelProvider;
 import com.braintreepayments.api.dropin.R;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.Arrays;
-
 public class DropInActivity extends AppCompatActivity {
 
     private static final String ADD_CARD_TAG = "ADD_CARD";
@@ -158,12 +156,12 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void onSupportedPaymentMethodSelected(DropInEvent event) {
-        DropInPaymentMethodType paymentMethodType =
+        DropInPaymentMethod paymentMethodType =
                 event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD);
         startPaymentFlow(paymentMethodType);
     }
 
-    private void startPaymentFlow(DropInPaymentMethodType paymentMethodType) {
+    private void startPaymentFlow(DropInPaymentMethod paymentMethodType) {
         switch (paymentMethodType) {
             case GOOGLE_PAY:
                 startGooglePayFlow();
@@ -171,7 +169,7 @@ public class DropInActivity extends AppCompatActivity {
             case PAYPAL:
                 startPayPalFlow();
                 break;
-            case PAY_WITH_VENMO:
+            case VENMO:
                 startVenmoFlow();
                 break;
             default:
@@ -266,8 +264,7 @@ public class DropInActivity extends AppCompatActivity {
     private void finishDropInWithPendingResult(DropInExitTransition transition) {
         if (pendingDropInResult != null) {
             sendAnalyticsEvent("sdk.exit.success");
-            DropInResult.setLastUsedPaymentMethodType(
-                    DropInActivity.this, pendingDropInResult.getPaymentMethodNonce());
+            dropInClient.setLastUsedPaymentMethodType(this, pendingDropInResult.getPaymentMethodNonce());
 
             Intent intent = new Intent()
                     .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, pendingDropInResult);
@@ -411,7 +408,7 @@ public class DropInActivity extends AppCompatActivity {
             if (error != null) {
                 onError(error);
             } else if (supportedCardTypes != null) {
-                dropInViewModel.setSupportedCardTypes(Arrays.asList(DropInPaymentMethodType.getCardsTypes(supportedCardTypes)));
+                dropInViewModel.setSupportedCardTypes(supportedCardTypes);
             }
         });
     }

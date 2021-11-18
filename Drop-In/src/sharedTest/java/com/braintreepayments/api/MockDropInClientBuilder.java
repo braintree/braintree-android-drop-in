@@ -14,6 +14,8 @@ import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import com.braintreepayments.cardform.utils.CardType;
+
 public class MockDropInClientBuilder {
 
     private DropInResult threeDSecureSuccess;
@@ -22,7 +24,7 @@ public class MockDropInClientBuilder {
     private Exception getVaultedPaymentMethodsError;
     private Authorization authorization;
     private Configuration configuration;
-    private List<DropInPaymentMethodType> supportedPaymentMethods;
+    private List<DropInPaymentMethod> supportedPaymentMethods;
     private Exception getSupportedPaymentMethodsError;
     private String deviceDataSuccess;
     private PaymentMethodNonce deletedNonce;
@@ -41,7 +43,7 @@ public class MockDropInClientBuilder {
 
     private boolean shouldPerformThreeDSecureVerification;
     private BrowserSwitchResult browserSwitchResult;
-    private List<String> getSupportedCardTypesSuccess;
+    private List<CardType> getSupportedCardTypesSuccess;
     private Exception getSupportedCardTypesError;
     private Exception deviceDataError;
 
@@ -80,7 +82,7 @@ public class MockDropInClientBuilder {
         return this;
     }
 
-    MockDropInClientBuilder getSupportedPaymentMethodsSuccess(List<DropInPaymentMethodType> supportedPaymentMethods) {
+    MockDropInClientBuilder getSupportedPaymentMethodsSuccess(List<DropInPaymentMethod> supportedPaymentMethods) {
         this.supportedPaymentMethods = supportedPaymentMethods;
         return this;
     }
@@ -90,7 +92,7 @@ public class MockDropInClientBuilder {
         return this;
     }
 
-    MockDropInClientBuilder getSupportedCardTypesSuccess(List<String> supportedCardTypes) {
+    MockDropInClientBuilder getSupportedCardTypesSuccess(List<CardType> supportedCardTypes) {
         this.getSupportedCardTypesSuccess = supportedCardTypes;
         return this;
     }

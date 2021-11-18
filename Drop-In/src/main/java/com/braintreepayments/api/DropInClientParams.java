@@ -13,6 +13,7 @@ class DropInClientParams {
     private UnionPayClient unionPayClient;
     private DataCollector dataCollector;
     private ThreeDSecureClient threeDSecureClient;
+    private DropInSharedPreferences dropInSharedPreferences;
 
     ThreeDSecureClient getThreeDSecureClient() {
         return threeDSecureClient;
@@ -102,5 +103,14 @@ class DropInClientParams {
     DropInClientParams unionPayClient(UnionPayClient unionPayClient) {
         this.unionPayClient = unionPayClient;
         return this;
+    }
+
+    DropInClientParams dropInSharedPreferences(DropInSharedPreferences dropInSharedPreferences) {
+        this.dropInSharedPreferences = dropInSharedPreferences;
+        return this;
+    }
+
+    DropInSharedPreferences getDropInSharedPreferences() {
+        return dropInSharedPreferences;
     }
 }

@@ -173,7 +173,7 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
     }
 
     private void showSupportedPaymentMethods() {
-        List<DropInPaymentMethodType> availablePaymentMethods =
+        List<DropInPaymentMethod> availablePaymentMethods =
                 dropInViewModel.getSupportedPaymentMethods().getValue();
         SupportedPaymentMethodsAdapter adapter =
                 new SupportedPaymentMethodsAdapter(availablePaymentMethods, this);
@@ -181,9 +181,9 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
     }
 
     @Override
-    public void onPaymentMethodSelected(DropInPaymentMethodType type) {
-        boolean paymentTypeWillInitiateAsyncRequest = (type == DropInPaymentMethodType.PAYPAL)
-                || (type == DropInPaymentMethodType.PAY_WITH_VENMO);
+    public void onPaymentMethodSelected(DropInPaymentMethod type) {
+        boolean paymentTypeWillInitiateAsyncRequest = (type == DropInPaymentMethod.PAYPAL)
+                || (type == DropInPaymentMethod.VENMO);
 
         if (paymentTypeWillInitiateAsyncRequest) {
             setViewState(ViewState.LOADING);

@@ -43,16 +43,19 @@ import java.util.List;
 public class DropInClientUnitTest {
 
     @Captor
-    ArgumentCaptor<List<DropInPaymentMethodType>> paymentMethodTypesCaptor;
+    ArgumentCaptor<List<DropInPaymentMethod>> paymentMethodTypesCaptor;
 
     @Captor
     ArgumentCaptor<List<PaymentMethodNonce>> paymentMethodNoncesCaptor;
 
     private FragmentActivity activity;
+    private DropInSharedPreferences dropInSharedPreferences;
 
     @Before
     public void beforeEach() {
         MockitoAnnotations.initMocks(this);
+
+        dropInSharedPreferences = mock(DropInSharedPreferences.class);
 
         ActivityController<FragmentActivity> activityController =
                 Robolectric.buildActivity(FragmentActivity.class);
@@ -153,9 +156,9 @@ public class DropInClientUnitTest {
         sut.getSupportedPaymentMethods(activity, callback);
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethods = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethods = paymentMethodTypesCaptor.getValue();
         assertEquals(1, paymentMethods.size());
-        assertEquals(DropInPaymentMethodType.GOOGLE_PAY, paymentMethods.get(0));
+        assertEquals(DropInPaymentMethod.GOOGLE_PAY, paymentMethods.get(0));
     }
 
     @Test
@@ -178,7 +181,7 @@ public class DropInClientUnitTest {
         sut.getSupportedPaymentMethods(activity, callback);
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethods = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethods = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethods.size());
     }
 
@@ -203,7 +206,7 @@ public class DropInClientUnitTest {
         sut.getSupportedPaymentMethods(activity, callback);
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethods = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethods = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethods.size());
     }
 
@@ -502,9 +505,6 @@ public class DropInClientUnitTest {
 
     @Test
     public void fetchMostRecentPaymentMethod_callsBackWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle() throws JSONException {
-        BraintreeSharedPreferences.getInstance().putString(activity,
-                DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                DropInPaymentMethodType.GOOGLE_PAY.getCanonicalName());
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
                 .isReadyToPaySuccess(true)
@@ -517,7 +517,12 @@ public class DropInClientUnitTest {
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(new DropInRequest())
                 .braintreeClient(braintreeClient)
+                .dropInSharedPreferences(dropInSharedPreferences)
                 .googlePayClient(googlePayClient);
+
+        when(
+                dropInSharedPreferences.getLastUsedPaymentMethod(activity)
+        ).thenReturn(DropInPaymentMethod.GOOGLE_PAY);
 
         DropInClient sut = new DropInClient(params);
 
@@ -528,16 +533,12 @@ public class DropInClientUnitTest {
         verify(callback).onResult(captor.capture(), (Exception) isNull());
 
         DropInResult result = captor.getValue();
-        assertEquals(DropInPaymentMethodType.GOOGLE_PAY, result.getPaymentMethodType());
+        assertEquals(DropInPaymentMethod.GOOGLE_PAY, result.getPaymentMethodType());
         assertNull(result.getPaymentMethodNonce());
     }
 
     @Test
-    public void fetchMostRecentPaymentMethod_doesNotCallBackWithPayWithGoogleIfPayWithGoogleIsNotAvailable()
-            throws JSONException {
-        BraintreeSharedPreferences.getInstance().putString(activity,
-                DropInResult.LAST_USED_PAYMENT_METHOD_TYPE,
-                DropInPaymentMethodType.GOOGLE_PAY.getCanonicalName());
+    public void fetchMostRecentPaymentMethod_doesNotCallBackWithPayWithGoogleIfPayWithGoogleIsNotAvailable() throws JSONException {
 
         GooglePayClient googlePayClient = new MockGooglePayClientBuilder()
                 .isReadyToPaySuccess(false)
@@ -558,7 +559,12 @@ public class DropInClientUnitTest {
                 .dropInRequest(new DropInRequest())
                 .braintreeClient(braintreeClient)
                 .paymentMethodClient(paymentMethodClient)
-                .googlePayClient(googlePayClient);
+                .googlePayClient(googlePayClient)
+                .dropInSharedPreferences(dropInSharedPreferences);
+
+        when(
+                dropInSharedPreferences.getLastUsedPaymentMethod(activity)
+        ).thenReturn(DropInPaymentMethod.GOOGLE_PAY);
 
         DropInClient sut = new DropInClient(params);
 
@@ -569,7 +575,7 @@ public class DropInClientUnitTest {
         verify(callback).onResult(captor.capture(), (Exception) isNull());
 
         DropInResult result = captor.getValue();
-        assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
+        assertEquals(DropInPaymentMethod.VISA, result.getPaymentMethodType());
         assertNotNull(result.getPaymentMethodNonce());
         assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
     }
@@ -586,6 +592,7 @@ public class DropInClientUnitTest {
         DropInClientParams params = new DropInClientParams()
                 .braintreeClient(braintreeClient)
                 .paymentMethodClient(paymentMethodClient)
+                .dropInSharedPreferences(dropInSharedPreferences)
                 .dropInRequest(new DropInRequest());
 
         DropInClient sut = new DropInClient(params);
@@ -618,6 +625,7 @@ public class DropInClientUnitTest {
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(new DropInRequest())
                 .braintreeClient(braintreeClient)
+                .dropInSharedPreferences(dropInSharedPreferences)
                 .paymentMethodClient(paymentMethodClient);
 
         DropInClient sut = new DropInClient(params);
@@ -629,14 +637,13 @@ public class DropInClientUnitTest {
         verify(callback).onResult(captor.capture(), (Exception) isNull());
 
         DropInResult result = captor.getValue();
-        assertEquals(DropInPaymentMethodType.VISA, result.getPaymentMethodType());
+        assertEquals(DropInPaymentMethod.VISA, result.getPaymentMethodType());
         assertNotNull(result.getPaymentMethodNonce());
         assertEquals("11", ((CardNonce) result.getPaymentMethodNonce()).getLastTwo());
     }
 
     @Test
-    public void fetchMostRecentPaymentMethod_callsBackWithNullResultWhenThereAreNoPaymentMethods()
-            throws JSONException {
+    public void fetchMostRecentPaymentMethod_callsBackWithNullResultWhenThereAreNoPaymentMethods() throws JSONException {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
@@ -651,6 +658,7 @@ public class DropInClientUnitTest {
         DropInClientParams params = new DropInClientParams()
                 .dropInRequest(new DropInRequest())
                 .braintreeClient(braintreeClient)
+                .dropInSharedPreferences(dropInSharedPreferences)
                 .paymentMethodClient(paymentMethodClient);
 
         DropInClient sut = new DropInClient(params);
@@ -688,7 +696,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -719,20 +727,20 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
 
         assertEquals(4, paymentMethodTypes.size());
-        assertEquals(DropInPaymentMethodType.PAYPAL, paymentMethodTypes.get(0));
-        assertEquals(DropInPaymentMethodType.PAY_WITH_VENMO, paymentMethodTypes.get(1));
-        assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodTypes.get(2));
-        assertEquals(DropInPaymentMethodType.GOOGLE_PAY, paymentMethodTypes.get(3));
+        assertEquals(DropInPaymentMethod.PAYPAL, paymentMethodTypes.get(0));
+        assertEquals(DropInPaymentMethod.VENMO, paymentMethodTypes.get(1));
+        assertEquals(DropInPaymentMethod.UNKNOWN, paymentMethodTypes.get(2));
+        assertEquals(DropInPaymentMethod.GOOGLE_PAY, paymentMethodTypes.get(3));
     }
 
     @Test
     public void getSupportedPaymentMethods_whenUnionPayNotSupportedAndOtherCardsPresent_callsBackWithOtherCards() {
         Configuration configuration = mockConfiguration(false, false, true, false, false);
         when(configuration.getSupportedCardTypes())
-                .thenReturn(Arrays.asList(DropInPaymentMethodType.UNIONPAY.getCanonicalName(), DropInPaymentMethodType.VISA.getCanonicalName()));
+                .thenReturn(Arrays.asList(DropInPaymentMethod.UNIONPAY.name(), DropInPaymentMethod.VISA.name()));
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
@@ -752,17 +760,17 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
 
         assertEquals(1, paymentMethodTypes.size());
-        assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodTypes.get(0));
+        assertEquals(DropInPaymentMethod.UNKNOWN, paymentMethodTypes.get(0));
     }
 
     @Test
     public void getSupportedPaymentMethods_whenOnlyUnionPayPresentAndNotSupported_callsBackWithNoCards() {
         Configuration configuration = mockConfiguration(false, false, true, false, false);
         when(configuration.getSupportedCardTypes())
-                .thenReturn(Collections.singletonList(DropInPaymentMethodType.UNIONPAY.getCanonicalName()));
+                .thenReturn(Collections.singletonList("UnionPay"));
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -783,7 +791,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -791,7 +799,7 @@ public class DropInClientUnitTest {
     public void getSupportedPaymentMethods_whenOnlyUnionPayPresentAndSupported_callsBackWithCards() {
         Configuration configuration = mockConfiguration(false, false, true, false, true);
         when(configuration.getSupportedCardTypes())
-                .thenReturn(Collections.singletonList(DropInPaymentMethodType.UNIONPAY.getCanonicalName()));
+                .thenReturn(Collections.singletonList(DropInPaymentMethod.UNIONPAY.name()));
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
@@ -812,10 +820,10 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
 
         assertEquals(1, paymentMethodTypes.size());
-        assertEquals(DropInPaymentMethodType.UNKNOWN, paymentMethodTypes.get(0));
+        assertEquals(DropInPaymentMethod.UNKNOWN, paymentMethodTypes.get(0));
     }
 
     @Test
@@ -843,7 +851,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -872,7 +880,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -905,7 +913,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -937,7 +945,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -966,7 +974,7 @@ public class DropInClientUnitTest {
 
         verify(callback).onResult(paymentMethodTypesCaptor.capture(), (Exception) isNull());
 
-        List<DropInPaymentMethodType> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
+        List<DropInPaymentMethod> paymentMethodTypes = paymentMethodTypesCaptor.getValue();
         assertEquals(0, paymentMethodTypes.size());
     }
 
@@ -1777,7 +1785,7 @@ public class DropInClientUnitTest {
         when(configuration.isUnionPayEnabled()).thenReturn(unionPayEnabled);
 
         if (cardEnabled) {
-            when(configuration.getSupportedCardTypes()).thenReturn(Collections.singletonList(DropInPaymentMethodType.VISA.getCanonicalName()));
+            when(configuration.getSupportedCardTypes()).thenReturn(Collections.singletonList(DropInPaymentMethod.VISA.name()));
         }
 
         return configuration;
