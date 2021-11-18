@@ -34,12 +34,12 @@ public class DropInResult implements Parcelable {
 
     DropInResult() {}
 
-    DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
-        return paymentMethodNonce(paymentMethodNonce, new PaymentMethodInspector());
+    DropInResult setPaymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
+        return setPaymentMethodNonce(paymentMethodNonce, new PaymentMethodInspector());
     }
 
     @VisibleForTesting
-    DropInResult paymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce, PaymentMethodInspector nonceInspector) {
+    DropInResult setPaymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce, PaymentMethodInspector nonceInspector) {
         if (paymentMethodNonce != null) {
             paymentMethodType = nonceInspector.getPaymentMethod(paymentMethodNonce);
             paymentDescription = nonceInspector.getPaymentMethodDescription(paymentMethodNonce);
@@ -49,13 +49,13 @@ public class DropInResult implements Parcelable {
         return this;
     }
 
-    DropInResult deviceData(@Nullable String deviceData) {
+    DropInResult setDeviceData(@Nullable String deviceData) {
         this.deviceData = deviceData;
         return this;
     }
 
-    void setPaymentMethodType(DropInPaymentMethod mPaymentMethodType) {
-        this.paymentMethodType = mPaymentMethodType;
+    void setPaymentMethodType(DropInPaymentMethod paymentMethodType) {
+        this.paymentMethodType = paymentMethodType;
     }
 
     /**

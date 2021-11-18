@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.test.platform.app.InstrumentationRegistry
+import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
 import com.braintreepayments.cardform.utils.CardType
 import junit.framework.TestCase.*
 import org.json.JSONObject
