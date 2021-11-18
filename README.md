@@ -40,7 +40,7 @@ Create a `DropInRequest` to start the Drop-in UI with specified options:
 val dropInRequest = DropInRequest()
 ```
 
-`DropInClient` is responsible for launching the Drop-in UI. To launch Drop-in, instantiate a `DropInClient` and call `DropInClient#launchDropInForResult` with the `DropInRequest` you configured above:
+`DropInClient` is responsible for launching the Drop-in UI. To launch Drop-in, instantiate a `DropInClient` with [client authorization](https://developer.paypal.com/braintree/docs/guides/authorization/overview) and call `DropInClient#launchDropInForResult` with the `DropInRequest` you configured above and a request code that you have defined for Drop-in:
 
 ```kotlin
 val dropInClient = DropInClient(this, "<#CLIENT_AUTHORIZATION#>", dropInRequest)
