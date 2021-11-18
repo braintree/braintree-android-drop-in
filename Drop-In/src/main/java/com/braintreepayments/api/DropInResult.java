@@ -57,7 +57,7 @@ public class DropInResult implements Parcelable {
 
     /**
      * @return The previously used {@link DropInPaymentMethod} or {@code null} if there was no
-     * previous payment method. If the type is {@link DropInPaymentMethod#GOOGLE_PAY} the Android
+     * previous payment method. If the type is {@link DropInPaymentMethod#GOOGLE_PAY} the Google
      * Pay flow will need to be performed by the user again at the time of checkout,
      * {@link #getPaymentMethodNonce()} will return {@code null} in this case.
      */
