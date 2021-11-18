@@ -74,7 +74,7 @@ Drop-In is currently localized for [23 languages](https://github.com/braintree/b
 
 ### 3D Secure + Drop-in
 
-The new Drop-In supports 3D-Secure verification. Assuming you have [3D-Secure configured](https://developer.paypal.com/braintree/docs/guides/3d-secure/configuration) for your account, create a ThreeDSecureRequest() object, setting `ThreeDSecurePostalAddress` and `ThreeDSecureAdditionalInformation` fields where possible; the more fields that are set, the less likely a user will be presented with a challenge. For more information, check our [3D Secure Migration Guide](https://developer.paypal.com/braintree/docs/guides/3d-secure/migration/android/v4#getting-ready-for-3ds-2). Make sure to attach this object to the `BTDropInRequest` before use.
+Drop-In supports 3D-Secure verification. Assuming you have [3D-Secure configured](https://developer.paypal.com/braintree/docs/guides/3d-secure/configuration) for your account, create a ThreeDSecureRequest() object, setting `ThreeDSecurePostalAddress` and `ThreeDSecureAdditionalInformation` fields where possible; the more fields that are set, the less likely a user will be presented with a challenge. For more information, check our [3D Secure Migration Guide](https://developer.paypal.com/braintree/docs/guides/3d-secure/migration/android/v4#getting-ready-for-3ds-2). Make sure to attach this object to the `BTDropInRequest` before use.
 
 ```kotlin
 val address = ThreeDSecurePostalAddress()
