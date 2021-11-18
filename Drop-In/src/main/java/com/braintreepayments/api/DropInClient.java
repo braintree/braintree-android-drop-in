@@ -317,7 +317,8 @@ public class DropInClient {
             if (!configuration.isUnionPayEnabled()) {
                 supportedCardTypes.remove(CARD_TYPE_UNION_PAY);
             }
-            if (supportedCardTypes.size() > 0) { availablePaymentMethods.add(DropInPaymentMethod.UNKNOWN);
+            if (supportedCardTypes.size() > 0) { 
+                availablePaymentMethods.add(DropInPaymentMethod.UNKNOWN);
             }
         }
 
