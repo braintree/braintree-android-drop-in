@@ -1,8 +1,10 @@
 # Braintree Android Drop-In
 
-[![Build Status](https://travis-ci.org/braintree/braintree-android-drop-in.svg?branch=master)](https://travis-ci.org/braintree/braintree-android-drop-in)
+[![Tests](https://github.com/braintree/braintree-android-drop-in/actions/workflows/tests.yml/badge.svg)](https://github.com/braintree/braintree-android-drop-in/actions/workflows/tests.yml)
 
 Braintree Android Drop-In is a readymade UI that allows you to accept card and alternative payments in your Android app.
+
+:mega:&nbsp;&nbsp;A new major version of the SDK is now available. See the [v6 migration guide](v6_MIGRATION_GUIDE.md) for details.
 
 <img alt="Screenshot of Drop-In" src="screenshots/vaulted-payment-methods.png" width="300"/>
 
@@ -12,21 +14,7 @@ Add the dependency in your `build.gradle`:
 
 ```groovy
 dependencies {
-  implementation 'com.braintreepayments.api:drop-in:5.2.2'
-}
-```
-
-Additionally, add the following Maven repository and (non-sensitive) credentials to your app-level gradle:
-
-```groovy
-repositories {
-    maven {
-        url "https://cardinalcommerceprod.jfrog.io/artifactory/android"
-        credentials {
-            username 'braintree_team_sdk'
-            password 'AKCp8jQcoDy2hxSWhDAUQKXLDPDx6NYRkqrgFLRc3qDrayg6rrCbJpsKKyMwaykVL8FWusJpp'
-        }
-    }
+  implementation 'com.braintreepayments.api:drop-in:6.0.0-beta2'
 }
 ```
 
@@ -46,31 +34,35 @@ repositories {
 
 ## Usage
 
-Create a `DropInRequest` and use the `Intent` to start Drop-In:
+Create a `DropInRequest` to start the Drop-in UI with specified options:
 
-```java
-DropInRequest dropInRequest = new DropInRequest()
-    .clientToken(mClientToken);
-startActivityForResult(dropInRequest.getIntent(context), DROP_IN_REQUEST);
+```kotlin
+val dropInRequest = DropInRequest()
 ```
 
-Handle the response:
+`DropInClient` is responsible for launching the Drop-in UI. To launch Drop-in, instantiate a `DropInClient` with [client authorization](https://developer.paypal.com/braintree/docs/guides/authorization/overview) and call `DropInClient#launchDropInForResult` with the `DropInRequest` you configured above and a request code that you have defined for Drop-in:
 
-```java
-@Override
-public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
+```kotlin
+val dropInClient = DropInClient(this, "<#CLIENT_AUTHORIZATION#>", dropInRequest)
+dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE)
+```
 
-    if (requestCode == DROP_IN_REQUEST) {
+To handle the result of the Drop-in flow, override `onActivityResult`:
+
+```kotlin
+override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+
+    if (requestCode == DROP_IN_REQUEST_CODE) {
         if (resultCode == RESULT_OK) {
-            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-            String paymentMethodNonce = result.getPaymentMethodNonce().getNonce();
-            // send paymentMethodNonce to your server
+            val result: DropInResult? = data?.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT)
+            val paymentMethodNonce = result?.paymentMethodNonce?.string
+            // use the result to update your UI and send the payment method nonce to your server
         } else if (resultCode == RESULT_CANCELED) {
-            // canceled
+            // the user canceled
         } else {
             // an error occurred, checked the returned exception
-            Exception exception = (Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR);
+            val error: Exception? = data?.getSerializableExtra(DropInResult.EXTRA_ERROR) as? Exception
         }
     }
 }
@@ -82,74 +74,66 @@ Drop-In is currently localized for [25 languages](https://github.com/braintree/b
 
 ### 3D Secure + Drop-in
 
-The new Drop-In supports 3D-Secure verification. Assuming you have [3D-Secure configured](https://developers.braintreepayments.com/guides/3d-secure/configuration) for your account, enable it in your client with `DropInRequest.requestThreeDSecureVerification(true)` and set an amount. Then, create a ThreeDSecureRequest() object, setting `ThreeDSecurePostalAddress` and `ThreeDSecureAdditionalInformation` fields where possible; the more fields that are set, the less likely a user will be presented with a challenge. For more information, check our [3D Secure Migration Guide](https://developers.braintreepayments.com/guides/3d-secure/migration/android/v3#getting-ready-for-3ds-2). Make sure to attach this object to the `BTDropInRequest` before use.
+Drop-In supports 3D-Secure verification. Assuming you have [3D-Secure configured](https://developer.paypal.com/braintree/docs/guides/3d-secure/configuration) for your account, create a ThreeDSecureRequest() object, setting `ThreeDSecurePostalAddress` and `ThreeDSecureAdditionalInformation` fields where possible; the more fields that are set, the less likely a user will be presented with a challenge. For more information, check our [3D Secure Migration Guide](https://developer.paypal.com/braintree/docs/guides/3d-secure/migration/android/v4#getting-ready-for-3ds-2). Make sure to attach this object to the `BTDropInRequest` before use.
 
-```java
-ThreeDSecurePostalAddress billingAddress = new ThreeDSecurePostalAddress()
-    .givenName("Jill")
-    .surname("Doe")
-    .phoneNumber("5551234567")
-    .streetAddress("555 Smith St")
-    .extendedAddress("#2")
-    .locality("Chicago")
-    .region("IL")
-    .postalCode("12345")
-    .countryCodeAlpha2("US");
-
-ThreeDSecureRequest threeDSecureRequest = new ThreeDSecureRequest()
-    .amount("1.00")
-    .versionRequested(ThreeDSecureRequest.VERSION_2)
-    .email("test@email.com")
-    .mobilePhoneNumber("3125551234")
-    .billingAddress(billingAddress)
-    .additionalInformation(additionalInformation);
-
+```kotlin
+val address = ThreeDSecurePostalAddress()
+address.givenName = "Jill" // ASCII-printable characters required, else will throw a validation error
+address.surname = "Doe" // ASCII-printable characters required, else will throw a validation error
+address.phoneNumber = "5551234567"
+address.streetAddress = "555 Smith St"
+address.extendedAddress = "#2"
+address.locality = "Chicago"
+address.region = "IL"
+address.postalCode = "12345"
+address.countryCodeAlpha2 = "US"
 
 // Optional additional information.
-// For best results, provide as many of these elements as possible.
-ThreeDSecureAdditionalInformation additionalInformation = new ThreeDSecureAdditionalInformation()
-    .accountId("account-id");
+// For best results, provide as many additional elements as possible.
+val additionalInformation = ThreeDSecureAdditionalInformation()
+additionalInformation.shippingAddress = address
 
-DropInRequest dropInRequest = new DropInRequest()
-    .clientToken(mAuthorization)
-    .requestThreeDSecureVerification(true)
-    .threeDSecureRequest(threedSecureRequest);
+val threeDSecureRequest = ThreeDSecureRequest()
+threeDSecureRequest.amount = "1.00"
+threeDSecureRequest.email = "test@email.com"
+threeDSecureRequest.billingAddress = address
+threeDSecureRequest.versionRequested = VERSION_2
+threeDSecureRequest.additionalInformation = additionalInformation
+
+val dropInRequest = DropInRequest()
+dropInRequest.threeDSecureRequest = threeDSecureRequest
 ```
 
 ### Fetch last used payment method
 
-If your user already has an existing payment method, you may not need to show Drop-In. You can check if they have an existing payment method using `DropInResult#fetchDropInResult`. Note that a payment method will only be returned when using a client token created with a `customer_id`.
+If your user already has an existing payment method, you may not need to show Drop-in. You can check if they have an existing payment method using `DropInClient#fetchMostRecentPaymentMethod`. A payment method will only be returned when using a client token created with a `customer_id`.
 
-```java
-DropInResult.fetchDropInResult(activity, clientToken, new DropInResult.DropInResultListener() {
-    @Override
-    public void onError(Exception exception) {
+```kotlin
+val dropInClient = DropInClient(this, "<#CLIENT_TOKEN_WITH_CUSTOMER_ID>", dropInRequest)
+dropInClient.fetchMostRecentPaymentMethod(this) { dropInResult, error ->
+    error?.let {
         // an error occurred
     }
-
-    @Override
-    public void onResult(DropInResult result) {
-        if (result.getPaymentMethodType() != null) {
+    dropInResult?.let { result ->
+        result.paymentMethodType?.let { paymentMethodType ->
             // use the icon and name to show in your UI
-            int icon = result.getPaymentMethodType().getDrawable();
-            int name = result.getPaymentMethodType().getLocalizedName();
+            val icon = paymentMethodType.drawable
+            val name = paymentMethodType.localizedName
 
-            if (result.getPaymentMethodType() == PaymentMethodType.GOOGLE_PAY) {
-                // The last payment method the user used was GooglePayment. The GooglePayment
-                // flow will need to be performed by the user again at the time of checkout
-                // using GooglePayment#requestPayment(...). No PaymentMethodNonce will be
-                // present in result.getPaymentMethodNonce(), this is only an indication that
-                // the user last used GooglePayment.
+            if (paymentMethodType == DropInPaymentMethod.GOOGLE_PAY) {
+                // The last payment method the user used was Google Pay.
+                // The Google Pay flow will need to be performed by the
+                // user again at the time of checkout.
             } else {
-                // show the payment method in your UI and charge the user at the
-                // time of checkout using the nonce: paymentMethod.getNonce()
-                PaymentMethodNonce paymentMethod = result.getPaymentMethodNonce();
+                // Show the payment method in your UI and charge the user
+                // at the time of checkout.
+                val paymentMethod = result.paymentMethodNonce
             }
-        } else {
-            // there was no existing payment method
         }
+    } ?: run {
+        // there was no existing payment method
     }
-});
+}
 ```
 
 ## Help
@@ -164,7 +148,7 @@ DropInResult.fetchDropInResult(activity, clientToken, new DropInResult.DropInRes
 Here are a few ways to get in touch:
 
 * [GitHub Issues](https://github.com/braintree/braintree-android-drop-in/issues) - For generally applicable issues and feedback
-* [Braintree Support](https://articles.braintreepayments.com/) / [support@braintreepayments.com](mailto:support@braintreepayments.com) -
+* [Braintree Support](https://developer.paypal.com/braintree/articles) / [Get Help](https://developer.paypal.com/braintree/help) -
 for personal support at any phase of integration
 
 ## License
