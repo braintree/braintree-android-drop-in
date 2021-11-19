@@ -11,7 +11,7 @@
 
         <activity android:name="com.braintreepayments.api.DropInActivity"
             android:theme="@style/bt_drop_in_activity_theme"
-            android:launchMode="singleTop"
+            android:launchMode="singleTask"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
