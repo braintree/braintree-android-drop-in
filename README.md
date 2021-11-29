@@ -31,6 +31,16 @@ repositories {
     }
 }
 ```
+## Versions
+
+This SDK abides by our Client SDK Deprecation Policy. For more information on the potential statuses of an SDK check our [developer docs](http://developers.braintreepayments.com/guides/client-sdk/deprecation-policy).
+
+| Major version number | Status | Released | Deprecated | Unsupported |
+| -------------------- | ------ | -------- | ---------- | ----------- |
+| 6.x.x | Active | November 2021 | TBA | TBA |
+| 5.x.x | Inactive | September 2020 | November 2022 | November 2023 |
+| 4.x.x | Deprecated | February 2019 | September 2021 | September 2022 |
+| 3.x.x | Unsupported | October 2016 | February 2020 | February 2021 |
 
 ## Usage
 
