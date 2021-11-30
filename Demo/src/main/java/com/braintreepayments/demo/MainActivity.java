@@ -3,7 +3,6 @@ package com.braintreepayments.demo;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,10 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
@@ -93,7 +89,6 @@ public class MainActivity extends BaseActivity {
             } else {
                 // User cancelled drop in
             }
-
         });
     }
 
@@ -167,20 +162,6 @@ public class MainActivity extends BaseActivity {
             purchaseButton.setEnabled(true);
         }
     }
-
-//    @Override
-//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//
-//        if (resultCode == RESULT_OK) {
-//            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-//            displayResult(result);
-//            purchaseButton.setEnabled(true);
-//        } else if (resultCode != RESULT_CANCELED) {
-//            showDialog(((Exception) data.getSerializableExtra(DropInResult.EXTRA_ERROR))
-//                    .getMessage());
-//        }
-//    }
 
     @Override
     protected void reset() {
