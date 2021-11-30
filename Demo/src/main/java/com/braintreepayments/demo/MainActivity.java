@@ -3,6 +3,7 @@ package com.braintreepayments.demo;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,10 +11,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
+import com.braintreepayments.api.DropInActivityContract;
 import com.braintreepayments.api.DropInClient;
 import com.braintreepayments.api.DropInPaymentMethod;
 import com.braintreepayments.api.DropInRequest;
@@ -53,6 +59,7 @@ public class MainActivity extends BaseActivity {
     private Button purchaseButton;
 
     private boolean purchased = false;
+    private ActivityResultLauncher<DropInClient> resultLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +82,19 @@ public class MainActivity extends BaseActivity {
                 nonce = savedInstanceState.getParcelable(KEY_NONCE);
             }
         }
+
+        resultLauncher = registerForActivityResult(new DropInActivityContract(), result -> {
+            if (result != null) {
+                if (result.getDropInResult() != null) {
+                    displayResult(result.getDropInResult());
+                } else if (result.getError() != null) {
+                    showDialog(result.getError().getMessage());
+                }
+            } else {
+                // User cancelled drop in
+            }
+
+        });
     }
 
     @Override
@@ -96,7 +116,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void launchDropIn(View v) {
-        dropInClient.launchDropInForResult(this, DROP_IN_REQUEST);
+        resultLauncher.launch(dropInClient);
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {
@@ -148,19 +168,19 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-            displayResult(result);
-            purchaseButton.setEnabled(true);
-        } else if (resultCode != RESULT_CANCELED) {
-            showDialog(((Exception) data.getSerializableExtra(DropInResult.EXTRA_ERROR))
-                    .getMessage());
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (resultCode == RESULT_OK) {
+//            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+//            displayResult(result);
+//            purchaseButton.setEnabled(true);
+//        } else if (resultCode != RESULT_CANCELED) {
+//            showDialog(((Exception) data.getSerializableExtra(DropInResult.EXTRA_ERROR))
+//                    .getMessage());
+//        }
+//    }
 
     @Override
     protected void reset() {

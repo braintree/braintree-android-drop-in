@@ -115,7 +115,13 @@ public class DropInActivity extends AppCompatActivity {
 
     @VisibleForTesting
     void finishDropInWithError(Exception e) {
-        setResult(RESULT_FIRST_USER, new Intent().putExtra(DropInResult.EXTRA_ERROR, e));
+        Intent intent = new Intent();
+        intent.putExtra(DropInResult.EXTRA_ERROR, e);
+
+        DropInResult2 result = new DropInResult2();
+        result.setError(e);
+        intent.putExtra(DropInResult2.EXTRA_DROP_IN_RESULT_2, result);
+        setResult(RESULT_FIRST_USER, intent);
         finish();
     }
 
@@ -268,6 +274,10 @@ public class DropInActivity extends AppCompatActivity {
 
             Intent intent = new Intent()
                     .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, pendingDropInResult);
+
+            DropInResult2 dropInActivityContractResult = new DropInResult2();
+            dropInActivityContractResult.setDropInResult(pendingDropInResult);
+            intent.putExtra(DropInResult2.EXTRA_DROP_IN_RESULT_2, dropInActivityContractResult);
             setResult(RESULT_OK, intent);
         } else {
             // assume drop in cancelled

@@ -84,6 +84,14 @@ public class DropInClient {
         this.dropInSharedPreferences = params.getDropInSharedPreferences();
     }
 
+    DropInRequest getDropInRequest() {
+        return this.dropInRequest;
+    }
+
+    String getSessionId() {
+        return braintreeClient.getSessionId();
+    }
+
     Authorization getAuthorization() {
         return braintreeClient.getAuthorization();
     }
