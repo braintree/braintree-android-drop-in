@@ -148,6 +148,47 @@ dropInClient.fetchMostRecentPaymentMethod(this) { dropInResult, error ->
 }
 ```
 
+## Activity Result APIs
+
+Braintree Android Drop-in now supports the Activity Result APIs introduced in AndroidX Activity and Fragment.
+
+To use the Activity Result APIs, you first need to create a `DropInRequest` and `DropInClient`:
+
+```kotlin
+val dropInRequest = DropInRequest()
+val dropInClient = DropInClient(this, "<#CLIENT_TOKEN_WITH_CUSTOMER_ID>", dropInRequest)
+```
+
+Within your Activity or Fragment in which you will launch Drop-in, create an `ActivityResultLauncher`:
+
+```kotlin
+class MyActivity : AppCompatActivity() {
+    
+    private lateinit var resultLauncher
+    
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        resultLauncher = registerForActivityResult(DropInActivityContract()) { result ->
+            result?.let {
+                it.dropInResult?.let { dropInResult ->
+                    // handle result
+                }
+                it.error?.let { dropInError ->
+                    // handle error
+                }
+            }
+            // user cancelled drop in
+        }
+    }
+}
+```
+
+Use the `ActivityResultLauncher` to launch Drop-in with the `DropInClient` you created:
+
+```kotlin
+resultLauncher.launch(dropInClient)
+```
+
 ## Help
 
 * [Read the javadocs](http://javadoc.io/doc/com.braintreepayments.api/drop-in/)
