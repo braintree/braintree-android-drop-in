@@ -1,5 +1,8 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+* Add support for Activity Result APIs and launching Drop-in via Fragment (fixes #313)
+
 ## 6.0.0
 * Bump braintree_android module dependency versions to `4.7.0`
 * Bump `card-form` to `5.3.0`
