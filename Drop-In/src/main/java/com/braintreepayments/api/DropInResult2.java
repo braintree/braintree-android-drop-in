@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import androidx.annotation.Nullable;
 
 
+/**
+ * Contains the result from launching {@link DropInActivity} using the {@link DropInActivityContract}.
+ */
 public class DropInResult2 implements Parcelable  {
 
     public static final String EXTRA_DROP_IN_RESULT_2 =
@@ -25,6 +28,9 @@ public class DropInResult2 implements Parcelable  {
         }
     }
 
+    /**
+     * @return a {@link DropInResult}
+     */
     @Nullable
     public DropInResult getDropInResult() {
         return dropInResult;
@@ -34,6 +40,9 @@ public class DropInResult2 implements Parcelable  {
         this.dropInResult = dropInResult;
     }
 
+    /**
+     * @return an error that occurred during the Drop-in flow.
+     */
     @Nullable
     public Exception getError() {
         return error;

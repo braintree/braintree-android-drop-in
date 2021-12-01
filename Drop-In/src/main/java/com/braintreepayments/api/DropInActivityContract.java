@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 
+/**
+ * A contract used to launch a {@link DropInActivity} with a {@link DropInClient} input and {@link DropInResult2} output.
+ */
 public class DropInActivityContract extends ActivityResultContract<DropInClient, DropInResult2> {
 
     static final String EXTRA_CHECKOUT_REQUEST = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST";
