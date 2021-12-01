@@ -156,15 +156,15 @@ To use the Activity Result APIs, you first need to create a `DropInRequest` and 
 
 ```kotlin
 val dropInRequest = DropInRequest()
-val dropInClient = DropInClient(this, "<#CLIENT_TOKEN_WITH_CUSTOMER_ID>", dropInRequest)
+val dropInClient = DropInClient(context, "<#CLIENT_TOKEN_WITH_CUSTOMER_ID>", dropInRequest)
 ```
 
-Within your Activity or Fragment in which you will launch Drop-in, create an `ActivityResultLauncher`:
+Within your Activity or Fragment where you will launch Drop-in, create an `ActivityResultLauncher`:
 
 ```kotlin
-class MyActivity : AppCompatActivity() {
+class MyFragment : Fragment() {
     
-    private lateinit var resultLauncher
+    private lateinit var resultLauncher: ActivityResultLauncher<DropInClient>
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
