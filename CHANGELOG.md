@@ -2,6 +2,7 @@
 
 ## unreleased
 * Add support for Activity Result APIs and launching Drop-in via Fragment (fixes #313)
+* Deprecate `DropInClient#launchDropInForResult` in favor of launching Drop-in with a `DropInActivityContract`
 
 ## 6.0.0
 * Bump braintree_android module dependency versions to `4.7.0`

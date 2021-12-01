@@ -360,11 +360,14 @@ public class DropInClient {
     }
 
     /**
-     * Called to launch a {@link DropInActivity}
+     * Called to launch a {@link DropInActivity}.
+     * Deprecated in favor of launching Drop-in with a {@link DropInActivityContract} via AndroidX
+     * Activity Result APIs.
      *
      * @param activity the current {@link FragmentActivity}
      * @param requestCode the request code for the activity that will be launched
      */
+    @Deprecated
     public void launchDropInForResult(FragmentActivity activity, int requestCode) {
         Bundle dropInRequestBundle = new Bundle();
         dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
