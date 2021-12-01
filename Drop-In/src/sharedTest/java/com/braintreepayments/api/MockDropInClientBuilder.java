@@ -46,6 +46,18 @@ public class MockDropInClientBuilder {
     private List<CardType> getSupportedCardTypesSuccess;
     private Exception getSupportedCardTypesError;
     private Exception deviceDataError;
+    private DropInRequest dropInRequest;
+    private String sessionId;
+
+    MockDropInClientBuilder dropInRequest(DropInRequest dropInRequest) {
+        this.dropInRequest = dropInRequest;
+        return this;
+    }
+
+    MockDropInClientBuilder sessionId(String sessionId) {
+        this.sessionId = sessionId;
+        return this;
+    }
 
     MockDropInClientBuilder shouldPerformThreeDSecureVerification(boolean shouldPerformThreeDSecureVerification) {
         this.shouldPerformThreeDSecureVerification = shouldPerformThreeDSecureVerification;
@@ -186,6 +198,8 @@ public class MockDropInClientBuilder {
         DropInClient dropInClient = mock(DropInClient.class);
         when(dropInClient.getAuthorization()).thenReturn(authorization);
         when(dropInClient.getBrowserSwitchResult(any(FragmentActivity.class))).thenReturn(browserSwitchResult);
+        when(dropInClient.getDropInRequest()).thenReturn(dropInRequest);
+        when(dropInClient.getSessionId()).thenReturn(sessionId);
 
         doAnswer((Answer<Void>) invocation -> {
             DropInResultCallback callback = (DropInResultCallback) invocation.getArguments()[2];
