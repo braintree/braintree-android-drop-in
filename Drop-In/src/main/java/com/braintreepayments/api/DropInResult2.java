@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
+
 public class DropInResult2 implements Parcelable  {
 
     public static final String EXTRA_DROP_IN_RESULT_2 =
@@ -17,6 +18,11 @@ public class DropInResult2 implements Parcelable  {
 
     protected DropInResult2(Parcel in) {
         dropInResult = in.readParcelable(DropInResult.class.getClassLoader());
+
+        Object[] errors = in.readArray(Exception.class.getClassLoader());
+        if (errors.length > 0) {
+            error = (Exception) errors[0];
+        }
     }
 
     @Nullable
@@ -24,7 +30,7 @@ public class DropInResult2 implements Parcelable  {
         return dropInResult;
     }
 
-    public void setDropInResult(@Nullable DropInResult dropInResult) {
+    void setDropInResult(@Nullable DropInResult dropInResult) {
         this.dropInResult = dropInResult;
     }
 
@@ -33,7 +39,7 @@ public class DropInResult2 implements Parcelable  {
         return error;
     }
 
-    public void setError(@Nullable Exception error) {
+    void setError(@Nullable Exception error) {
         this.error = error;
     }
 
@@ -57,5 +63,15 @@ public class DropInResult2 implements Parcelable  {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeParcelable(dropInResult, i);
+
+        // This is required because the Exception class is not Parcelable, and Parcel#writeException
+        // does not support all exception types.
+        Exception[] errors;
+        if (error != null) {
+            errors = new Exception[]{error};
+        } else {
+            errors = new Exception[0];
+        }
+        parcel.writeArray(errors);
     }
 }
