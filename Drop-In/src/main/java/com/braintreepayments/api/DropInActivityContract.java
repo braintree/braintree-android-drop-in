@@ -18,7 +18,8 @@ import androidx.annotation.Nullable;
 
 
 /**
- * A contract used to launch a {@link DropInActivity} with a {@link DropInClient} input and {@link DropInActivityResult} output.
+ * A contract specifying that a {@link DropInActivity} can be called with a {@link DropInClient}
+ * input and produce a {@link DropInActivityResult} output.
  */
 public class DropInActivityContract extends ActivityResultContract<DropInClient, DropInActivityResult> {
 
