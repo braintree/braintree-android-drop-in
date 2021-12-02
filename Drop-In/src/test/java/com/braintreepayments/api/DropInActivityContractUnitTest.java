@@ -24,7 +24,7 @@ public class DropInActivityContractUnitTest {
     private Context context;
     private DropInRequest dropInRequest;
     private Intent intent;
-    private DropInResult2 result;
+    private DropInActivityResult result;
 
     @Before
     public void beforeEach() {
@@ -35,8 +35,8 @@ public class DropInActivityContractUnitTest {
                 .dropInRequest(dropInRequest)
                 .sessionId("session-id")
                 .build();
-        result = new DropInResult2();
-        intent = new Intent().putExtra("com.braintreepayments.api.dropin.EXTRA_DROP_IN_RESULT_2", result);
+        result = new DropInActivityResult();
+        intent = new Intent().putExtra("com.braintreepayments.api.dropin.EXTRA_DROP_IN_ACTIVITY_RESULT", result);
     }
 
     @Test
@@ -54,7 +54,7 @@ public class DropInActivityContractUnitTest {
     public void parseResult_whenResultOK_returnsDropInResult() {
         DropInActivityContract sut = new DropInActivityContract();
 
-        DropInResult2 dropInResult = sut.parseResult(RESULT_OK, intent);
+        DropInActivityResult dropInResult = sut.parseResult(RESULT_OK, intent);
         assertSame(result, dropInResult);
     }
 
@@ -62,7 +62,7 @@ public class DropInActivityContractUnitTest {
     public void parseResult_whenResultFirstUser_returnsDropInResult() {
         DropInActivityContract sut = new DropInActivityContract();
 
-        DropInResult2 dropInResult = sut.parseResult(RESULT_FIRST_USER, intent);
+        DropInActivityResult dropInResult = sut.parseResult(RESULT_FIRST_USER, intent);
         assertSame(result, dropInResult);
     }
 
@@ -70,7 +70,7 @@ public class DropInActivityContractUnitTest {
     public void parseResult_whenResultNotOKorFirstUser_returnsNull() {
         DropInActivityContract sut = new DropInActivityContract();
 
-        DropInResult2 dropInResult = sut.parseResult(RESULT_CANCELED, intent);
+        DropInActivityResult dropInResult = sut.parseResult(RESULT_CANCELED, intent);
         assertNull(dropInResult);
     }
 

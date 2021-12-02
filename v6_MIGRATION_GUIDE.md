@@ -151,71 +151,71 @@ val dropInRequest = DropInRequest()
 val dropInClient = DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
 ```
 
-## Launch Drop-In 
+## Handle Drop-In Result
 
-`DropInClient` is responsible for launching `DropInActivity`. 
-To launch Drop-In, instantiate a `DropInClient` and call `DropInClient#launchDropInForResult`:
+Braintree Android Drop-in now supports the [Activity Result APIs](https://developer.android.com/training/basics/intents/result) introduced in AndroidX Activity and Fragment.
+To handle the result of the Drop-in flow, create an `ActivityResultLauncher` within your Activity or Fragment where you will launch Drop-in:
 
 Java:
 ```java
-DropInClient dropInClient = new DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
-dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE);
+class MyFragment extends Fragment {
+
+    private ActivityResultLauncher<DropInClient> resultLauncher;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        resultLauncher = registerForActivityResult(new DropInActivityContract(), result -> {
+            if (result != null) {
+                if (result.getDropInResult() != null) {
+                    // handle result
+                } else if (result.getError() != null) {
+                    // handle error
+                }
+            } else {
+                // User canceled drop-in
+            }
+        });
+    }
+}
 ```
+
 
 Kotlin:
 ```kotlin
-val dropInClient = DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
-dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE)
-```
+class MyFragment : Fragment() {
 
-## Handle Drop-In Result
+    private lateinit var resultLauncher: ActivityResultLauncher<DropInClient>
 
-You should handle the result in `onActivityResult`, the same way as you did in your v5 integration.
-
-Changes:
-- The key for accessing an error from the Activity result has changed from `DropInActivity.EXTRA_ERROR` to `DropInResult.EXTRA_ERROR`.
-- The method for accessing the `String` payment method nonce from `DropInResult` has been updated from `PaymentMethodNonce#getNonce` to `PaymentMethodNonce#getString`. 
-
-
-Java:
-```java
-@Override
-public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-
-    if (requestCode == DROP_IN_REQUEST_CODE) {
-        if (resultCode == RESULT_OK) {
-            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-            String paymentMethodNonce = result.getPaymentMethodNonce().getString();
-            // send paymentMethodNonce to your server
-        } else if (resultCode == RESULT_CANCELED) {
-            // canceled
-        } else {
-            // an error occurred, checked the returned exception
-            Exception exception = (Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        resultLauncher = registerForActivityResult(DropInActivityContract()) { result ->
+            result?.let {
+                it.dropInResult?.let { dropInResult ->
+                    // handle result
+                }
+                it.error?.let { dropInError ->
+                    // handle error
+                }
+            }
+            // user canceled drop-in
         }
     }
 }
 ```
 
+## Launch Drop-In 
+
+A `DropInClient` is required for launching `DropInActivity`. Use the `ActivityResultLauncher` to launch Drop-in with the `DropInClient` you created:
+
+Java:
+```java 
+resultLauncher.launch(dropInClient);
+```
+
 Kotlin:
 ```kotlin
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == DROP_IN_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                val result: DropInResult? = data?.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT)
-                val paymentMethodNonce = result?.paymentMethodNonce?.string
-                // use the result to update your UI and send the payment method nonce to your server
-            } else if (resultCode == RESULT_CANCELED) {
-                // the user canceled
-            } else {
-                // handle errors here, an exception may be available in
-                val error: Exception? = data?.getSerializableExtra(DropInResult.EXTRA_ERROR) as Exception?
-            }
-        }
-    }
+resultLauncher.launch(dropInClient)
 ```
 
 ## Fetch Last Used Payment Method

@@ -52,32 +52,41 @@ Create a `DropInRequest` to start the Drop-in UI with specified options:
 val dropInRequest = DropInRequest()
 ```
 
-`DropInClient` is responsible for launching the Drop-in UI. To launch Drop-in, instantiate a `DropInClient` with [client authorization](https://developer.paypal.com/braintree/docs/guides/authorization/overview) and call `DropInClient#launchDropInForResult` with the `DropInRequest` you configured above and a request code that you have defined for Drop-in:
+`DropInClient` is needed for launching the Drop-in UI. Instantiate a `DropInClient` with [client authorization](https://developer.paypal.com/braintree/docs/guides/authorization/overview) with the `DropInRequest` you configured above:
 
 ```kotlin
 val dropInClient = DropInClient(this, "<#CLIENT_AUTHORIZATION#>", dropInRequest)
-dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE)
 ```
 
-To handle the result of the Drop-in flow, override `onActivityResult`:
+Braintree Android Drop-in now supports the [Activity Result APIs](https://developer.android.com/training/basics/intents/result) introduced in AndroidX Activity and Fragment.
+To handle the result of the Drop-in flow, create an `ActivityResultLauncher` within your Activity or Fragment where you will launch Drop-in:
 
 ```kotlin
-override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
+class MyFragment : Fragment() {
 
-    if (requestCode == DROP_IN_REQUEST_CODE) {
-        if (resultCode == RESULT_OK) {
-            val result: DropInResult? = data?.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT)
-            val paymentMethodNonce = result?.paymentMethodNonce?.string
-            // use the result to update your UI and send the payment method nonce to your server
-        } else if (resultCode == RESULT_CANCELED) {
-            // the user canceled
-        } else {
-            // an error occurred, checked the returned exception
-            val error: Exception? = data?.getSerializableExtra(DropInResult.EXTRA_ERROR) as? Exception
+    private lateinit var resultLauncher: ActivityResultLauncher<DropInClient>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        resultLauncher = registerForActivityResult(DropInActivityContract()) { result ->
+            result?.let {
+                it.dropInResult?.let { dropInResult ->
+                    // handle result
+                }
+                it.error?.let { dropInError ->
+                    // handle error
+                }
+            }
+            // user cancelled drop in
         }
     }
 }
+```
+
+Use the `ActivityResultLauncher` to launch Drop-in with the `DropInClient` you created:
+
+```kotlin
+resultLauncher.launch(dropInClient)
 ```
 
 ### Localization
@@ -183,11 +192,6 @@ class MyFragment : Fragment() {
 }
 ```
 
-Use the `ActivityResultLauncher` to launch Drop-in with the `DropInClient` you created:
-
-```kotlin
-resultLauncher.launch(dropInClient)
-```
 
 ## Help
 

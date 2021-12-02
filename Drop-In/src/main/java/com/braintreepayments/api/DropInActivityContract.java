@@ -18,9 +18,9 @@ import androidx.annotation.Nullable;
 
 
 /**
- * A contract used to launch a {@link DropInActivity} with a {@link DropInClient} input and {@link DropInResult2} output.
+ * A contract used to launch a {@link DropInActivity} with a {@link DropInClient} input and {@link DropInActivityResult} output.
  */
-public class DropInActivityContract extends ActivityResultContract<DropInClient, DropInResult2> {
+public class DropInActivityContract extends ActivityResultContract<DropInClient, DropInActivityResult> {
 
     @NonNull
     @Override
@@ -34,10 +34,10 @@ public class DropInActivityContract extends ActivityResultContract<DropInClient,
     }
 
     @Override
-    public DropInResult2 parseResult(int resultCode, @Nullable Intent intent) {
+    public DropInActivityResult parseResult(int resultCode, @Nullable Intent intent) {
         if (resultCode == RESULT_OK || resultCode == RESULT_FIRST_USER) {
             if (intent != null) {
-                return intent.getParcelableExtra(DropInResult2.EXTRA_DROP_IN_RESULT_2);
+                return intent.getParcelableExtra(DropInActivityResult.EXTRA_DROP_IN_ACTIVITY_RESULT);
             }
         }
         return null;

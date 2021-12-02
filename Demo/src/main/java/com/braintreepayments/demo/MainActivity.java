@@ -87,7 +87,7 @@ public class MainActivity extends BaseActivity {
                     showDialog(result.getError().getMessage());
                 }
             } else {
-                // User cancelled drop in
+                // User canceled drop-in
             }
         });
     }

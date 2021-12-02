@@ -5,8 +5,6 @@ import static junit.framework.TestCase.assertNotNull;
 
 import android.os.Parcel;
 
-import junit.framework.TestCase;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
@@ -14,7 +12,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
-public class DropInResult2UnitTest {
+public class DropInActivityResultUnitTest {
 
     @Test
     public void isParcelable() throws JSONException {
@@ -23,14 +21,14 @@ public class DropInResult2UnitTest {
         dropInResult.setPaymentMethodNonce(cardNonce);
         dropInResult.setDeviceData("device_data");
         Exception error = new Exception("error");
-        DropInResult2 result = new DropInResult2();
+        DropInActivityResult result = new DropInActivityResult();
         result.setDropInResult(dropInResult);
         result.setError(error);
 
         Parcel parcel = Parcel.obtain();
         result.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);
-        DropInResult2 parceled = DropInResult2.CREATOR.createFromParcel(parcel);
+        DropInActivityResult parceled = DropInActivityResult.CREATOR.createFromParcel(parcel);
 
         assertNotNull(parceled.getDropInResult());
         assertNotNull(parceled.getError());

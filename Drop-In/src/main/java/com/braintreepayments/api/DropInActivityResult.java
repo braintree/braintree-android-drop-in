@@ -9,17 +9,17 @@ import androidx.annotation.Nullable;
 /**
  * Contains the result from launching {@link DropInActivity} using the {@link DropInActivityContract}.
  */
-public class DropInResult2 implements Parcelable  {
+public class DropInActivityResult implements Parcelable  {
 
-    public static final String EXTRA_DROP_IN_RESULT_2 =
-            "com.braintreepayments.api.dropin.EXTRA_DROP_IN_RESULT_2";
+    public static final String EXTRA_DROP_IN_ACTIVITY_RESULT =
+            "com.braintreepayments.api.dropin.EXTRA_DROP_IN_ACTIVITY_RESULT";
 
     private DropInResult dropInResult;
     private Exception error;
 
-    DropInResult2() {}
+    DropInActivityResult() {}
 
-    protected DropInResult2(Parcel in) {
+    protected DropInActivityResult(Parcel in) {
         dropInResult = in.readParcelable(DropInResult.class.getClassLoader());
 
         Object[] errors = in.readArray(Exception.class.getClassLoader());
@@ -52,15 +52,15 @@ public class DropInResult2 implements Parcelable  {
         this.error = error;
     }
 
-    public static final Creator<DropInResult2> CREATOR = new Creator<DropInResult2>() {
+    public static final Creator<DropInActivityResult> CREATOR = new Creator<DropInActivityResult>() {
         @Override
-        public DropInResult2 createFromParcel(Parcel in) {
-            return new DropInResult2(in);
+        public DropInActivityResult createFromParcel(Parcel in) {
+            return new DropInActivityResult(in);
         }
 
         @Override
-        public DropInResult2[] newArray(int size) {
-            return new DropInResult2[size];
+        public DropInActivityResult[] newArray(int size) {
+            return new DropInActivityResult[size];
         }
     };
 
