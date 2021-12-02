@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
  */
 public class DropInActivityResult implements Parcelable  {
 
-    public static final String EXTRA_DROP_IN_ACTIVITY_RESULT =
+    static final String EXTRA_DROP_IN_ACTIVITY_RESULT =
             "com.braintreepayments.api.dropin.EXTRA_DROP_IN_ACTIVITY_RESULT";
 
     private DropInResult dropInResult;

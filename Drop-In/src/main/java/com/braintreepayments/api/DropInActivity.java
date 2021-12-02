@@ -275,9 +275,9 @@ public class DropInActivity extends AppCompatActivity {
             Intent intent = new Intent()
                     .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, pendingDropInResult);
 
-            DropInActivityResult dropInResult2 = new DropInActivityResult();
-            dropInResult2.setDropInResult(pendingDropInResult);
-            intent.putExtra(DropInActivityResult.EXTRA_DROP_IN_ACTIVITY_RESULT, dropInResult2);
+            DropInActivityResult dropInActivityResult = new DropInActivityResult();
+            dropInActivityResult.setDropInResult(pendingDropInResult);
+            intent.putExtra(DropInActivityResult.EXTRA_DROP_IN_ACTIVITY_RESULT, dropInActivityResult);
             setResult(RESULT_OK, intent);
         } else {
             // assume drop in cancelled
