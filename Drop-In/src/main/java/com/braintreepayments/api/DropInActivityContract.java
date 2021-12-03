@@ -1,5 +1,6 @@
 package com.braintreepayments.api;
 
+import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_FIRST_USER;
 import static android.app.Activity.RESULT_OK;
 
@@ -21,7 +22,7 @@ import androidx.annotation.Nullable;
  * A contract specifying that a {@link DropInActivity} can be called with a {@link DropInClient}
  * input and produce a {@link DropInActivityResult} output.
  */
-public class DropInActivityContract extends ActivityResultContract<DropInClient, DropInActivityResult> {
+class DropInActivityContract extends ActivityResultContract<DropInClient, DropInActivityResult> {
 
     @NonNull
     @Override
@@ -40,6 +41,10 @@ public class DropInActivityContract extends ActivityResultContract<DropInClient,
             if (intent != null) {
                 return intent.getParcelableExtra(DropInActivityResult.EXTRA_DROP_IN_ACTIVITY_RESULT);
             }
+        } else if (resultCode == RESULT_CANCELED) {
+            DropInActivityResult result = new DropInActivityResult();
+            result.setError(new UserCanceledException("User canceled Drop-in"));
+            return result;
         }
         return null;
     }

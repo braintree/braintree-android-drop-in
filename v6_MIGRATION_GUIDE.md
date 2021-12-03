@@ -154,68 +154,74 @@ val dropInClient = DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropIn
 ## Handle Drop-In Result
 
 Braintree Android Drop-in now supports the [Activity Result APIs](https://developer.android.com/training/basics/intents/result) introduced in AndroidX Activity and Fragment.
-To handle the result of the Drop-in flow, create an `ActivityResultLauncher` within your Activity or Fragment where you will launch Drop-in:
+To handle the result of the Drop-in flow, create an `DropInLauncher` and call `DropInLauncher#registerForActivityResult` within your Activity or Fragment where you will launch Drop-in
 
 Java:
 ```java
 class MyFragment extends Fragment {
 
-    private ActivityResultLauncher<DropInClient> resultLauncher;
+    private DropInLauncher dropInLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        resultLauncher = registerForActivityResult(new DropInActivityContract(), result -> {
+        
+        dropInLauncher = new DropInLauncher();
+        dropInLauncher.registerForActivityResult(this, (result, error) -> {
             if (result != null) {
-                if (result.getDropInResult() != null) {
-                    // handle result
-                } else if (result.getError() != null) {
+                // handle result
+            } else if (error != null) {
+                if (error instanceof UserCanceledException) {
+                    // user canceled Drop-in
+                } else {
                     // handle error
                 }
-            } else {
-                // User canceled drop-in
             }
         });
     }
 }
 ```
 
-
 Kotlin:
 ```kotlin
 class MyFragment : Fragment() {
 
-    private lateinit var resultLauncher: ActivityResultLauncher<DropInClient>
+    private lateinit var dropInLauncher: DropInLauncher
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        resultLauncher = registerForActivityResult(DropInActivityContract()) { result ->
+        
+        dropInLauncher = DropInLauncher()
+        dropInLauncher.registerForActivityResult(this) { result, error ->
             result?.let {
-                it.dropInResult?.let { dropInResult ->
-                    // handle result
-                }
-                it.error?.let { dropInError ->
+                // handle result
+            }
+            error?.let {
+                if (it is UserCanceledException) {
+                    // user canceled Drop-in
+                } else {
                     // handle error
                 }
             }
-            // user canceled drop-in
         }
     }
 }
 ```
 
+**Note**: `DropInLauncher#registerForActivityResult` must be called before your Fragment is created, or before your Activity is started.
+
 ## Launch Drop-In 
 
-A `DropInClient` is required for launching `DropInActivity`. Use the `ActivityResultLauncher` to launch Drop-in with the `DropInClient` you created:
+A `DropInClient` and a `DropInLauncher` are required for launching `DropInActivity`. Use the `DropInLauncher` to launch Drop-in with the `DropInClient` you created:
 
 Java:
 ```java 
-resultLauncher.launch(dropInClient);
+dropInLauncher.launch(dropInClient);
 ```
 
 Kotlin:
 ```kotlin
-resultLauncher.launch(dropInClient)
+dropInLauncher.launch(dropInClient)
 ```
 
 ## Fetch Last Used Payment Method

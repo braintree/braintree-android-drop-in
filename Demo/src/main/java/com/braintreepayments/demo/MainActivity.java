@@ -10,13 +10,12 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
-import com.braintreepayments.api.DropInActivityContract;
 import com.braintreepayments.api.DropInClient;
+import com.braintreepayments.api.DropInLauncher;
 import com.braintreepayments.api.DropInPaymentMethod;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
@@ -29,6 +28,7 @@ import com.braintreepayments.api.PostalAddress;
 import com.braintreepayments.api.ThreeDSecureAdditionalInformation;
 import com.braintreepayments.api.ThreeDSecurePostalAddress;
 import com.braintreepayments.api.ThreeDSecureRequest;
+import com.braintreepayments.api.UserCanceledException;
 import com.braintreepayments.api.VenmoAccountNonce;
 import com.braintreepayments.api.VenmoPaymentMethodUsage;
 import com.braintreepayments.api.VenmoRequest;
@@ -36,8 +36,6 @@ import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
 
 public class MainActivity extends BaseActivity {
-
-    private static final int DROP_IN_REQUEST = 100;
 
     private static final String KEY_NONCE = "nonce";
 
@@ -55,7 +53,7 @@ public class MainActivity extends BaseActivity {
     private Button purchaseButton;
 
     private boolean purchased = false;
-    private ActivityResultLauncher<DropInClient> resultLauncher;
+    private DropInLauncher dropInLauncher;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,15 +77,16 @@ public class MainActivity extends BaseActivity {
             }
         }
 
-        resultLauncher = registerForActivityResult(new DropInActivityContract(), result -> {
+        dropInLauncher = new DropInLauncher();
+        dropInLauncher.registerForActivityResult(this, (result, error) -> {
             if (result != null) {
-                if (result.getDropInResult() != null) {
-                    displayResult(result.getDropInResult());
-                } else if (result.getError() != null) {
-                    showDialog(result.getError().getMessage());
+                displayResult(result);
+            } else if (error != null) {
+                if (error instanceof UserCanceledException) {
+                    // User canceled
+                } else {
+                    showDialog(error.getMessage());
                 }
-            } else {
-                // User canceled drop-in
             }
         });
     }
@@ -111,7 +110,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void launchDropIn(View v) {
-        resultLauncher.launch(dropInClient);
+        dropInLauncher.launchWithDropInClient(dropInClient);
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {

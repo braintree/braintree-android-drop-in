@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 /**
  * Contains the result from launching {@link DropInActivity} using the {@link DropInActivityContract}.
  */
-public class DropInActivityResult implements Parcelable  {
+class DropInActivityResult implements Parcelable  {
 
     static final String EXTRA_DROP_IN_ACTIVITY_RESULT =
             "com.braintreepayments.api.dropin.EXTRA_DROP_IN_ACTIVITY_RESULT";
@@ -28,11 +28,8 @@ public class DropInActivityResult implements Parcelable  {
         }
     }
 
-    /**
-     * @return a {@link DropInResult}
-     */
     @Nullable
-    public DropInResult getDropInResult() {
+    DropInResult getDropInResult() {
         return dropInResult;
     }
 
@@ -40,11 +37,8 @@ public class DropInActivityResult implements Parcelable  {
         this.dropInResult = dropInResult;
     }
 
-    /**
-     * @return an error that occurred during the Drop-in flow.
-     */
     @Nullable
-    public Exception getError() {
+    Exception getError() {
         return error;
     }
 

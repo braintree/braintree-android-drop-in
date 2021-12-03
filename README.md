@@ -59,34 +59,39 @@ val dropInClient = DropInClient(this, "<#CLIENT_AUTHORIZATION#>", dropInRequest)
 ```
 
 Braintree Android Drop-in now supports the [Activity Result APIs](https://developer.android.com/training/basics/intents/result) introduced in AndroidX Activity and Fragment.
-To handle the result of the Drop-in flow, create an `ActivityResultLauncher` within your Activity or Fragment where you will launch Drop-in:
+To handle the result of the Drop-in flow, create an `DropInLauncher` and call `registerForActivityResult` within your Activity or Fragment where you will launch Drop-in:
 
 ```kotlin
 class MyFragment : Fragment() {
 
-    private lateinit var resultLauncher: ActivityResultLauncher<DropInClient>
+    private lateinit var dropInLauncher: DropInLauncher 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        resultLauncher = registerForActivityResult(DropInActivityContract()) { result ->
+        
+        dropInLauncher = DropInLauncher()
+        dropInLauncher.registerForActivityResult(this) { result, error ->
             result?.let {
-                it.dropInResult?.let { dropInResult ->
-                    // handle result
-                }
-                it.error?.let { dropInError ->
+                // handle result
+            }
+            error?.let {
+                if (it is UserCanceledException) {
+                    // user canceled Drop-in
+                } else {
                     // handle error
                 }
             }
-            // user cancelled drop in
         }
     }
 }
 ```
 
-Use the `ActivityResultLauncher` to launch Drop-in with the `DropInClient` you created:
+**Note**: `DropInLauncher#registerForActivityResult` must be called before your Fragment is created, or before your Activity is started.
+
+Use the `DropInLauncher` to launch Drop-in with the `DropInClient` you created:
 
 ```kotlin
-resultLauncher.launch(dropInClient)
+dropInLauncher.launch(dropInClient)
 ```
 
 ### Localization

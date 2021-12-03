@@ -5,8 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
 import com.braintreepayments.cardform.utils.CardType;
@@ -361,8 +363,7 @@ public class DropInClient {
 
     /**
      * Called to launch a {@link DropInActivity}.
-     * Deprecated in favor of launching Drop-in with a {@link DropInActivityContract} via AndroidX
-     * Activity Result APIs.
+     * Deprecated in favor of {@link DropInLauncher#launchWithDropInClient(DropInClient)}
      *
      * @param activity the current {@link FragmentActivity}
      * @param requestCode the request code for the activity that will be launched
