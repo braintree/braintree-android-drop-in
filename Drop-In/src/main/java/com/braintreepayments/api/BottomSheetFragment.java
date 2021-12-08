@@ -51,7 +51,14 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
 
         View view = inflater.inflate(R.layout.bt_fragment_bottom_sheet, container, false);
         backgroundView = view.findViewById(R.id.background);
+
         viewPager = view.findViewById(R.id.view_pager);
+        // TODO: investigate view pager saveInstanceState restoration
+        viewPager.setSaveEnabled(false);
+
+        // it's best to call bind here before any live data / fragment result observers are registered
+        bottomSheetPresenter = new BottomSheetPresenter();
+        bottomSheetPresenter.bind(this);
 
         FragmentManager childFragmentManager = getChildFragmentManager();
         childFragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, this,
@@ -98,9 +105,6 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
         Button backButton = view.findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> slideDownBottomSheet());
 
-        bottomSheetPresenter = new BottomSheetPresenter();
-        bottomSheetPresenter.bind(this);
-
         return view;
     }
 
@@ -120,7 +124,9 @@ public class BottomSheetFragment extends Fragment implements BottomSheetPresente
     @Override
     public void onDestroy() {
         super.onDestroy();
-        bottomSheetPresenter.unbind();
+        if (bottomSheetPresenter != null) {
+            bottomSheetPresenter.unbind();
+        }
     }
 
     private void slideUpBottomSheet() {
