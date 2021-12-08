@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Check if `BottomSheetPresenter` is null before unbinding in `BottomSheetFragment` (fixes #319)
+
 ## 6.0.0
 * Bump braintree_android module dependency versions to `4.7.0`
 * Bump `card-form` to `5.3.0`
