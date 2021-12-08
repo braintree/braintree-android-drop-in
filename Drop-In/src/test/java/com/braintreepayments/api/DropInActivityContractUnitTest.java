@@ -4,8 +4,10 @@ import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_FIRST_USER;
 import static android.app.Activity.RESULT_OK;
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertNotNull;
 import static junit.framework.TestCase.assertNull;
 import static junit.framework.TestCase.assertSame;
+import static junit.framework.TestCase.assertTrue;
 import static org.mockito.Mockito.mock;
 
 import android.content.Context;
@@ -51,7 +53,7 @@ public class DropInActivityContractUnitTest {
     }
 
     @Test
-    public void parseResult_whenResultOK_returnsDropInResult() {
+    public void parseResult_whenResultOK_returnsDropInActivityResultFromIntent() {
         DropInActivityContract sut = new DropInActivityContract();
 
         DropInActivityResult dropInResult = sut.parseResult(RESULT_OK, intent);
@@ -59,7 +61,7 @@ public class DropInActivityContractUnitTest {
     }
 
     @Test
-    public void parseResult_whenResultFirstUser_returnsDropInResult() {
+    public void parseResult_whenResultFirstUser_returnsDropInActivityResultFromIntent() {
         DropInActivityContract sut = new DropInActivityContract();
 
         DropInActivityResult dropInResult = sut.parseResult(RESULT_FIRST_USER, intent);
@@ -67,11 +69,12 @@ public class DropInActivityContractUnitTest {
     }
 
     @Test
-    public void parseResult_whenResultNotOKorFirstUser_returnsNull() {
+    public void parseResult_whenResultCanceled_returnsDropInActivityResultWithUserCanceledException() {
         DropInActivityContract sut = new DropInActivityContract();
 
         DropInActivityResult dropInResult = sut.parseResult(RESULT_CANCELED, intent);
-        assertNull(dropInResult);
+        assertNotNull(dropInResult.getError());
+        assertTrue(dropInResult.getError() instanceof UserCanceledException);
+        assertNull(dropInResult.getDropInResult());
     }
-
 }
