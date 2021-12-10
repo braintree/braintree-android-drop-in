@@ -19,7 +19,7 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-public class SupportedPaymentMethodsFragment extends DropInFragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
+public class SupportedPaymentMethodsFragment extends DropInChildFragment implements SupportedPaymentMethodSelectedListener, VaultedPaymentMethodSelectedListener {
 
     @VisibleForTesting
     enum ViewState {

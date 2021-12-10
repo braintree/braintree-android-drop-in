@@ -14,7 +14,7 @@ import com.braintreepayments.api.dropin.R;
 
 import java.util.List;
 
-public class VaultManagerFragment extends DropInFragment implements View.OnClickListener {
+public class VaultManagerFragment extends DropInChildFragment implements View.OnClickListener {
 
     private RecyclerView vaultManagerView;
 

@@ -2,7 +2,7 @@ package com.braintreepayments.api;
 
 import androidx.fragment.app.Fragment;
 
-abstract class DropInFragment extends Fragment {
+abstract class DropInChildFragment extends Fragment {
 
     protected void sendDropInEvent(DropInEvent event) {
         if (isAdded()) {

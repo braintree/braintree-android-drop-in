@@ -17,9 +17,8 @@ import com.braintreepayments.cardform.utils.CardType;
 import com.braintreepayments.cardform.view.AccessibleSupportedCardTypesView;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
-import com.braintreepayments.cardform.view.SupportedCardTypesView;
 
-public class AddCardFragment extends DropInFragment implements OnCardFormSubmitListener,
+public class AddCardFragment extends DropInChildFragment implements OnCardFormSubmitListener,
         CardEditText.OnCardTypeChangedListener {
 
     @VisibleForTesting

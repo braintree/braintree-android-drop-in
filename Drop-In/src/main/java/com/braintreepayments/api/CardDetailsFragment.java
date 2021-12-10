@@ -16,7 +16,7 @@ import com.braintreepayments.cardform.OnCardFormSubmitListener;
 import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
 
-public class CardDetailsFragment extends DropInFragment implements OnCardFormSubmitListener, OnCardFormFieldFocusedListener {
+public class CardDetailsFragment extends DropInChildFragment implements OnCardFormSubmitListener, OnCardFormFieldFocusedListener {
 
     @VisibleForTesting
     CardForm cardForm;
