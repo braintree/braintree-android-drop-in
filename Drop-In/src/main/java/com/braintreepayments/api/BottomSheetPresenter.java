@@ -21,6 +21,8 @@ class BottomSheetPresenter {
     private static final int BOTTOM_SHEET_SLIDE_ANIM_DURATION = 150;
 
     private static final int BACKGROUND_FADE_ANIM_DURATION = 300;
+    private static final int BACKGROUND_FADE_ANIM_DELAY = BOTTOM_SHEET_SLIDE_ANIM_DURATION;
+
     private static final int VIEW_PAGER_TRANSITION_ANIM_DURATION = 300;
 
     interface ViewHolder {
@@ -94,6 +96,7 @@ class BottomSheetPresenter {
         ObjectAnimator backgroundFadeInAnimator =
                 ObjectAnimator.ofFloat(backgroundView, View.ALPHA, 0.0f, 1.0f);
         backgroundFadeInAnimator.setDuration(BACKGROUND_FADE_ANIM_DURATION);
+        backgroundFadeInAnimator.setStartDelay(BACKGROUND_FADE_ANIM_DELAY);
 
         int viewPagerHeight = getViewGroupMeasuredHeight(viewPager);
 

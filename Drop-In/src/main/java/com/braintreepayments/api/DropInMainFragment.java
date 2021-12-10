@@ -1,10 +1,13 @@
 package com.braintreepayments.api;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
@@ -71,6 +74,13 @@ public class DropInMainFragment extends Fragment implements BottomSheetPresenter
         bottomSheetPresenter = new BottomSheetPresenter();
         bottomSheetPresenter.bind(this);
 
+        requireActivity().getOnBackPressedDispatcher().addCallback(requireActivity(), new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                slideDownBottomSheet(() -> onDidHideBottomSheet());
+            }
+        });
+
 //        getChildFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this,
 //                (requestKey, result) -> onDropInEvent(DropInEvent.fromBundle(result)));
 //
@@ -107,6 +117,20 @@ public class DropInMainFragment extends Fragment implements BottomSheetPresenter
 
         bottomSheetPresenter.slideUpBottomSheet(this::onDidShowBottomSheet);
 //        bottomSheetPresenter.slideUpBottomSheet(() -> dropInViewModel.setBottomSheetState(BottomSheetState.SHOWN));
+    }
+
+    private void slideDownBottomSheet(@Nullable final AnimationCompleteCallback callback) {
+        if (bottomSheetPresenter.isAnimating()) {
+            // prevent drop in from being hidden while bottom sheet is animating
+            return;
+        }
+
+        bottomSheetPresenter.slideDownBottomSheet(() -> {
+            dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN);
+            if (callback != null) {
+                callback.onAnimationComplete();
+            }
+        });
     }
 
     @VisibleForTesting
