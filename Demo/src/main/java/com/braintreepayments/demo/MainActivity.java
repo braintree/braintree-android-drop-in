@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity {
     }
 
     public void launchDropIn(View v) {
-        dropInClient.launchDropInForResult(this, DROP_IN_REQUEST);
+        dropInClient.launchDropIn(this);
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {

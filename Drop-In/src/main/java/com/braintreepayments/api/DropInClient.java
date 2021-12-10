@@ -4,11 +4,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentContainerView;
+import androidx.fragment.app.FragmentManager;
 
+import com.braintreepayments.api.dropin.R;
 import com.braintreepayments.cardform.utils.CardType;
 
 import java.util.ArrayList;
@@ -349,6 +355,34 @@ public class DropInClient {
                 callback.onResult(null, error);
             }
         });
+    }
+
+    /**
+     * Called to launch a {@link DropInActivity}
+     *
+     * @param activity the current {@link FragmentActivity}
+     */
+    public void launchDropIn(FragmentActivity activity) {
+        FragmentManager fragmentManager = activity.getSupportFragmentManager();
+
+        int viewId = View.generateViewId();
+        FragmentContainerView frame = new FragmentContainerView(activity);
+        frame.setId(viewId);
+
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+        ViewGroup contentView = activity.findViewById(android.R.id.content);
+        contentView.addView(frame, layoutParams);
+
+        DropInMainFragment mainFragment = DropInMainFragment.from(
+                dropInRequest, braintreeClient.getSessionId(), braintreeClient.getAuthorization());
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(R.anim.bt_fade_in, R.anim.bt_fade_out)
+                .add(viewId, mainFragment, "MAIN_FRAGMENT")
+                .addToBackStack(null)
+                .commit();
     }
 
     /**
