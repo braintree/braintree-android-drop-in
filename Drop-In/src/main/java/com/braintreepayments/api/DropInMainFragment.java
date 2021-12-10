@@ -1,6 +1,5 @@
 package com.braintreepayments.api;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +11,11 @@ import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.braintreepayments.api.dropin.R;
 
-public class DropInMainFragment extends Fragment {
+public class DropInMainFragment extends Fragment implements BottomSheetPresenter.ViewHolder {
 
     private static final String ADD_CARD_TAG = "ADD_CARD";
     private static final String CARD_DETAILS_TAG = "CARD_DETAILS";
@@ -42,42 +42,71 @@ public class DropInMainFragment extends Fragment {
     @VisibleForTesting
     DropInClient dropInClient;
 
+    @VisibleForTesting
+    ViewPager2 viewPager;
+
+    private View backgroundView;
+    private BottomSheetPresenter bottomSheetPresenter;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Bundle args = getArguments();
         dropInRequest = args.getParcelable("EXTRA_DROP_IN_REQUEST");
 
-        if (dropInClient == null) {
-            String authorization = args.getString(DropInClient.EXTRA_AUTHORIZATION);
-            String sessionId = args.getString(DropInClient.EXTRA_SESSION_ID);
-            dropInClient = new DropInClient(requireContext(), authorization, sessionId, dropInRequest);
-        }
+        String authorization = args.getString(DropInClient.EXTRA_AUTHORIZATION);
+        String sessionId = args.getString(DropInClient.EXTRA_SESSION_ID);
 
+        dropInClient = new DropInClient(requireContext(), authorization, sessionId, dropInRequest);
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 
-        View view = inflater.inflate(R.layout.bt_drop_in_activity, container, false);
+        View view = inflater.inflate(R.layout.bt_fragment_bottom_sheet, container, false);
+        backgroundView = view.findViewById(R.id.background);
 
-        getChildFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this,
-                (requestKey, result) -> onDropInEvent(DropInEvent.fromBundle(result)));
+        viewPager = view.findViewById(R.id.view_pager);
+        // TODO: investigate view pager saveInstanceState restoration
+        viewPager.setSaveEnabled(false);
 
-        dropInViewModel.getBottomSheetState().observe(requireActivity(), bottomSheetState -> {
-            switch (bottomSheetState) {
-                case SHOWN:
-                    onDidShowBottomSheet();
-                    break;
-                case HIDDEN:
-                    onDidHideBottomSheet();
-                    break;
-                case HIDE_REQUESTED:
-                case SHOW_REQUESTED:
-                default:
-                    // do nothing
-            }
-        });
+        // it's best to call bind here before any live data / fragment result observers are registered
+        bottomSheetPresenter = new BottomSheetPresenter();
+        bottomSheetPresenter.bind(this);
 
-        showBottomSheet();
+//        getChildFragmentManager().setFragmentResultListener(DropInEvent.REQUEST_KEY, this,
+//                (requestKey, result) -> onDropInEvent(DropInEvent.fromBundle(result)));
+//
+//        dropInViewModel.getBottomSheetState().observe(requireActivity(), bottomSheetState -> {
+//            switch (bottomSheetState) {
+//                case SHOWN:
+//                    onDidShowBottomSheet();
+//                    break;
+//                case HIDDEN:
+//                    onDidHideBottomSheet();
+//                    break;
+//                case HIDE_REQUESTED:
+//                case SHOW_REQUESTED:
+//                default:
+//                    // do nothing
+//            }
+//        });
+
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        slideUpBottomSheet();
+//        showBottomSheet();
+    }
+
+    private void slideUpBottomSheet() {
+        if (bottomSheetPresenter.isAnimating()) {
+            // prevent drop in from being shown while bottom sheet is animating
+            return;
+        }
+
+        bottomSheetPresenter.slideUpBottomSheet(this::onDidShowBottomSheet);
+//        bottomSheetPresenter.slideUpBottomSheet(() -> dropInViewModel.setBottomSheetState(BottomSheetState.SHOWN));
     }
 
     @VisibleForTesting
@@ -129,13 +158,13 @@ public class DropInMainFragment extends Fragment {
 //        finishDropInWithPendingResult(DropInExitTransition.FADE_OUT);
     }
 
-    private void showBottomSheet() {
-        if (shouldAddFragment(BOTTOM_SHEET_TAG)) {
-            BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(dropInRequest);
-            replaceExistingFragment(bottomSheetFragment, BOTTOM_SHEET_TAG);
-        }
-        dropInViewModel.setBottomSheetState(BottomSheetState.SHOW_REQUESTED);
-    }
+//    private void showBottomSheet() {
+//        if (shouldAddFragment(BOTTOM_SHEET_TAG)) {
+//            BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(dropInRequest);
+//            replaceExistingFragment(bottomSheetFragment, BOTTOM_SHEET_TAG);
+//        }
+//        dropInViewModel.setBottomSheetState(BottomSheetState.SHOW_REQUESTED);
+//    }
 
     private boolean shouldAddFragment(String tag) {
         FragmentManager fragmentManager = getParentFragmentManager();
@@ -147,9 +176,31 @@ public class DropInMainFragment extends Fragment {
         FragmentManager fragmentManager = getParentFragmentManager();
         fragmentManager
                 .beginTransaction()
-//                .setCustomAnimations(R.anim.bt_fade_in, R.anim.bt_fade_out)
+                .setCustomAnimations(0, 0)
                 .replace(R.id.fragment_container_view, fragment, tag)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void requestLayout() {
+        View rootView = getView();
+        if (rootView != null) {
+            rootView.requestLayout();
+        }
+    }
+
+    @Override
+    public DropInRequest getDropInRequest() {
+        return dropInRequest;
+    }
+
+    @Override
+    public ViewPager2 getViewPager() {
+        return viewPager;
+    }
+
+    @Override
+    public View getBackgroundView() {
+        return backgroundView;
     }
 }

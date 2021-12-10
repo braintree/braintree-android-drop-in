@@ -379,7 +379,7 @@ public class DropInClient {
                 dropInRequest, braintreeClient.getSessionId(), braintreeClient.getAuthorization());
         fragmentManager
                 .beginTransaction()
-                .setCustomAnimations(R.anim.bt_fade_in, R.anim.bt_fade_out)
+                .setCustomAnimations(0, 0)
                 .add(viewId, mainFragment, "MAIN_FRAGMENT")
                 .addToBackStack(null)
                 .commit();
