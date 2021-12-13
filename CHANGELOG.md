@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.0.1
 
 * Check if `BottomSheetPresenter` is null before unbinding in `BottomSheetFragment` (fixes #319)
 
