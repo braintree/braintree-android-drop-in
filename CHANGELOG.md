@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Bump braintree_android module dependency versions to `4.8.1`
+
 ## 6.0.1
 
 * Check if `BottomSheetPresenter` is null before unbinding in `BottomSheetFragment` (fixes #319)
