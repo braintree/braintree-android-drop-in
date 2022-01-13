@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.ActivityResultRegistry;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
 
 import com.braintreepayments.cardform.utils.CardType;
 
@@ -28,7 +32,7 @@ public class DropInClient implements ThreeDSecureListener, PayPalListener, Venmo
     static final String EXTRA_AUTHORIZATION = "com.braintreepayments.api.EXTRA_AUTHORIZATION";
 
     private static final String CARD_TYPE_UNION_PAY = "UnionPay";
-
+    private static final String DROP_IN_RESULT = "DropInResult";
     @VisibleForTesting
     final BraintreeClient braintreeClient;
     private final PaymentMethodClient paymentMethodClient;
@@ -42,6 +46,8 @@ public class DropInClient implements ThreeDSecureListener, PayPalListener, Venmo
     private final ThreeDSecureClient threeDSecureClient;
     private final DataCollector dataCollector;
 
+    private final DropInLauncher activityLauncher;
+
     private DropInListener dropInListener;
     private final DropInSharedPreferences dropInSharedPreferences;
 
@@ -51,6 +57,8 @@ public class DropInClient implements ThreeDSecureListener, PayPalListener, Venmo
         BraintreeClient braintreeClient = new BraintreeClient(activity, authorization, authProvider, sessionId, IntegrationType.DROP_IN);
         return new DropInClientParams()
                 .dropInRequest(dropInRequest)
+                .activityResultRegistry(activity.getActivityResultRegistry())
+                .lifecycle(activity.getLifecycle())
                 .braintreeClient(braintreeClient)
                 .threeDSecureClient(new ThreeDSecureClient(activity, braintreeClient))
                 .paymentMethodClient(new PaymentMethodClient(braintreeClient))
@@ -88,6 +96,12 @@ public class DropInClient implements ThreeDSecureListener, PayPalListener, Venmo
         this.unionPayClient = params.getUnionPayClient();
         this.dataCollector = params.getDataCollector();
         this.dropInSharedPreferences = params.getDropInSharedPreferences();
+
+        ActivityResultRegistry activityResultRegistry = params.getActivityResultRegistry();
+        activityLauncher = new DropInLauncher(activityResultRegistry, this);
+
+        Lifecycle lifecyle = params.getLifecyle();
+        lifecyle.addObserver(activityLauncher);
     }
 
     Authorization getAuthorization() {
@@ -313,13 +327,19 @@ public class DropInClient implements ThreeDSecureListener, PayPalListener, Venmo
             @Override
             public void onAuthorization(@Nullable Authorization authorization, @Nullable Exception error) {
                 if (authorization != null) {
-                    Bundle dropInRequestBundle = new Bundle();
-                    dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
-                    Intent intent = new Intent(activity, DropInActivity.class)
-                            .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
-                            .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
-                            .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
-                    activity.startActivityForResult(intent, requestCode);
+                    if (activityLauncher != null) {
+                        DropInContractInput dropInContractInput =
+                            new DropInContractInput(dropInRequest, braintreeClient.getSessionId(), authorization.toString());
+                        activityLauncher.launch(dropInContractInput);
+                    } else {
+                        Bundle dropInRequestBundle = new Bundle();
+                        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
+                        Intent intent = new Intent(activity, DropInActivity.class)
+                                .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
+                                .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
+                                .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
+                        activity.startActivityForResult(intent, requestCode);
+                    }
                 }
             }
         });
@@ -462,5 +482,9 @@ public class DropInClient implements ThreeDSecureListener, PayPalListener, Venmo
     @Override
     public void onGooglePayTokenizeError(@NonNull Exception error) {
         dropInListener.onGooglePayTokenizeError(error);
+    }
+
+    public void onDropInResult(DropInResult result) {
+        dropInListener.onDropInSuccess(result);
     }
 }

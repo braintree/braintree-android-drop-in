@@ -1,5 +1,8 @@
 package com.braintreepayments.api;
 
+import androidx.activity.result.ActivityResultRegistry;
+import androidx.lifecycle.Lifecycle;
+
 class DropInClientParams {
 
     private DropInRequest dropInRequest;
@@ -14,6 +17,9 @@ class DropInClientParams {
     private DataCollector dataCollector;
     private ThreeDSecureClient threeDSecureClient;
     private DropInSharedPreferences dropInSharedPreferences;
+
+    private ActivityResultRegistry activityResultRegistry;
+    private Lifecycle lifecyle;
 
     ThreeDSecureClient getThreeDSecureClient() {
         return threeDSecureClient;
@@ -112,5 +118,23 @@ class DropInClientParams {
 
     DropInSharedPreferences getDropInSharedPreferences() {
         return dropInSharedPreferences;
+    }
+
+    DropInClientParams activityResultRegistry(ActivityResultRegistry activityResultRegistry) {
+        this.activityResultRegistry = activityResultRegistry;
+        return this;
+    }
+
+    ActivityResultRegistry getActivityResultRegistry() {
+        return activityResultRegistry;
+    }
+
+    public DropInClientParams lifecycle(Lifecycle lifecycle) {
+        this.lifecyle = lifecycle;
+        return this;
+    }
+
+    public Lifecycle getLifecyle() {
+        return lifecyle;
     }
 }

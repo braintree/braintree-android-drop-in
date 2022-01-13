@@ -176,19 +176,19 @@ public class MainActivity extends BaseActivity implements DropInListener {
         }
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-            displayResult(result);
-            purchaseButton.setEnabled(true);
-        } else if (resultCode != RESULT_CANCELED) {
-            showDialog(((Exception) data.getSerializableExtra(DropInResult.EXTRA_ERROR))
-                    .getMessage());
-        }
-    }
+//    @Override
+//    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if (resultCode == RESULT_OK) {
+//            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+//            displayResult(result);
+//            purchaseButton.setEnabled(true);
+//        } else if (resultCode != RESULT_CANCELED) {
+//            showDialog(((Exception) data.getSerializableExtra(DropInResult.EXTRA_ERROR))
+//                    .getMessage());
+//        }
+//    }
 
     @Override
     protected void reset() {
