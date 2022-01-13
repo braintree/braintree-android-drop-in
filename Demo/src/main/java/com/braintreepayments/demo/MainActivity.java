@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
 import com.braintreepayments.api.DropInClient;
+import com.braintreepayments.api.DropInListener;
 import com.braintreepayments.api.DropInPaymentMethod;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
@@ -33,7 +34,7 @@ import com.braintreepayments.api.VenmoRequest;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements DropInListener {
 
     private static final int DROP_IN_REQUEST = 100;
 
@@ -75,6 +76,33 @@ public class MainActivity extends BaseActivity {
                 nonce = savedInstanceState.getParcelable(KEY_NONCE);
             }
         }
+
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setGooglePayRequest(getGooglePayRequest());
+        dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
+        dropInRequest.setMaskCardNumber(true);
+        dropInRequest.setMaskSecurityCode(true);
+        dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
+        dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
+        dropInRequest.setVaultManagerEnabled(Settings.isVaultManagerEnabled(this));
+        dropInRequest.setCardholderNameStatus(Settings.getCardholderNameStatus(this));
+
+        if (Settings.isThreeDSecureEnabled(this)) {
+            dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
+        }
+
+        dropInClient = new DropInClient(this, dropInRequest, new DemoAuthorizationProvider(this));
+        dropInClient.setDropInListener(this);
+        dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
+            @Override
+            public void onResult(DropInResult dropInResult, Exception error) {
+                if (dropInResult != null) {
+                    handleDropInResult(dropInResult);
+                } else {
+                    addPaymentMethodButton.setVisibility(VISIBLE);
+                }
+            }
+        });
     }
 
     @Override
@@ -173,31 +201,31 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void onAuthorizationFetched() {
-        DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setGooglePayRequest(getGooglePayRequest());
-        dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
-        dropInRequest.setMaskCardNumber(true);
-        dropInRequest.setMaskSecurityCode(true);
-        dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
-        dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
-        dropInRequest.setVaultManagerEnabled(Settings.isVaultManagerEnabled(this));
-        dropInRequest.setCardholderNameStatus(Settings.getCardholderNameStatus(this));
-
-        if (Settings.isThreeDSecureEnabled(this)) {
-            dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
-        }
-
-        dropInClient = new DropInClient(this, authorization, dropInRequest);
-        dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
-            @Override
-            public void onResult(DropInResult dropInResult, Exception error) {
-                if (dropInResult != null) {
-                    handleDropInResult(dropInResult);
-                } else {
-                    addPaymentMethodButton.setVisibility(VISIBLE);
-                }
-            }
-        });
+//        DropInRequest dropInRequest = new DropInRequest();
+//        dropInRequest.setGooglePayRequest(getGooglePayRequest());
+//        dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
+//        dropInRequest.setMaskCardNumber(true);
+//        dropInRequest.setMaskSecurityCode(true);
+//        dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
+//        dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
+//        dropInRequest.setVaultManagerEnabled(Settings.isVaultManagerEnabled(this));
+//        dropInRequest.setCardholderNameStatus(Settings.getCardholderNameStatus(this));
+//
+//        if (Settings.isThreeDSecureEnabled(this)) {
+//            dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
+//        }
+//
+//        dropInClient = new DropInClient(this, authorization, dropInRequest);
+//        dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
+//            @Override
+//            public void onResult(DropInResult dropInResult, Exception error) {
+//                if (dropInResult != null) {
+//                    handleDropInResult(dropInResult);
+//                } else {
+//                    addPaymentMethodButton.setVisibility(VISIBLE);
+//                }
+//            }
+//        });
     }
 
     private void displayResult(DropInResult dropInResult) {
@@ -279,5 +307,36 @@ public class MainActivity extends BaseActivity {
                 .build());
         googlePayRequest.setEmailRequired(true);
         return googlePayRequest;
+    }
+
+    @Override
+    public void onDropInSuccess(@NonNull DropInResult dropInResult) {
+        displayResult(dropInResult);
+        purchaseButton.setEnabled(true);
+    }
+
+    @Override
+    public void onDropInFailure(@NonNull Exception error) {
+        showDialog(error.getMessage());
+    }
+
+    @Override
+    public void onThreeDSecureVerificationFailure(@NonNull Exception error) {
+        showDialog(error.getMessage());
+    }
+
+    @Override
+    public void onPayPalTokenizeError(@NonNull Exception error) {
+        showDialog(error.getMessage());
+    }
+
+    @Override
+    public void onVenmoTokenizeError(@NonNull Exception error) {
+        showDialog(error.getMessage());
+    }
+
+    @Override
+    public void onGooglePayTokenizeError(@NonNull Exception error) {
+        showDialog(error.getMessage());
     }
 }

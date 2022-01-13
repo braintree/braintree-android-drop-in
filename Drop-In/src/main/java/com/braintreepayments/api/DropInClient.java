@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
@@ -19,7 +20,7 @@ import java.util.Set;
 /**
  * Used to launch Drop-in and handle results
  */
-public class DropInClient {
+public class DropInClient implements ThreeDSecureListener, PayPalListener, VenmoListener, GooglePayListener {
 
     static final String EXTRA_CHECKOUT_REQUEST = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST";
     static final String EXTRA_CHECKOUT_REQUEST_BUNDLE = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST_BUNDLE";
@@ -41,32 +42,37 @@ public class DropInClient {
     private final ThreeDSecureClient threeDSecureClient;
     private final DataCollector dataCollector;
 
+    private DropInListener dropInListener;
     private final DropInSharedPreferences dropInSharedPreferences;
 
     private final PaymentMethodInspector paymentMethodInspector = new PaymentMethodInspector();
 
-    private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest, String sessionId) {
-        BraintreeClient braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
+    private static DropInClientParams createDefaultParams(FragmentActivity activity, String authorization, DropInRequest dropInRequest, String sessionId, BraintreeAuthProvider authProvider) {
+        BraintreeClient braintreeClient = new BraintreeClient(activity, authorization, authProvider, sessionId, IntegrationType.DROP_IN);
         return new DropInClientParams()
                 .dropInRequest(dropInRequest)
                 .braintreeClient(braintreeClient)
-                .threeDSecureClient(new ThreeDSecureClient(braintreeClient))
+                .threeDSecureClient(new ThreeDSecureClient(activity, braintreeClient))
                 .paymentMethodClient(new PaymentMethodClient(braintreeClient))
-                .payPalClient(new PayPalClient(braintreeClient))
-                .venmoClient(new VenmoClient(braintreeClient))
+                .payPalClient(new PayPalClient(activity, braintreeClient))
+                .venmoClient(new VenmoClient(activity, braintreeClient))
                 .cardClient(new CardClient(braintreeClient))
                 .unionPayClient(new UnionPayClient(braintreeClient))
                 .dataCollector(new DataCollector(braintreeClient))
-                .googlePayClient(new GooglePayClient(braintreeClient))
+                .googlePayClient(new GooglePayClient(activity, braintreeClient))
                 .dropInSharedPreferences(DropInSharedPreferences.getInstance());
     }
 
-    public DropInClient(Context context, String authorization, DropInRequest dropInRequest) {
-        this(context, authorization, null, dropInRequest);
+    public DropInClient(FragmentActivity activity, String authorization, DropInRequest dropInRequest) {
+        this(activity, authorization, null, dropInRequest, null);
     }
 
-    DropInClient(Context context, String authorization, String sessionId, DropInRequest dropInRequest) {
-        this(createDefaultParams(context, authorization, dropInRequest, sessionId));
+    public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, BraintreeAuthProvider authProvider) {
+        this(activity, null, null, dropInRequest, authProvider);
+    }
+
+    DropInClient(FragmentActivity activity, String authorization, String sessionId, DropInRequest dropInRequest, BraintreeAuthProvider authProvider) {
+        this(createDefaultParams(activity, authorization, dropInRequest, sessionId, authProvider));
     }
 
     @VisibleForTesting
@@ -106,24 +112,9 @@ public class DropInClient {
 
         threeDSecureClient.performVerification(activity, threeDSecureRequest, (lookupResult, error) -> {
             if (lookupResult != null) {
-                threeDSecureClient.continuePerformVerification(activity, threeDSecureRequest, lookupResult, (threeDSecureResult, continueError) -> {
-                    if (continueError != null) {
-                        callback.onResult(null, continueError);
-                    } else if (threeDSecureResult != null) {
-                        final DropInResult dropInResult = new DropInResult();
-                        dropInResult.setPaymentMethodNonce(threeDSecureResult.getTokenizedCard());
-                        dataCollector.collectDeviceData(activity, (deviceData, dataCollectionError) -> {
-                            if (deviceData != null) {
-                                dropInResult.setDeviceData(deviceData);
-                                callback.onResult(dropInResult, null);
-                            } else {
-                                callback.onResult(null, dataCollectionError);
-                            }
-                        });
-                    }
-                });
+                threeDSecureClient.continuePerformVerification(activity, threeDSecureRequest, lookupResult);
             } else {
-                callback.onResult(null, error);
+                onThreeDSecureVerificationFailure(error);
             }
         });
     }
@@ -151,7 +142,7 @@ public class DropInClient {
         if (paypalRequest == null) {
             paypalRequest = new PayPalVaultRequest();
         }
-        payPalClient.tokenizePayPalAccount(activity, paypalRequest, callback);
+        payPalClient.tokenizePayPalAccount(activity, paypalRequest);
     }
 
     void requestGooglePayPayment(FragmentActivity activity, GooglePayRequestPaymentCallback callback) {
@@ -190,60 +181,20 @@ public class DropInClient {
         return braintreeClient.getBrowserSwitchResult(activity);
     }
 
-    void deliverBrowserSwitchResult(final FragmentActivity activity, final DropInResultCallback callback) {
-        BrowserSwitchResult browserSwitchResult = braintreeClient.deliverBrowserSwitchResult(activity);
-        if (browserSwitchResult != null) {
-            int requestCode = browserSwitchResult.getRequestCode();
-
-            switch (requestCode) {
-                case BraintreeRequestCodes.PAYPAL:
-                    payPalClient.onBrowserSwitchResult(browserSwitchResult, (payPalAccountNonce, error) ->
-                            notifyDropInResult(activity, payPalAccountNonce, error, callback));
-                    break;
-                case BraintreeRequestCodes.THREE_D_SECURE:
-                    threeDSecureClient.onBrowserSwitchResult(browserSwitchResult, (threeDSecureResult, error) -> {
-                        PaymentMethodNonce paymentMethodNonce = null;
-                        if (threeDSecureResult != null) {
-                            paymentMethodNonce = threeDSecureResult.getTokenizedCard();
-                        }
-                        notifyDropInResult(activity, paymentMethodNonce, error, callback);
-                    });
-                    break;
-            }
-        }
-    }
-
-    void handleActivityResult(FragmentActivity activity, int requestCode, int resultCode, @Nullable Intent data, DropInResultCallback callback) {
-        switch (requestCode) {
-            case BraintreeRequestCodes.THREE_D_SECURE:
-                handleThreeDSecureActivityResult(activity, resultCode, data, callback);
+    private void notifyListenerOfDropInResult(PaymentMethodNonce paymentMethodNonce) {
+        final DropInResult dropInResult = new DropInResult();
+        dropInResult.setPaymentMethodNonce(paymentMethodNonce);
+        dataCollector.collectDeviceData(braintreeClient.getApplicationContext(), (deviceData, dataCollectionError) -> {
+            if (dataCollectionError != null) {
+                dropInListener.onDropInFailure(dataCollectionError);
                 return;
-            case BraintreeRequestCodes.GOOGLE_PAY:
-                handleGooglePayActivityResult(activity, resultCode, data, callback);
-                return;
-            case BraintreeRequestCodes.VENMO:
-                handleVenmoActivityResult(activity, resultCode, data, callback);
-        }
-    }
-
-    void handleThreeDSecureActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
-        threeDSecureClient.onActivityResult(resultCode, data, (threeDSecureResult, error) -> {
-            PaymentMethodNonce paymentMethodNonce = null;
-            if (threeDSecureResult != null) {
-                paymentMethodNonce = threeDSecureResult.getTokenizedCard();
             }
-            notifyDropInResult(activity, paymentMethodNonce, error, callback);
+
+            if (deviceData != null) {
+                dropInResult.setDeviceData(deviceData);
+                dropInListener.onDropInSuccess(dropInResult);
+            }
         });
-    }
-
-    void handleGooglePayActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
-        googlePayClient.onActivityResult(resultCode, data, (paymentMethodNonce, error) ->
-                notifyDropInResult(activity, paymentMethodNonce, error, callback));
-    }
-
-    void handleVenmoActivityResult(final FragmentActivity activity, int resultCode, Intent data, final DropInResultCallback callback) {
-        venmoClient.onActivityResult(activity, resultCode, data, (venmoAccountNonce, error) ->
-                notifyDropInResult(activity, venmoAccountNonce, error, callback));
     }
 
     private void notifyDropInResult(FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, Exception dropInResultError, final DropInResultCallback callback) {
@@ -358,13 +309,20 @@ public class DropInClient {
      * @param requestCode the request code for the activity that will be launched
      */
     public void launchDropInForResult(FragmentActivity activity, int requestCode) {
-        Bundle dropInRequestBundle = new Bundle();
-        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
-        Intent intent = new Intent(activity, DropInActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
-                .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
-                .putExtra(EXTRA_AUTHORIZATION, braintreeClient.getAuthorization().toString());
-        activity.startActivityForResult(intent, requestCode);
+        braintreeClient.loadAuthorization(new AuthorizationCallback() {
+            @Override
+            public void onAuthorization(@Nullable Authorization authorization, @Nullable Exception error) {
+                if (authorization != null) {
+                    Bundle dropInRequestBundle = new Bundle();
+                    dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
+                    Intent intent = new Intent(activity, DropInActivity.class)
+                            .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
+                            .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
+                            .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
+                    activity.startActivityForResult(intent, requestCode);
+                }
+            }
+        });
     }
 
     /**
@@ -451,5 +409,58 @@ public class DropInClient {
     void setLastUsedPaymentMethodType(Context context, PaymentMethodNonce paymentMethodNonce) {
         Context appContext = context.getApplicationContext();
         dropInSharedPreferences.setLastUsedPaymentMethod(appContext, paymentMethodNonce);
+    }
+
+    public void setDropInListener(DropInListener dropInListener) {
+        this.dropInListener = dropInListener;
+
+        // act as intermediary listener for drop in activity
+        // TODO: consider if we should encapsulate DropIn logic or let individual clients live
+        // in DropInActivity
+        threeDSecureClient.setThreeDSecureListener(this);
+        payPalClient.setPayPalListener(this);
+        venmoClient.setVenmoListener(this);
+        googlePayClient.setGooglePayListener(this);
+    }
+
+    @Override
+    public void onThreeDSecureVerificationSuccess(@NonNull ThreeDSecureResult threeDSecureResult) {
+        CardNonce threeDSecureEnrichedNonce = threeDSecureResult.getTokenizedCard();
+        notifyListenerOfDropInResult(threeDSecureEnrichedNonce);
+    }
+
+    @Override
+    public void onThreeDSecureVerificationFailure(@NonNull Exception error) {
+        dropInListener.onThreeDSecureVerificationFailure(error);
+    }
+
+    @Override
+    public void onPayPalTokenizeSuccess(@NonNull PayPalAccountNonce payPalAccountNonce) {
+        notifyListenerOfDropInResult(payPalAccountNonce);
+    }
+
+    @Override
+    public void onPayPalTokenizeError(@NonNull Exception error) {
+        dropInListener.onPayPalTokenizeError(error);
+    }
+
+    @Override
+    public void onVenmoTokenizeSuccess(@NonNull VenmoAccountNonce venmoAccountNonce) {
+        notifyListenerOfDropInResult(venmoAccountNonce);
+    }
+
+    @Override
+    public void onVenmoTokenizeError(@NonNull Exception error) {
+        dropInListener.onVenmoTokenizeError(error);
+    }
+
+    @Override
+    public void onGooglePayTokenizeSuccess(@NonNull PaymentMethodNonce paymentMethodNonce) {
+        notifyListenerOfDropInResult(paymentMethodNonce);
+    }
+
+    @Override
+    public void onGooglePayTokenizeError(@NonNull Exception error) {
+        dropInListener.onGooglePayTokenizeError(error);
     }
 }

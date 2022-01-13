@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,7 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.braintreepayments.api.dropin.R;
 import com.google.android.material.snackbar.Snackbar;
 
-public class DropInActivity extends AppCompatActivity {
+public class DropInActivity extends AppCompatActivity implements DropInListener {
 
     private static final String ADD_CARD_TAG = "ADD_CARD";
     private static final String CARD_DETAILS_TAG = "CARD_DETAILS";
@@ -44,13 +45,13 @@ public class DropInActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        if (willDeliverSuccessfulBrowserSwitchResult()) {
-            // when browser switch is successful, a tokenization http call will be made by DropInClient
-            // show the loader to signal to the user that an asynchronous operation is underway
-            dropInViewModel.setDropInState(DropInState.WILL_FINISH);
-        }
-
-        dropInClient.deliverBrowserSwitchResult(this, this::onDropInResult);
+        // TODO: consider adding additional listener callbacks to feature clients to that
+        // we're aware that a browser switch was successful
+//        if (willDeliverSuccessfulBrowserSwitchResult()) {
+//            // when browser switch is successful, a tokenization http call will be made by DropInClient
+//            // show the loader to signal to the user that an asynchronous operation is underway
+//            dropInViewModel.setDropInState(DropInState.WILL_FINISH);
+//        }
     }
 
     @Override
@@ -69,7 +70,8 @@ public class DropInActivity extends AppCompatActivity {
             String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
             String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
             DropInRequest dropInRequest = getDropInRequest(intent);
-            dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
+            dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest, null);
+            dropInClient.setDropInListener(this);
         }
 
         if (dropInClient.getAuthorization() instanceof InvalidAuthorization) {
@@ -420,12 +422,6 @@ public class DropInActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        dropInClient.handleActivityResult(this, requestCode, resultCode, data, this::onDropInResult);
-    }
-
     private void onDropInResult(DropInResult dropInResult, Exception error) {
         if (dropInResult != null) {
             animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
@@ -517,5 +513,40 @@ public class DropInActivity extends AppCompatActivity {
 
     private boolean isBottomSheetVisible() {
         return !shouldAddFragment(BOTTOM_SHEET_TAG);
+    }
+
+    @Override
+    public void onDropInSuccess(@NonNull DropInResult dropInResult) {
+        animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
+    }
+
+    @Override
+    public void onDropInFailure(@NonNull Exception error) {
+        updateVaultedPaymentMethodNonces(true);
+        onError(error);
+    }
+
+    @Override
+    public void onGooglePayTokenizeError(@NonNull Exception error) {
+        updateVaultedPaymentMethodNonces(true);
+        onError(error);
+    }
+
+    @Override
+    public void onPayPalTokenizeError(@NonNull Exception error) {
+        updateVaultedPaymentMethodNonces(true);
+        onError(error);
+    }
+
+    @Override
+    public void onThreeDSecureVerificationFailure(@NonNull Exception error) {
+        updateVaultedPaymentMethodNonces(true);
+        onError(error);
+    }
+
+    @Override
+    public void onVenmoTokenizeError(@NonNull Exception error) {
+        updateVaultedPaymentMethodNonces(true);
+        onError(error);
     }
 }
