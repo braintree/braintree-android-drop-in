@@ -21,6 +21,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
 import androidx.test.core.app.ApplicationProvider;
+import androidx.work.testing.WorkManagerTestInitHelper;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -56,10 +57,11 @@ public class DropInClientUnitTest {
         MockitoAnnotations.initMocks(this);
 
         dropInSharedPreferences = mock(DropInSharedPreferences.class);
-
         ActivityController<FragmentActivity> activityController =
                 Robolectric.buildActivity(FragmentActivity.class);
         activity = activityController.get();
+        // This suppresses errors from WorkManager initialization within BraintreeClient initialization (AnalyticsClient)
+        WorkManagerTestInitHelper.initializeTestWorkManager(ApplicationProvider.getApplicationContext());
     }
 
     @Test
