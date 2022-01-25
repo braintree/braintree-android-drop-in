@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.0.2
 
 * Bump braintree_android module dependency versions to `4.8.1`
 
