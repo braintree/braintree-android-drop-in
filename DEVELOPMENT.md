@@ -51,7 +51,7 @@ There are 2 modules that comprise this SDK:
 * Android Studio
 * Gradle
 * Android SDK >= 15
-* Host app has a secure, authenticated server with a [Braintree server-side integration](https://developers.braintreepayments.com/android/start/hello-server)
+* Host app has a secure, authenticated server with a [Braintree server-side integration](https://developer.paypal.com/braintree/docs/start/hello-server)
 
 ## Committing
 
