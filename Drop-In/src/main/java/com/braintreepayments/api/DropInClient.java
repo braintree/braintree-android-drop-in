@@ -378,6 +378,7 @@ public class DropInClient {
      * @param activity the current {@link FragmentActivity}
      * @param callback callback for handling result
      */
+     // NEXT_MAJOR_VERSION: - update this function name to more accurately represent the behavior of the function
     public void fetchMostRecentPaymentMethod(FragmentActivity activity, final FetchMostRecentPaymentMethodCallback callback) {
         boolean isClientToken = braintreeClient.getAuthorization() instanceof ClientToken;
         if (!isClientToken) {
