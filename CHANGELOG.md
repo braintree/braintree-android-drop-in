@@ -1,5 +1,8 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+* Update Vault Manager inline documentation 
+
 ## 6.0.2
 
 * Bump braintree_android module dependency versions to `4.8.1`

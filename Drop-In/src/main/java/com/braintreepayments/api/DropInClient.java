@@ -368,8 +368,9 @@ public class DropInClient {
     }
 
     /**
-     * Called to get a user's existing payment method, if any. If your user already has an existing
-     * payment method, you may not need to show Drop-In.
+     * Called to get a user's existing payment method, if any. 
+     * The payment method returned is not guaranteed to be the most recently added payment method.
+     * If your user already has an existing payment method, you may not need to show Drop-In.
      * <p>
      * Note: a client token must be used and will only return a payment method if it contains a
      * customer id.
@@ -377,6 +378,7 @@ public class DropInClient {
      * @param activity the current {@link FragmentActivity}
      * @param callback callback for handling result
      */
+     // NEXT_MAJOR_VERSION: - update this function name to more accurately represent the behavior of the function
     public void fetchMostRecentPaymentMethod(FragmentActivity activity, final FetchMostRecentPaymentMethodCallback callback) {
         boolean isClientToken = braintreeClient.getAuthorization() instanceof ClientToken;
         if (!isClientToken) {
