@@ -25,6 +25,7 @@ jobs:
           name: main-aar
           path: |
             Drop-In/build/outputs/aar/Drop-In-release.aar
+            Demo/build/outputs/aar/Demo-release.aar
       # Assemble artifacts from current branch
       - name: Checkout Current Branch
         uses: actions/checkout@v2
@@ -36,6 +37,7 @@ jobs:
           name: current-aar
           path: |
             Drop-In/build/outputs/aar/Drop-In-release.aar
+            Demo/build/outputs/aar/Demo-release.aar
       # Set up Diffuse
       - name: Install Diffuse
         run: brew install JakeWharton/repo/diffuse
@@ -50,3 +52,5 @@ jobs:
       # Run Diffuse analysis
       - name: Run Diffuse Analysis - BraintreeDropIn
         run: diffuse diff --aar main-aar/Drop-In/build/outputs/aar/Drop-In-release.aar current-aar/Drop-In/build/outputs/aar/Drop-In-release.aar
+      - name: Run Diffuse Analysis - Demo
+        run: diffuse diff --aar main-aar/Demo/build/outputs/aar/Demo-release.aar current-aar/Demo/build/outputs/aar/Demo-release.aar
