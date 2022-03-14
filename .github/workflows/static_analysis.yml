@@ -16,7 +16,7 @@ jobs:
       - name: Checkout Main Branch
         uses: actions/checkout@v2
         with:
-          ref: main
+          ref: master
       - name: Assemble Release AAR on Main Branch
         run: ./gradlew clean assembleRelease
       - name: Upload Main Branch Artifacts
