@@ -454,4 +454,8 @@ public class DropInClient {
         Context appContext = context.getApplicationContext();
         dropInSharedPreferences.setLastUsedPaymentMethod(appContext, paymentMethodNonce);
     }
+
+    void onDropInResult(DropInResult dropInResult) {
+
+    }
 }
