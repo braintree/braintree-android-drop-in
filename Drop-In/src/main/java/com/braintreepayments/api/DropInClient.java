@@ -44,6 +44,7 @@ public class DropInClient {
     private final DropInSharedPreferences dropInSharedPreferences;
 
     private final PaymentMethodInspector paymentMethodInspector = new PaymentMethodInspector();
+    private DropInListener listener;
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest, String sessionId) {
         BraintreeClient braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
@@ -86,6 +87,14 @@ public class DropInClient {
 
     Authorization getAuthorization() {
         return braintreeClient.getAuthorization();
+    }
+
+    /**
+     * Add a {@link DropInListener} to your client to receive results or errors from DropIn.
+     * @param listener a {@link DropInListener}
+     */
+    public void setListener(DropInListener listener) {
+        this.listener = listener;
     }
 
     void getConfiguration(ConfigurationCallback callback) {
@@ -456,6 +465,12 @@ public class DropInClient {
     }
 
     void onDropInResult(DropInResult dropInResult) {
-
+        // TODO: unit test
+        Exception error = dropInResult.getError();
+        if (error != null) {
+            listener.onDropInFailure(error);
+        } else {
+            listener.onDropInSuccess(dropInResult);
+        }
     }
 }
