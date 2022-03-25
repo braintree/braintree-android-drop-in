@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
 
 import com.braintreepayments.cardform.utils.CardType;
 
@@ -46,8 +49,9 @@ public class DropInClient {
 
     private final PaymentMethodInspector paymentMethodInspector = new PaymentMethodInspector();
     private DropInListener listener;
+    private DropInLifecycleObserver observer;
 
-    private static DropInClientParams createDefaultParams(Context context, String authorization, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest, String sessionId) {
+    private static DropInClientParams createDefaultParams(Context context, String authorization, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest, String sessionId, FragmentActivity activity, Lifecycle lifecycle) {
 
         BraintreeClient braintreeClient;
         if (clientTokenProvider != null) {
@@ -57,6 +61,8 @@ public class DropInClient {
         }
 
         return new DropInClientParams()
+                .activity(activity)
+                .lifecycle(lifecycle)
                 .dropInRequest(dropInRequest)
                 .braintreeClient(braintreeClient)
                 .threeDSecureClient(new ThreeDSecureClient(braintreeClient))
@@ -75,11 +81,15 @@ public class DropInClient {
     }
 
     DropInClient(Context context, String authorization, String sessionId, DropInRequest dropInRequest) {
-        this(createDefaultParams(context, authorization, null, dropInRequest, sessionId));
+        this(createDefaultParams(context, authorization, null, dropInRequest, sessionId, null, null));
     }
 
-    public DropInClient(Context context, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
-        this(createDefaultParams(context, null, clientTokenProvider, dropInRequest, null));
+    public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
+        this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, null, activity, activity.getLifecycle()));
+    }
+
+    public DropInClient(Fragment fragment, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
+        this(createDefaultParams(fragment.requireActivity(), null, clientTokenProvider, dropInRequest, null, fragment.requireActivity(), fragment.getLifecycle()));
     }
 
     @VisibleForTesting
@@ -95,6 +105,17 @@ public class DropInClient {
         this.unionPayClient = params.getUnionPayClient();
         this.dataCollector = params.getDataCollector();
         this.dropInSharedPreferences = params.getDropInSharedPreferences();
+
+        FragmentActivity activity = params.getActivity();
+        Lifecycle lifecycle = params.getLifecycle();
+        if (activity != null && lifecycle != null) {
+            addObserver(activity, lifecycle);
+        }
+    }
+
+    private void addObserver(@NonNull FragmentActivity activity, @NonNull Lifecycle lifecycle) {
+        observer = new DropInLifecycleObserver(activity.getActivityResultRegistry(), this);
+        lifecycle.addObserver(observer);
     }
 
     /**
@@ -383,13 +404,19 @@ public class DropInClient {
         getAuthorization(new AuthorizationCallback() {
             @Override
             public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception error) {
-                Bundle dropInRequestBundle = new Bundle();
-                dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
-                Intent intent = new Intent(activity, DropInActivity.class)
-                        .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
-                        .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
-                        .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
-                activity.startActivityForResult(intent, requestCode);
+                if (observer != null) {
+                    DropInIntentData intentData =
+                        new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
+                    observer.launch(intentData);
+                } else {
+                    Bundle dropInRequestBundle = new Bundle();
+                    dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
+                    Intent intent = new Intent(activity, DropInActivity.class)
+                            .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
+                            .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
+                            .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
+                    activity.startActivityForResult(intent, requestCode);
+                }
             }
         });
     }

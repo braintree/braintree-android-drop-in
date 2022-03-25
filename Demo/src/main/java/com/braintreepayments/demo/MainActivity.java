@@ -15,6 +15,7 @@ import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
 import com.braintreepayments.api.DropInClient;
+import com.braintreepayments.api.DropInListener;
 import com.braintreepayments.api.DropInPaymentMethod;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
@@ -32,7 +33,7 @@ import com.braintreepayments.api.VenmoRequest;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements DropInListener {
 
     private static final int DROP_IN_REQUEST = 100;
 
@@ -96,6 +97,7 @@ public class MainActivity extends BaseActivity {
             dropInClient = new DropInClient(this, tokenizationKey, dropInRequest);
         } else {
             dropInClient = new DropInClient(this, dropInRequest, new DemoClientTokenProvider(this));
+            dropInClient.setListener(this);
         }
 
         dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
@@ -280,5 +282,16 @@ public class MainActivity extends BaseActivity {
                 .build());
         googlePayRequest.setEmailRequired(true);
         return googlePayRequest;
+    }
+
+    @Override
+    public void onDropInSuccess(@NonNull DropInResult dropInResult) {
+        displayResult(dropInResult);
+        purchaseButton.setEnabled(true);
+    }
+
+    @Override
+    public void onDropInFailure(@NonNull Exception error) {
+        showDialog(error.getMessage());
     }
 }
