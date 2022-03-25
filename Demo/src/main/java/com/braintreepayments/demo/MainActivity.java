@@ -95,7 +95,7 @@ public class MainActivity extends BaseActivity {
             String tokenizationKey = Settings.getEnvironmentTokenizationKey(this);
             dropInClient = new DropInClient(this, tokenizationKey, dropInRequest);
         } else {
-            dropInClient = new DropInClient(this, new DemoClientTokenProvider(this), dropInRequest);
+            dropInClient = new DropInClient(this, dropInRequest, new DemoClientTokenProvider(this));
         }
 
         dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {

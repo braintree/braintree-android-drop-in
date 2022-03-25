@@ -74,12 +74,12 @@ public class DropInClient {
         this(context, authorization, null, dropInRequest);
     }
 
-    public DropInClient(Context context, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest) {
-        this(createDefaultParams(context, null, clientTokenProvider, dropInRequest, null));
-    }
-
     DropInClient(Context context, String authorization, String sessionId, DropInRequest dropInRequest) {
         this(createDefaultParams(context, authorization, null, dropInRequest, sessionId));
+    }
+
+    public DropInClient(Context context, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
+        this(createDefaultParams(context, null, clientTokenProvider, dropInRequest, null));
     }
 
     @VisibleForTesting
