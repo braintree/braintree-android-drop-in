@@ -363,6 +363,25 @@ public class DropInClientUnitTest {
     }
 
     @Test
+    public void fetchMostRecentPaymentMethod_forwardsAuthorizationFetchErrors() {
+        Exception authError = new Exception("auth error");
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorizationError(authError)
+                .build();
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(new DropInRequest());
+
+        DropInClient sut = new DropInClient(params);
+
+        FetchMostRecentPaymentMethodCallback callback = mock(FetchMostRecentPaymentMethodCallback.class);
+        sut.fetchMostRecentPaymentMethod(activity, callback);
+
+        verify(callback).onResult(null, authError);
+    }
+
+    @Test
     public void fetchMostRecentPaymentMethod_callsBackWithErrorIfInvalidClientTokenWasUsed() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .authorizationSuccess(Authorization.fromString(Fixtures.TOKENIZATION_KEY))
@@ -1442,6 +1461,30 @@ public class DropInClientUnitTest {
         sut.handleThreeDSecureActivityResult(activity, 123, intent, callback);
 
         verify(callback).onResult(null, activityResultError);
+    }
+
+    @Test
+    public void launchDropInForResult_forwardsAuthorizationFetchErrors() {
+        Exception authError = new Exception("auth error");
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .sessionId("session-id")
+                .authorizationError(authError)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(dropInRequest);
+
+        DropInClient sut = new DropInClient(params);
+
+        DropInListener listener = mock(DropInListener.class);
+        sut.setListener(listener);
+
+        FragmentActivity activity = mock(FragmentActivity.class);
+        sut.launchDropInForResult(activity, 123);
+
+        verify(listener).onDropInFailure(authError);
     }
 
     @Test

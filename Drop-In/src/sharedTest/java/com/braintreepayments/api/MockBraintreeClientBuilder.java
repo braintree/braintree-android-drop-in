@@ -40,6 +40,11 @@ public class MockBraintreeClientBuilder {
         return this;
     }
 
+    public MockBraintreeClientBuilder authorizationError(Exception authorizationError) {
+        this.authorizationError = authorizationError;
+        return this;
+    }
+
     public MockBraintreeClientBuilder sendGETSuccessfulResponse(String response) {
         sendGETSuccess = response;
         return this;

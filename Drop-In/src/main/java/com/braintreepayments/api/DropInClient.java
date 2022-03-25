@@ -403,19 +403,23 @@ public class DropInClient {
     public void launchDropInForResult(FragmentActivity activity, int requestCode) {
         getAuthorization(new AuthorizationCallback() {
             @Override
-            public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception error) {
-                if (observer != null) {
-                    DropInIntentData intentData =
-                        new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
-                    observer.launch(intentData);
+            public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception authorizationError) {
+                if (authorization != null) {
+                    if (observer != null) {
+                        DropInIntentData intentData =
+                                new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
+                        observer.launch(intentData);
+                    } else {
+                        Bundle dropInRequestBundle = new Bundle();
+                        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
+                        Intent intent = new Intent(activity, DropInActivity.class)
+                                .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
+                                .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
+                                .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
+                        activity.startActivityForResult(intent, requestCode);
+                    }
                 } else {
-                    Bundle dropInRequestBundle = new Bundle();
-                    dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
-                    Intent intent = new Intent(activity, DropInActivity.class)
-                            .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
-                            .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
-                            .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
-                    activity.startActivityForResult(intent, requestCode);
+                    listener.onDropInFailure(authorizationError);
                 }
             }
         });

@@ -279,14 +279,14 @@ public class DropInActivity extends AppCompatActivity {
     private void updateVaultedPaymentMethodNonces(boolean refetch) {
         dropInClient.getAuthorization(new AuthorizationCallback() {
             @Override
-            public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception error) {
+            public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception authorizationError) {
                 boolean clientTokenPresent = authorization instanceof ClientToken;
                 if (clientTokenPresent) {
                     dropInClient.getVaultedPaymentMethods(DropInActivity.this, (vaultedPaymentMethods, vaultedPaymentMethodsError) -> {
                         if (vaultedPaymentMethods != null) {
                             dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods);
                         } else if (vaultedPaymentMethodsError != null) {
-                            onError(error);
+                            onError(vaultedPaymentMethodsError);
                         }
                     });
                 }
@@ -329,6 +329,7 @@ public class DropInActivity extends AppCompatActivity {
                 @Override
                 public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception authorizationError) {
                     dropInClient.getConfiguration((configuration, configurationError) -> {
+                        // TODO: determine UX for scenario where authorization or configuration could not be fetched
                         if (configuration != null) {
                             boolean hasTokenizationKeyAuth =
                                     Authorization.isTokenizationKey(authorization.toString());

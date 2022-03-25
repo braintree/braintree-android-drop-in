@@ -43,28 +43,6 @@ class DropInActivityTest {
         activityController.destroy()
     }
 
-    // region onCreate
-
-    @Test
-    fun onCreate_whenAuthorizationIsInvalid_finishesWithError() {
-        val authorization = InvalidAuthorization("not a tokenization key", "error message")
-
-        val dropInClient = MockDropInClientBuilder()
-            .authorizationSuccess(authorization)
-            .build()
-
-        setupDropInActivity(dropInClient, dropInRequest)
-        val shadowActivity = shadowOf(activity)
-
-        assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
-        val exception = shadowActivity.resultIntent
-            .getSerializableExtra(DropInResult.EXTRA_ERROR) as Exception?
-        assertTrue(exception is InvalidArgumentException)
-        assertEquals("Tokenization Key or Client Token was invalid.", exception!!.message)
-    }
-
-    // endregion
-
     // region Browser Switch Results
 
     @Test
