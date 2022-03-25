@@ -13,6 +13,7 @@ import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import android.content.Intent;
@@ -1778,6 +1779,48 @@ public class DropInClientUnitTest {
         sut.handleVenmoActivityResult(activity, 1, data, callback);
 
         verify(callback).onResult((DropInResult) isNull(), same(error));
+    }
+
+    @Test
+    public void onDropInResult_whenResultHasNoError_notifiesListenerOfSuccessViaCallback() {
+        DropInClientParams params = new DropInClientParams();
+        DropInClient sut = new DropInClient(params);
+
+        DropInListener listener = mock(DropInListener.class);
+        sut.setListener(listener);
+
+        DropInResult dropInResult = new DropInResult();
+        sut.onDropInResult(dropInResult);
+
+        verify(listener).onDropInSuccess(dropInResult);
+    }
+
+    @Test
+    public void onDropInResult_whenResultHasError_notifiesListenerOfErrorViaCallback() {
+        DropInClientParams params = new DropInClientParams();
+        DropInClient sut = new DropInClient(params);
+
+        DropInListener listener = mock(DropInListener.class);
+        sut.setListener(listener);
+
+        DropInResult dropInResult = new DropInResult();
+        Exception error = new Exception("sample error");
+        dropInResult.setError(error);
+
+        sut.onDropInResult(dropInResult);
+        verify(listener).onDropInFailure(error);
+    }
+
+    @Test
+    public void onDropInResult_whenResultIsNull_doesNothing() {
+        DropInClientParams params = new DropInClientParams();
+        DropInClient sut = new DropInClient(params);
+
+        DropInListener listener = mock(DropInListener.class);
+        sut.setListener(listener);
+
+        sut.onDropInResult(null);
+        verifyZeroInteractions(listener);
     }
 
     private Configuration mockConfiguration(boolean paypalEnabled, boolean venmoEnabled,

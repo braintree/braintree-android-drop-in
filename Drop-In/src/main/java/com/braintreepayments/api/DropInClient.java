@@ -516,7 +516,6 @@ public class DropInClient {
     }
 
     void onDropInResult(DropInResult dropInResult) {
-        // TODO: unit test
         if (dropInResult != null) {
             Exception error = dropInResult.getError();
             if (error != null) {
