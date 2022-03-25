@@ -11,6 +11,7 @@ import static com.braintreepayments.api.DropInResult.EXTRA_DROP_IN_RESULT;
 import static com.braintreepayments.api.DropInResult.EXTRA_ERROR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import android.content.Context;
 import android.content.Intent;
@@ -92,15 +93,10 @@ public class DropInActivityResultContractUnitTest {
     }
 
     @Test
-    public void parseResult_whenIntentIsNull_returnsDropInResultWithUnknownError() {
+    public void parseResult_whenIntentIsNull_returnsNull() {
         DropInActivityResultContract sut = new DropInActivityResultContract();
 
         DropInResult dropInResult = sut.parseResult(RESULT_OK, null);
-
-        assertNotNull(dropInResult);
-        BraintreeException error = (BraintreeException) dropInResult.getError();
-
-        String expectedMessage = "An unknown Android error occurred with the activity result API.";
-        assertEquals(expectedMessage, error.getMessage());
+        assertNull(dropInResult);
     }
 }

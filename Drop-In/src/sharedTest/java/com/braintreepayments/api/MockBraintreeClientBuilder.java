@@ -20,6 +20,7 @@ public class MockBraintreeClientBuilder {
     private Exception configurationError;
 
     private Authorization authorization;
+    private Exception authorizationError;
 
     private String sessionId;
     private String integration;
@@ -34,7 +35,7 @@ public class MockBraintreeClientBuilder {
         return this;
     }
 
-    public MockBraintreeClientBuilder authorization(Authorization authorization) {
+    public MockBraintreeClientBuilder authorizationSuccess(Authorization authorization) {
         this.authorization = authorization;
         return this;
     }
@@ -71,7 +72,6 @@ public class MockBraintreeClientBuilder {
 
     public BraintreeClient build() {
         BraintreeClient braintreeClient = mock(BraintreeClient.class);
-        when(braintreeClient.getAuthorization()).thenReturn(authorization);
         when(braintreeClient.getSessionId()).thenReturn(sessionId);
         when(braintreeClient.getIntegrationType()).thenReturn(integration);
 
@@ -84,6 +84,16 @@ public class MockBraintreeClientBuilder {
             }
             return null;
         }).when(braintreeClient).getConfiguration(any(ConfigurationCallback.class));
+
+        doAnswer((Answer<Void>) invocation -> {
+            AuthorizationCallback callback = (AuthorizationCallback) invocation.getArguments()[0];
+            if (authorization != null) {
+                callback.onAuthorizationResult(authorization, null);
+            } else if (authorizationError != null) {
+                callback.onAuthorizationResult(null, authorizationError);
+            }
+            return null;
+        }).when(braintreeClient).getAuthorization(any(AuthorizationCallback.class));
 
         doAnswer((Answer<Void>) invocation -> {
             HttpResponseCallback callback = (HttpResponseCallback) invocation.getArguments()[1];

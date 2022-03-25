@@ -46,6 +46,7 @@ public class MockDropInClientBuilder {
     private List<CardType> getSupportedCardTypesSuccess;
     private Exception getSupportedCardTypesError;
     private Exception deviceDataError;
+    private Exception authorizationError;
 
     MockDropInClientBuilder shouldPerformThreeDSecureVerification(boolean shouldPerformThreeDSecureVerification) {
         this.shouldPerformThreeDSecureVerification = shouldPerformThreeDSecureVerification;
@@ -72,7 +73,7 @@ public class MockDropInClientBuilder {
         return this;
     }
 
-    MockDropInClientBuilder authorization(Authorization authorization) {
+    MockDropInClientBuilder authorizationSuccess(Authorization authorization) {
         this.authorization = authorization;
         return this;
     }
@@ -184,8 +185,17 @@ public class MockDropInClientBuilder {
 
     DropInClient build() {
         DropInClient dropInClient = mock(DropInClient.class);
-        when(dropInClient.getAuthorization()).thenReturn(authorization);
         when(dropInClient.getBrowserSwitchResult(any(FragmentActivity.class))).thenReturn(browserSwitchResult);
+
+        doAnswer((Answer<Void>) invocation -> {
+            AuthorizationCallback callback = (AuthorizationCallback) invocation.getArguments()[0];
+            if (authorization != null) {
+                callback.onAuthorizationResult(authorization, null);
+            } else if (threeDSecureError != null) {
+                callback.onAuthorizationResult(null, authorizationError);
+            }
+            return null;
+        }).when(dropInClient).getAuthorization(any(AuthorizationCallback.class));
 
         doAnswer((Answer<Void>) invocation -> {
             DropInResultCallback callback = (DropInResultCallback) invocation.getArguments()[2];

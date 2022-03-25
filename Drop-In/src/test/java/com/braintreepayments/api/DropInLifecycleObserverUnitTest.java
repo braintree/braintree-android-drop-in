@@ -70,23 +70,6 @@ public class DropInLifecycleObserverUnitTest extends TestCase {
     }
 
     @Test
-    public void onCreate_whenActivityResultIsNull_doesNotCallListener() {
-        ActivityResultRegistry activityResultRegistry = mock(ActivityResultRegistry.class);
-        DropInClient dropInClient = mock(DropInClient.class);
-        DropInLifecycleObserver sut =
-                new DropInLifecycleObserver(activityResultRegistry, dropInClient);
-
-        FragmentActivity lifecycleOwner = new FragmentActivity();
-        sut.onStateChanged(lifecycleOwner, Lifecycle.Event.ON_CREATE);
-
-        verify(activityResultRegistry).register(anyString(), any(LifecycleOwner.class), any(DropInActivityResultContract.class), dropInResultCaptor.capture());
-        ActivityResultCallback<DropInResult> activityResultCallback = dropInResultCaptor.capture();
-
-        activityResultCallback.onActivityResult(null);
-        verify(dropInClient, never()).onDropInResult(any(DropInResult.class));
-    }
-
-    @Test
     public void launch_launchesActivity() {
         DropInRequest dropInRequest = new DropInRequest();
         Authorization authorization = Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN);

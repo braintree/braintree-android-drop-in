@@ -517,11 +517,13 @@ public class DropInClient {
 
     void onDropInResult(DropInResult dropInResult) {
         // TODO: unit test
-        Exception error = dropInResult.getError();
-        if (error != null) {
-            listener.onDropInFailure(error);
-        } else {
-            listener.onDropInSuccess(dropInResult);
+        if (dropInResult != null) {
+            Exception error = dropInResult.getError();
+            if (error != null) {
+                listener.onDropInFailure(error);
+            } else {
+                listener.onDropInSuccess(dropInResult);
+            }
         }
     }
 }
