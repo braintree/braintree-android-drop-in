@@ -1,13 +1,17 @@
 package com.braintreepayments.api;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_FIRST_USER;
+import static android.app.Activity.RESULT_OK;
 import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
+import static com.braintreepayments.api.DropInResult.EXTRA_DROP_IN_RESULT;
+import static com.braintreepayments.api.DropInResult.EXTRA_ERROR;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -49,5 +53,54 @@ public class DropInActivityResultContractUnitTest {
 
         Bundle requestBundle = intent.getBundleExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE);
         assertNotNull(requestBundle.getParcelable(EXTRA_CHECKOUT_REQUEST));
+    }
+
+    @Test
+    public void parseResult_whenResultIsOK_returnsDropInResultWithNoError() {
+        DropInActivityResultContract sut = new DropInActivityResultContract();
+
+        Intent successIntent = new Intent()
+                .putExtra(EXTRA_DROP_IN_RESULT, new DropInResult());
+
+        DropInResult dropInResult = sut.parseResult(RESULT_OK, successIntent);
+        assertNotNull(dropInResult);
+    }
+
+    @Test
+    public void parseResult_whenResultIsCANCELED_returnsDropInResultWithUserCanceledError() {
+        DropInActivityResultContract sut = new DropInActivityResultContract();
+
+        DropInResult dropInResult = sut.parseResult(RESULT_CANCELED, new Intent());
+
+        assertNotNull(dropInResult);
+        UserCanceledException error = (UserCanceledException) dropInResult.getError();
+        assertEquals("User canceled DropIn.", error.getMessage());
+    }
+
+    @Test
+    public void parseResult_whenResultIsRESULT_FIRST_USER_returnsDropInResultWithErrorForwardedFromIntentExtras() {
+        DropInActivityResultContract sut = new DropInActivityResultContract();
+
+        Exception error = new Exception("sample error message");
+        Intent errorIntent = new Intent()
+                .putExtra(EXTRA_ERROR, error);
+
+        DropInResult dropInResult = sut.parseResult(RESULT_FIRST_USER, errorIntent);
+
+        assertNotNull(dropInResult);
+        assertEquals("sample error message", dropInResult.getError().getMessage());
+    }
+
+    @Test
+    public void parseResult_whenIntentIsNull_returnsDropInResultWithUnknownError() {
+        DropInActivityResultContract sut = new DropInActivityResultContract();
+
+        DropInResult dropInResult = sut.parseResult(RESULT_OK, null);
+
+        assertNotNull(dropInResult);
+        BraintreeException error = (BraintreeException) dropInResult.getError();
+
+        String expectedMessage = "An unknown Android error occurred with the activity result API.";
+        assertEquals(expectedMessage, error.getMessage());
     }
 }

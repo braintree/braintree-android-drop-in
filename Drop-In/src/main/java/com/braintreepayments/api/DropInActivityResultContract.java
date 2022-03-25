@@ -4,6 +4,7 @@ import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE;
 import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
+import static com.braintreepayments.api.DropInResult.EXTRA_ERROR;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,6 +13,7 @@ import android.os.Bundle;
 import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 public class DropInActivityResultContract extends ActivityResultContract<DropInIntentData, DropInResult> {
 
@@ -28,6 +30,25 @@ public class DropInActivityResultContract extends ActivityResultContract<DropInI
 
     @Override
     public DropInResult parseResult(int resultCode, @Nullable Intent intent) {
+        if (intent != null) {
+            if (resultCode == AppCompatActivity.RESULT_OK) {
+                return intent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
+            } else if (resultCode == AppCompatActivity.RESULT_CANCELED) {
+                DropInResult userCanceledResult = new DropInResult();
+                userCanceledResult.setError(new UserCanceledException("User canceled DropIn."));
+                return userCanceledResult;
+            } else if (resultCode == AppCompatActivity.RESULT_FIRST_USER) {
+                DropInResult errorResult = new DropInResult();
+                errorResult.setError((Exception) intent.getSerializableExtra(EXTRA_ERROR));
+                return errorResult;
+            }
+        } else {
+            DropInResult unknownErrorResult = new DropInResult();
+            String unknownErrorMessage =
+                    "An unknown Android error occurred with the activity result API.";
+            unknownErrorResult.setError(new BraintreeException(unknownErrorMessage));
+            return unknownErrorResult;
+        }
         return null;
     }
 }
