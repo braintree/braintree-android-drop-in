@@ -51,7 +51,15 @@ public class DropInClient {
     private DropInListener listener;
     private DropInLifecycleObserver observer;
 
-    private static DropInClientParams createDefaultParams(Context context, String authorization, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest, String sessionId, FragmentActivity activity, Lifecycle lifecycle) {
+    private static DropInClientParams createDefaultParams(
+            Context context,
+            String authorization,
+            ClientTokenProvider clientTokenProvider,
+            DropInRequest dropInRequest,
+            String sessionId,
+            FragmentActivity activity,
+            Fragment fragment
+    ) {
 
         BraintreeClient braintreeClient;
         if (clientTokenProvider != null) {
@@ -60,20 +68,47 @@ public class DropInClient {
             braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
         }
 
-        return new DropInClientParams()
-                .activity(activity)
-                .lifecycle(lifecycle)
+        DropInClientParams params = new DropInClientParams()
                 .dropInRequest(dropInRequest)
                 .braintreeClient(braintreeClient)
-                .threeDSecureClient(new ThreeDSecureClient(braintreeClient))
                 .paymentMethodClient(new PaymentMethodClient(braintreeClient))
-                .payPalClient(new PayPalClient(braintreeClient))
-                .venmoClient(new VenmoClient(braintreeClient))
                 .cardClient(new CardClient(braintreeClient))
                 .unionPayClient(new UnionPayClient(braintreeClient))
                 .dataCollector(new DataCollector(braintreeClient))
-                .googlePayClient(new GooglePayClient(braintreeClient))
                 .dropInSharedPreferences(DropInSharedPreferences.getInstance());
+
+        FragmentActivity hostActivity = null;
+        Lifecycle hostLifecycle = null;
+
+        if (activity != null) {
+            hostActivity = activity;
+            hostLifecycle = activity.getLifecycle();
+
+            params
+                    .threeDSecureClient(new ThreeDSecureClient(activity, braintreeClient))
+                    .payPalClient(new PayPalClient(activity, braintreeClient))
+                    .venmoClient(new VenmoClient(activity, braintreeClient))
+                    .googlePayClient(new GooglePayClient(activity, braintreeClient));
+
+        } else if (fragment != null) {
+            hostActivity = fragment.requireActivity();
+            hostLifecycle = fragment.getLifecycle();
+            params
+                    .threeDSecureClient(new ThreeDSecureClient(fragment, braintreeClient))
+                    .payPalClient(new PayPalClient(fragment, braintreeClient))
+                    .venmoClient(new VenmoClient(fragment, braintreeClient))
+                    .googlePayClient(new GooglePayClient(fragment, braintreeClient));
+        } else {
+            params
+                    .threeDSecureClient(new ThreeDSecureClient(braintreeClient))
+                    .payPalClient(new PayPalClient(braintreeClient))
+                    .venmoClient(new VenmoClient(braintreeClient))
+                    .googlePayClient(new GooglePayClient(braintreeClient));
+        }
+
+        params.activity(hostActivity);
+        params.lifecycle(hostLifecycle);
+        return params;
     }
 
     public DropInClient(Context context, String authorization, DropInRequest dropInRequest) {
@@ -85,11 +120,11 @@ public class DropInClient {
     }
 
     public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
-        this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, null, activity, activity.getLifecycle()));
+        this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, null, activity, null));
     }
 
     public DropInClient(Fragment fragment, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
-        this(createDefaultParams(fragment.requireActivity(), null, clientTokenProvider, dropInRequest, null, fragment.requireActivity(), fragment.getLifecycle()));
+        this(createDefaultParams(fragment.requireActivity(), null, clientTokenProvider, dropInRequest, null, null, fragment));
     }
 
     @VisibleForTesting
@@ -406,7 +441,7 @@ public class DropInClient {
             public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception error) {
                 if (observer != null) {
                     DropInIntentData intentData =
-                        new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
+                            new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
                     observer.launch(intentData);
                 } else {
                     Bundle dropInRequestBundle = new Bundle();
