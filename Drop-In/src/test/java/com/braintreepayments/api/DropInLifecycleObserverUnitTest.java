@@ -18,7 +18,7 @@ import org.mockito.Mockito;
 import org.robolectric.RobolectricTestRunner;
 
 @RunWith(RobolectricTestRunner.class)
-public class DropInLifecycleObserverUnitTest2 extends TestCase {
+public class DropInLifecycleObserverUnitTest extends TestCase {
 
     @Test
     public void onCreate_registersForAnActivityResult() {
