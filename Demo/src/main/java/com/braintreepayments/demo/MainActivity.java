@@ -187,15 +187,12 @@ public class MainActivity extends BaseActivity {
             dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
         }
 
-        dropInClient = new DropInClient(this, authorization, dropInRequest);
-        dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
-            @Override
-            public void onResult(DropInResult dropInResult, Exception error) {
-                if (dropInResult != null) {
-                    handleDropInResult(dropInResult);
-                } else {
-                    addPaymentMethodButton.setVisibility(VISIBLE);
-                }
+        dropInClient = new DropInClient(this, new DemoClientTokenProvider(this), dropInRequest);
+        dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
+            if (dropInResult != null) {
+                handleDropInResult(dropInResult);
+            } else {
+                addPaymentMethodButton.setVisibility(VISIBLE);
             }
         });
     }

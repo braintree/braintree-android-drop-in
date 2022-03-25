@@ -1,0 +1,51 @@
+package com.braintreepayments.demo;
+
+import android.content.Context;
+import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+
+import com.braintreepayments.api.ClientTokenCallback;
+import com.braintreepayments.api.ClientTokenProvider;
+import com.braintreepayments.demo.internal.ApiClient;
+import com.braintreepayments.demo.models.ClientToken;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
+public class DemoClientTokenProvider implements ClientTokenProvider {
+
+    private Context applicationContext;
+
+    public DemoClientTokenProvider(Context context) {
+        applicationContext = context.getApplicationContext();
+    }
+
+    @Override
+    public void getClientToken(@NonNull ClientTokenCallback callback) {
+        if (Settings.useTokenizationKey(applicationContext)) {
+            String authorization = Settings.getEnvironmentTokenizationKey(applicationContext);
+            callback.onSuccess(authorization);
+        } else {
+            String customerId = Settings.getCustomerId(applicationContext);
+            String merchantId = Settings.getMerchantAccountId(applicationContext);
+
+            ApiClient apiClient = DemoApplication.getApiClient(applicationContext);
+            apiClient.getClientToken(customerId, merchantId, new Callback<ClientToken>() {
+                @Override
+                public void success(ClientToken clientToken, Response response) {
+                    callback.onSuccess(clientToken.getClientToken());
+                }
+
+                @Override
+                public void failure(RetrofitError error) {
+                    String errorMessage = "Unable to get a client token. Response Code: " +
+                            error.getResponse().getStatus() + " Response body: " +
+                            error.getResponse().getBody();
+                    callback.onFailure(new Exception(errorMessage));
+                }
+            });
+        }
+    }
+}
