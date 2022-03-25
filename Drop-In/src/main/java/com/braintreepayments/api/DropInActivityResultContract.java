@@ -42,12 +42,6 @@ public class DropInActivityResultContract extends ActivityResultContract<DropInI
                 errorResult.setError((Exception) intent.getSerializableExtra(EXTRA_ERROR));
                 return errorResult;
             }
-        } else {
-            DropInResult unknownErrorResult = new DropInResult();
-            String unknownErrorMessage =
-                    "An unknown Android error occurred with the activity result API.";
-            unknownErrorResult.setError(new BraintreeException(unknownErrorMessage));
-            return unknownErrorResult;
         }
         return null;
     }

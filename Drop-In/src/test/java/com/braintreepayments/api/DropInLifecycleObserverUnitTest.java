@@ -5,6 +5,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -66,6 +67,23 @@ public class DropInLifecycleObserverUnitTest extends TestCase {
         DropInResult dropInResult = new DropInResult();
         activityResultCallback.onActivityResult(dropInResult);
         verify(dropInClient).onDropInResult(dropInResult);
+    }
+
+    @Test
+    public void onCreate_whenActivityResultIsNull_doesNotCallListener() {
+        ActivityResultRegistry activityResultRegistry = mock(ActivityResultRegistry.class);
+        DropInClient dropInClient = mock(DropInClient.class);
+        DropInLifecycleObserver sut =
+                new DropInLifecycleObserver(activityResultRegistry, dropInClient);
+
+        FragmentActivity lifecycleOwner = new FragmentActivity();
+        sut.onStateChanged(lifecycleOwner, Lifecycle.Event.ON_CREATE);
+
+        verify(activityResultRegistry).register(anyString(), any(LifecycleOwner.class), any(DropInActivityResultContract.class), dropInResultCaptor.capture());
+        ActivityResultCallback<DropInResult> activityResultCallback = dropInResultCaptor.capture();
+
+        activityResultCallback.onActivityResult(null);
+        verify(dropInClient, never()).onDropInResult(any(DropInResult.class));
     }
 
     @Test
