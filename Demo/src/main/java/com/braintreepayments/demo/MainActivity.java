@@ -18,7 +18,6 @@ import com.braintreepayments.api.DropInClient;
 import com.braintreepayments.api.DropInPaymentMethod;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
-import com.braintreepayments.api.FetchMostRecentPaymentMethodCallback;
 import com.braintreepayments.api.GooglePayCardNonce;
 import com.braintreepayments.api.GooglePayRequest;
 import com.braintreepayments.api.PayPalAccountNonce;
@@ -92,7 +91,13 @@ public class MainActivity extends BaseActivity {
             dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
         }
 
-        dropInClient = new DropInClient(this, new DemoClientTokenProvider(this), dropInRequest);
+        if (Settings.useTokenizationKey(this)) {
+            String tokenizationKey = Settings.getEnvironmentTokenizationKey(this);
+            dropInClient = new DropInClient(this, tokenizationKey, dropInRequest);
+        } else {
+            dropInClient = new DropInClient(this, new DemoClientTokenProvider(this), dropInRequest);
+        }
+
         dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
             if (dropInResult != null) {
                 handleDropInResult(dropInResult);

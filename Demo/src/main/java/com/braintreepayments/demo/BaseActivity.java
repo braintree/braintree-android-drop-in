@@ -55,7 +55,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
     }
 
     private void handleAuthorizationState() {
-        if (Settings.useTokenizationKey(this) || !TextUtils.equals(customerId, Settings.getCustomerId(this))) {
+        if (!TextUtils.equals(customerId, Settings.getCustomerId(this))) {
             performReset();
         }
     }

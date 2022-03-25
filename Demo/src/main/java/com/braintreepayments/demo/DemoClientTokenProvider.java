@@ -24,28 +24,23 @@ public class DemoClientTokenProvider implements ClientTokenProvider {
 
     @Override
     public void getClientToken(@NonNull ClientTokenCallback callback) {
-        if (Settings.useTokenizationKey(applicationContext)) {
-            String authorization = Settings.getEnvironmentTokenizationKey(applicationContext);
-            callback.onSuccess(authorization);
-        } else {
-            String customerId = Settings.getCustomerId(applicationContext);
-            String merchantId = Settings.getMerchantAccountId(applicationContext);
+        String customerId = Settings.getCustomerId(applicationContext);
+        String merchantId = Settings.getMerchantAccountId(applicationContext);
 
-            ApiClient apiClient = DemoApplication.getApiClient(applicationContext);
-            apiClient.getClientToken(customerId, merchantId, new Callback<ClientToken>() {
-                @Override
-                public void success(ClientToken clientToken, Response response) {
-                    callback.onSuccess(clientToken.getClientToken());
-                }
+        ApiClient apiClient = DemoApplication.getApiClient(applicationContext);
+        apiClient.getClientToken(customerId, merchantId, new Callback<ClientToken>() {
+            @Override
+            public void success(ClientToken clientToken, Response response) {
+                callback.onSuccess(clientToken.getClientToken());
+            }
 
-                @Override
-                public void failure(RetrofitError error) {
-                    String errorMessage = "Unable to get a client token. Response Code: " +
-                            error.getResponse().getStatus() + " Response body: " +
-                            error.getResponse().getBody();
-                    callback.onFailure(new Exception(errorMessage));
-                }
-            });
-        }
+            @Override
+            public void failure(RetrofitError error) {
+                String errorMessage = "Unable to get a client token. Response Code: " +
+                        error.getResponse().getStatus() + " Response body: " +
+                        error.getResponse().getBody();
+                callback.onFailure(new Exception(errorMessage));
+            }
+        });
     }
 }
