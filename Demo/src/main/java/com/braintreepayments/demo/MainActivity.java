@@ -52,6 +52,8 @@ public class MainActivity extends BaseActivity {
     private Button addPaymentMethodButton;
     private Button purchaseButton;
 
+    private DropInClient dropInClient;
+
     private boolean purchased = false;
 
     @Override
@@ -75,6 +77,29 @@ public class MainActivity extends BaseActivity {
                 nonce = savedInstanceState.getParcelable(KEY_NONCE);
             }
         }
+
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setGooglePayRequest(getGooglePayRequest());
+        dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
+        dropInRequest.setMaskCardNumber(true);
+        dropInRequest.setMaskSecurityCode(true);
+        dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
+        dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
+        dropInRequest.setVaultManagerEnabled(Settings.isVaultManagerEnabled(this));
+        dropInRequest.setCardholderNameStatus(Settings.getCardholderNameStatus(this));
+
+        if (Settings.isThreeDSecureEnabled(this)) {
+            dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
+        }
+
+        dropInClient = new DropInClient(this, new DemoClientTokenProvider(this), dropInRequest);
+        dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
+            if (dropInResult != null) {
+                handleDropInResult(dropInResult);
+            } else {
+                addPaymentMethodButton.setVisibility(VISIBLE);
+            }
+        });
     }
 
     @Override
@@ -169,32 +194,6 @@ public class MainActivity extends BaseActivity {
         addPaymentMethodButton.setVisibility(GONE);
 
         clearNonce();
-    }
-
-    @Override
-    protected void onAuthorizationFetched() {
-        DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setGooglePayRequest(getGooglePayRequest());
-        dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
-        dropInRequest.setMaskCardNumber(true);
-        dropInRequest.setMaskSecurityCode(true);
-        dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
-        dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
-        dropInRequest.setVaultManagerEnabled(Settings.isVaultManagerEnabled(this));
-        dropInRequest.setCardholderNameStatus(Settings.getCardholderNameStatus(this));
-
-        if (Settings.isThreeDSecureEnabled(this)) {
-            dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
-        }
-
-        dropInClient = new DropInClient(this, new DemoClientTokenProvider(this), dropInRequest);
-        dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
-            if (dropInResult != null) {
-                handleDropInResult(dropInResult);
-            } else {
-                addPaymentMethodButton.setVisibility(VISIBLE);
-            }
-        });
     }
 
     private void displayResult(DropInResult dropInResult) {

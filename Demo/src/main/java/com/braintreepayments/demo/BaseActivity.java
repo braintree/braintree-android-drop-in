@@ -27,21 +27,13 @@ import retrofit.client.Response;
 public abstract class BaseActivity extends AppCompatActivity implements OnRequestPermissionsResultCallback,
         ActionBar.OnNavigationListener {
 
-    private static final String KEY_AUTHORIZATION = "com.braintreepayments.demo.KEY_AUTHORIZATION";
-
-    protected String authorization;
     protected String customerId;
-    protected DropInClient dropInClient;
 
     private boolean actionBarSetup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null && savedInstanceState.containsKey(KEY_AUTHORIZATION)) {
-            authorization = savedInstanceState.getString(KEY_AUTHORIZATION);
-        }
     }
 
     @Override
@@ -63,18 +55,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
     }
 
     private void handleAuthorizationState() {
-        if (authorization == null ||
-                (Settings.useTokenizationKey(this) && !authorization.equals(Settings.getEnvironmentTokenizationKey(this))) ||
-                !TextUtils.equals(customerId, Settings.getCustomerId(this))) {
+        if (Settings.useTokenizationKey(this) || !TextUtils.equals(customerId, Settings.getCustomerId(this))) {
             performReset();
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (authorization != null) {
-            outState.putString(KEY_AUTHORIZATION, authorization);
         }
     }
 
@@ -86,45 +68,12 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
     }
 
     private void performReset() {
-        authorization = null;
         customerId = Settings.getCustomerId(this);
 
         reset();
-        fetchAuthorization();
     }
 
     protected abstract void reset();
-
-    protected abstract void onAuthorizationFetched();
-
-    protected void fetchAuthorization() {
-        if (authorization != null) {
-            onAuthorizationFetched();
-        } else if (Settings.useTokenizationKey(this)) {
-            authorization = Settings.getEnvironmentTokenizationKey(this);
-            onAuthorizationFetched();
-        } else {
-            DemoApplication.getApiClient(this).getClientToken(Settings.getCustomerId(this),
-                    Settings.getMerchantAccountId(this), new Callback<ClientToken>() {
-                        @Override
-                        public void success(ClientToken clientToken, Response response) {
-                            if (TextUtils.isEmpty(clientToken.getClientToken())) {
-                                showDialog("Client token was empty");
-                            } else {
-                                authorization = clientToken.getClientToken();
-                                onAuthorizationFetched();
-                            }
-                        }
-
-                        @Override
-                        public void failure(RetrofitError error) {
-                            showDialog("Unable to get a client token. Response Code: " +
-                                    error.getResponse().getStatus() + " Response body: " +
-                                    error.getResponse().getBody());
-                        }
-                    });
-        }
-    }
 
     protected void showDialog(String message) {
         new AlertDialog.Builder(this)
