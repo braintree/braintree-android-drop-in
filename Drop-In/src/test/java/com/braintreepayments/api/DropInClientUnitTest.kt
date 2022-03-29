@@ -351,47 +351,47 @@ class DropInClientUnitTest {
         verify { callback.onResult(false) }
     }
 
-//    @Test
-//    fun fetchMostRecentPaymentMethod_forwardsAuthorizationFetchErrors() {
-//        val authError = Exception("auth error")
-//        val braintreeClient = MockBraintreeClientBuilder()
-//            .authorizationError(authError)
-//            .build()
-//        val params = DropInClientParams()
-//            .braintreeClient(braintreeClient)
-//            .dropInRequest(DropInRequest())
-//        val sut = DropInClient(params)
-//        val callback = Mockito.mock(
-//            FetchMostRecentPaymentMethodCallback::class.java
-//        )
-//        sut.fetchMostRecentPaymentMethod(activity, callback)
-//        Mockito.verify(callback).onResult(null, authError)
-//    }
-//
-//    @Test
-//    fun fetchMostRecentPaymentMethod_callsBackWithErrorIfInvalidClientTokenWasUsed() {
-//        val braintreeClient = MockBraintreeClientBuilder()
-//            .authorizationSuccess(Authorization.fromString(Fixtures.TOKENIZATION_KEY))
-//            .build()
-//        val params = DropInClientParams()
-//            .braintreeClient(braintreeClient)
-//            .dropInRequest(DropInRequest())
-//        val sut = DropInClient(params)
-//        val callback = Mockito.mock(
-//            FetchMostRecentPaymentMethodCallback::class.java
-//        )
-//        sut.fetchMostRecentPaymentMethod(activity, callback)
-//        val captor = ArgumentCaptor.forClass(
-//            InvalidArgumentException::class.java
-//        )
-//        Mockito.verify(callback).onResult(Matchers.isNull() as DropInResult, captor.capture())
-//        val exception = captor.value
-//        Assert.assertEquals(
-//            "DropInClient#fetchMostRecentPaymentMethods() must be called with a client token",
-//            exception.message
-//        )
-//    }
-//
+    @Test
+    fun fetchMostRecentPaymentMethod_forwardsAuthorizationFetchErrors() {
+        val authError = Exception("auth error")
+        val braintreeClient = MockBraintreeClientBuilder()
+            .authorizationError(authError)
+            .build()
+
+        val params = DropInClientParams()
+            .braintreeClient(braintreeClient)
+            .dropInRequest(DropInRequest())
+        val sut = DropInClient(params)
+        val callback = mockk<FetchMostRecentPaymentMethodCallback>(relaxed = true)
+
+        sut.fetchMostRecentPaymentMethod(activity, callback)
+        verify { callback.onResult(null, authError) }
+    }
+
+    @Test
+    fun fetchMostRecentPaymentMethod_callsBackWithErrorIfInvalidClientTokenWasUsed() {
+        val braintreeClient = MockBraintreeClientBuilder()
+            .authorizationSuccess(Authorization.fromString(Fixtures.TOKENIZATION_KEY))
+            .build()
+
+        val params = DropInClientParams()
+            .braintreeClient(braintreeClient)
+            .dropInRequest(DropInRequest())
+        val sut = DropInClient(params)
+        val callback = mockk<FetchMostRecentPaymentMethodCallback>()
+
+        val errorSlot = slot<InvalidArgumentException>()
+        justRun { callback.onResult(null, capture(errorSlot)) }
+
+        sut.fetchMostRecentPaymentMethod(activity, callback)
+
+        val exception = errorSlot.captured
+        assertEquals(
+            "DropInClient#fetchMostRecentPaymentMethods() must be called with a client token",
+            exception.message
+        )
+    }
+
 //    @Test
 //    @Throws(JSONException::class)
 //    fun performThreeDSecureVerification_performsVerificationAndSetsNonceOnThreeDSecureRequest() {
