@@ -8,7 +8,20 @@ internal class MockkBraintreeClientBuilder {
     private var authorization: Authorization? = null
     private var authorizationError: Exception? = null
 
-    internal fun authorizationSuccess(authorization: Authorization): MockkBraintreeClientBuilder {
+    private var configuration: Configuration? = null
+    private var configurationError: Exception? = null
+
+    fun configurationSuccess(configuration: Configuration): MockkBraintreeClientBuilder {
+        this.configuration = configuration
+        return this
+    }
+
+    fun configurationError(error: Exception): MockkBraintreeClientBuilder {
+        this.configurationError = error
+        return this
+    }
+
+    fun authorizationSuccess(authorization: Authorization): MockkBraintreeClientBuilder {
         this.authorization = authorization
         return this
     }
@@ -20,6 +33,17 @@ internal class MockkBraintreeClientBuilder {
 
     internal fun build(): BraintreeClient {
         val braintreeClient = mockk<BraintreeClient>(relaxed = true)
+
+        every {
+            braintreeClient.getConfiguration(any())
+        } answers { call ->
+            val callback = call.invocation.args[0] as ConfigurationCallback
+            if (configuration != null) {
+                callback.onResult(configuration, null)
+            } else if (configurationError != null) {
+                callback.onResult(null, configurationError)
+            }
+        }
 
         every {
             braintreeClient.getAuthorization(any())

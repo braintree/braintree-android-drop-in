@@ -4,10 +4,8 @@ import android.content.Context
 import androidx.fragment.app.FragmentActivity
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.testing.WorkManagerTestInitHelper
-import io.mockk.justRun
-import io.mockk.mockk
-import io.mockk.registerInstanceFactory
-import io.mockk.verify
+import io.mockk.*
+import org.json.JSONException
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -129,33 +127,33 @@ class DropInClientUnitTest {
         verify { dataCollector.collectDeviceData(activity, callback) }
     }
 
-//    @get:Throws(JSONException::class)
-//    @get:Test
-//    val supportedPaymentMethods_whenGooglePayEnabledInConfigAndIsReadyToPaySuccess_includesGooglePay: Unit
-//        get() {
-//            val googlePayClient = MockGooglePayClientBuilder()
-//                .isReadyToPaySuccess(true)
-//                .build()
-//            val braintreeClient = MockBraintreeClientBuilder()
-//                .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
-//                .build()
-//            val params = DropInClientParams()
-//                .dropInRequest(DropInRequest())
-//                .braintreeClient(braintreeClient)
-//                .googlePayClient(googlePayClient)
-//            val sut = DropInClient(params)
-//            val callback = Mockito.mock(
-//                GetSupportedPaymentMethodsCallback::class.java
-//            )
-//            sut.getSupportedPaymentMethods(activity, callback)
-//            Mockito.verify(callback).onResult(
-//                paymentMethodTypesCaptor!!.capture(), Matchers.isNull() as Exception
-//            )
-//            val paymentMethods = paymentMethodTypesCaptor!!.value
-//            Assert.assertEquals(1, paymentMethods.size.toLong())
-//            Assert.assertEquals(DropInPaymentMethod.GOOGLE_PAY, paymentMethods[0])
-//        }
-//
+    @Throws(JSONException::class)
+    @Test
+    fun supportedPaymentMethods_whenGooglePayEnabledInConfigAndIsReadyToPaySuccess_includesGooglePay() {
+        val googlePayClient = MockkGooglePayClientBuilder()
+            .isReadyToPaySuccess(true)
+            .build()
+        val braintreeClient = MockkBraintreeClientBuilder()
+            .configurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
+            .build()
+
+        val params = DropInClientParams()
+            .dropInRequest(DropInRequest())
+            .braintreeClient(braintreeClient)
+            .googlePayClient(googlePayClient)
+        val sut = DropInClient(params)
+        val callback = mockk<GetSupportedPaymentMethodsCallback>(relaxed = true)
+
+        val paymentMethodsSlot = slot<List<DropInPaymentMethod>>()
+        justRun { callback.onResult(capture(paymentMethodsSlot), any()) }
+
+        sut.getSupportedPaymentMethods(activity, callback)
+
+        val paymentMethods = paymentMethodsSlot.captured
+        assertEquals(1, paymentMethods.size)
+        assertEquals(DropInPaymentMethod.GOOGLE_PAY, paymentMethods[0])
+    }
+
 //    @get:Throws(JSONException::class)
 //    @get:Test
 //    val supportedPaymentMethods_whenGooglePayEnabledInConfigAndIsReadyToPayError_filtersGooglePayFromSupportedMethods: Unit
