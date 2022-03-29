@@ -38,8 +38,8 @@ class MockkGooglePayClientBuilder {
             val callback = call.invocation.args[1] as GooglePayIsReadyToPayCallback
             if (isReadyToPaySuccess != null) {
                 callback.onResult(isReadyToPaySuccess!!, null)
-            } else if (onActivityResultError != null) {
-                callback.onResult(false, onActivityResultError)
+            } else if (isReadyToPayError != null) {
+                callback.onResult(false, isReadyToPayError)
             }
         }
         return googlePayClient

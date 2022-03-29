@@ -154,74 +154,77 @@ class DropInClientUnitTest {
         assertEquals(DropInPaymentMethod.GOOGLE_PAY, paymentMethods[0])
     }
 
-//    @get:Throws(JSONException::class)
-//    @get:Test
-//    val supportedPaymentMethods_whenGooglePayEnabledInConfigAndIsReadyToPayError_filtersGooglePayFromSupportedMethods: Unit
-//        get() {
-//            val googlePayClient = MockGooglePayClientBuilder()
-//                .isReadyToPayError(Exception("google pay error"))
-//                .build()
-//            val braintreeClient = MockBraintreeClientBuilder()
-//                .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
-//                .build()
-//            val params = DropInClientParams()
-//                .dropInRequest(DropInRequest())
-//                .braintreeClient(braintreeClient)
-//                .googlePayClient(googlePayClient)
-//            val sut = DropInClient(params)
-//            val callback = Mockito.mock(
-//                GetSupportedPaymentMethodsCallback::class.java
-//            )
-//            sut.getSupportedPaymentMethods(activity, callback)
-//            Mockito.verify(callback).onResult(
-//                paymentMethodTypesCaptor!!.capture(), Matchers.isNull() as Exception
-//            )
-//            val paymentMethods = paymentMethodTypesCaptor!!.value
-//            Assert.assertEquals(0, paymentMethods.size.toLong())
-//        }
-//
-//    @get:Throws(JSONException::class)
-//    @get:Test
-//    val supportedPaymentMethods_whenGooglePayDisabledInDropInRequest_filtersGooglePayFromSupportedMethods: Unit
-//        get() {
-//            val googlePayClient = MockGooglePayClientBuilder().build()
-//            val braintreeClient = MockBraintreeClientBuilder()
-//                .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
-//                .build()
-//            val dropInRequest = DropInRequest()
-//            dropInRequest.isGooglePayDisabled = true
-//            val params = DropInClientParams()
-//                .dropInRequest(dropInRequest)
-//                .braintreeClient(braintreeClient)
-//                .googlePayClient(googlePayClient)
-//            val sut = DropInClient(params)
-//            val callback = Mockito.mock(
-//                GetSupportedPaymentMethodsCallback::class.java
-//            )
-//            sut.getSupportedPaymentMethods(activity, callback)
-//            Mockito.verify(callback).onResult(
-//                paymentMethodTypesCaptor!!.capture(), Matchers.isNull() as Exception
-//            )
-//            val paymentMethods = paymentMethodTypesCaptor!!.value
-//            Assert.assertEquals(0, paymentMethods.size.toLong())
-//        }
-//
-//    @get:Test
-//    val supportedPaymentMethods_whenConfigurationFetchFails_forwardsError: Unit
-//        get() {
-//            val configurationError = Exception("configuration error")
-//            val braintreeClient = MockBraintreeClientBuilder()
-//                .configurationError(configurationError)
-//                .build()
-//            val params = DropInClientParams()
-//                .braintreeClient(braintreeClient)
-//            val sut = DropInClient(params)
-//            val callback = Mockito.mock(
-//                GetSupportedPaymentMethodsCallback::class.java
-//            )
-//            sut.getSupportedPaymentMethods(activity, callback)
-//            Mockito.verify(callback).onResult(null, configurationError)
-//        }
+    @Throws(JSONException::class)
+    @Test
+    fun supportedPaymentMethods_whenGooglePayEnabledInConfigAndIsReadyToPayError_filtersGooglePayFromSupportedMethods() {
+        val googlePayClient = MockkGooglePayClientBuilder()
+            .isReadyToPayError(Exception("google pay error"))
+            .build()
+
+        val braintreeClient = MockkBraintreeClientBuilder()
+            .configurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
+            .build()
+
+        val params = DropInClientParams()
+            .dropInRequest(DropInRequest())
+            .braintreeClient(braintreeClient)
+            .googlePayClient(googlePayClient)
+        val sut = DropInClient(params)
+        val callback = mockk<GetSupportedPaymentMethodsCallback>(relaxed = true)
+
+        sut.getSupportedPaymentMethods(activity, callback)
+
+        val paymentMethodsSlot = slot<List<DropInPaymentMethod>>()
+        justRun { callback.onResult(capture(paymentMethodsSlot), any()) }
+
+        sut.getSupportedPaymentMethods(activity, callback)
+
+        val paymentMethods = paymentMethodsSlot.captured
+        assertEquals(0, paymentMethods.size)
+    }
+
+    @Throws(JSONException::class)
+    @Test
+    fun supportedPaymentMethods_whenGooglePayDisabledInDropInRequest_filtersGooglePayFromSupportedMethods() {
+        val googlePayClient = MockkGooglePayClientBuilder().build()
+        val braintreeClient = MockkBraintreeClientBuilder()
+            .configurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
+            .build()
+
+        val dropInRequest = DropInRequest()
+        dropInRequest.isGooglePayDisabled = true
+
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+            .braintreeClient(braintreeClient)
+            .googlePayClient(googlePayClient)
+        val sut = DropInClient(params)
+        val callback = mockk<GetSupportedPaymentMethodsCallback>(relaxed = true)
+
+        val paymentMethodsSlot = slot<List<DropInPaymentMethod>>()
+        justRun { callback.onResult(capture(paymentMethodsSlot), any()) }
+
+        sut.getSupportedPaymentMethods(activity, callback)
+
+        val paymentMethods = paymentMethodsSlot.captured
+        assertEquals(0, paymentMethods.size)
+    }
+
+    @Test
+    fun supportedPaymentMethods_whenConfigurationFetchFails_forwardsError() {
+        val configurationError = Exception("configuration error")
+        val braintreeClient = MockBraintreeClientBuilder()
+            .configurationError(configurationError)
+            .build()
+
+        val params = DropInClientParams()
+            .braintreeClient(braintreeClient)
+        val sut = DropInClient(params)
+        val callback = mockk<GetSupportedPaymentMethodsCallback>(relaxed = true)
+
+        sut.getSupportedPaymentMethods(activity, callback)
+        verify { callback.onResult(null, configurationError) }
+    }
 //
 //    @Test
 //    @Throws(JSONException::class)
