@@ -6,6 +6,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.work.testing.WorkManagerTestInitHelper
 import io.mockk.*
 import org.json.JSONException
+import org.json.JSONObject
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -225,127 +226,131 @@ class DropInClientUnitTest {
         sut.getSupportedPaymentMethods(activity, callback)
         verify { callback.onResult(null, configurationError) }
     }
-//
-//    @Test
-//    @Throws(JSONException::class)
-//    fun shouldRequestThreeDSecureVerification_whenNonceIsGooglePayNonNetworkTokenized_returnsTrue() {
-//        val braintreeClient = MockBraintreeClientBuilder()
-//            .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
-//            .build()
-//        val threeDSecureRequest = ThreeDSecureRequest()
-//        threeDSecureRequest.amount = "1.00"
-//        val dropInRequest = DropInRequest()
-//        dropInRequest.threeDSecureRequest = threeDSecureRequest
-//        val params = DropInClientParams()
-//            .dropInRequest(dropInRequest)
-//            .braintreeClient(braintreeClient)
-//        val googlePayCardNonce = GooglePayCardNonce.fromJSON(
-//            JSONObject(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE)
-//        )
-//        val sut = DropInClient(params)
-//        val callback = Mockito.mock(
-//            ShouldRequestThreeDSecureVerification::class.java
-//        )
-//        sut.shouldRequestThreeDSecureVerification(googlePayCardNonce, callback)
-//        Mockito.verify(callback).onResult(true)
-//    }
-//
-//    @Test
-//    @Throws(JSONException::class)
-//    fun shouldRequestThreeDSecureVerification_whenNonceIsGooglePayNetworkTokenized_returnsFalse() {
-//        val braintreeClient = MockBraintreeClientBuilder()
-//            .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
-//            .build()
-//        val threeDSecureRequest = ThreeDSecureRequest()
-//        threeDSecureRequest.amount = "1.00"
-//        val dropInRequest = DropInRequest()
-//        dropInRequest.threeDSecureRequest = threeDSecureRequest
-//        val params = DropInClientParams()
-//            .dropInRequest(dropInRequest)
-//            .braintreeClient(braintreeClient)
-//        val googlePayCardNonce = GooglePayCardNonce.fromJSON(
-//            JSONObject(Fixtures.GOOGLE_PAY_NETWORK_TOKENIZED_RESPONSE)
-//        )
-//        val sut = DropInClient(params)
-//        val callback = Mockito.mock(
-//            ShouldRequestThreeDSecureVerification::class.java
-//        )
-//        sut.shouldRequestThreeDSecureVerification(googlePayCardNonce, callback)
-//        Mockito.verify(callback).onResult(false)
-//    }
-//
-//    @Test
-//    @Throws(JSONException::class)
-//    fun shouldRequestThreeDSecureVerification_whenNonceIsCardNonce_returnsTrue() {
-//        val braintreeClient = MockBraintreeClientBuilder()
-//            .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
-//            .build()
-//        val threeDSecureRequest = ThreeDSecureRequest()
-//        threeDSecureRequest.amount = "1.00"
-//        val dropInRequest = DropInRequest()
-//        dropInRequest.threeDSecureRequest = threeDSecureRequest
-//        val params = DropInClientParams()
-//            .dropInRequest(dropInRequest)
-//            .braintreeClient(braintreeClient)
-//        val paymentMethodNonce: PaymentMethodNonce = CardNonce.fromJSON(
-//            JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD)
-//        )
-//        val sut = DropInClient(params)
-//        val callback = Mockito.mock(
-//            ShouldRequestThreeDSecureVerification::class.java
-//        )
-//        sut.shouldRequestThreeDSecureVerification(paymentMethodNonce, callback)
-//        Mockito.verify(callback).onResult(true)
-//    }
-//
-//    @Test
-//    @Throws(JSONException::class)
-//    fun shouldRequestThreeDSecureVerification_whenNonceIsNotCardOrGooglePay_returnsFalse() {
-//        val braintreeClient = MockBraintreeClientBuilder()
-//            .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
-//            .build()
-//        val threeDSecureRequest = ThreeDSecureRequest()
-//        threeDSecureRequest.amount = "1.00"
-//        val dropInRequest = DropInRequest()
-//        dropInRequest.threeDSecureRequest = threeDSecureRequest
-//        val params = DropInClientParams()
-//            .dropInRequest(dropInRequest)
-//            .braintreeClient(braintreeClient)
-//        val paymentMethodNonce: PaymentMethodNonce = Mockito.mock(
-//            PayPalAccountNonce::class.java
-//        )
-//        val sut = DropInClient(params)
-//        val callback = Mockito.mock(
-//            ShouldRequestThreeDSecureVerification::class.java
-//        )
-//        sut.shouldRequestThreeDSecureVerification(paymentMethodNonce, callback)
-//        Mockito.verify(callback).onResult(false)
-//    }
-//
-//    @Test
-//    @Throws(JSONException::class)
-//    fun shouldRequestThreeDSecureVerification_whenConfigurationFetchFails_returnsFalse() {
-//        val braintreeClient = MockBraintreeClientBuilder()
-//            .configurationError(Exception("configuration error"))
-//            .build()
-//        val threeDSecureRequest = ThreeDSecureRequest()
-//        threeDSecureRequest.amount = "1.00"
-//        val dropInRequest = DropInRequest()
-//        dropInRequest.threeDSecureRequest = threeDSecureRequest
-//        val params = DropInClientParams()
-//            .dropInRequest(dropInRequest)
-//            .braintreeClient(braintreeClient)
-//        val googlePayCardNonce = GooglePayCardNonce.fromJSON(
-//            JSONObject(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE)
-//        )
-//        val sut = DropInClient(params)
-//        val callback = Mockito.mock(
-//            ShouldRequestThreeDSecureVerification::class.java
-//        )
-//        sut.shouldRequestThreeDSecureVerification(googlePayCardNonce, callback)
-//        Mockito.verify(callback).onResult(false)
-//    }
-//
+
+    @Test
+    @Throws(JSONException::class)
+    fun shouldRequestThreeDSecureVerification_whenNonceIsGooglePayNonNetworkTokenized_returnsTrue() {
+        val braintreeClient = MockkBraintreeClientBuilder()
+            .configurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
+            .build()
+
+        val threeDSecureRequest = ThreeDSecureRequest()
+        threeDSecureRequest.amount = "1.00"
+        val dropInRequest = DropInRequest()
+        dropInRequest.threeDSecureRequest = threeDSecureRequest
+
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+            .braintreeClient(braintreeClient)
+        val googlePayCardNonce =
+            GooglePayCardNonce.fromJSON(JSONObject(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE))
+
+        val sut = DropInClient(params)
+        val callback = mockk<ShouldRequestThreeDSecureVerification>(relaxed = true)
+
+        sut.shouldRequestThreeDSecureVerification(googlePayCardNonce, callback)
+        verify { callback.onResult(true) }
+    }
+
+    @Test
+    @Throws(JSONException::class)
+    fun shouldRequestThreeDSecureVerification_whenNonceIsGooglePayNetworkTokenized_returnsFalse() {
+        val braintreeClient = MockkBraintreeClientBuilder()
+            .configurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
+            .build()
+
+        val threeDSecureRequest = ThreeDSecureRequest()
+        threeDSecureRequest.amount = "1.00"
+        val dropInRequest = DropInRequest()
+        dropInRequest.threeDSecureRequest = threeDSecureRequest
+
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+            .braintreeClient(braintreeClient)
+        val googlePayCardNonce =
+            GooglePayCardNonce.fromJSON(JSONObject(Fixtures.GOOGLE_PAY_NETWORK_TOKENIZED_RESPONSE))
+
+        val sut = DropInClient(params)
+        val callback = mockk<ShouldRequestThreeDSecureVerification>(relaxed = true)
+        sut.shouldRequestThreeDSecureVerification(googlePayCardNonce, callback)
+
+        verify { callback.onResult(false) }
+    }
+
+    @Test
+    @Throws(JSONException::class)
+    fun shouldRequestThreeDSecureVerification_whenNonceIsCardNonce_returnsTrue() {
+        val braintreeClient = MockkBraintreeClientBuilder()
+            .configurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
+            .build()
+
+        val threeDSecureRequest = ThreeDSecureRequest()
+        threeDSecureRequest.amount = "1.00"
+        val dropInRequest = DropInRequest()
+        dropInRequest.threeDSecureRequest = threeDSecureRequest
+
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+            .braintreeClient(braintreeClient)
+        val paymentMethodNonce: PaymentMethodNonce =
+            CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
+
+        val sut = DropInClient(params)
+        val callback = mockk<ShouldRequestThreeDSecureVerification>(relaxed = true)
+
+        sut.shouldRequestThreeDSecureVerification(paymentMethodNonce, callback)
+        verify { callback.onResult(true) }
+    }
+
+    @Test
+    @Throws(JSONException::class)
+    fun shouldRequestThreeDSecureVerification_whenNonceIsNotCardOrGooglePay_returnsFalse() {
+        val braintreeClient = MockkBraintreeClientBuilder()
+            .configurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_THREE_D_SECURE))
+            .build()
+
+        val threeDSecureRequest = ThreeDSecureRequest()
+        threeDSecureRequest.amount = "1.00"
+        val dropInRequest = DropInRequest()
+        dropInRequest.threeDSecureRequest = threeDSecureRequest
+
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+            .braintreeClient(braintreeClient)
+
+        val paymentMethodNonce = mockk<PaymentMethodNonce>()
+        val sut = DropInClient(params)
+        val callback = mockk<ShouldRequestThreeDSecureVerification>(relaxed = true)
+
+        sut.shouldRequestThreeDSecureVerification(paymentMethodNonce, callback)
+        verify { callback.onResult(false) }
+    }
+
+    @Test
+    @Throws(JSONException::class)
+    fun shouldRequestThreeDSecureVerification_whenConfigurationFetchFails_returnsFalse() {
+        val braintreeClient = MockBraintreeClientBuilder()
+            .configurationError(Exception("configuration error"))
+            .build()
+
+        val threeDSecureRequest = ThreeDSecureRequest()
+        threeDSecureRequest.amount = "1.00"
+        val dropInRequest = DropInRequest()
+        dropInRequest.threeDSecureRequest = threeDSecureRequest
+
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+            .braintreeClient(braintreeClient)
+        val googlePayCardNonce =
+            GooglePayCardNonce.fromJSON(JSONObject(Fixtures.GOOGLE_PAY_NON_NETWORK_TOKENIZED_RESPONSE))
+
+        val sut = DropInClient(params)
+        val callback = mockk<ShouldRequestThreeDSecureVerification>(relaxed = true)
+
+        sut.shouldRequestThreeDSecureVerification(googlePayCardNonce, callback)
+        verify { callback.onResult(false) }
+    }
+
 //    @Test
 //    fun fetchMostRecentPaymentMethod_forwardsAuthorizationFetchErrors() {
 //        val authError = Exception("auth error")
