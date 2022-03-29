@@ -7,8 +7,7 @@ import androidx.work.testing.WorkManagerTestInitHelper
 import io.mockk.*
 import org.json.JSONException
 import org.json.JSONObject
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotNull
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
@@ -392,138 +391,134 @@ class DropInClientUnitTest {
         )
     }
 
-//    @Test
-//    @Throws(JSONException::class)
-//    fun performThreeDSecureVerification_performsVerificationAndSetsNonceOnThreeDSecureRequest() {
-//        val threeDSecureRequest = ThreeDSecureRequest()
-//        val dropInRequest = DropInRequest()
-//        dropInRequest.threeDSecureRequest = threeDSecureRequest
-//        val threeDSecureClient = MockThreeDSecureClientBuilder().build()
-//        val params = DropInClientParams()
-//            .dropInRequest(dropInRequest)
-//            .threeDSecureClient(threeDSecureClient)
-//        val paymentMethodNonce: PaymentMethodNonce = CardNonce.fromJSON(
-//            JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD)
-//        )
-//        val callback = Mockito.mock(
-//            DropInResultCallback::class.java
-//        )
-//        val sut = DropInClient(params)
-//        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback)
-//        Mockito.verify(threeDSecureClient).performVerification(
-//            Matchers.same(activity), Matchers.same(threeDSecureRequest), Matchers.any(
-//                ThreeDSecureResultCallback::class.java
-//            )
-//        )
-//        Assert.assertEquals(paymentMethodNonce.string, threeDSecureRequest.nonce)
-//    }
-//
-//    @Test
-//    @Throws(JSONException::class)
-//    fun performThreeDSecureVerification_whenVerificationFails_callbackError() {
-//        val threeDSecureRequest = ThreeDSecureRequest()
-//        val dropInRequest = DropInRequest()
-//        dropInRequest.threeDSecureRequest = threeDSecureRequest
-//        val performVerificationError = Exception("verification error")
-//        val threeDSecureClient = MockThreeDSecureClientBuilder()
-//            .performVerificationError(performVerificationError)
-//            .build()
-//        val params = DropInClientParams()
-//            .dropInRequest(dropInRequest)
-//            .threeDSecureClient(threeDSecureClient)
-//        val paymentMethodNonce: PaymentMethodNonce = CardNonce.fromJSON(
-//            JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD)
-//        )
-//        val callback = Mockito.mock(
-//            DropInResultCallback::class.java
-//        )
-//        val sut = DropInClient(params)
-//        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback)
-//        Mockito.verify(callback).onResult(null, performVerificationError)
-//        Mockito.verify(threeDSecureClient, Mockito.never()).continuePerformVerification(
-//            Matchers.any(
-//                FragmentActivity::class.java
-//            ), Matchers.any(
-//                ThreeDSecureRequest::class.java
-//            ), Matchers.any(
-//                ThreeDSecureResult::class.java
-//            ), Matchers.any(
-//                ThreeDSecureResultCallback::class.java
-//            )
-//        )
-//    }
-//
-//    @Test
-//    @Throws(JSONException::class)
-//    fun performThreeDSecureVerification_includesDeviceDataInResult() {
-//        val threeDSecureRequest = ThreeDSecureRequest()
-//        val dropInRequest = DropInRequest()
-//        dropInRequest.threeDSecureRequest = threeDSecureRequest
-//        val performVerificationResult = ThreeDSecureResult()
-//        val continueVerificationResult = ThreeDSecureResult()
-//        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
-//        continueVerificationResult.setTokenizedCard(cardNonce)
-//        val threeDSecureClient = MockThreeDSecureClientBuilder()
-//            .performVerificationSuccess(performVerificationResult)
-//            .continueVerificationSuccess(continueVerificationResult)
-//            .build()
-//        val dataCollector = MockDataCollectorBuilder()
-//            .collectDeviceDataSuccess("device data")
-//            .build()
-//        val params = DropInClientParams()
-//            .dataCollector(dataCollector)
-//            .dropInRequest(dropInRequest)
-//            .threeDSecureClient(threeDSecureClient)
-//        val paymentMethodNonce: PaymentMethodNonce = CardNonce.fromJSON(
-//            JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD)
-//        )
-//        val callback = Mockito.mock(
-//            DropInResultCallback::class.java
-//        )
-//        val sut = DropInClient(params)
-//        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback)
-//        val captor = ArgumentCaptor.forClass(
-//            DropInResult::class.java
-//        )
-//        Mockito.verify(callback).onResult(captor.capture(), Matchers.isNull() as Exception)
-//        val dropInResult = captor.value
-//        Assert.assertSame(cardNonce, dropInResult.paymentMethodNonce)
-//        Assert.assertEquals("device data", dropInResult.deviceData)
-//    }
-//
-//    @Test
-//    @Throws(JSONException::class)
-//    fun performThreeDSecureVerification_whenDataCollectionFails_callsBackAnError() {
-//        val threeDSecureRequest = ThreeDSecureRequest()
-//        val dropInRequest = DropInRequest()
-//        dropInRequest.threeDSecureRequest = threeDSecureRequest
-//        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
-//        val performVerificationResult = ThreeDSecureResult()
-//        val continueVerificationResult = ThreeDSecureResult()
-//        continueVerificationResult.setTokenizedCard(cardNonce)
-//        val threeDSecureClient = MockThreeDSecureClientBuilder()
-//            .performVerificationSuccess(performVerificationResult)
-//            .continueVerificationSuccess(continueVerificationResult)
-//            .build()
-//        val dataCollectionError = Exception("data collection error")
-//        val dataCollector = MockDataCollectorBuilder()
-//            .collectDeviceDataError(dataCollectionError)
-//            .build()
-//        val params = DropInClientParams()
-//            .dataCollector(dataCollector)
-//            .dropInRequest(dropInRequest)
-//            .threeDSecureClient(threeDSecureClient)
-//        val paymentMethodNonce: PaymentMethodNonce = CardNonce.fromJSON(
-//            JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD)
-//        )
-//        val callback = Mockito.mock(
-//            DropInResultCallback::class.java
-//        )
-//        val sut = DropInClient(params)
-//        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback)
-//        Mockito.verify(callback).onResult(null, dataCollectionError)
-//    }
-//
+    @Test
+    @Throws(JSONException::class)
+    fun performThreeDSecureVerification_performsVerificationAndSetsNonceOnThreeDSecureRequest() {
+        val threeDSecureRequest = ThreeDSecureRequest()
+        val dropInRequest = DropInRequest()
+        dropInRequest.threeDSecureRequest = threeDSecureRequest
+
+        val threeDSecureClient = MockkThreeDSecureClientBuilder().build()
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+            .threeDSecureClient(threeDSecureClient)
+
+        val paymentMethodNonce: PaymentMethodNonce =
+            CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
+
+        val callback = mockk<DropInResultCallback>(relaxed = true)
+        val sut = DropInClient(params)
+        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback)
+
+        verify { threeDSecureClient.performVerification(activity, threeDSecureRequest, any()) }
+        assertEquals(paymentMethodNonce.string, threeDSecureRequest.nonce)
+    }
+
+    @Test
+    @Throws(JSONException::class)
+    fun performThreeDSecureVerification_whenVerificationFails_callbackError() {
+        val threeDSecureRequest = ThreeDSecureRequest()
+        val dropInRequest = DropInRequest()
+        dropInRequest.threeDSecureRequest = threeDSecureRequest
+
+        val performVerificationError = Exception("verification error")
+        val threeDSecureClient = MockkThreeDSecureClientBuilder()
+            .performVerificationError(performVerificationError)
+            .build()
+
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+            .threeDSecureClient(threeDSecureClient)
+        val paymentMethodNonce: PaymentMethodNonce =
+            CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
+
+        val sut = DropInClient(params)
+        val callback = mockk<DropInResultCallback>(relaxed = true)
+
+        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback)
+        verify { callback.onResult(null, performVerificationError) }
+
+        verify(inverse = true) {
+            threeDSecureClient.continuePerformVerification(any(), any(), any(), any())
+        }
+    }
+
+    @Test
+    @Throws(JSONException::class)
+    fun performThreeDSecureVerification_includesDeviceDataInResult() {
+        val threeDSecureRequest = ThreeDSecureRequest()
+        val dropInRequest = DropInRequest()
+        dropInRequest.threeDSecureRequest = threeDSecureRequest
+
+        val performVerificationResult = ThreeDSecureResult()
+        val continueVerificationResult = ThreeDSecureResult()
+        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        continueVerificationResult.tokenizedCard = cardNonce
+
+        val threeDSecureClient = MockkThreeDSecureClientBuilder()
+            .performVerificationSuccess(performVerificationResult)
+            .continueVerificationSuccess(continueVerificationResult)
+            .build()
+        val dataCollector = MockDataCollectorBuilder()
+            .collectDeviceDataSuccess("device data")
+            .build()
+
+        val params = DropInClientParams()
+            .dataCollector(dataCollector)
+            .dropInRequest(dropInRequest)
+            .threeDSecureClient(threeDSecureClient)
+        val paymentMethodNonce: PaymentMethodNonce =
+            CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
+
+        val callback = mockk<DropInResultCallback>(relaxed = true)
+        val dropInResultSlot = slot<DropInResult>()
+        justRun { callback.onResult(capture(dropInResultSlot), null) }
+
+        val sut = DropInClient(params)
+        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback)
+
+        val dropInResult = dropInResultSlot.captured
+        assertSame(cardNonce, dropInResult.paymentMethodNonce)
+        assertEquals("device data", dropInResult.deviceData)
+    }
+
+    @Test
+    @Throws(JSONException::class)
+    fun performThreeDSecureVerification_whenDataCollectionFails_callsBackAnError() {
+        val threeDSecureRequest = ThreeDSecureRequest()
+        val dropInRequest = DropInRequest()
+        dropInRequest.threeDSecureRequest = threeDSecureRequest
+
+        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        val performVerificationResult = ThreeDSecureResult()
+        val continueVerificationResult = ThreeDSecureResult()
+        continueVerificationResult.setTokenizedCard(cardNonce)
+
+        val threeDSecureClient = MockkThreeDSecureClientBuilder()
+            .performVerificationSuccess(performVerificationResult)
+            .continueVerificationSuccess(continueVerificationResult)
+            .build()
+
+        val dataCollectionError = Exception("data collection error")
+        val dataCollector = MockDataCollectorBuilder()
+            .collectDeviceDataError(dataCollectionError)
+            .build()
+
+        val params = DropInClientParams()
+            .dataCollector(dataCollector)
+            .dropInRequest(dropInRequest)
+            .threeDSecureClient(threeDSecureClient)
+
+        val paymentMethodNonce: PaymentMethodNonce =
+            CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
+
+        val callback = mockk<DropInResultCallback>(relaxed = true)
+        val sut = DropInClient(params)
+
+        sut.performThreeDSecureVerification(activity, paymentMethodNonce, callback)
+        verify { callback.onResult(null, dataCollectionError) }
+    }
+
 //    @Test
 //    @Throws(JSONException::class)
 //    fun fetchMostRecentPaymentMethod_callsBackWithResultIfLastUsedPaymentMethodTypeWasPayWithGoogle() {
