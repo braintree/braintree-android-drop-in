@@ -422,7 +422,6 @@ public class DropInClient {
                         activity.startActivityForResult(intent, requestCode);
                     }
                 } else if (authorizationError != null) {
-                    // TODO: unit test
                     if (listener != null) {
                         listener.onDropInFailure(authorizationError);
                     } else {

@@ -1464,7 +1464,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void launchDropInForResult_forwardsAuthorizationFetchErrors() {
+    public void launchDropInForResult_withListener_forwardsAuthorizationFetchErrors() {
         Exception authError = new Exception("auth error");
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .sessionId("session-id")
@@ -1485,6 +1485,32 @@ public class DropInClientUnitTest {
         sut.launchDropInForResult(activity, 123);
 
         verify(listener).onDropInFailure(authError);
+    }
+
+    @Test
+    public void launchDropInForResult_withoutListener_launchesDropInActivityWithError() {
+        Exception authError = new Exception("auth error");
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .sessionId("session-id")
+                .authorizationError(authError)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(dropInRequest);
+
+        DropInClient sut = new DropInClient(params);
+
+        FragmentActivity activity = mock(FragmentActivity.class);
+        sut.launchDropInForResult(activity, 123);
+
+        ArgumentCaptor<Intent> captor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivityForResult(captor.capture(), eq(123));
+
+        Intent intent = captor.getValue();
+        Exception error = (Exception) intent.getSerializableExtra(DropInClient.EXTRA_AUTHORIZATION_ERROR);
+        assertEquals("auth error", error.getMessage());
     }
 
     @Test
