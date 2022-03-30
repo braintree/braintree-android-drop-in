@@ -28,6 +28,7 @@ public class DropInClient {
     static final String EXTRA_CHECKOUT_REQUEST_BUNDLE = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST_BUNDLE";
     static final String EXTRA_SESSION_ID = "com.braintreepayments.api.EXTRA_SESSION_ID";
     static final String EXTRA_AUTHORIZATION = "com.braintreepayments.api.EXTRA_AUTHORIZATION";
+    static final String EXTRA_AUTHORIZATION_ERROR = "com.braintreepayments.api.EXTRA_AUTHORIZATION_ERROR";
 
     private static final String CARD_TYPE_UNION_PAY = "UnionPay";
 
@@ -420,8 +421,15 @@ public class DropInClient {
                                 .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
                         activity.startActivityForResult(intent, requestCode);
                     }
-                } else if (listener != null) {
-                    listener.onDropInFailure(authorizationError);
+                } else if (authorizationError != null) {
+                    // TODO: unit test
+                    if (listener != null) {
+                        listener.onDropInFailure(authorizationError);
+                    } else {
+                        Intent intent = new Intent(activity, DropInActivity.class)
+                                .putExtra(EXTRA_AUTHORIZATION_ERROR, authorizationError);
+                        activity.startActivityForResult(intent, requestCode);
+                    }
                 }
             }
         });
