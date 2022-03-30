@@ -7,19 +7,26 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.testing.WorkManagerTestInitHelper
-import io.mockk.every
-import io.mockk.justRun
-import io.mockk.mockk
-import io.mockk.slot
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertSame
+import io.mockk.*
+import org.junit.Assert.*
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class DropInClientUnitTestKt {
+
+    companion object {
+
+        @BeforeClass
+        @JvmStatic
+        fun beforeAll() {
+            // required for mockk since AuthorizationCallback is package-private
+            registerInstanceFactory { mockk<AuthorizationCallback>() }
+        }
+    }
 
     private val applicationContext: Context = ApplicationProvider.getApplicationContext()
 
@@ -34,6 +41,7 @@ class DropInClientUnitTestKt {
     private lateinit var dropInRequest: DropInRequest
     private lateinit var braintreeClient: BraintreeClient
 
+    private lateinit var clientToken: Authorization
     private lateinit var clientTokenProvider: ClientTokenProvider
 
     @Before
@@ -41,6 +49,8 @@ class DropInClientUnitTestKt {
 
         dropInRequest = DropInRequest()
         braintreeClient = mockk()
+
+        clientToken = Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN)
         clientTokenProvider = mockk()
 
         activity = mockk()
@@ -66,7 +76,7 @@ class DropInClientUnitTestKt {
     @Test
     fun constructor_withFragment_registersLifecycleObserver() {
         val observerSlot = slot<DropInLifecycleObserver>()
-        justRun { fragmentLifecycle.addObserver(capture(observerSlot))}
+        justRun { fragmentLifecycle.addObserver(capture(observerSlot)) }
 
         val sut = DropInClient(fragment, dropInRequest, clientTokenProvider)
         val capturedObserver = observerSlot.captured
@@ -79,7 +89,7 @@ class DropInClientUnitTestKt {
     @Test
     fun constructor_withActivity_registersLifecycleObserver() {
         val observerSlot = slot<DropInLifecycleObserver>()
-        justRun { activityLifecycle.addObserver(capture(observerSlot))}
+        justRun { activityLifecycle.addObserver(capture(observerSlot)) }
 
         val sut = DropInClient(activity, dropInRequest, clientTokenProvider)
         val capturedObserver = observerSlot.captured
@@ -93,5 +103,31 @@ class DropInClientUnitTestKt {
     fun constructor_withContext_doesNotRegisterLifecycleObserver() {
         val sut = DropInClient(applicationContext, Fixtures.TOKENIZATION_KEY, dropInRequest)
         assertNull(sut.observer)
+    }
+
+    @Test
+    fun launchDropInForResult_withObserver_launchesWithObserver() {
+        every { braintreeClient.sessionId } returns "sample-session-id"
+
+        every { braintreeClient.getAuthorization(any()) } answers { call ->
+            val callback = call.invocation.args[0] as AuthorizationCallback
+            callback.onAuthorizationResult(clientToken, null)
+        }
+
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+            .braintreeClient(braintreeClient)
+        val sut = DropInClient(params)
+        sut.observer = mockk()
+
+        val intentDataSlot = slot<DropInIntentData>()
+        justRun { sut.observer.launch(capture(intentDataSlot)) }
+
+        sut.launchDropInForResult(activity, 123)
+        val capturedIntentData = intentDataSlot.captured
+
+        assertEquals("sample-session-id", capturedIntentData.sessionId)
+        assertEquals(clientToken.toString(), capturedIntentData.authorization.toString())
+        assertNotNull(capturedIntentData.dropInRequest)
     }
 }
