@@ -420,7 +420,7 @@ public class DropInClient {
                                 .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
                         activity.startActivityForResult(intent, requestCode);
                     }
-                } else {
+                } else if (listener != null) {
                     listener.onDropInFailure(authorizationError);
                 }
             }

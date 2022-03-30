@@ -8,12 +8,14 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.testing.WorkManagerTestInitHelper
 import io.mockk.*
+import org.json.JSONObject
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import java.lang.Exception
 
 @RunWith(RobolectricTestRunner::class)
 class DropInClientUnitTestKt {
@@ -129,5 +131,39 @@ class DropInClientUnitTestKt {
         assertEquals("sample-session-id", capturedIntentData.sessionId)
         assertEquals(clientToken.toString(), capturedIntentData.authorization.toString())
         assertNotNull(capturedIntentData.dropInRequest)
+    }
+
+    @Test
+    fun onDropInResult_notifiesListenerOfSuccess() {
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+        val sut = DropInClient(params)
+
+        val listener = mockk<DropInListener>(relaxed = true)
+        sut.setListener(listener)
+
+        val dropInResult = DropInResult()
+        dropInResult.paymentMethodNonce =
+            CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
+
+        sut.onDropInResult(dropInResult)
+        verify { listener.onDropInSuccess(dropInResult) }
+    }
+
+    @Test
+    fun onDropInResult_notifiesListenerOfFailure() {
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+        val sut = DropInClient(params)
+
+        val listener = mockk<DropInListener>(relaxed = true)
+        sut.setListener(listener)
+
+        val dropInResult = DropInResult()
+        val error = Exception("error")
+        dropInResult.error = error
+
+        sut.onDropInResult(dropInResult)
+        verify { listener.onDropInFailure(error) }
     }
 }
