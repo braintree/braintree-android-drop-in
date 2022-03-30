@@ -61,8 +61,17 @@ public class DropInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
 
+        Intent intent = getIntent();
+
+        // TODO: unit test
+        Exception error =
+            (Exception) intent.getSerializableExtra(DropInClient.EXTRA_AUTHORIZATION_ERROR);
+        if (error != null) {
+            // echo back error to merchant via activity result
+            finishDropInWithError(error);
+        }
+
         if (dropInClient == null) {
-            Intent intent = getIntent();
             String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
             String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
             DropInRequest dropInRequest = getDropInRequest(intent);
@@ -467,7 +476,7 @@ public class DropInActivity extends AppCompatActivity {
                         updateVaultedPaymentMethodNonces(true);
                         onError(error);
                     }
-            });
+                });
             }
         });
     }
