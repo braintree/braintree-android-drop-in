@@ -63,12 +63,12 @@ public class DropInActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        // TODO: unit test
         Exception error =
             (Exception) intent.getSerializableExtra(DropInClient.EXTRA_AUTHORIZATION_ERROR);
         if (error != null) {
             // echo back error to merchant via activity result
             finishDropInWithError(error);
+            return;
         }
 
         if (dropInClient == null) {
