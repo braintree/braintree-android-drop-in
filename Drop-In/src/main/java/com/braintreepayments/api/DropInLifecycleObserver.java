@@ -14,8 +14,11 @@ public class DropInLifecycleObserver implements LifecycleEventObserver {
 
     private static final String DROP_IN_RESULT = "com.braintreepayments.api.DropIn.RESULT";
 
-    private final DropInClient dropInClient;
-    private final ActivityResultRegistry activityResultRegistry;
+    @VisibleForTesting
+    DropInClient dropInClient;
+
+    @VisibleForTesting
+    final ActivityResultRegistry activityResultRegistry;
 
     @VisibleForTesting
     ActivityResultLauncher<DropInIntentData> activityLauncher;

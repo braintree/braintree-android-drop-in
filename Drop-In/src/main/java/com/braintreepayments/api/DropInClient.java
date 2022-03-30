@@ -49,7 +49,9 @@ public class DropInClient {
 
     private final PaymentMethodInspector paymentMethodInspector = new PaymentMethodInspector();
     private DropInListener listener;
-    private DropInLifecycleObserver observer;
+
+    @VisibleForTesting
+    DropInLifecycleObserver observer;
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest, String sessionId, FragmentActivity activity, Lifecycle lifecycle) {
 
