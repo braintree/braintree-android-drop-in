@@ -1,16 +1,13 @@
 package com.braintreepayments.api;
 
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.ActivityResultRegistry;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.DefaultLifecycleObserver;
-import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-public class DropInLifecycleObserver implements DefaultLifecycleObserver {
+class DropInLifecycleObserver implements DefaultLifecycleObserver {
 
     private static final String DROP_IN_RESULT = "com.braintreepayments.api.DropIn.RESULT";
 
@@ -23,7 +20,7 @@ public class DropInLifecycleObserver implements DefaultLifecycleObserver {
     @VisibleForTesting
     ActivityResultLauncher<DropInIntentData> activityLauncher;
 
-    public DropInLifecycleObserver(ActivityResultRegistry activityResultRegistry, DropInClient dropInClient) {
+    DropInLifecycleObserver(ActivityResultRegistry activityResultRegistry, DropInClient dropInClient) {
         this.dropInClient = dropInClient;
         this.activityResultRegistry = activityResultRegistry;
     }
@@ -37,7 +34,7 @@ public class DropInLifecycleObserver implements DefaultLifecycleObserver {
                 dropInResult -> dropInClient.onDropInResult(dropInResult));
     }
 
-    public void launch(DropInIntentData intentData) {
+    void launch(DropInIntentData intentData) {
         activityLauncher.launch(intentData);
     }
 }
