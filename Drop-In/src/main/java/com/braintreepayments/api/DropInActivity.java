@@ -334,9 +334,8 @@ public class DropInActivity extends AppCompatActivity {
 
     private void showCardDetailsFragment(final String cardNumber) {
         if (shouldAddFragment(CARD_DETAILS_TAG)) {
-            dropInClient.getAuthorization(new AuthorizationCallback() {
-                @Override
-                public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception authorizationError) {
+            dropInClient.getAuthorization((authorization, authorizationError) -> {
+                if (authorization != null) {
                     dropInClient.getConfiguration((configuration, configurationError) -> {
                         if (configuration != null) {
                             boolean hasTokenizationKeyAuth =
@@ -346,9 +345,11 @@ public class DropInActivity extends AppCompatActivity {
                                     dropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
                             replaceExistingFragment(cardDetailsFragment, CARD_DETAILS_TAG);
                         } else {
-                            finishDropInWithError(authorizationError);
+                            finishDropInWithError(configurationError);
                         }
                     });
+                } else {
+                    finishDropInWithError(authorizationError);
                 }
             });
         }
