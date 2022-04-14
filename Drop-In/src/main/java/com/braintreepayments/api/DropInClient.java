@@ -58,7 +58,7 @@ public class DropInClient {
 
         BraintreeClient braintreeClient;
         if (clientTokenProvider != null) {
-            braintreeClient = new BraintreeClient(context, clientTokenProvider);
+            braintreeClient = new BraintreeClient(context, clientTokenProvider, sessionId, IntegrationType.DROP_IN);
         } else {
             braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
         }
@@ -89,6 +89,10 @@ public class DropInClient {
 
     public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
         this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, null, activity, activity.getLifecycle()));
+    }
+
+    DropInClient(FragmentActivity activity, DropInRequest dropInRequest, String sessionId, ClientTokenProvider clientTokenProvider) {
+        this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, sessionId, activity, activity.getLifecycle()));
     }
 
     public DropInClient(Fragment fragment, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {

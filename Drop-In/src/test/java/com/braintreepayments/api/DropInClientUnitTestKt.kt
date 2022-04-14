@@ -8,6 +8,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.testing.WorkManagerTestInitHelper
 import io.mockk.*
+import junit.framework.TestCase
 import org.json.JSONObject
 import org.junit.Assert.*
 import org.junit.Before
@@ -15,7 +16,6 @@ import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import java.lang.Exception
 
 // TODO: Slowly migrate the entire DropInClientUnitTest to Kotlin
 @RunWith(RobolectricTestRunner::class)
@@ -74,6 +74,18 @@ class DropInClientUnitTestKt {
         // This suppresses errors from WorkManager initialization within BraintreeClient
         // initialization (AnalyticsClient)
         WorkManagerTestInitHelper.initializeTestWorkManager(applicationContext)
+    }
+
+    @Test
+    fun constructor_setsIntegrationTypeDropIn() {
+        val sut = DropInClient(activity, dropInRequest, clientTokenProvider)
+        assertEquals(IntegrationType.DROP_IN, sut.braintreeClient.integrationType)
+    }
+
+    @Test
+    fun constructor_setsSessionId() {
+        val sut = DropInClient(activity, dropInRequest, "session-id", clientTokenProvider)
+        assertEquals("session-id", sut.braintreeClient.sessionId)
     }
 
     @Test
