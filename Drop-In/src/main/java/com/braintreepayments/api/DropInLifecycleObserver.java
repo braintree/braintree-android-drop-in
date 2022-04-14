@@ -5,12 +5,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.ActivityResultRegistry;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleEventObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-// NEXT_MAJOR_VERSION: Update to implement DefaultLifeCycleObserver when Java 7 support is explicitly dropped.
-public class DropInLifecycleObserver implements LifecycleEventObserver {
+public class DropInLifecycleObserver implements DefaultLifecycleObserver {
 
     private static final String DROP_IN_RESULT = "com.braintreepayments.api.DropIn.RESULT";
 
@@ -29,15 +29,12 @@ public class DropInLifecycleObserver implements LifecycleEventObserver {
     }
 
     @Override
-    public void onStateChanged(@NonNull LifecycleOwner lifecycleOwner, @NonNull Lifecycle.Event event) {
-        if (event == Lifecycle.Event.ON_CREATE) {
-            activityLauncher = activityResultRegistry.register(DROP_IN_RESULT, lifecycleOwner, new DropInActivityResultContract(), new ActivityResultCallback<DropInResult>() {
-                @Override
-                public void onActivityResult(DropInResult dropInResult) {
-                    dropInClient.onDropInResult(dropInResult);
-                }
-            });
-        }
+    public void onCreate(@NonNull LifecycleOwner owner) {
+        activityLauncher = activityResultRegistry.register(
+                DROP_IN_RESULT,
+                owner,
+                new DropInActivityResultContract(),
+                dropInResult -> dropInClient.onDropInResult(dropInResult));
     }
 
     public void launch(DropInIntentData intentData) {
