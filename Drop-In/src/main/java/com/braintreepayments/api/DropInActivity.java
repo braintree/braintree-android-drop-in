@@ -338,7 +338,6 @@ public class DropInActivity extends AppCompatActivity {
                 @Override
                 public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception authorizationError) {
                     dropInClient.getConfiguration((configuration, configurationError) -> {
-                        // TODO: determine UX for scenario where authorization or configuration could not be fetched
                         if (configuration != null) {
                             boolean hasTokenizationKeyAuth =
                                     Authorization.isTokenizationKey(authorization.toString());
@@ -346,6 +345,8 @@ public class DropInActivity extends AppCompatActivity {
                             CardDetailsFragment cardDetailsFragment = CardDetailsFragment.from(
                                     dropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
                             replaceExistingFragment(cardDetailsFragment, CARD_DETAILS_TAG);
+                        } else {
+                            finishDropInWithError(authorizationError);
                         }
                     });
                 }
