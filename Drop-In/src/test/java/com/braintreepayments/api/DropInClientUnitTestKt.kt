@@ -62,7 +62,7 @@ class DropInClientUnitTestKt {
         resultRegistry = mockk()
         every { activity.activityResultRegistry } returns resultRegistry
 
-        activityLifecycle = mockk()
+        activityLifecycle = mockk(relaxed = true)
         every { activity.lifecycle } returns activityLifecycle
 
         fragment = mockk()
