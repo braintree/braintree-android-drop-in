@@ -4,7 +4,6 @@ import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.Lifecycle
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -25,7 +24,7 @@ class DropInLifecycleObserverUnitTest : TestCase() {
         val sut = DropInLifecycleObserver(activityResultRegistry, dropInClient)
 
         val lifecycleOwner = FragmentActivity()
-        sut.onStateChanged(lifecycleOwner, Lifecycle.Event.ON_CREATE)
+        sut.onCreate(lifecycleOwner)
 
         val expectedKey = "com.braintreepayments.api.DropIn.RESULT"
         verify {
@@ -56,7 +55,7 @@ class DropInLifecycleObserverUnitTest : TestCase() {
 
         val lifecycleOwner = FragmentActivity()
         val sut = DropInLifecycleObserver(activityResultRegistry, dropInClient)
-        sut.onStateChanged(lifecycleOwner, Lifecycle.Event.ON_CREATE)
+        sut.onCreate(lifecycleOwner)
 
         val dropInResult = DropInResult()
         callbackSlot.captured.onActivityResult(dropInResult)
@@ -84,7 +83,7 @@ class DropInLifecycleObserverUnitTest : TestCase() {
         val sut = DropInLifecycleObserver(activityResultRegistry, dropInClient)
 
         val lifecycleOwner = FragmentActivity()
-        sut.onStateChanged(lifecycleOwner, Lifecycle.Event.ON_CREATE)
+        sut.onCreate(lifecycleOwner)
 
         val dropInIntentData = DropInIntentData(dropInRequest, authorization, "sample-session-id")
         sut.launch(dropInIntentData)
