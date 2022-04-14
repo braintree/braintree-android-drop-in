@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class DropInActivityResultContract extends ActivityResultContract<DropInIntentData, DropInResult> {
+class DropInActivityResultContract extends ActivityResultContract<DropInIntentData, DropInResult> {
 
     @NonNull
     @Override
