@@ -29,6 +29,8 @@ public class DropInResult implements Parcelable {
     private String deviceData;
     private String paymentDescription;
 
+    private Exception error;
+
     private DropInPaymentMethod paymentMethodType;
     private PaymentMethodNonce paymentMethodNonce;
 
@@ -53,6 +55,10 @@ public class DropInResult implements Parcelable {
 
     void setPaymentMethodType(DropInPaymentMethod paymentMethodType) {
         this.paymentMethodType = paymentMethodType;
+    }
+
+    void setError(Exception error) {
+        this.error = error;
     }
 
     /**
@@ -82,6 +88,10 @@ public class DropInResult implements Parcelable {
     @Nullable
     public String getDeviceData() {
         return deviceData;
+    }
+
+    Exception getError() {
+        return error;
     }
 
     /**

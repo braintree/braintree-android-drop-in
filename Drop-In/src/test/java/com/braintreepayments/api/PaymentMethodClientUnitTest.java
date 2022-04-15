@@ -277,7 +277,7 @@ public class PaymentMethodClientUnitTest {
     @Test
     public void deletePaymentMethodNonce_withTokenizationKey_throwsAnError() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.TOKENIZATION_KEY))
+                .authorizationSuccess(Authorization.fromString(Fixtures.TOKENIZATION_KEY))
                 .build();
         PaymentMethodClient sut = new PaymentMethodClient(braintreeClient);
 
@@ -297,7 +297,7 @@ public class PaymentMethodClientUnitTest {
     @Test
     public void deletePaymentMethodNonce_throwsAnError() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .sendGraphQLPOSTErrorResponse(new UnexpectedException("Error"))
                 .build();
         PaymentMethodClient sut = new PaymentMethodClient(braintreeClient);
@@ -316,7 +316,7 @@ public class PaymentMethodClientUnitTest {
     @Test
     public void deletePaymentMethodNonce_sendAnAnalyticsEventForFailure() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .sendGraphQLPOSTErrorResponse(new UnexpectedException("Error"))
                 .build();
         PaymentMethodClient sut = new PaymentMethodClient(braintreeClient);
@@ -330,7 +330,7 @@ public class PaymentMethodClientUnitTest {
     @Test
     public void deletePaymentMethodNonce_sendAnAnalyticsEventForSuccess() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .sendGraphQLPOSTSuccessfulResponse("Success")
                 .build();
         PaymentMethodClient sut = new PaymentMethodClient(braintreeClient);
@@ -344,7 +344,7 @@ public class PaymentMethodClientUnitTest {
     @Test
     public void deletePaymentMethodNonce_sendNoncePostCallbackForSuccess() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .sendGraphQLPOSTSuccessfulResponse("Success")
                 .build();
         PaymentMethodClient sut = new PaymentMethodClient(braintreeClient);
@@ -362,7 +362,7 @@ public class PaymentMethodClientUnitTest {
                 .fromString(Fixtures.BASE64_CLIENT_TOKEN);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(authorization)
+                .authorizationSuccess(authorization)
                 .sendGraphQLPOSTSuccessfulResponse("Success")
                 .sessionId("test-session-id")
                 .integration("test-integration")

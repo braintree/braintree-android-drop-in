@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 
+import androidx.annotation.Nullable;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -94,46 +96,52 @@ class PaymentMethodClient {
     }
 
     void deletePaymentMethod(final Context context, final PaymentMethodNonce paymentMethodNonce, final DeletePaymentMethodNonceCallback callback) {
-        boolean usesClientToken = braintreeClient.getAuthorization() instanceof ClientToken;
+        braintreeClient.getAuthorization(new AuthorizationCallback() {
+            @Override
+            public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception error) {
+                boolean usesClientToken = authorization instanceof ClientToken;
 
-        if (!usesClientToken) {
-            Exception error =
-                    new BraintreeException("A client token with a customer id must be used to delete a payment method nonce.");
-            callback.onResult(null, error);
-            return;
-        }
+                if (!usesClientToken) {
+                    Exception clientTokenRequiredError =
+                            new BraintreeException("A client token with a customer id must be used to delete a payment method nonce.");
+                    callback.onResult(null, clientTokenRequiredError);
+                    return;
+                }
 
-        final JSONObject base = new JSONObject();
-        JSONObject variables = new JSONObject();
-        JSONObject input = new JSONObject();
+                final JSONObject base = new JSONObject();
+                JSONObject variables = new JSONObject();
+                JSONObject input = new JSONObject();
 
-        try {
-            base.put(CLIENT_SDK_META_DATA, new MetadataBuilder()
-                    .sessionId(braintreeClient.getSessionId())
-                    .source("client")
-                    .integration(braintreeClient.getIntegrationType())
-                    .build());
+                try {
+                    base.put(CLIENT_SDK_META_DATA, new MetadataBuilder()
+                            .sessionId(braintreeClient.getSessionId())
+                            .source("client")
+                            .integration(braintreeClient.getIntegrationType())
+                            .build());
 
-            base.put(GraphQLConstants.Keys.QUERY, GraphQLQueryHelper.getQuery(
-                    context, R.raw.delete_payment_method_mutation));
-            input.put(SINGLE_USE_TOKEN_ID, paymentMethodNonce.getString());
-            variables.put(INPUT, input);
-            base.put(VARIABLES, variables);
-            base.put(GraphQLConstants.Keys.OPERATION_NAME,
-                    "DeletePaymentMethodFromSingleUseToken");
-        } catch (Resources.NotFoundException | IOException | JSONException e) {
-            Exception error = new BraintreeException("Unable to read GraphQL query");
-            callback.onResult(null, error);
-        }
+                    base.put(GraphQLConstants.Keys.QUERY, GraphQLQueryHelper.getQuery(
+                            context, R.raw.delete_payment_method_mutation));
+                    input.put(SINGLE_USE_TOKEN_ID, paymentMethodNonce.getString());
+                    variables.put(INPUT, input);
+                    base.put(VARIABLES, variables);
+                    base.put(GraphQLConstants.Keys.OPERATION_NAME,
+                            "DeletePaymentMethodFromSingleUseToken");
+                } catch (Resources.NotFoundException | IOException | JSONException e) {
+                    Exception graphQLError = new BraintreeException("Unable to read GraphQL query");
+                    callback.onResult(null, graphQLError);
+                }
 
-        braintreeClient.sendGraphQLPOST(base.toString(), (responseBody, httpError) -> {
-            if (responseBody != null) {
-                callback.onResult(paymentMethodNonce, null);
-                braintreeClient.sendAnalyticsEvent("delete-payment-methods.succeeded");
-            } else {
-                Exception error = new PaymentMethodDeleteException(paymentMethodNonce, httpError);
-                callback.onResult(null, error);
-                braintreeClient.sendAnalyticsEvent("delete-payment-methods.failed");
+                braintreeClient.sendGraphQLPOST(base.toString(), (responseBody, httpError) -> {
+                    if (responseBody != null) {
+                        callback.onResult(paymentMethodNonce, null);
+                        braintreeClient.sendAnalyticsEvent("delete-payment-methods.succeeded");
+                    } else {
+                        Exception deletePaymentMethodError =
+                            new PaymentMethodDeleteException(paymentMethodNonce, httpError);
+                        callback.onResult(null, deletePaymentMethodError);
+                        braintreeClient.sendAnalyticsEvent("delete-payment-methods.failed");
+                    }
+                });
             }
         });
     }

@@ -35,9 +35,6 @@ public class DropInActivity extends AppCompatActivity {
     DropInResult pendingDropInResult;
 
     @VisibleForTesting
-    boolean clientTokenPresent;
-
-    @VisibleForTesting
     AlertPresenter alertPresenter;
 
     @Override
@@ -64,23 +61,25 @@ public class DropInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.bt_drop_in_activity);
 
+        Intent intent = getIntent();
+
+        Exception error =
+            (Exception) intent.getSerializableExtra(DropInClient.EXTRA_AUTHORIZATION_ERROR);
+        if (error != null) {
+            // echo back error to merchant via activity result
+            finishDropInWithError(error);
+            return;
+        }
+
         if (dropInClient == null) {
-            Intent intent = getIntent();
             String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
             String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
             DropInRequest dropInRequest = getDropInRequest(intent);
             dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
         }
 
-        if (dropInClient.getAuthorization() instanceof InvalidAuthorization) {
-            finishDropInWithError(
-                    new InvalidArgumentException("Tokenization Key or Client Token was invalid."));
-            return;
-        }
-
         alertPresenter = new AlertPresenter();
         dropInRequest = getDropInRequest(getIntent());
-        clientTokenPresent = dropInClient.getAuthorization() instanceof ClientToken;
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
@@ -287,15 +286,21 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void updateVaultedPaymentMethodNonces(boolean refetch) {
-        if (clientTokenPresent) {
-            dropInClient.getVaultedPaymentMethods(this, (vaultedPaymentMethods, error) -> {
-                if (vaultedPaymentMethods != null) {
-                    dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods);
-                } else if (error != null) {
-                    onError(error);
+        dropInClient.getAuthorization(new AuthorizationCallback() {
+            @Override
+            public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception authorizationError) {
+                boolean clientTokenPresent = authorization instanceof ClientToken;
+                if (clientTokenPresent) {
+                    dropInClient.getVaultedPaymentMethods(DropInActivity.this, (vaultedPaymentMethods, vaultedPaymentMethodsError) -> {
+                        if (vaultedPaymentMethods != null) {
+                            dropInViewModel.setVaultedPaymentMethods(vaultedPaymentMethods);
+                        } else if (vaultedPaymentMethodsError != null) {
+                            onError(vaultedPaymentMethodsError);
+                        }
+                    });
                 }
-            });
-        }
+            }
+        });
     }
 
     private void onAddCardSubmit(DropInEvent event) {
@@ -329,15 +334,22 @@ public class DropInActivity extends AppCompatActivity {
 
     private void showCardDetailsFragment(final String cardNumber) {
         if (shouldAddFragment(CARD_DETAILS_TAG)) {
-            dropInClient.getConfiguration((configuration, error) -> {
-                if (configuration != null) {
-                    // TODO: implement dropInClient.hasAuthType(AuthType.TOKENIZATION_KEY)
-                    boolean hasTokenizationKeyAuth =
-                            Authorization.isTokenizationKey(dropInClient.getAuthorization().toString());
+            dropInClient.getAuthorization((authorization, authorizationError) -> {
+                if (authorization != null) {
+                    dropInClient.getConfiguration((configuration, configurationError) -> {
+                        if (configuration != null) {
+                            boolean hasTokenizationKeyAuth =
+                                    Authorization.isTokenizationKey(authorization.toString());
 
-                    CardDetailsFragment cardDetailsFragment = CardDetailsFragment.from(
-                            dropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
-                    replaceExistingFragment(cardDetailsFragment, CARD_DETAILS_TAG);
+                            CardDetailsFragment cardDetailsFragment = CardDetailsFragment.from(
+                                    dropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
+                            replaceExistingFragment(cardDetailsFragment, CARD_DETAILS_TAG);
+                        } else {
+                            finishDropInWithError(configurationError);
+                        }
+                    });
+                } else {
+                    finishDropInWithError(authorizationError);
                 }
             });
         }
@@ -466,7 +478,7 @@ public class DropInActivity extends AppCompatActivity {
                         updateVaultedPaymentMethodNonces(true);
                         onError(error);
                     }
-            });
+                });
             }
         });
     }

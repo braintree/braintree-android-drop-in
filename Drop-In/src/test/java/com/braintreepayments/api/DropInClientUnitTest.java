@@ -13,6 +13,7 @@ import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import android.content.Intent;
@@ -97,17 +98,20 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void getAuthorization_forwardsAuthorizationFromBraintreeClient() {
+    public void getAuthorization_forwardsInvocationToBraintreeClient() {
         Authorization authorization = mock(Authorization.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(authorization)
+                .authorizationSuccess(authorization)
                 .build();
 
         DropInClientParams params = new DropInClientParams()
                 .braintreeClient(braintreeClient);
 
         DropInClient sut = new DropInClient(params);
-        assertSame(authorization, sut.getAuthorization());
+
+        AuthorizationCallback callback = mock(AuthorizationCallback.class);
+        sut.getAuthorization(callback);
+        verify(braintreeClient).getAuthorization(callback);
     }
 
     @Test
@@ -359,9 +363,28 @@ public class DropInClientUnitTest {
     }
 
     @Test
+    public void fetchMostRecentPaymentMethod_forwardsAuthorizationFetchErrors() {
+        Exception authError = new Exception("auth error");
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .authorizationError(authError)
+                .build();
+
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(new DropInRequest());
+
+        DropInClient sut = new DropInClient(params);
+
+        FetchMostRecentPaymentMethodCallback callback = mock(FetchMostRecentPaymentMethodCallback.class);
+        sut.fetchMostRecentPaymentMethod(activity, callback);
+
+        verify(callback).onResult(null, authError);
+    }
+
+    @Test
     public void fetchMostRecentPaymentMethod_callsBackWithErrorIfInvalidClientTokenWasUsed() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.TOKENIZATION_KEY))
+                .authorizationSuccess(Authorization.fromString(Fixtures.TOKENIZATION_KEY))
                 .build();
 
         DropInClientParams params = new DropInClientParams()
@@ -512,7 +535,7 @@ public class DropInClientUnitTest {
                 .isReadyToPaySuccess(true)
                 .build();
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
                 .build();
 
@@ -546,7 +569,7 @@ public class DropInClientUnitTest {
                 .isReadyToPaySuccess(false)
                 .build();
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
                 .build();
 
@@ -585,7 +608,7 @@ public class DropInClientUnitTest {
     @Test
     public void fetchMostRecentPaymentMethod_callsBackWithErrorOnGetPaymentMethodsError() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .build();
 
         PaymentMethodClient paymentMethodClient = new MockPaymentMethodClientBuilder()
@@ -613,7 +636,7 @@ public class DropInClientUnitTest {
     public void fetchMostRecentPaymentMethod_callsBackWithResultWhenThereIsAPaymentMethod()
             throws JSONException {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
                 .build();
 
@@ -647,7 +670,7 @@ public class DropInClientUnitTest {
     @Test
     public void fetchMostRecentPaymentMethod_callsBackWithNullResultWhenThereAreNoPaymentMethods() throws JSONException {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY))
                 .build();
 
@@ -679,7 +702,7 @@ public class DropInClientUnitTest {
     @Test
     public void getSupportedPaymentMethods_whenNoPaymentMethodsEnabledInConfiguration_callsBackWithNoPaymentMethods() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(mockConfiguration(false, false, false, false, false))
                 .build();
 
@@ -705,7 +728,7 @@ public class DropInClientUnitTest {
     @Test
     public void getSupportedPaymentMethods_whenPaymentMethodsEnabledInConfiguration_callsBackWithPaymentMethods() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(mockConfiguration(true, true, true, true, false))
                 .build();
 
@@ -744,7 +767,7 @@ public class DropInClientUnitTest {
         when(configuration.getSupportedCardTypes())
                 .thenReturn(Arrays.asList(DropInPaymentMethod.UNIONPAY.name(), DropInPaymentMethod.VISA.name()));
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -775,7 +798,7 @@ public class DropInClientUnitTest {
                 .thenReturn(Collections.singletonList("UnionPay"));
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -804,7 +827,7 @@ public class DropInClientUnitTest {
                 .thenReturn(Collections.singletonList(DropInPaymentMethod.UNIONPAY.name()));
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -835,7 +858,7 @@ public class DropInClientUnitTest {
         dropInRequest.setCardDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -864,7 +887,7 @@ public class DropInClientUnitTest {
         dropInRequest.setPayPalDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -893,7 +916,7 @@ public class DropInClientUnitTest {
         dropInRequest.setVenmoDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -925,7 +948,7 @@ public class DropInClientUnitTest {
         DropInRequest dropInRequest = new DropInRequest();
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -958,7 +981,7 @@ public class DropInClientUnitTest {
         dropInRequest.setGooglePayDisabled(true);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -986,7 +1009,7 @@ public class DropInClientUnitTest {
         DropInRequest dropInRequest = new DropInRequest();
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -1012,7 +1035,7 @@ public class DropInClientUnitTest {
         dropInRequest.setPayPalRequest(payPalRequest);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -1038,7 +1061,7 @@ public class DropInClientUnitTest {
         dropInRequest.setPayPalRequest(payPalRequest);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -1065,7 +1088,7 @@ public class DropInClientUnitTest {
         dropInRequest.setVenmoRequest(venmoRequest);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -1094,7 +1117,7 @@ public class DropInClientUnitTest {
         DropInRequest dropInRequest = new DropInRequest();
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -1127,7 +1150,7 @@ public class DropInClientUnitTest {
         dropInRequest.setGooglePayRequest(googlePayRequest);
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+                .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
                 .configuration(configuration)
                 .build();
 
@@ -1441,13 +1464,63 @@ public class DropInClientUnitTest {
     }
 
     @Test
+    public void launchDropInForResult_withListener_forwardsAuthorizationFetchErrors() {
+        Exception authError = new Exception("auth error");
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .sessionId("session-id")
+                .authorizationError(authError)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(dropInRequest);
+
+        DropInClient sut = new DropInClient(params);
+
+        DropInListener listener = mock(DropInListener.class);
+        sut.setListener(listener);
+
+        FragmentActivity activity = mock(FragmentActivity.class);
+        sut.launchDropInForResult(activity, 123);
+
+        verify(listener).onDropInFailure(authError);
+    }
+
+    @Test
+    public void launchDropInForResult_withoutListener_launchesDropInActivityWithError() {
+        Exception authError = new Exception("auth error");
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
+                .sessionId("session-id")
+                .authorizationError(authError)
+                .build();
+
+        DropInRequest dropInRequest = new DropInRequest();
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient)
+                .dropInRequest(dropInRequest);
+
+        DropInClient sut = new DropInClient(params);
+
+        FragmentActivity activity = mock(FragmentActivity.class);
+        sut.launchDropInForResult(activity, 123);
+
+        ArgumentCaptor<Intent> captor = ArgumentCaptor.forClass(Intent.class);
+        verify(activity).startActivityForResult(captor.capture(), eq(123));
+
+        Intent intent = captor.getValue();
+        Exception error = (Exception) intent.getSerializableExtra(DropInClient.EXTRA_AUTHORIZATION_ERROR);
+        assertEquals("auth error", error.getMessage());
+    }
+
+    @Test
     public void launchDropInForResult_launchesDropInActivityWithIntentExtras() {
         Authorization authorization = mock(Authorization.class);
         when(authorization.toString()).thenReturn("authorization");
 
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .sessionId("session-id")
-                .authorization(authorization)
+                .authorizationSuccess(authorization)
                 .build();
 
         DropInRequest dropInRequest = new DropInRequest();
@@ -1775,6 +1848,48 @@ public class DropInClientUnitTest {
         sut.handleVenmoActivityResult(activity, 1, data, callback);
 
         verify(callback).onResult((DropInResult) isNull(), same(error));
+    }
+
+    @Test
+    public void onDropInResult_whenResultHasNoError_notifiesListenerOfSuccessViaCallback() {
+        DropInClientParams params = new DropInClientParams();
+        DropInClient sut = new DropInClient(params);
+
+        DropInListener listener = mock(DropInListener.class);
+        sut.setListener(listener);
+
+        DropInResult dropInResult = new DropInResult();
+        sut.onDropInResult(dropInResult);
+
+        verify(listener).onDropInSuccess(dropInResult);
+    }
+
+    @Test
+    public void onDropInResult_whenResultHasError_notifiesListenerOfErrorViaCallback() {
+        DropInClientParams params = new DropInClientParams();
+        DropInClient sut = new DropInClient(params);
+
+        DropInListener listener = mock(DropInListener.class);
+        sut.setListener(listener);
+
+        DropInResult dropInResult = new DropInResult();
+        Exception error = new Exception("sample error");
+        dropInResult.setError(error);
+
+        sut.onDropInResult(dropInResult);
+        verify(listener).onDropInFailure(error);
+    }
+
+    @Test
+    public void onDropInResult_whenResultIsNull_doesNothing() {
+        DropInClientParams params = new DropInClientParams();
+        DropInClient sut = new DropInClient(params);
+
+        DropInListener listener = mock(DropInListener.class);
+        sut.setListener(listener);
+
+        sut.onDropInResult(null);
+        verifyZeroInteractions(listener);
     }
 
     private Configuration mockConfiguration(boolean paypalEnabled, boolean venmoEnabled,

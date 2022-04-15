@@ -15,10 +15,10 @@ import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
 import com.braintreepayments.api.DropInClient;
+import com.braintreepayments.api.DropInListener;
 import com.braintreepayments.api.DropInPaymentMethod;
 import com.braintreepayments.api.DropInRequest;
 import com.braintreepayments.api.DropInResult;
-import com.braintreepayments.api.FetchMostRecentPaymentMethodCallback;
 import com.braintreepayments.api.GooglePayCardNonce;
 import com.braintreepayments.api.GooglePayRequest;
 import com.braintreepayments.api.PayPalAccountNonce;
@@ -33,7 +33,7 @@ import com.braintreepayments.api.VenmoRequest;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends BaseActivity implements DropInListener {
 
     private static final int DROP_IN_REQUEST = 100;
 
@@ -51,6 +51,8 @@ public class MainActivity extends BaseActivity {
 
     private Button addPaymentMethodButton;
     private Button purchaseButton;
+
+    private DropInClient dropInClient;
 
     private boolean purchased = false;
 
@@ -75,6 +77,36 @@ public class MainActivity extends BaseActivity {
                 nonce = savedInstanceState.getParcelable(KEY_NONCE);
             }
         }
+
+        DropInRequest dropInRequest = new DropInRequest();
+        dropInRequest.setGooglePayRequest(getGooglePayRequest());
+        dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
+        dropInRequest.setMaskCardNumber(true);
+        dropInRequest.setMaskSecurityCode(true);
+        dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
+        dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
+        dropInRequest.setVaultManagerEnabled(Settings.isVaultManagerEnabled(this));
+        dropInRequest.setCardholderNameStatus(Settings.getCardholderNameStatus(this));
+
+        if (Settings.isThreeDSecureEnabled(this)) {
+            dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
+        }
+
+        if (Settings.useTokenizationKey(this)) {
+            String tokenizationKey = Settings.getEnvironmentTokenizationKey(this);
+            dropInClient = new DropInClient(this, tokenizationKey, dropInRequest);
+        } else {
+            dropInClient = new DropInClient(this, dropInRequest, new DemoClientTokenProvider(this));
+            dropInClient.setListener(this);
+        }
+
+        dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
+            if (dropInResult != null) {
+                handleDropInResult(dropInResult);
+            } else {
+                addPaymentMethodButton.setVisibility(VISIBLE);
+            }
+        });
     }
 
     @Override
@@ -171,35 +203,6 @@ public class MainActivity extends BaseActivity {
         clearNonce();
     }
 
-    @Override
-    protected void onAuthorizationFetched() {
-        DropInRequest dropInRequest = new DropInRequest();
-        dropInRequest.setGooglePayRequest(getGooglePayRequest());
-        dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
-        dropInRequest.setMaskCardNumber(true);
-        dropInRequest.setMaskSecurityCode(true);
-        dropInRequest.setAllowVaultCardOverride(Settings.isSaveCardCheckBoxVisible(this));
-        dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
-        dropInRequest.setVaultManagerEnabled(Settings.isVaultManagerEnabled(this));
-        dropInRequest.setCardholderNameStatus(Settings.getCardholderNameStatus(this));
-
-        if (Settings.isThreeDSecureEnabled(this)) {
-            dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
-        }
-
-        dropInClient = new DropInClient(this, authorization, dropInRequest);
-        dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
-            @Override
-            public void onResult(DropInResult dropInResult, Exception error) {
-                if (dropInResult != null) {
-                    handleDropInResult(dropInResult);
-                } else {
-                    addPaymentMethodButton.setVisibility(VISIBLE);
-                }
-            }
-        });
-    }
-
     private void displayResult(DropInResult dropInResult) {
         nonce = dropInResult.getPaymentMethodNonce();
 
@@ -279,5 +282,16 @@ public class MainActivity extends BaseActivity {
                 .build());
         googlePayRequest.setEmailRequired(true);
         return googlePayRequest;
+    }
+
+    @Override
+    public void onDropInSuccess(@NonNull DropInResult dropInResult) {
+        displayResult(dropInResult);
+        purchaseButton.setEnabled(true);
+    }
+
+    @Override
+    public void onDropInFailure(@NonNull Exception error) {
+        showDialog(error.getMessage());
     }
 }

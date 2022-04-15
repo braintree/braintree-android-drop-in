@@ -21,10 +21,9 @@ import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.android.controller.ActivityController
-import java.util.*
 
 @RunWith(RobolectricTestRunner::class)
-class DropInActivityTest {
+class DropInActivityUnitTest {
 
     private lateinit var activityController: ActivityController<DropInActivity>
     private lateinit var activity: DropInActivity
@@ -43,45 +42,40 @@ class DropInActivityTest {
         activityController.destroy()
     }
 
-    // region onCreate
-
     @Test
-    fun onCreate_whenAuthorizationIsInvalid_finishesWithError() {
-        val authorization = InvalidAuthorization("not a tokenization key", "error message")
+    fun onCreate_whenAuthorizationErrorExists_finishesWithError() {
+        val error = Exception("auth error")
+        setupDropInActivityWithError(error)
 
-        val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
-            .build()
-
-        setupDropInActivity(dropInClient, dropInRequest)
         val shadowActivity = shadowOf(activity)
-
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
-        val exception = shadowActivity.resultIntent
-            .getSerializableExtra(DropInResult.EXTRA_ERROR) as Exception?
-        assertTrue(exception is InvalidArgumentException)
-        assertEquals("Tokenization Key or Client Token was invalid.", exception!!.message)
+        assertEquals(
+            error,
+            shadowActivity.resultIntent.getSerializableExtra(DropInResult.EXTRA_ERROR)
+        )
+        assertTrue(activity.isFinishing)
     }
-
-    // endregion
 
     // region Browser Switch Results
 
     @Test
     fun onResume_deliversBrowserSwitchResult() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
 
         setupDropInActivity(dropInClient, dropInRequest)
 
-        verify(dropInClient).deliverBrowserSwitchResult(same(activity), any(DropInResultCallback::class.java))
+        verify(dropInClient).deliverBrowserSwitchResult(
+            same(activity),
+            any(DropInResultCallback::class.java)
+        )
     }
 
     @Test
     fun onResume_whenBrowserSwitchSuccessResultWillBeDelivered_updatesDropInStateToFINISHING() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getBrowserSwitchResult(createBrowserSwitchSuccessResult())
             .build()
 
@@ -100,7 +94,7 @@ class DropInActivityTest {
         dropInResult.deviceData = "device data"
 
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .deliverBrowserSwitchResultSuccess(dropInResult)
             .build()
 
@@ -108,8 +102,10 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         assertEquals(RESULT_OK, shadowActivity.resultCode)
-        assertEquals(dropInResult, shadowActivity.resultIntent
-            .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT))
+        assertEquals(
+            dropInResult, shadowActivity.resultIntent
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT)
+        )
     }
 
     @Test
@@ -136,8 +132,10 @@ class DropInActivityTest {
 
         verify(dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error")
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
-        assertEquals(error, shadowActivity.resultIntent
-            .getSerializableExtra(DropInResult.EXTRA_ERROR))
+        assertEquals(
+            error, shadowActivity.resultIntent
+                .getSerializableExtra(DropInResult.EXTRA_ERROR)
+        )
         assertTrue(activity.isFinishing)
     }
 
@@ -149,7 +147,7 @@ class DropInActivityTest {
         dropInResult.deviceData = "device data"
 
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .deliverBrowserSwitchResultSuccess(dropInResult)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -165,7 +163,7 @@ class DropInActivityTest {
         dropInResult.deviceData = "device data"
 
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .deliverBrowserSwitchResultSuccess(dropInResult)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -190,12 +188,18 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
         val shadowActivity = shadowOf(activity)
 
-        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, RESULT_OK, mock(Intent::class.java))
+        activity.onActivityResult(
+            BraintreeRequestCodes.THREE_D_SECURE,
+            RESULT_OK,
+            mock(Intent::class.java)
+        )
         activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN)
 
         assertEquals(RESULT_OK, shadowActivity.resultCode)
-        assertEquals(dropInResult, shadowActivity.resultIntent
-            .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT))
+        assertEquals(
+            dropInResult, shadowActivity.resultIntent
+                .getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT)
+        )
         assertTrue(activity.isFinishing)
     }
 
@@ -203,12 +207,16 @@ class DropInActivityTest {
     fun onActivityResult_whenResultIsUserCanceledException_setsUserCanceledErrorInViewModel() {
         val error = UserCanceledException("User canceled 3DS.")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .handleActivityResultError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
 
-        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, RESULT_OK, mock(Intent::class.java))
+        activity.onActivityResult(
+            BraintreeRequestCodes.THREE_D_SECURE,
+            RESULT_OK,
+            mock(Intent::class.java)
+        )
         assertFalse(activity.isFinishing)
         assertEquals(error, activity.dropInViewModel.userCanceledError.value)
     }
@@ -223,11 +231,18 @@ class DropInActivityTest {
         setupDropInActivity(dropInClient, dropInRequest)
         val shadowActivity = shadowOf(activity)
 
-        activity.onActivityResult(BraintreeRequestCodes.THREE_D_SECURE, RESULT_OK, mock(Intent::class.java))
+        activity.onActivityResult(
+            BraintreeRequestCodes.THREE_D_SECURE,
+            RESULT_OK,
+            mock(Intent::class.java)
+        )
 
         verify(dropInClient).sendAnalyticsEvent("sdk.exit.sdk-error")
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
-        assertEquals(error, shadowActivity.resultIntent.getSerializableExtra(DropInResult.EXTRA_ERROR))
+        assertEquals(
+            error,
+            shadowActivity.resultIntent.getSerializableExtra(DropInResult.EXTRA_ERROR)
+        )
         assertTrue(activity.isFinishing)
     }
 
@@ -238,13 +253,16 @@ class DropInActivityTest {
     @Test
     fun onSendAnalyticsEvent_sendsAnalyticsViaDropInClient() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
 
         val dropInEvent = DropInEvent.createSendAnalyticsEvent("test-analytics.event")
 
         setupDropInActivity(dropInClient, dropInRequest)
-        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, dropInEvent.toBundle())
+        activity.supportFragmentManager.setFragmentResult(
+            DropInEvent.REQUEST_KEY,
+            dropInEvent.toBundle()
+        )
 
         verify(dropInClient).sendAnalyticsEvent("test-analytics.event")
     }
@@ -256,14 +274,17 @@ class DropInActivityTest {
     @Test
     fun onVaultedPaymentMethodSelectedEvent_whenCard_sendsAnalyticsEvent() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
 
         setupDropInActivity(dropInClient, dropInRequest)
 
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInEvent = DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce)
-        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, dropInEvent.toBundle())
+        activity.supportFragmentManager.setFragmentResult(
+            DropInEvent.REQUEST_KEY,
+            dropInEvent.toBundle()
+        )
 
         verify(dropInClient).sendAnalyticsEvent("vaulted-card.select")
     }
@@ -271,7 +292,7 @@ class DropInActivityTest {
     @Test
     fun onVaultedPaymentMethodSelectedEvent_whenPayPal_doesNotSendAnalyticsEvent() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
 
         setupDropInActivity(dropInClient, dropInRequest)
@@ -279,17 +300,22 @@ class DropInActivityTest {
         val payPalAccountNonce =
             PayPalAccountNonce.fromJSON(JSONObject(Fixtures.PAYPAL_ACCOUNT_JSON))
         val dropInEvent = DropInEvent.createVaultedPaymentMethodSelectedEvent(payPalAccountNonce)
-        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, dropInEvent.toBundle())
+        activity.supportFragmentManager.setFragmentResult(
+            DropInEvent.REQUEST_KEY,
+            dropInEvent.toBundle()
+        )
 
         verify(dropInClient, never()).sendAnalyticsEvent("vaulted-card.select")
     }
 
     @Test
     fun onVaultedPaymentMethodSelectedEvent_when3DSFails_reloadsPaymentMethodsAndFinishes() {
-        authorization = Authorization.fromString(UnitTestFixturesHelper.base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN))
+        authorization = Authorization.fromString(
+            UnitTestFixturesHelper.base64EncodedClientTokenFromFixture(Fixtures.CLIENT_TOKEN)
+        )
         val error = Exception("three d secure failure")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .threeDSecureError(error)
             .shouldPerformThreeDSecureVerification(true)
             .build()
@@ -304,18 +330,27 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
-        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle())
+        activity.supportFragmentManager.setFragmentResult(
+            DropInEvent.REQUEST_KEY,
+            DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle()
+        )
 
-        verify(dropInClient).getVaultedPaymentMethods(same(activity), any(GetPaymentMethodNoncesCallback::class.java))
+        verify(dropInClient).getVaultedPaymentMethods(
+            same(activity),
+            any(GetPaymentMethodNoncesCallback::class.java)
+        )
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
-        assertEquals(error, shadowActivity.resultIntent.getSerializableExtra(DropInResult.EXTRA_ERROR))
+        assertEquals(
+            error,
+            shadowActivity.resultIntent.getSerializableExtra(DropInResult.EXTRA_ERROR)
+        )
         assertTrue(activity.isFinishing)
     }
 
     @Test
     fun onVaultedPaymentMethodSelectedEvent_whenShouldNotRequest3DS_returnsANonce() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .shouldPerformThreeDSecureVerification(false)
             .collectDeviceDataSuccess("sample-data")
             .build()
@@ -324,12 +359,20 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
-        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle())
+        activity.supportFragmentManager.setFragmentResult(
+            DropInEvent.REQUEST_KEY,
+            DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle()
+        )
         activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN)
 
-        verify(dropInClient, never()).performThreeDSecureVerification(same(activity), same(cardNonce), any(DropInResultCallback::class.java))
+        verify(dropInClient, never()).performThreeDSecureVerification(
+            same(activity),
+            same(cardNonce),
+            any(DropInResultCallback::class.java)
+        )
         assertEquals(RESULT_OK, shadowActivity.resultCode)
-        val result = shadowActivity.resultIntent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT) as DropInResult?
+        val result =
+            shadowActivity.resultIntent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT) as DropInResult?
         assertEquals(cardNonce.string, result!!.paymentMethodNonce!!.string)
         assertTrue(activity.isFinishing)
     }
@@ -338,7 +381,7 @@ class DropInActivityTest {
     fun onVaultedPaymentMethodSelectedEvent_whenShouldNotRequest3DS_onDeviceDataError_finishesWithError() {
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .shouldPerformThreeDSecureVerification(false)
             .collectDeviceDataError(error)
             .build()
@@ -347,7 +390,10 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
-        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle())
+        activity.supportFragmentManager.setFragmentResult(
+            DropInEvent.REQUEST_KEY,
+            DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle()
+        )
 
         assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
         val actualError = shadowActivity.resultIntent
@@ -359,15 +405,22 @@ class DropInActivityTest {
     @Test
     fun onVaultedPaymentSelectedEvent_whenShouldPerform3DSVerification_requests3DSVerification() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .shouldPerformThreeDSecureVerification(true)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
 
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
-        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle())
+        activity.supportFragmentManager.setFragmentResult(
+            DropInEvent.REQUEST_KEY,
+            DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle()
+        )
 
-        verify(dropInClient).performThreeDSecureVerification(same(activity), same(cardNonce), any(DropInResultCallback::class.java))
+        verify(dropInClient).performThreeDSecureVerification(
+            same(activity),
+            same(cardNonce),
+            any(DropInResultCallback::class.java)
+        )
     }
 
     @Test
@@ -375,7 +428,7 @@ class DropInActivityTest {
         val dropInClient = MockDropInClientBuilder()
             .collectDeviceDataSuccess("device-data")
             .shouldPerformThreeDSecureVerification(false)
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
             .getSupportedPaymentMethodsSuccess(ArrayList())
             .build()
@@ -383,10 +436,14 @@ class DropInActivityTest {
         val shadowActivity = shadowOf(activity)
 
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
-        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle())
+        activity.supportFragmentManager.setFragmentResult(
+            DropInEvent.REQUEST_KEY,
+            DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle()
+        )
         activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN)
 
-        val result = shadowActivity.resultIntent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT) as DropInResult?
+        val result =
+            shadowActivity.resultIntent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT) as DropInResult?
         assertEquals("device-data", result!!.deviceData)
     }
 
@@ -398,7 +455,7 @@ class DropInActivityTest {
     fun onDeletePaymentMethodNonceEvent_whenDialogConfirmed_sendsAnalyticsEvent() {
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
 
         val alertPresenter = mock(AlertPresenter::class.java)
@@ -422,7 +479,7 @@ class DropInActivityTest {
     fun onDeletePaymentMethodNonceEvent_whenDialogCancelled_sendsAnalyticsEvent() {
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
 
         val alertPresenter = mock(AlertPresenter::class.java)
@@ -451,7 +508,7 @@ class DropInActivityTest {
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInClient = MockDropInClientBuilder()
             .deletePaymentMethodSuccess(cardNonce)
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
         activity.removePaymentMethodNonce(cardNonce)
@@ -464,7 +521,7 @@ class DropInActivityTest {
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInClient = MockDropInClientBuilder()
             .deletePaymentMethodError(PaymentMethodDeleteException(cardNonce, Exception("error")))
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
 
         setupDropInActivity(dropInClient, dropInRequest)
@@ -478,7 +535,7 @@ class DropInActivityTest {
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInClient = MockDropInClientBuilder()
             .deletePaymentMethodError(Exception("error"))
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
 
         setupDropInActivity(dropInClient, dropInRequest)
@@ -491,7 +548,7 @@ class DropInActivityTest {
     fun removePaymentMethodNonce_onError_finishesWithError() {
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .deletePaymentMethodError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -513,7 +570,7 @@ class DropInActivityTest {
     @Test
     fun onSupportedPaymentMethodSelectedEvent_withTypePayPal_tokenizesPayPal() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
             .getSupportedPaymentMethodsSuccess(ArrayList())
             .build()
@@ -523,14 +580,17 @@ class DropInActivityTest {
             DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.PAYPAL)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
-        verify(dropInClient).tokenizePayPalRequest(same(activity), any(PayPalFlowStartedCallback::class.java))
+        verify(dropInClient).tokenizePayPalRequest(
+            same(activity),
+            any(PayPalFlowStartedCallback::class.java)
+        )
     }
 
     @Test
     fun onSupportedPaymentMethodSelectedEvent_withTypePayPal_onPayPalError_finishesWithError() {
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .payPalError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -550,7 +610,7 @@ class DropInActivityTest {
     @Test
     fun onSupportedPaymentMethodSelectedEvent_withTypeVenmo_tokenizesVenmo() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
             .getSupportedPaymentMethodsSuccess(ArrayList())
             .build()
@@ -560,14 +620,17 @@ class DropInActivityTest {
             DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.VENMO)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
-        verify(dropInClient).tokenizeVenmoAccount(same(activity), any(VenmoTokenizeAccountCallback::class.java))
+        verify(dropInClient).tokenizeVenmoAccount(
+            same(activity),
+            any(VenmoTokenizeAccountCallback::class.java)
+        )
     }
 
     @Test
     fun onSupportedPaymentMethodSelectedEvent_withTypeVenmo_onVenmoError_finishesWithError() {
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .venmoError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -587,7 +650,7 @@ class DropInActivityTest {
     @Test
     fun onSupportedPaymentMethodSelectedEvent_withTypeGooglePay_tokenizesGooglePay() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
             .getSupportedPaymentMethodsSuccess(ArrayList())
             .build()
@@ -597,14 +660,17 @@ class DropInActivityTest {
             DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.GOOGLE_PAY)
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
-        verify(dropInClient).requestGooglePayPayment(same(activity), any(GooglePayRequestPaymentCallback::class.java))
+        verify(dropInClient).requestGooglePayPayment(
+            same(activity),
+            any(GooglePayRequestPaymentCallback::class.java)
+        )
     }
 
     @Test
     fun onSupportedPaymentMethodSelectedEvent_withTypeGooglePay_onGooglePayError_finishesWithError() {
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .googlePayError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -624,7 +690,7 @@ class DropInActivityTest {
     @Test
     fun onSupportedPaymentMethodSelectedEvent_withTypeUnknown_showsAddCardFragment() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
             .getSupportedPaymentMethodsSuccess(ArrayList())
             .build()
@@ -642,7 +708,7 @@ class DropInActivityTest {
     fun onSupportedPaymentMethodSelectedEvent_withTypeUnknown_prefetchesSupportedCardTypes() {
         val supportedCardTypes = arrayListOf(CardType.VISA)
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getSupportedCardTypesSuccess(supportedCardTypes)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -658,7 +724,7 @@ class DropInActivityTest {
     fun onSupportedPaymentMethodSelectedEvent_withTypeUnknown_onGetSupportedCardTypesError_finishesWithError() {
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getSupportedCardTypesError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -679,7 +745,7 @@ class DropInActivityTest {
     fun onSupportedPaymentMethodSelectedEvent_withTypeUnknown_onCardTypesError_finishesWithError() {
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getSupportedPaymentMethodsError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -703,7 +769,7 @@ class DropInActivityTest {
     @Test
     fun onAddCardSubmitEvent_showsCardDetailsFragment() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
             .getSupportedPaymentMethodsSuccess(ArrayList())
             .build()
@@ -724,7 +790,7 @@ class DropInActivityTest {
     @Test
     fun onEditCardNumberEvent_showsAddCardFragment() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
 
@@ -744,7 +810,7 @@ class DropInActivityTest {
     fun onCardDetailsSubmitEvent_onTokenizeCardSuccess_whenShouldNotRequest3DS_finishesWithResult() {
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .cardTokenizeSuccess(cardNonce)
             .shouldPerformThreeDSecureVerification(false)
             .build()
@@ -756,7 +822,8 @@ class DropInActivityTest {
         activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN)
 
         assertEquals(RESULT_OK, shadowActivity.resultCode)
-        val result = shadowActivity.resultIntent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT) as DropInResult?
+        val result =
+            shadowActivity.resultIntent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT) as DropInResult?
         assertEquals(cardNonce.string, result!!.paymentMethodNonce!!.string)
         assertTrue(activity.isFinishing)
     }
@@ -766,7 +833,7 @@ class DropInActivityTest {
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInResult = DropInResult()
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .cardTokenizeSuccess(cardNonce)
             .shouldPerformThreeDSecureVerification(true)
             .threeDSecureSuccess(dropInResult)
@@ -779,7 +846,8 @@ class DropInActivityTest {
         activity.dropInViewModel.setBottomSheetState(BottomSheetState.HIDDEN)
 
         assertEquals(RESULT_OK, shadowActivity.resultCode)
-        val result = shadowActivity.resultIntent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT) as DropInResult?
+        val result =
+            shadowActivity.resultIntent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT) as DropInResult?
         assertSame(result, dropInResult)
         assertTrue(activity.isFinishing)
     }
@@ -789,7 +857,7 @@ class DropInActivityTest {
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .cardTokenizeSuccess(cardNonce)
             .shouldPerformThreeDSecureVerification(true)
             .threeDSecureError(error)
@@ -811,7 +879,7 @@ class DropInActivityTest {
     fun onCardDetailsSubmitEvent_onError_whenErrorWithResponse_setsCardTokenizationErrorInViewModel() {
         val error = ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE)
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .cardTokenizeError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -826,7 +894,7 @@ class DropInActivityTest {
     fun onCardDetailsSubmitEvent_onError_whenErrorNotWithResponse_finishesWithError() {
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .cardTokenizeError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -850,7 +918,7 @@ class DropInActivityTest {
     fun onShowVaultManagerEvent_onVaultedPaymentMethodsSuccess_setsVaultedPaymentMethodsInViewModel() {
         val vaultedPaymentMethods = ArrayList<PaymentMethodNonce>()
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getVaultedPaymentMethodsSuccess(vaultedPaymentMethods)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -865,7 +933,7 @@ class DropInActivityTest {
     fun onShowVaultManagerEvent_onVaultedPaymentMethodsError_finishesWithError() {
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .getVaultedPaymentMethodsError(error)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -894,7 +962,7 @@ class DropInActivityTest {
     @Test
     fun onDidHideBottomSheet_whenNoResultPresent_sendAnalyticsEvent() {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
 
@@ -907,7 +975,7 @@ class DropInActivityTest {
     fun onDidShowBottomSheet_whenClientTokenPresent_onGetVaultedPaymentMethodsSuccess_setsVaultedPaymentsInViewModel() {
         val vaultedPaymentMethods = ArrayList<PaymentMethodNonce>()
         val dropInClient = MockDropInClientBuilder()
-            .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+            .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
             .getSupportedPaymentMethodsSuccess(ArrayList())
             .getVaultedPaymentMethodsSuccess(vaultedPaymentMethods)
             .build()
@@ -922,7 +990,7 @@ class DropInActivityTest {
     fun onDidShowBottomSheet_whenClientTokenPresent_onGetVaultedPaymentMethodsError_finishesWithError() {
         val error = Exception("error")
         val dropInClient = MockDropInClientBuilder()
-            .authorization(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
+            .authorizationSuccess(Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN))
             .getSupportedPaymentMethodsSuccess(ArrayList())
             .getVaultedPaymentMethodsError(error)
             .build()
@@ -1006,8 +1074,17 @@ class DropInActivityTest {
     // endregion
 
     // region Helpers
+    private fun setupDropInActivityWithError(authError: Exception) {
+        val context = InstrumentationRegistry.getInstrumentation().targetContext
+        val intent = Intent(context, DropInActivity::class.java)
+            .putExtra(DropInClient.EXTRA_AUTHORIZATION_ERROR, authError)
 
-    private fun setupDropInActivity(dropInClient: DropInClient, dropInRequest:DropInRequest) {
+        activityController = buildActivity(DropInActivity::class.java, intent)
+        activity = activityController.get()
+        activityController.create()
+    }
+
+    private fun setupDropInActivity(dropInClient: DropInClient, dropInRequest: DropInRequest) {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val dropInRequestBundle = Bundle()
         dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest)
@@ -1022,9 +1099,9 @@ class DropInActivityTest {
 
     private fun assertExceptionIsReturned(analyticsEvent: String, exception: java.lang.Exception) {
         val dropInClient = MockDropInClientBuilder()
-            .authorization(authorization)
+            .authorizationSuccess(authorization)
             .build()
-        setupDropInActivity( dropInClient, dropInRequest)
+        setupDropInActivity(dropInClient, dropInRequest)
         val shadowActivity = shadowOf(activity)
 
         activity.onError(exception)

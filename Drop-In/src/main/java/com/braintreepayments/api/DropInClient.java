@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.Lifecycle;
 
 import com.braintreepayments.cardform.utils.CardType;
 
@@ -25,11 +28,13 @@ public class DropInClient {
     static final String EXTRA_CHECKOUT_REQUEST_BUNDLE = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST_BUNDLE";
     static final String EXTRA_SESSION_ID = "com.braintreepayments.api.EXTRA_SESSION_ID";
     static final String EXTRA_AUTHORIZATION = "com.braintreepayments.api.EXTRA_AUTHORIZATION";
+    static final String EXTRA_AUTHORIZATION_ERROR = "com.braintreepayments.api.EXTRA_AUTHORIZATION_ERROR";
 
     private static final String CARD_TYPE_UNION_PAY = "UnionPay";
 
     @VisibleForTesting
     final BraintreeClient braintreeClient;
+
     private final PaymentMethodClient paymentMethodClient;
     private final GooglePayClient googlePayClient;
     private final PayPalClient payPalClient;
@@ -44,10 +49,23 @@ public class DropInClient {
     private final DropInSharedPreferences dropInSharedPreferences;
 
     private final PaymentMethodInspector paymentMethodInspector = new PaymentMethodInspector();
+    private DropInListener listener;
 
-    private static DropInClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest, String sessionId) {
-        BraintreeClient braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
+    @VisibleForTesting
+    DropInLifecycleObserver observer;
+
+    private static DropInClientParams createDefaultParams(Context context, String authorization, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest, String sessionId, FragmentActivity activity, Lifecycle lifecycle) {
+
+        BraintreeClient braintreeClient;
+        if (clientTokenProvider != null) {
+            braintreeClient = new BraintreeClient(context, clientTokenProvider, sessionId, IntegrationType.DROP_IN);
+        } else {
+            braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
+        }
+
         return new DropInClientParams()
+                .activity(activity)
+                .lifecycle(lifecycle)
                 .dropInRequest(dropInRequest)
                 .braintreeClient(braintreeClient)
                 .threeDSecureClient(new ThreeDSecureClient(braintreeClient))
@@ -66,7 +84,19 @@ public class DropInClient {
     }
 
     DropInClient(Context context, String authorization, String sessionId, DropInRequest dropInRequest) {
-        this(createDefaultParams(context, authorization, dropInRequest, sessionId));
+        this(createDefaultParams(context, authorization, null, dropInRequest, sessionId, null, null));
+    }
+
+    public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
+        this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, null, activity, activity.getLifecycle()));
+    }
+
+    DropInClient(FragmentActivity activity, DropInRequest dropInRequest, String sessionId, ClientTokenProvider clientTokenProvider) {
+        this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, sessionId, activity, activity.getLifecycle()));
+    }
+
+    public DropInClient(Fragment fragment, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
+        this(createDefaultParams(fragment.requireActivity(), null, clientTokenProvider, dropInRequest, null, fragment.requireActivity(), fragment.getLifecycle()));
     }
 
     @VisibleForTesting
@@ -82,10 +112,30 @@ public class DropInClient {
         this.unionPayClient = params.getUnionPayClient();
         this.dataCollector = params.getDataCollector();
         this.dropInSharedPreferences = params.getDropInSharedPreferences();
+
+        FragmentActivity activity = params.getActivity();
+        Lifecycle lifecycle = params.getLifecycle();
+        if (activity != null && lifecycle != null) {
+            addObserver(activity, lifecycle);
+        }
     }
 
-    Authorization getAuthorization() {
-        return braintreeClient.getAuthorization();
+    private void addObserver(@NonNull FragmentActivity activity, @NonNull Lifecycle lifecycle) {
+        observer = new DropInLifecycleObserver(activity.getActivityResultRegistry(), this);
+        lifecycle.addObserver(observer);
+    }
+
+    /**
+     * Add a {@link DropInListener} to your client to receive results or errors from DropIn.
+     *
+     * @param listener a {@link DropInListener}
+     */
+    public void setListener(DropInListener listener) {
+        this.listener = listener;
+    }
+
+    void getAuthorization(AuthorizationCallback callback) {
+        braintreeClient.getAuthorization(callback);
     }
 
     void getConfiguration(ConfigurationCallback callback) {
@@ -317,7 +367,7 @@ public class DropInClient {
             if (!configuration.isUnionPayEnabled()) {
                 supportedCardTypes.remove(CARD_TYPE_UNION_PAY);
             }
-            if (supportedCardTypes.size() > 0) { 
+            if (supportedCardTypes.size() > 0) {
                 availablePaymentMethods.add(DropInPaymentMethod.UNKNOWN);
             }
         }
@@ -354,21 +404,42 @@ public class DropInClient {
     /**
      * Called to launch a {@link DropInActivity}
      *
-     * @param activity the current {@link FragmentActivity}
+     * @param activity    the current {@link FragmentActivity}
      * @param requestCode the request code for the activity that will be launched
      */
     public void launchDropInForResult(FragmentActivity activity, int requestCode) {
-        Bundle dropInRequestBundle = new Bundle();
-        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
-        Intent intent = new Intent(activity, DropInActivity.class)
-                .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
-                .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
-                .putExtra(EXTRA_AUTHORIZATION, braintreeClient.getAuthorization().toString());
-        activity.startActivityForResult(intent, requestCode);
+        getAuthorization(new AuthorizationCallback() {
+            @Override
+            public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception authorizationError) {
+                if (authorization != null) {
+                    if (observer != null) {
+                        DropInIntentData intentData =
+                                new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
+                        observer.launch(intentData);
+                    } else {
+                        Bundle dropInRequestBundle = new Bundle();
+                        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
+                        Intent intent = new Intent(activity, DropInActivity.class)
+                                .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
+                                .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
+                                .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
+                        activity.startActivityForResult(intent, requestCode);
+                    }
+                } else if (authorizationError != null) {
+                    if (listener != null) {
+                        listener.onDropInFailure(authorizationError);
+                    } else {
+                        Intent intent = new Intent(activity, DropInActivity.class)
+                                .putExtra(EXTRA_AUTHORIZATION_ERROR, authorizationError);
+                        activity.startActivityForResult(intent, requestCode);
+                    }
+                }
+            }
+        });
     }
 
     /**
-     * Called to get a user's existing payment method, if any. 
+     * Called to get a user's existing payment method, if any.
      * The payment method returned is not guaranteed to be the most recently added payment method.
      * If your user already has an existing payment method, you may not need to show Drop-In.
      * <p>
@@ -378,32 +449,43 @@ public class DropInClient {
      * @param activity the current {@link FragmentActivity}
      * @param callback callback for handling result
      */
-     // NEXT_MAJOR_VERSION: - update this function name to more accurately represent the behavior of the function
+    // NEXT_MAJOR_VERSION: - update this function name to more accurately represent the behavior of the function
     public void fetchMostRecentPaymentMethod(FragmentActivity activity, final FetchMostRecentPaymentMethodCallback callback) {
-        boolean isClientToken = braintreeClient.getAuthorization() instanceof ClientToken;
-        if (!isClientToken) {
-            InvalidArgumentException error = new InvalidArgumentException("DropInClient#fetchMostRecentPaymentMethods() must " +
-                    "be called with a client token");
-            callback.onResult(null, error);
-            return;
-        }
+        getAuthorization(new AuthorizationCallback() {
+            @Override
+            public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception authError) {
+                if (authorization != null) {
 
-        DropInPaymentMethod lastUsedPaymentMethod =
-            dropInSharedPreferences.getLastUsedPaymentMethod(activity);
+                    boolean isClientToken = authorization instanceof ClientToken;
+                    if (!isClientToken) {
+                        InvalidArgumentException clientTokenRequiredError =
+                                new InvalidArgumentException("DropInClient#fetchMostRecentPaymentMethods() must " +
+                                        "be called with a client token");
+                        callback.onResult(null, clientTokenRequiredError);
+                        return;
+                    }
 
-        if (lastUsedPaymentMethod == DropInPaymentMethod.GOOGLE_PAY) {
-            googlePayClient.isReadyToPay(activity, (isReadyToPay, error) -> {
-                if (isReadyToPay) {
-                    DropInResult result = new DropInResult();
-                    result.setPaymentMethodType(DropInPaymentMethod.GOOGLE_PAY);
-                    callback.onResult(result, null);
+                    DropInPaymentMethod lastUsedPaymentMethod =
+                            dropInSharedPreferences.getLastUsedPaymentMethod(activity);
+
+                    if (lastUsedPaymentMethod == DropInPaymentMethod.GOOGLE_PAY) {
+                        googlePayClient.isReadyToPay(activity, (isReadyToPay, isReadyToPayError) -> {
+                            if (isReadyToPay) {
+                                DropInResult result = new DropInResult();
+                                result.setPaymentMethodType(DropInPaymentMethod.GOOGLE_PAY);
+                                callback.onResult(result, null);
+                            } else {
+                                getPaymentMethodNonces(callback);
+                            }
+                        });
+                    } else {
+                        getPaymentMethodNonces(callback);
+                    }
                 } else {
-                    getPaymentMethodNonces(callback);
+                    callback.onResult(null, authError);
                 }
-            });
-        } else {
-            getPaymentMethodNonces(callback);
-        }
+            }
+        });
     }
 
     private void getPaymentMethodNonces(final FetchMostRecentPaymentMethodCallback callback) {
@@ -453,5 +535,16 @@ public class DropInClient {
     void setLastUsedPaymentMethodType(Context context, PaymentMethodNonce paymentMethodNonce) {
         Context appContext = context.getApplicationContext();
         dropInSharedPreferences.setLastUsedPaymentMethod(appContext, paymentMethodNonce);
+    }
+
+    void onDropInResult(DropInResult dropInResult) {
+        if (dropInResult != null) {
+            Exception error = dropInResult.getError();
+            if (error != null) {
+                listener.onDropInFailure(error);
+            } else {
+                listener.onDropInSuccess(dropInResult);
+            }
+        }
     }
 }
