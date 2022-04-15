@@ -94,11 +94,11 @@ public class MainActivity extends BaseActivity implements DropInListener {
 
         if (Settings.useTokenizationKey(this)) {
             String tokenizationKey = Settings.getEnvironmentTokenizationKey(this);
-            dropInClient = new DropInClient(this, tokenizationKey, dropInRequest);
+            dropInClient = new DropInClient(this, dropInRequest, tokenizationKey);
         } else {
             dropInClient = new DropInClient(this, dropInRequest, new DemoClientTokenProvider(this));
-            dropInClient.setListener(this);
         }
+        dropInClient.setListener(this);
 
         dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
             if (dropInResult != null) {
@@ -177,20 +177,6 @@ public class MainActivity extends BaseActivity implements DropInListener {
             }
 
             purchaseButton.setEnabled(true);
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (resultCode == RESULT_OK) {
-            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-            displayResult(result);
-            purchaseButton.setEnabled(true);
-        } else if (resultCode != RESULT_CANCELED) {
-            showDialog(((Exception) data.getSerializableExtra(DropInResult.EXTRA_ERROR))
-                    .getMessage());
         }
     }
 

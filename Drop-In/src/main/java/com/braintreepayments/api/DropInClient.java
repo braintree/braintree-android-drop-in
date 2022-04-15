@@ -83,6 +83,18 @@ public class DropInClient {
         this(context, authorization, null, dropInRequest);
     }
 
+    public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, String authorization) {
+        this(activity, activity.getLifecycle(), authorization, null, dropInRequest);
+    }
+
+    public DropInClient(Fragment fragment, DropInRequest dropInRequest, String authorization) {
+        this(fragment.requireActivity(), fragment.getLifecycle(), authorization, null, dropInRequest);
+    }
+
+    DropInClient(FragmentActivity activity, Lifecycle lifecycle, String authorization, String sessionId, DropInRequest dropInRequest) {
+        this(createDefaultParams(activity, authorization, null, dropInRequest, sessionId, activity, lifecycle));
+    }
+
     DropInClient(Context context, String authorization, String sessionId, DropInRequest dropInRequest) {
         this(createDefaultParams(context, authorization, null, dropInRequest, sessionId, null, null));
     }
@@ -408,31 +420,28 @@ public class DropInClient {
      * @param requestCode the request code for the activity that will be launched
      */
     public void launchDropInForResult(FragmentActivity activity, int requestCode) {
-        getAuthorization(new AuthorizationCallback() {
-            @Override
-            public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception authorizationError) {
-                if (authorization != null) {
-                    if (observer != null) {
-                        DropInIntentData intentData =
-                                new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
-                        observer.launch(intentData);
-                    } else {
-                        Bundle dropInRequestBundle = new Bundle();
-                        dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
-                        Intent intent = new Intent(activity, DropInActivity.class)
-                                .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
-                                .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
-                                .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
-                        activity.startActivityForResult(intent, requestCode);
-                    }
-                } else if (authorizationError != null) {
-                    if (listener != null) {
-                        listener.onDropInFailure(authorizationError);
-                    } else {
-                        Intent intent = new Intent(activity, DropInActivity.class)
-                                .putExtra(EXTRA_AUTHORIZATION_ERROR, authorizationError);
-                        activity.startActivityForResult(intent, requestCode);
-                    }
+        getAuthorization((authorization, authorizationError) -> {
+            if (authorization != null) {
+                if (observer != null) {
+                    DropInIntentData intentData =
+                            new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
+                    observer.launch(intentData);
+                } else {
+                    Bundle dropInRequestBundle = new Bundle();
+                    dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
+                    Intent intent = new Intent(activity, DropInActivity.class)
+                            .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
+                            .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
+                            .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
+                    activity.startActivityForResult(intent, requestCode);
+                }
+            } else if (authorizationError != null) {
+                if (listener != null) {
+                    listener.onDropInFailure(authorizationError);
+                } else {
+                    Intent intent = new Intent(activity, DropInActivity.class)
+                            .putExtra(EXTRA_AUTHORIZATION_ERROR, authorizationError);
+                    activity.startActivityForResult(intent, requestCode);
                 }
             }
         });
