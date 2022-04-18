@@ -5,6 +5,7 @@ import static android.view.View.VISIBLE;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -95,18 +96,19 @@ public class MainActivity extends BaseActivity implements DropInListener {
         if (Settings.useTokenizationKey(this)) {
             String tokenizationKey = Settings.getEnvironmentTokenizationKey(this);
             dropInClient = new DropInClient(this, dropInRequest, tokenizationKey);
+            dropInClient.setListener(this);
+            addPaymentMethodButton.setVisibility(VISIBLE);
         } else {
             dropInClient = new DropInClient(this, dropInRequest, new DemoClientTokenProvider(this));
+            dropInClient.setListener(this);
+            dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
+                if (dropInResult != null) {
+                    handleDropInResult(dropInResult);
+                } else {
+                    addPaymentMethodButton.setVisibility(VISIBLE);
+                }
+            });
         }
-        dropInClient.setListener(this);
-
-        dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
-            if (dropInResult != null) {
-                handleDropInResult(dropInResult);
-            } else {
-                addPaymentMethodButton.setVisibility(VISIBLE);
-            }
-        });
     }
 
     @Override
@@ -178,15 +180,6 @@ public class MainActivity extends BaseActivity implements DropInListener {
 
             purchaseButton.setEnabled(true);
         }
-    }
-
-    @Override
-    protected void reset() {
-        purchaseButton.setEnabled(false);
-
-        addPaymentMethodButton.setVisibility(GONE);
-
-        clearNonce();
     }
 
     private void displayResult(DropInResult dropInResult) {
@@ -278,6 +271,13 @@ public class MainActivity extends BaseActivity implements DropInListener {
 
     @Override
     public void onDropInFailure(@NonNull Exception error) {
-        showDialog(error.getMessage());
+        onError(error);
+    }
+
+    private void onError(Exception error) {
+        Log.d(getClass().getSimpleName(), "Error received (" + error.getClass() + "): "  + error.getMessage());
+        Log.d(getClass().getSimpleName(), error.toString());
+
+        showDialog("An error occurred (" + error.getClass() + "): " + error.getMessage());
     }
 }
