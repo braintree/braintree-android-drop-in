@@ -79,16 +79,62 @@ public class DropInClient {
                 .dropInSharedPreferences(DropInSharedPreferences.getInstance());
     }
 
+    /**
+     * Deprecated.
+     *
+     * Create a new instance of {@link DropInClient}.
+     *
+     * @param context a {@link Context}
+     * @param authorization a Tokenization Key or Client Token authorization String.
+     * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
+     */
+    @Deprecated
     public DropInClient(Context context, String authorization, DropInRequest dropInRequest) {
         this(context, authorization, null, dropInRequest);
     }
 
+    /**
+     * Create a new instance of {@link DropInClient} from within an Activity using a Tokenization Key authorization.
+     *
+     * @param activity a {@link FragmentActivity}
+     * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
+     * @param authorization a Tokenization Key authorization string
+     */
     public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, String authorization) {
         this(activity, activity.getLifecycle(), authorization, null, dropInRequest);
     }
 
+    /**
+     * Create a new instance of {@link DropInClient} from within a Fragment using a Tokenization Key authorization.
+     *
+     * @param fragment a {@link Fragment}
+     * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
+     * @param authorization a Tokenization Key authorization string
+     */
     public DropInClient(Fragment fragment, DropInRequest dropInRequest, String authorization) {
         this(fragment.requireActivity(), fragment.getLifecycle(), authorization, null, dropInRequest);
+    }
+
+    /**
+     * Create a new instance of {@link DropInClient} from within an Activity using a {@link ClientTokenProvider} to fetch authorization.
+     *
+     * @param activity a {@link FragmentActivity}
+     * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
+     * @param clientTokenProvider a {@link ClientTokenProvider}
+     */
+    public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
+        this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, null, activity, activity.getLifecycle()));
+    }
+
+    /**
+     * Create a new instance of {@link DropInClient} from within a Fragment using a {@link ClientTokenProvider} to fetch authorization.
+     *
+     * @param fragment a {@link FragmentActivity}
+     * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
+     * @param clientTokenProvider a {@link ClientTokenProvider}
+     */
+    public DropInClient(Fragment fragment, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
+        this(createDefaultParams(fragment.requireActivity(), null, clientTokenProvider, dropInRequest, null, fragment.requireActivity(), fragment.getLifecycle()));
     }
 
     DropInClient(FragmentActivity activity, Lifecycle lifecycle, String authorization, String sessionId, DropInRequest dropInRequest) {
@@ -99,16 +145,8 @@ public class DropInClient {
         this(createDefaultParams(context, authorization, null, dropInRequest, sessionId, null, null));
     }
 
-    public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
-        this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, null, activity, activity.getLifecycle()));
-    }
-
     DropInClient(FragmentActivity activity, DropInRequest dropInRequest, String sessionId, ClientTokenProvider clientTokenProvider) {
         this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, sessionId, activity, activity.getLifecycle()));
-    }
-
-    public DropInClient(Fragment fragment, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
-        this(createDefaultParams(fragment.requireActivity(), null, clientTokenProvider, dropInRequest, null, fragment.requireActivity(), fragment.getLifecycle()));
     }
 
     @VisibleForTesting
@@ -139,6 +177,7 @@ public class DropInClient {
 
     /**
      * Add a {@link DropInListener} to your client to receive results or errors from DropIn.
+     * Must be used with a {@link DropInClient} constructed with a {@link Fragment} or {@link FragmentActivity}.
      *
      * @param listener a {@link DropInListener}
      */

@@ -381,6 +381,8 @@ public class DropInActivity extends AppCompatActivity {
         if (isBottomSheetVisible()) {
             // when the bottom sheet transitions to the "HIDDEN" state; the activity will finish
             dropInViewModel.setBottomSheetState(BottomSheetState.HIDE_REQUESTED);
+            // TODO: investigate if the bottom sheet state is necessary and why the below line is needed to finish from the 3DS2 flow
+            finishDropInWithPendingResult(DropInExitTransition.NO_ANIMATION);
         } else {
             // no need to animate activity hidden since bottom sheet is not visible
             finishDropInWithPendingResult(DropInExitTransition.NO_ANIMATION);
