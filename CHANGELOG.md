@@ -3,7 +3,8 @@
 ## unreleased
 * Update Vault Manager inline documentation 
 * Add `ClientTokenProvider` interface for asynchronously fetching client token authorization
-* Add new `DropInClient` constructors that accept `ClientTokenProvider`
+* Add new `DropInClient` constructors that accept `ClientTokenProvider` or tokenization key string
+* Deprecate `DropInClient` constructor that accepts `Context` in favor of new constructors
 * Bump braintree_android module dependency versions to `4.10.1`
 
 ## 6.0.2

@@ -27,8 +27,6 @@ import retrofit.client.Response;
 public abstract class BaseActivity extends AppCompatActivity implements OnRequestPermissionsResultCallback,
         ActionBar.OnNavigationListener {
 
-    protected String customerId;
-
     private boolean actionBarSetup;
 
     @Override
@@ -44,36 +42,12 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
             setupActionBar();
             actionBarSetup = true;
         }
-
-        handleAuthorizationState();
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        handleAuthorizationState();
     }
-
-    private void handleAuthorizationState() {
-        if (!TextUtils.equals(customerId, Settings.getCustomerId(this))) {
-            performReset();
-        }
-    }
-
-    public void onError(Exception error) {
-        Log.d(getClass().getSimpleName(), "Error received (" + error.getClass() + "): "  + error.getMessage());
-        Log.d(getClass().getSimpleName(), error.toString());
-
-        showDialog("An error occurred (" + error.getClass() + "): " + error.getMessage());
-    }
-
-    private void performReset() {
-        customerId = Settings.getCustomerId(this);
-
-        reset();
-    }
-
-    protected abstract void reset();
 
     protected void showDialog(String message) {
         new AlertDialog.Builder(this)
@@ -103,7 +77,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
     public boolean onNavigationItemSelected(int itemPosition, long itemId) {
         if (Settings.getEnvironment(this) != itemPosition) {
             Settings.setEnvironment(this, itemPosition);
-            performReset();
         }
         return true;
     }
@@ -119,9 +92,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnReques
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                return true;
-            case R.id.reset:
-                performReset();
                 return true;
             case R.id.settings:
                 startActivity(new Intent(this, SettingsActivity.class));

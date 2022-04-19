@@ -75,7 +75,7 @@ public class DropInActivity extends AppCompatActivity {
             String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
             String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
             DropInRequest dropInRequest = getDropInRequest(intent);
-            dropInClient = new DropInClient(this, authorization, sessionId, dropInRequest);
+            dropInClient = new DropInClient(this, getLifecycle(), authorization, sessionId, dropInRequest);
         }
 
         alertPresenter = new AlertPresenter();
