@@ -6,6 +6,7 @@
 * Add new `DropInClient` constructors that accept `ClientTokenProvider` or tokenization key string
 * Deprecate `DropInClient` constructor that accepts `Context` in favor of new constructors
 * Bump braintree_android module dependency versions to `4.10.1`
+* Bump `card-form` to `5.4.0`
 
 ## 6.0.2
 
