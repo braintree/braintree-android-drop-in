@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.1.0
 * Update Vault Manager inline documentation 
 * Add `ClientTokenProvider` interface for asynchronously fetching client token authorization
 * Add new `DropInClient` constructors that accept `ClientTokenProvider` or tokenization key string
