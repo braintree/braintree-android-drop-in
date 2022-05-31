@@ -65,10 +65,10 @@ jobs:
       - name: Change Version
         run: |
           ./gradlew -PversionParam=${{ github.event.inputs.version }} changeReleaseVersion
-      - name: Publish Core
+      - name: Publish Drop-in
         uses: ./.github/actions/publish_module
         with:
-          module: Core
+          module: Drop-In
           sonatype_usr: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           sonatype_pwd: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           signing_key_id: ${{ secrets.SIGNING_KEY_ID }}
