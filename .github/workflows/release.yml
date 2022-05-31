@@ -46,7 +46,7 @@ jobs:
       - name: Unit Tests
         run: ./gradlew --stacktrace testRelease
 #  publish:
-#    needs: [ unit_test ]
+#    needs: [ unit_test, build_aar ]
 #    name: Publish Drop-in
 #    runs-on: ubuntu-latest
 #    steps:
