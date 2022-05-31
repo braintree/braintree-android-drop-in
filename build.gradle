@@ -59,7 +59,7 @@ nexusStaging {
 task changeReleaseVersion {
     doLast {
         def gradleFile = new File('build.gradle')
-        def gradleFileText = gradleFile.text.replaceFirst("version '\\d+\\.\\d+\\.\\d+\\-(.*)'", "version '" + versionParam + "'")
+        def gradleFileText = gradleFile.text.replaceFirst("\\nversion '\\d+\\.\\d+\\.\\d+(-.*)?'", "\nversion '" + versionParam + "'")
         gradleFile.write(gradleFileText)
     }
 }
