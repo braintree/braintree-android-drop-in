@@ -66,8 +66,8 @@ jobs:
         run: |
           ./gradlew -PversionParam=${{ github.event.inputs.version }} changeReleaseVersion
       - name: Change README Version
-          run: |
-            ./gradlew -PversionParam=${{ github.event.inputs.version }} changeREADMEVersion
+        run: |
+          ./gradlew -PversionParam=${{ github.event.inputs.version }} changeREADMEVersion
       - name: Publish Drop-in
         uses: ./.github/actions/publish_module
         with:

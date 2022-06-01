@@ -86,11 +86,10 @@ task incrementSNAPSHOTVersion {
 task incrementVersionCode {
     doLast {
         def gradleFile = new File('build.gradle')
-//        def versionText = gradleFile.text.find("versionCode = '\\d+\\'")
-//        def params = versionText.split("=")
-//        def versionCodeInt = params[1].trim().toInteger()
-
-        def gradleFileText = gradleFile.text.replaceFirst("versionCode = '\\d+\\'", "versionCode = '" + 100 + "'")
+        def versionText = gradleFile.text.find("versionCode = \\d+")
+        def params = versionText.split("=")
+        def newVersionCode = params[1].trim().toInteger() + 1
+        def gradleFileText = gradleFile.text.replaceFirst("versionCode = \\d+", "versionCode = " + newVersionCode)
         gradleFile.write(gradleFileText)
     }
 }
