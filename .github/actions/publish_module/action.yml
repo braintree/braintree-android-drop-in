@@ -1,3 +1,4 @@
+name: 'Publish Module'
 description: 'Publishes module'
 inputs:
   module:
