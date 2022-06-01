@@ -56,7 +56,7 @@ nexusStaging {
     password = System.env['SONATYPE_PASSWORD']
 }
 
-task changeReleaseVersion {
+task changeGradleReleaseVersion {
     doLast {
         def gradleFile = new File('build.gradle')
         def gradleFileText = gradleFile.text.replaceFirst("\\nversion '\\d+\\.\\d+\\.\\d+(-.*)?'", "\nversion '" + versionParam + "'")
@@ -66,9 +66,17 @@ task changeReleaseVersion {
 
 task changeREADMEVersion {
     doLast {
-        def gradleFile = new File('README.md')
-        def gradleFileText = gradleFile.text.replaceFirst("com.braintreepayments.api:drop-in:\\d+\\.\\d+\\.\\d+(-.*)?'", "com.braintreepayments.api:drop-in:" + versionParam + "'")
-        gradleFile.write(gradleFileText)
+        def readmeFile = new File('README.md')
+        def readmeFileText = readmeFile.text.replaceFirst("com.braintreepayments.api:drop-in:\\d+\\.\\d+\\.\\d+(-.*)?'", "com.braintreepayments.api:drop-in:" + versionParam + "'")
+        readmeFile.write(readmeFileText)
+    }
+}
+
+task updateCHANGELOGVersion {
+    doLast {
+        def changelogFile = new File('CHANGELOG.md')
+        def changelogFileText = changelogFile.text.replaceFirst("## unreleased", "## " + versionParam)
+        changelogFile.write(changelogFileText)
     }
 }
 
