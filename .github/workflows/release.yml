@@ -95,3 +95,22 @@ jobs:
 #          ./gradlew incrementVersionCode
 #          git commit -am 'Prepare for development'
 #          git push origin master ${{ github.event.inputs.version }}
+
+  create_github_release:
+    needs: [ publish ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Save changelog entries to a file
+        run: |
+          sed -e '1,/##/d' -e '/##/,$d' CHANGELOG.md > changelog_entries.md
+      - name: Create GitHub release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.version }}
+          release_name: ${{ github.event.inputs.version }}
+          body_path: changelog_entries.md
+          draft: false
+          prerelease: false

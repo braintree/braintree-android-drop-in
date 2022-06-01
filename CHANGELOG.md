@@ -1,5 +1,8 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+* Move release process to GitHub Actions
+
 ## 6.1.0
 * Update Vault Manager inline documentation 
 * Add `ClientTokenProvider` interface for asynchronously fetching client token authorization
