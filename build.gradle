@@ -63,3 +63,11 @@ task changeReleaseVersion {
         gradleFile.write(gradleFileText)
     }
 }
+
+task changeREADMEVersion {
+    doLast {
+        def gradleFile = new File('README.md')
+        def gradleFileText = gradleFile.text.replaceFirst(":drop-in:\\d+\\.\\d+\\.\\d+(-.*)?'", "com.braintreepayments.api:drop-in:" + versionParam + "'")
+        gradleFile.write(gradleFileText)
+    }
+}
