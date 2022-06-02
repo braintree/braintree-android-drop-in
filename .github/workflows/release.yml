@@ -9,111 +9,109 @@ env:
   SIGNING_KEY_FILE_PATH: /home/runner/secretKey.gpg
 jobs:
   #First we build
-  build_aar:
-    name: Build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-      - name: Set up Java 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11.0.10'
-          distribution: 'zulu'
-      #After decoding the secret key, place the file in ~ /. Gradle/ secring.gpg
-      - name: Decode Signing Key
-        uses: ./.github/actions/decode_signing_key_action
-        with:
-          signing_key_file: ${{ secrets.SIGNING_KEY_FILE }}
-          signing_file_path: ${{ env.SIGNING_KEY_FILE_PATH }}
-      - name: Assemble
-        run: ./gradlew --stacktrace assemble
-        env:
-          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
-          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
-          SIGNING_KEY_FILE: ${{ env.SIGNING_KEY_FILE_PATH }}
-  unit_test:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-      - name: Set up Java 11
-        uses: actions/setup-java@v2
-        with:
-          java-version: '11.0.10'
-          distribution: 'zulu'
-      - name: Unit Tests
-        run: ./gradlew --stacktrace testRelease
-  publish:
-    needs: [ unit_test, build_aar ]
-    name: Publish Drop-in
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-      - name: Set up Java 11
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11.0.10'
-          distribution: 'zulu'
-      - name: Decode Signing Key
-        uses: ./.github/actions/decode_signing_key_action
-        with:
-          signing_key_file: ${{ secrets.SIGNING_KEY_FILE }}
-          signing_file_path: ${{ env.SIGNING_KEY_FILE_PATH }}
-      - name: Update Versions
-        uses: ./.github/actions/update_versions
-        with:
-          version: ${{ github.event.inputs.version }}
-      - name: Publish Drop-in
-        uses: ./.github/actions/publish_module
-        with:
-          module: Drop-In
-          sonatype_usr: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
-          sonatype_pwd: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
-          signing_key_id: ${{ secrets.SIGNING_KEY_ID }}
-          signing_key_pwd: ${{ secrets.SIGNING_KEY_PASSWORD }}
-          signing_key_file: ${{ env.SIGNING_KEY_FILE_PATH }}
+#  build_aar:
+#    name: Build
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v2
+#      - name: Set up Java 11
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '11.0.10'
+#          distribution: 'zulu'
+#      #After decoding the secret key, place the file in ~ /. Gradle/ secring.gpg
+#      - name: Decode Signing Key
+#        uses: ./.github/actions/decode_signing_key_action
+#        with:
+#          signing_key_file: ${{ secrets.SIGNING_KEY_FILE }}
+#          signing_file_path: ${{ env.SIGNING_KEY_FILE_PATH }}
+#      - name: Assemble
+#        run: ./gradlew --stacktrace assemble
+#        env:
+#          SIGNING_KEY_ID: ${{ secrets.SIGNING_KEY_ID }}
+#          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+#          SIGNING_KEY_FILE: ${{ env.SIGNING_KEY_FILE_PATH }}
+#  unit_test:
+#    name: Unit Tests
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v2
+#      - name: Set up Java 11
+#        uses: actions/setup-java@v2
+#        with:
+#          java-version: '11.0.10'
+#          distribution: 'zulu'
+#      - name: Unit Tests
+#        run: ./gradlew --stacktrace testRelease
+#  publish:
+#    needs: [ unit_test, build_aar ]
+#    name: Publish Drop-in
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v2
+#      - name: Set up Java 11
+#        uses: actions/setup-java@v3
+#        with:
+#          java-version: '11.0.10'
+#          distribution: 'zulu'
+#      - name: Decode Signing Key
+#        uses: ./.github/actions/decode_signing_key_action
+#        with:
+#          signing_key_file: ${{ secrets.SIGNING_KEY_FILE }}
+#          signing_file_path: ${{ env.SIGNING_KEY_FILE_PATH }}
+#      - name: Update Versions
+#        uses: ./.github/actions/update_versions
+#        with:
+#          version: ${{ github.event.inputs.version }}
+#      - name: Publish Drop-in
+#        uses: ./.github/actions/publish_module
+#        with:
+#          module: Drop-In
+#          sonatype_usr: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
+#          sonatype_pwd: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
+#          signing_key_id: ${{ secrets.SIGNING_KEY_ID }}
+#          signing_key_pwd: ${{ secrets.SIGNING_KEY_PASSWORD }}
+#          signing_key_file: ${{ env.SIGNING_KEY_FILE_PATH }}
   bump_version:
-    needs: [ publish ]
+    needs: [ ]
     name: Bump Version
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-      - name: Set github user
+      - name: Set GitHub User
         uses: ./.github/actions/set_github_user
       - name: Update Version
         run: |
           ./gradlew -PversionParam=${{ github.event.inputs.version }} changeReleaseVersion
           ./gradlew -PversionParam=${{ github.event.inputs.version }} changeREADMEVersion
+          ./gradlew -PversionParam=${{ github.event.inputs.version }} changeMigrationGuideVersion
           ./gradlew -PversionParam=${{ github.event.inputs.version }} updateCHANGELOGVersion
-          git commit -am 'Release ${{ github.event.inputs.version }}'
-          git tag ${{ github.event.inputs.version }} -a -m 'Release ${{ github.event.inputs.version }}'
-
           ./gradlew -PversionParam=${{ github.event.inputs.version }} incrementSNAPSHOTVersion
           ./gradlew incrementVersionCode
-          git commit -am 'Prepare for development'
-          git push origin master ${{ github.event.inputs.version }}
-  create_github_release:
-    needs: [ bump_version ]
-    name: Create GitHub Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v2
-      - name: Save changelog entries to a file
-        run: |
-          sed -e '1,/##/d' -e '/##/,$d' CHANGELOG.md > changelog_entries.md
-      - name: Create GitHub release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.event.inputs.version }}
-          release_name: ${{ github.event.inputs.version }}
-          body_path: changelog_entries.md
-          draft: false
-          prerelease: false
+          git commit -am 'Test version updates'
+          git push origin github-actions-release
+#  create_github_release:
+#    needs: [ bump_version ]
+#    name: Create GitHub Release
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout Repository
+#        uses: actions/checkout@v2
+#      - name: Save changelog entries to a file
+#        run: |
+#          sed -e '1,/##/d' -e '/##/,$d' CHANGELOG.md > changelog_entries.md
+#      - name: Create GitHub release
+#        id: create_release
+#        uses: actions/create-release@v1
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          tag_name: ${{ github.event.inputs.version }}
+#          release_name: ${{ github.event.inputs.version }}
+#          body_path: changelog_entries.md
+#          draft: false
+#          prerelease: false

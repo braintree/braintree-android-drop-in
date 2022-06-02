@@ -72,6 +72,14 @@ task changeREADMEVersion {
     }
 }
 
+task changeMigrationGuideVersion {
+    doLast {
+        def migrationGuideFile = new File('v6_MIGRATION_GUIDE.md')
+        def migrationGuideFileText = migrationGuideFile.text.replaceAll(":\\d+\\.\\d+\\.\\d+(-.*)?'", ":" + versionParam + "'")
+        migrationGuideFile.write(migrationGuideFileText)
+    }
+}
+
 task updateCHANGELOGVersion {
     doLast {
         def changelogFile = new File('CHANGELOG.md')
