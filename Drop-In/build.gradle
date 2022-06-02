@@ -5,6 +5,10 @@ plugins {
     id 'kotlin-android'
 }
 
+ext["signing.keyId"] = System.getenv('SIGNING_KEY_ID') ?: ''
+ext["signing.password"] = System.getenv('SIGNING_KEY_PASSWORD') ?: ''
+ext["signing.secretKeyRingFile"] = System.getenv('SIGNING_KEY_FILE') ?: ''
+
 def LOCALHOST_IP = System.properties['LOCALHOST_IP'] ?: '"10.0.2.2"';
 def GATEWAY_IP = System.properties['GATEWAY_IP'] ?: '"10.0.2.2"';
 def GATEWAY_PORT = System.properties['GATEWAY_PORT'] ?: '"3000"';
