@@ -98,8 +98,10 @@ jobs:
   create_github_release:
     needs: [ ]
     name: Create GitHub Release
-    runs-on: macos-11
+    runs-on: ubuntu-latest
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
       - name: Save changelog entries to a file
         run: |
           sed -e '1,/##/d' -e '/##/,$d' CHANGELOG.md > changelog_entries.md
