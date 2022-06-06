@@ -30,19 +30,22 @@ class DropInActivityResultContract extends ActivityResultContract<DropInIntentDa
 
     @Override
     public DropInResult parseResult(int resultCode, @Nullable Intent intent) {
-        if (intent != null) {
-            if (resultCode == AppCompatActivity.RESULT_OK) {
+        if (resultCode == AppCompatActivity.RESULT_OK) {
+            if (intent != null) {
                 return intent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-            } else if (resultCode == AppCompatActivity.RESULT_CANCELED) {
-                DropInResult userCanceledResult = new DropInResult();
-                userCanceledResult.setError(new UserCanceledException("User canceled DropIn."));
-                return userCanceledResult;
-            } else if (resultCode == AppCompatActivity.RESULT_FIRST_USER) {
+            }
+        } else if (resultCode == AppCompatActivity.RESULT_CANCELED) {
+            DropInResult userCanceledResult = new DropInResult();
+            userCanceledResult.setError(new UserCanceledException("User canceled DropIn."));
+            return userCanceledResult;
+        } else if (resultCode == AppCompatActivity.RESULT_FIRST_USER) {
+            if (intent != null) {
                 DropInResult errorResult = new DropInResult();
                 errorResult.setError((Exception) intent.getSerializableExtra(EXTRA_ERROR));
                 return errorResult;
             }
         }
+
         return null;
     }
 }

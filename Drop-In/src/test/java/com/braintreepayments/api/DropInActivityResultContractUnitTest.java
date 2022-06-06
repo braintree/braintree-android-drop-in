@@ -71,7 +71,7 @@ public class DropInActivityResultContractUnitTest {
     public void parseResult_whenResultIsCANCELED_returnsDropInResultWithUserCanceledError() {
         DropInActivityResultContract sut = new DropInActivityResultContract();
 
-        DropInResult dropInResult = sut.parseResult(RESULT_CANCELED, new Intent());
+        DropInResult dropInResult = sut.parseResult(RESULT_CANCELED, null);
 
         assertNotNull(dropInResult);
         UserCanceledException error = (UserCanceledException) dropInResult.getError();
