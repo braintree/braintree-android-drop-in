@@ -1,6 +1,11 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Fix issue where `UserCanceledException` was not being sent on bottom sheet dismissal.
+
 ## 6.1.0
+
 * Update Vault Manager inline documentation 
 * Add `ClientTokenProvider` interface for asynchronously fetching client token authorization
 * Add new `DropInClient` constructors that accept `ClientTokenProvider` or tokenization key string
@@ -17,6 +22,7 @@
 * Check if `BottomSheetPresenter` is null before unbinding in `BottomSheetFragment` (fixes #319)
 
 ## 6.0.0
+
 * Bump braintree_android module dependency versions to `4.7.0`
 * Bump `card-form` to `5.3.0`
 * Localization
