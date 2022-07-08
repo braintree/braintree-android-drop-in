@@ -35,10 +35,6 @@ public class AnimatedButtonViewUnitTest {
         view = new AnimatedButtonView(activity, attributeSet);
     }
 
-    private int getViewVisibility(@IdRes int viewResId) {
-        return view.findViewById(viewResId).getVisibility();
-    }
-
     @Test
     public void showsButtonByDefault() {
         assertEquals(getViewVisibility(R.id.bt_button), View.VISIBLE);
@@ -89,5 +85,9 @@ public class AnimatedButtonViewUnitTest {
 
         assertEquals(getViewVisibility(R.id.bt_button), View.VISIBLE);
         assertEquals(getViewVisibility(R.id.bt_animated_button_loading_indicator), View.GONE);
+    }
+
+    private int getViewVisibility(@IdRes int viewResId) {
+        return view.findViewById(viewResId).getVisibility();
     }
 }
