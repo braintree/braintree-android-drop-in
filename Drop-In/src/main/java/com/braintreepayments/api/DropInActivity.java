@@ -536,9 +536,10 @@ public class DropInActivity extends AppCompatActivity {
 
     private boolean isBottomSheetVisible() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-
-        Fragment visibleFragment = fragments.get(Math.max(0, fragments.size() - 1));
-        return (visibleFragment.getTag() == BOTTOM_SHEET_TAG);
+        Fragment fragment = fragmentManager.findFragmentByTag(BOTTOM_SHEET_TAG);
+        if (fragment != null) {
+            return fragment.isVisible();
+        }
+        return false;
     }
 }
