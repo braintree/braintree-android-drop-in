@@ -109,7 +109,7 @@ public class DropInActivity extends AppCompatActivity {
             }
         });
 
-        showBottomSheet();
+        showBottomSheetIfNecessary();
     }
 
     @VisibleForTesting
@@ -324,12 +324,14 @@ public class DropInActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void showBottomSheet() {
-        if (shouldAddFragment(BOTTOM_SHEET_TAG)) {
+    private void showBottomSheetIfNecessary() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        int numFragments = fragmentManager.getFragments().size();
+        if (numFragments == 0 && shouldAddFragment(BOTTOM_SHEET_TAG)) {
             BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(dropInRequest);
             replaceExistingFragment(bottomSheetFragment, BOTTOM_SHEET_TAG);
+            dropInViewModel.setBottomSheetState(BottomSheetState.SHOW_REQUESTED);
         }
-        dropInViewModel.setBottomSheetState(BottomSheetState.SHOW_REQUESTED);
     }
 
     private void showCardDetailsFragment(final String cardNumber) {
