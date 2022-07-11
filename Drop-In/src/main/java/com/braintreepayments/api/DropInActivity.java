@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.braintreepayments.api.dropin.R;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.List;
+
 public class DropInActivity extends AppCompatActivity {
 
     private static final String ADD_CARD_TAG = "ADD_CARD";
@@ -325,9 +327,12 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void showBottomSheetIfNecessary() {
+        // fragment manager will restore entire backstack on configuration change; here, we only
+        // show the bottom sheet if no fragments are currently being displayed. This fixes an issue
+        // where a configuration change causes card tokenization to appear idle after it is complete
         FragmentManager fragmentManager = getSupportFragmentManager();
         int numFragments = fragmentManager.getFragments().size();
-        if (numFragments == 0 && shouldAddFragment(BOTTOM_SHEET_TAG)) {
+        if (numFragments == 0) {
             BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(dropInRequest);
             replaceExistingFragment(bottomSheetFragment, BOTTOM_SHEET_TAG);
             dropInViewModel.setBottomSheetState(BottomSheetState.SHOW_REQUESTED);
@@ -530,6 +535,10 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private boolean isBottomSheetVisible() {
-        return !shouldAddFragment(BOTTOM_SHEET_TAG);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+
+        Fragment visibleFragment = fragments.get(Math.max(0, fragments.size() - 1));
+        return (visibleFragment.getTag() == BOTTOM_SHEET_TAG);
     }
 }
