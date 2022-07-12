@@ -4,6 +4,7 @@ import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -28,6 +29,7 @@ import com.braintreepayments.api.PostalAddress;
 import com.braintreepayments.api.ThreeDSecureAdditionalInformation;
 import com.braintreepayments.api.ThreeDSecurePostalAddress;
 import com.braintreepayments.api.ThreeDSecureRequest;
+import com.braintreepayments.api.UserCanceledException;
 import com.braintreepayments.api.VenmoAccountNonce;
 import com.braintreepayments.api.VenmoPaymentMethodUsage;
 import com.braintreepayments.api.VenmoRequest;
@@ -57,6 +59,8 @@ public class MainActivity extends BaseActivity implements DropInListener {
 
     private boolean purchased = false;
 
+    private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +82,42 @@ public class MainActivity extends BaseActivity implements DropInListener {
                 nonce = savedInstanceState.getParcelable(KEY_NONCE);
             }
         }
+        configureDropInClient();
+        registerSharedPreferencesListener();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (purchased) {
+            purchased = false;
+            clearNonce();
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (nonce != null) {
+            outState.putParcelable(KEY_NONCE, nonce);
+        }
+    }
+
+    private void registerSharedPreferencesListener() {
+        sharedPreferenceChangeListener = (sharedPreferences, s) -> {
+            // unregister listener to prevent activity from being leaked
+            Settings.getPreferences(this)
+                    .unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+
+            // recreate activity when shared preferences change
+            recreate();
+        };
+        Settings.getPreferences(this)
+                .registerOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
+    }
+
+    private void configureDropInClient() {
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setGooglePayRequest(getGooglePayRequest());
         dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
@@ -108,24 +147,6 @@ public class MainActivity extends BaseActivity implements DropInListener {
                     addPaymentMethodButton.setVisibility(VISIBLE);
                 }
             });
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        if (purchased) {
-            purchased = false;
-            clearNonce();
-        }
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        if (nonce != null) {
-            outState.putParcelable(KEY_NONCE, nonce);
         }
     }
 
@@ -248,7 +269,7 @@ public class MainActivity extends BaseActivity implements DropInListener {
 
     private String formatAddress(PostalAddress address) {
         return address.getRecipientName() + " " + address.getStreetAddress() + " " +
-            address.getExtendedAddress() + " " + address.getLocality() + " " + address.getRegion() +
+                address.getExtendedAddress() + " " + address.getLocality() + " " + address.getRegion() +
                 " " + address.getPostalCode() + " " + address.getCountryCodeAlpha2();
     }
 
@@ -275,9 +296,12 @@ public class MainActivity extends BaseActivity implements DropInListener {
     }
 
     private void onError(Exception error) {
-        Log.d(getClass().getSimpleName(), "Error received (" + error.getClass() + "): "  + error.getMessage());
+        Log.d(getClass().getSimpleName(), "Error received (" + error.getClass() + "): " + error.getMessage());
         Log.d(getClass().getSimpleName(), error.toString());
 
-        showDialog("An error occurred (" + error.getClass() + "): " + error.getMessage());
+        boolean isUserCanceled = (error instanceof UserCanceledException);
+        if (!isUserCanceled) {
+            showDialog("An error occurred (" + error.getClass() + "): " + error.getMessage());
+        }
     }
 }
