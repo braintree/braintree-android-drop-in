@@ -15,6 +15,8 @@ import androidx.lifecycle.ViewModelProvider;
 import com.braintreepayments.api.dropin.R;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.List;
+
 public class DropInActivity extends AppCompatActivity {
 
     private static final String ADD_CARD_TAG = "ADD_CARD";
@@ -109,7 +111,7 @@ public class DropInActivity extends AppCompatActivity {
             }
         });
 
-        showBottomSheet();
+        showBottomSheetIfNecessary();
     }
 
     @VisibleForTesting
@@ -324,12 +326,17 @@ public class DropInActivity extends AppCompatActivity {
                 .commit();
     }
 
-    private void showBottomSheet() {
-        if (shouldAddFragment(BOTTOM_SHEET_TAG)) {
+    private void showBottomSheetIfNecessary() {
+        // fragment manager will restore entire backstack on configuration change; here, we only
+        // show the bottom sheet if no fragments are currently being displayed. This fixes an issue
+        // where a configuration change causes card tokenization to appear idle after it is complete
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        int numFragments = fragmentManager.getFragments().size();
+        if (numFragments == 0) {
             BottomSheetFragment bottomSheetFragment = BottomSheetFragment.from(dropInRequest);
             replaceExistingFragment(bottomSheetFragment, BOTTOM_SHEET_TAG);
+            dropInViewModel.setBottomSheetState(BottomSheetState.SHOW_REQUESTED);
         }
-        dropInViewModel.setBottomSheetState(BottomSheetState.SHOW_REQUESTED);
     }
 
     private void showCardDetailsFragment(final String cardNumber) {
@@ -528,6 +535,11 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private boolean isBottomSheetVisible() {
-        return !shouldAddFragment(BOTTOM_SHEET_TAG);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentByTag(BOTTOM_SHEET_TAG);
+        if (fragment != null) {
+            return fragment.isVisible();
+        }
+        return false;
     }
 }
