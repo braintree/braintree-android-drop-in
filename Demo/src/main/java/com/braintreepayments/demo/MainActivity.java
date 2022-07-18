@@ -110,6 +110,9 @@ public class MainActivity extends BaseActivity implements DropInListener {
             Settings.getPreferences(this)
                     .unregisterOnSharedPreferenceChangeListener(sharedPreferenceChangeListener);
 
+            // reset api client
+            DemoApplication.resetApiClient();
+
             // recreate activity when shared preferences change
             recreate();
         };
