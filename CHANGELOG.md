@@ -3,7 +3,8 @@
 ## unreleased
 
 * Check if BottomSheetFragment is visible using Android Fragment API (fixes #348)
-* Fix issue where `UserCanceledException` was not being sent on bottom sheet dismissal.
+* Fix issue where `UserCanceledException` was not being sent on bottom sheet dismissal (fixes #346)
+* Bump braintree_android module dependency versions to `4.12.0`
 
 ## 6.1.0
 
