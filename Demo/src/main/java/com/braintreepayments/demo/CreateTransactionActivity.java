@@ -7,10 +7,12 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.braintreepayments.api.CardNonce;
+import com.braintreepayments.api.PaymentMethod;
 import com.braintreepayments.api.PaymentMethodNonce;
 import com.braintreepayments.demo.models.Transaction;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -58,19 +60,25 @@ public class CreateTransactionActivity extends AppCompatActivity {
             }
         };
 
-        if (Settings.isThreeDSecureEnabled(this) && Settings.isThreeDSecureRequired(this)) {
-            DemoApplication.getApiClient(this).createTransaction(nonce.getString(),
-                    Settings.getThreeDSecureMerchantAccountId(this), true, callback);
-        } else if (Settings.isThreeDSecureEnabled(this)) {
-            DemoApplication.getApiClient(this).createTransaction(nonce.getString(),
-                    Settings.getThreeDSecureMerchantAccountId(this), callback);
-        } else if (nonce instanceof CardNonce && ((CardNonce) nonce).getCardType().equals("UnionPay")) {
-            DemoApplication.getApiClient(this).createTransaction(nonce.getString(),
-                    Settings.getUnionPayMerchantAccountId(this), callback);
+        String nonceString = nonce.getString();
+
+        TransactionRequest transactionRequest;
+        if (Settings.isThreeDSecureEnabled(this)) {
+            String threeDSecureMerchantId = Settings.getThreeDSecureMerchantAccountId(this);
+            transactionRequest = new TransactionRequest(nonceString, threeDSecureMerchantId);
+
+            if (Settings.isThreeDSecureRequired(this)) {
+                transactionRequest.setThreeDSecureRequired(true);
+            }
+        } else if (isUnionPayCardNonce(nonce)) {
+            String unionPayMerchantAccountId = Settings.getUnionPayMerchantAccountId(this);
+            transactionRequest = new TransactionRequest(nonceString, unionPayMerchantAccountId);
         } else {
-            DemoApplication.getApiClient(this).createTransaction(nonce.getString(), Settings.getMerchantAccountId(this),
-                    callback);
+            String merchantAccountId = Settings.getMerchantAccountId(this);
+            transactionRequest = new TransactionRequest(nonceString, merchantAccountId);
         }
+
+        DemoApplication.getApiClient(this).createTransaction(transactionRequest, callback);
     }
 
     private void setStatus(int message) {
@@ -86,5 +94,9 @@ public class CreateTransactionActivity extends AppCompatActivity {
         TextView textView = findViewById(R.id.transaction_message);
         textView.setText(message);
         textView.setVisibility(View.VISIBLE);
+    }
+
+    private boolean isUnionPayCardNonce(PaymentMethodNonce nonce) {
+        return (nonce instanceof CardNonce) && ((CardNonce) nonce).getCardType().equals("UnionPay");
     }
 }

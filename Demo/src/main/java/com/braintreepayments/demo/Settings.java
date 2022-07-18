@@ -13,12 +13,14 @@ public class Settings {
 
     private static final String VERSION = "version";
 
-    private static final String SANDBOX_BASE_SERVER_URL = "https://braintree-sample-merchant.herokuapp.com";
-    private static final String PRODUCTION_BASE_SERVER_URL = "https://executive-sample-merchant.herokuapp.com";
+    private static final String MERCHANT_SERVER_URL = "https://sdk-sample-merchant-server.herokuapp.com";
+
+    private static final String SANDBOX_BASE_SERVER_URL = MERCHANT_SERVER_URL + "/braintree/sandbox";
+    private static final String PRODUCTION_BASE_SERVER_URL = MERCHANT_SERVER_URL + "/braintree/production";
+    private static final String MOCKED_PAY_PAL_SANDBOX_SERVER_URL = MERCHANT_SERVER_URL + "/braintree/mock_pay_pal";
 
     private static final String SANDBOX_TOKENIZATION_KEY = "sandbox_tmxhyf7d_dcpspy2brwdjr3qn";
     private static final String PRODUCTION_TOKENIZATION_KEY = "production_t2wns2y2_dfy45jdj3dxkmz5m";
-
     private static final String MOCKED_PAY_PAL_SANDBOX_TOKENIZATION_KEY = "sandbox_q7v35n9n_555d2htrfsnnmfb3";
 
     private static SharedPreferences sSharedPreferences;
@@ -60,11 +62,11 @@ public class Settings {
         int environment = getEnvironment(context);
         switch (environment) {
             case 0:
-            case 2:
-                // both sandbox environments
                 return SANDBOX_BASE_SERVER_URL;
             case 1:
                 return PRODUCTION_BASE_SERVER_URL;
+            case 2:
+                return MOCKED_PAY_PAL_SANDBOX_SERVER_URL;
             default:
                 return "";
         }

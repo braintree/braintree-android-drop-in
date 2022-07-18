@@ -12,6 +12,7 @@ import com.braintreepayments.demo.models.ClientToken;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
+import retrofit.client.Client;
 import retrofit.client.Response;
 
 public class DemoClientTokenProvider implements ClientTokenProvider {
@@ -26,12 +27,13 @@ public class DemoClientTokenProvider implements ClientTokenProvider {
     public void getClientToken(@NonNull ClientTokenCallback callback) {
         String customerId = Settings.getCustomerId(applicationContext);
         String merchantId = Settings.getMerchantAccountId(applicationContext);
+        ClientTokenRequest request = new ClientTokenRequest(customerId, merchantId);
 
         ApiClient apiClient = DemoApplication.getApiClient(applicationContext);
-        apiClient.getClientToken(customerId, merchantId, new Callback<ClientToken>() {
+        apiClient.getClientToken(request, new Callback<ClientToken>() {
             @Override
             public void success(ClientToken clientToken, Response response) {
-                callback.onSuccess(clientToken.getClientToken());
+                callback.onSuccess(clientToken.getValue());
             }
 
             @Override
