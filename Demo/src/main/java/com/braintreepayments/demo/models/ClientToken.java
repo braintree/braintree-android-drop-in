@@ -4,10 +4,9 @@ import com.google.gson.annotations.SerializedName;
 
 public class ClientToken {
 
-    @SerializedName("client_token")
-    private String clientToken;
+    private String value;
 
-    public String getClientToken() {
-        return clientToken;
+    public String getValue() {
+        return value;
     }
 }

@@ -13,11 +13,15 @@ public class Settings {
 
     private static final String VERSION = "version";
 
-    private static final String SANDBOX_BASE_SERVER_URL = "https://braintree-sample-merchant.herokuapp.com";
-    private static final String PRODUCTION_BASE_SERVER_URL = "https://executive-sample-merchant.herokuapp.com";
+    private static final String MERCHANT_SERVER_URL = "https://sdk-sample-merchant-server.herokuapp.com";
+
+    private static final String SANDBOX_BASE_SERVER_URL = MERCHANT_SERVER_URL + "/braintree/sandbox";
+    private static final String PRODUCTION_BASE_SERVER_URL = MERCHANT_SERVER_URL + "/braintree/production";
+    private static final String MOCKED_PAY_PAL_SANDBOX_SERVER_URL = MERCHANT_SERVER_URL + "/braintree/mock_pay_pal";
 
     private static final String SANDBOX_TOKENIZATION_KEY = "sandbox_tmxhyf7d_dcpspy2brwdjr3qn";
     private static final String PRODUCTION_TOKENIZATION_KEY = "production_t2wns2y2_dfy45jdj3dxkmz5m";
+    private static final String MOCKED_PAY_PAL_SANDBOX_TOKENIZATION_KEY = "sandbox_q7v35n9n_555d2htrfsnnmfb3";
 
     private static SharedPreferences sSharedPreferences;
 
@@ -46,8 +50,6 @@ public class Settings {
                 .edit()
                 .putInt(ENVIRONMENT, environment)
                 .apply();
-
-        DemoApplication.resetApiClient();
     }
 
     public static String getSandboxUrl() {
@@ -56,12 +58,15 @@ public class Settings {
 
     public static String getEnvironmentUrl(Context context) {
         int environment = getEnvironment(context);
-        if (environment == 0) {
-            return SANDBOX_BASE_SERVER_URL;
-        } else if (environment == 1) {
-            return PRODUCTION_BASE_SERVER_URL;
-        } else {
-            return "";
+        switch (environment) {
+            case 0:
+                return SANDBOX_BASE_SERVER_URL;
+            case 1:
+                return PRODUCTION_BASE_SERVER_URL;
+            case 2:
+                return MOCKED_PAY_PAL_SANDBOX_SERVER_URL;
+            default:
+                return "";
         }
     }
 
@@ -95,21 +100,16 @@ public class Settings {
 
     public static String getEnvironmentTokenizationKey(Context context) {
         int environment = getEnvironment(context);
-        if (environment == 0) {
-            return SANDBOX_TOKENIZATION_KEY;
-        } else if (environment == 1) {
-            return PRODUCTION_TOKENIZATION_KEY;
-        } else {
-            return "";
+        switch (environment) {
+            case 0:
+                return SANDBOX_TOKENIZATION_KEY;
+            case 1:
+                return PRODUCTION_TOKENIZATION_KEY;
+            case 2:
+                return MOCKED_PAY_PAL_SANDBOX_TOKENIZATION_KEY;
+            default:
+                return "";
         }
-    }
-
-    public static boolean isPayPalSignatureVerificationDisabled(Context context) {
-        return getPreferences(context).getBoolean("paypal_disable_signature_verification", true);
-    }
-
-    public static boolean useHardcodedPayPalConfiguration(Context context) {
-        return getPreferences(context).getBoolean("paypal_use_hardcoded_configuration", false);
     }
 
     public static boolean isThreeDSecureEnabled(Context context) {

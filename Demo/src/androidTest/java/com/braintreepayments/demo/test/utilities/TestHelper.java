@@ -35,8 +35,12 @@ public class TestHelper {
     }
 
     public void launchApp() {
+        launchApp("Sandbox");
+    }
+
+    public void launchApp(String targetEnvironment) {
         onDevice().onHomeScreen().launchApp("com.braintreepayments.demo");
-        ensureEnvironmentIs("Sandbox");
+        ensureEnvironmentIs(targetEnvironment);
     }
 
     public DeviceAutomator getNonceDetails() {
@@ -124,13 +128,9 @@ public class TestHelper {
     }
 
     private static void ensureEnvironmentIs(String environment) {
-        try {
-            onDevice(withText(environment)).check(text(equalTo(environment)));
-        } catch (RuntimeException e) {
-            onDevice(withClass(Spinner.class)).perform(click());
-            onDevice(withText(environment)).perform(click());
-            onDevice(withText(environment)).check(text(equalTo(environment)));
-        }
+        onDevice(withClass(Spinner.class)).perform(click());
+        onDevice(withText(environment)).perform(click());
+        onDevice(withText(environment)).check(text(equalTo(environment)));
     }
 
     protected void performCardDetailsEntry() {

@@ -20,6 +20,7 @@
     <string name="options">Options</string>
     <string name="sandbox">Sandbox</string>
     <string name="production">Production</string>
+    <string name="mock_pay_pal">Mock PayPal</string>
     <string name="authorization">Authorization</string>
     <string name="tokenization_key">Use Tokenization Key</string>
     <string name="tokenization_key_summary">Use tokenization key for authorizing requests</string>
