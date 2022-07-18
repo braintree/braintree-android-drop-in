@@ -1,9 +1,19 @@
 package com.braintreepayments.demo;
 
+import com.braintreepayments.demo.models.ClientToken;
+
 public class ClientTokenRequest {
 
     private final String customerId;
     private final String merchantAccountId;
+
+    public ClientTokenRequest() {
+        this(null, null);
+    }
+
+    public ClientTokenRequest(String customerId) {
+        this(customerId, null);
+    }
 
     public ClientTokenRequest(String customerId, String merchantAccountId) {
         this.customerId = customerId;

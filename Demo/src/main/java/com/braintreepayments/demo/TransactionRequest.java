@@ -7,6 +7,10 @@ public class TransactionRequest {
 
     private Boolean threeDSecureRequired;
 
+    public TransactionRequest(String paymentMethodNonce) {
+        this(paymentMethodNonce, null, null);
+    }
+
     public TransactionRequest(String paymentMethodNonce, String merchantAccountId) {
         this(paymentMethodNonce, merchantAccountId, null);
     }

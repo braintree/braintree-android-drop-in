@@ -1,6 +1,8 @@
 package com.braintreepayments.demo.test;
 
+import com.braintreepayments.demo.ClientTokenRequest;
 import com.braintreepayments.demo.Settings;
+import com.braintreepayments.demo.TransactionRequest;
 import com.braintreepayments.demo.internal.ApiClient;
 import com.braintreepayments.demo.internal.ApiClientRequestInterceptor;
 import com.braintreepayments.demo.models.ClientToken;
@@ -40,10 +42,11 @@ public class ApiClientUnitTest {
 
     @Test(timeout = 30000)
     public void getClientToken_returnsAClientToken() throws InterruptedException {
-        apiClient.getClientToken(null, null, new Callback<ClientToken>() {
+        ClientTokenRequest request = new ClientTokenRequest();
+        apiClient.getClientToken(request, new Callback<ClientToken>() {
             @Override
             public void success(ClientToken clientToken, Response response) {
-                assertNotNull(clientToken.getClientToken());
+                assertNotNull(clientToken.getValue());
                 countDownLatch.countDown();
             }
 
@@ -58,10 +61,11 @@ public class ApiClientUnitTest {
 
     @Test(timeout = 30000)
     public void getClientToken_returnsAClientTokenForACustomer() throws InterruptedException {
-        apiClient.getClientToken("customer", null, new Callback<ClientToken>() {
+        ClientTokenRequest request = new ClientTokenRequest("customer");
+        apiClient.getClientToken(request, new Callback<ClientToken>() {
             @Override
             public void success(ClientToken clientToken, Response response) {
-                assertNotNull(clientToken.getClientToken());
+                assertNotNull(clientToken.getValue());
                 countDownLatch.countDown();
             }
 
@@ -76,10 +80,11 @@ public class ApiClientUnitTest {
 
     @Test(timeout = 30000)
     public void getClientToken_returnsAClientTokenForAMerchantAccount() throws InterruptedException {
-        apiClient.getClientToken(null, "fake_switch_usd", new Callback<ClientToken>() {
+        ClientTokenRequest request = new ClientTokenRequest(null, "fake_switch_usd");
+        apiClient.getClientToken(request, new Callback<ClientToken>() {
             @Override
             public void success(ClientToken clientToken, Response response) {
-                assertNotNull(clientToken.getClientToken());
+                assertNotNull(clientToken.getValue());
                 countDownLatch.countDown();
             }
 
@@ -94,25 +99,8 @@ public class ApiClientUnitTest {
 
     @Test(timeout = 30000)
     public void createTransaction_createsATransaction() throws InterruptedException {
-        apiClient.createTransaction("fake-valid-nonce", new Callback<Transaction>() {
-            @Override
-            public void success(Transaction transaction, Response response) {
-                assertTrue(transaction.getMessage().contains("created") && transaction.getMessage().contains("authorized"));
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-                fail(error.getMessage());
-            }
-        });
-
-        countDownLatch.await();
-    }
-
-    @Test(timeout = 30000)
-    public void createTransaction_createsATransactionWhenMerchantAccountIsNull() throws InterruptedException {
-        apiClient.createTransaction("fake-valid-nonce", null, new Callback<Transaction>() {
+        TransactionRequest request = new TransactionRequest("fake-valid-nonce");
+        apiClient.createTransaction(request, new Callback<Transaction>() {
             @Override
             public void success(Transaction transaction, Response response) {
                 assertTrue(transaction.getMessage().contains("created") && transaction.getMessage().contains("authorized"));
@@ -130,7 +118,8 @@ public class ApiClientUnitTest {
 
     @Test(timeout = 30000)
     public void createTransaction_createsATransactionWhenMerchantAccountIsEmpty() throws InterruptedException {
-        apiClient.createTransaction("fake-valid-nonce", "", new Callback<Transaction>() {
+        TransactionRequest request = new TransactionRequest("fake-valid-nonce", "");
+        apiClient.createTransaction(request, new Callback<Transaction>() {
             @Override
             public void success(Transaction transaction, Response response) {
                 assertTrue(transaction.getMessage().contains("created") && transaction.getMessage().contains("authorized"));
@@ -148,7 +137,8 @@ public class ApiClientUnitTest {
 
     @Test(timeout = 30000)
     public void createTransaction_failsWhenNonceIsAlreadyConsumed() throws InterruptedException {
-        apiClient.createTransaction("fake-consumed-nonce", new Callback<Transaction>() {
+        TransactionRequest request = new TransactionRequest("fake-consumed-nonce");
+        apiClient.createTransaction(request, new Callback<Transaction>() {
             @Override
             public void success(Transaction transaction, Response response) {
                 assertEquals("Cannot use a payment_method_nonce more than once.", transaction.getMessage());
@@ -166,7 +156,9 @@ public class ApiClientUnitTest {
 
     @Test(timeout = 30000)
     public void createTransaction_failsWhenThreeDSecureIsRequired() throws InterruptedException {
-        apiClient.createTransaction("fake-valid-nonce", null, true, new Callback<Transaction>() {
+        TransactionRequest request =
+                new TransactionRequest("fake-valid-nonce", null, true);
+        apiClient.createTransaction(request, new Callback<Transaction>() {
             @Override
             public void success(Transaction transaction, Response response) {
                 assertEquals("Gateway Rejected: three_d_secure", transaction.getMessage());
@@ -184,19 +176,20 @@ public class ApiClientUnitTest {
 
     @Test(timeout = 30000)
     public void createTransaction_createsAUnionPayTransaction() throws InterruptedException {
-        apiClient.createTransaction("fake-valid-unionpay-credit-nonce", "fake_switch_usd",
-                new Callback<Transaction>() {
-                    @Override
-                    public void success(Transaction transaction, Response response) {
-                        assertTrue(transaction.getMessage().contains("created") && transaction.getMessage().contains("authorized"));
-                        countDownLatch.countDown();
-                    }
+        TransactionRequest request =
+                new TransactionRequest("fake-valid-unionpay-credit-nonce", "fake_switch_usd");
+        apiClient.createTransaction(request, new Callback<Transaction>() {
+            @Override
+            public void success(Transaction transaction, Response response) {
+                assertTrue(transaction.getMessage().contains("created") && transaction.getMessage().contains("authorized"));
+                countDownLatch.countDown();
+            }
 
-                    @Override
-                    public void failure(RetrofitError error) {
-                        fail(error.getMessage());
-                    }
-                });
+            @Override
+            public void failure(RetrofitError error) {
+                fail(error.getMessage());
+            }
+        });
 
         countDownLatch.await();
     }
