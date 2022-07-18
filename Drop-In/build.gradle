@@ -73,14 +73,14 @@ dependencies {
     implementation 'androidx.fragment:fragment:1.4.1'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.4.1'
 
-    api 'com.braintreepayments.api:braintree-core:4.10.1'
-    api 'com.braintreepayments.api:three-d-secure:4.10.1'
-    api 'com.braintreepayments.api:paypal:4.10.1'
-    api 'com.braintreepayments.api:venmo:4.10.1'
-    api 'com.braintreepayments.api:google-pay:4.10.1'
-    api 'com.braintreepayments.api:card:4.10.1'
-    api 'com.braintreepayments.api:data-collector:4.10.1'
-    api 'com.braintreepayments.api:union-pay:4.10.1'
+    api 'com.braintreepayments.api:braintree-core:4.12.0'
+    api 'com.braintreepayments.api:three-d-secure:4.12.0'
+    api 'com.braintreepayments.api:paypal:4.12.0'
+    api 'com.braintreepayments.api:venmo:4.12.0'
+    api 'com.braintreepayments.api:google-pay:4.12.0'
+    api 'com.braintreepayments.api:card:4.12.0'
+    api 'com.braintreepayments.api:data-collector:4.12.0'
+    api 'com.braintreepayments.api:union-pay:4.12.0'
 
     api 'com.braintreepayments:card-form:5.4.0'
 
