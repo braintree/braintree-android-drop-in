@@ -159,6 +159,7 @@ See [example ClientTokenProvider implementation](https://github.com/braintree/br
 
 ```java
 // Java
+DropInRequest dropInRequest = new DropInRequest();
 DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, callback -> {
     // fetch client token asynchronously...
     callback.onSuccess("CLIENT_TOKEN_FROM_SERVER");
