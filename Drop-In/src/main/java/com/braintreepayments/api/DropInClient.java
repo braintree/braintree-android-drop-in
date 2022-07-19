@@ -499,7 +499,7 @@ public class DropInClient {
      * @see #DropInClient(FragmentActivity, DropInRequest, String)
      * @see #DropInClient(FragmentActivity, DropInRequest, ClientTokenProvider)
      */
-    public void launchDropInForResult() {
+    public void launchDropIn() {
         getAuthorization((authorization, authorizationError) -> {
             if (authorization != null) {
                 if (observer != null) {

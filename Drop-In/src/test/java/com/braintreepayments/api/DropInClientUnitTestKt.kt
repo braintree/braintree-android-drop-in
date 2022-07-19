@@ -8,7 +8,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ApplicationProvider
 import androidx.work.testing.WorkManagerTestInitHelper
 import io.mockk.*
-import junit.framework.TestCase
 import org.json.JSONObject
 import org.junit.Assert.*
 import org.junit.Before
@@ -147,7 +146,7 @@ class DropInClientUnitTestKt {
     }
 
     @Test
-    fun launchDropInForResult_withObserver_launchesWithObserver() {
+    fun launchDropIn_withObserver_launchesWithObserver() {
         every { braintreeClient.sessionId } returns "sample-session-id"
 
         every { braintreeClient.getAuthorization(any()) } answers { call ->
@@ -164,7 +163,7 @@ class DropInClientUnitTestKt {
         val intentDataSlot = slot<DropInIntentData>()
         justRun { sut.observer.launch(capture(intentDataSlot)) }
 
-        sut.launchDropInForResult()
+        sut.launchDropIn()
         val capturedIntentData = intentDataSlot.captured
 
         assertEquals("sample-session-id", capturedIntentData.sessionId)
@@ -173,7 +172,7 @@ class DropInClientUnitTestKt {
     }
 
     @Test
-    fun launchDropInForResult_forwardsAuthorizationFetchErrorsToListener() {
+    fun launchDropIn_forwardsAuthorizationFetchErrorsToListener() {
         every { braintreeClient.sessionId } returns "sample-session-id"
 
         val authError = Exception("auth error")
@@ -190,7 +189,7 @@ class DropInClientUnitTestKt {
         val listener = mockk<DropInListener>(relaxed = true)
         sut.setListener(listener)
 
-        sut.launchDropInForResult()
+        sut.launchDropIn()
         verify { listener.onDropInFailure(authError)}
     }
 

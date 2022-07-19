@@ -1549,28 +1549,6 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void launchDropInForResult_forwardsAuthorizationFetchErrorsToListener() {
-        Exception authError = new Exception("auth error");
-        BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
-                .sessionId("session-id")
-                .authorizationError(authError)
-                .build();
-
-        DropInRequest dropInRequest = new DropInRequest();
-        DropInClientParams params = new DropInClientParams()
-                .braintreeClient(braintreeClient)
-                .dropInRequest(dropInRequest);
-
-        DropInClient sut = new DropInClient(params);
-
-        DropInListener listener = mock(DropInListener.class);
-        sut.setListener(listener);
-
-        sut.launchDropInForResult();
-        verify(listener).onDropInFailure(authError);
-    }
-
-    @Test
     public void getVaultedPaymentMethods_forwardsConfigurationFetchError() {
         Exception configurationError = new Exception("configuration error");
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
