@@ -23,7 +23,7 @@ Add the dependency in your `build.gradle`:
 
 ```groovy
 dependencies {
-  implementation 'com.braintreepayments.api:drop-in:6.0.0-beta2'
+  implementation 'com.braintreepayments.api:drop-in:6.1.0'
 }
 ```
 
@@ -142,13 +142,15 @@ In v6, authorization should be included when instantiating a `DropInClient` inst
 Java:
 ```java
 DropInRequest dropInRequest = new DropInRequest();
-DropInClient dropInClient = new DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
+DropInClient dropInClient =
+    new DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
 ```
 
 Kotlin:
 ```kotlin
 val dropInRequest = DropInRequest()
-val dropInClient = DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
+val dropInClient =
+    DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
 ```
 
 ## Launch Drop-In 
