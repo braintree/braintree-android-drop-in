@@ -178,18 +178,16 @@ val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, ClientTok
 ## Launch Drop-In 
 
 `DropInClient` is responsible for launching `DropInActivity`. 
-To launch Drop-In, instantiate a `DropInClient` and call `DropInClient#launchDropInForResult`:
+To launch Drop-In, [instantiate a DropInClient](#authorization) and call `DropInClient#launchDropIn`:
 
 Java:
 ```java
-DropInClient dropInClient = new DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
-dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE);
+dropInClient.launchDrop();
 ```
 
 Kotlin:
 ```kotlin
-val dropInClient = DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
-dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE)
+dropInClient.launchDropIn()
 ```
 
 ## Handle Drop-In Result
