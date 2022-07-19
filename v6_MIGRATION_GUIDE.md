@@ -139,6 +139,8 @@ See the sections below for code snippets to instantiate a `DropInClient` with au
 The `clientToken`, `tokenizationKey`, and `authorization` fields have been removed from `DropInRequest`. 
 In v6, authorization should be included when instantiating a `DropInClient` instead.
 
+### Auth Option 1: Instantiate DropInClient with Tokenization Key or Client Token
+
 Java:
 ```java
 DropInRequest dropInRequest = new DropInRequest();
@@ -149,6 +151,34 @@ Kotlin:
 ```kotlin
 val dropInRequest = DropInRequest()
 val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
+```
+
+### Auth Option 2: Instantiate DropInClient with ClientTokenProvider
+
+See [example `ClientTokenProvider` implementation](https://github.com/braintree/braintree_android/blob/master/v4.9.0+_MIGRATION_GUIDE.md#client-token-provider)
+
+```java
+DropInRequest dropInRequest = new DropInRequest();
+ClientTokenProvider clientTokenProvider = new ClientTokenProvider() {
+  @Override
+  public void getClientToken(@NonNull ClientTokenCallback callback) {
+    // fetch client token asynchronously...
+    callback.onSuccess("CLIENT_TOKEN_FROM_SERVER");
+  }
+};
+
+DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, clientTokenProvider);
+```
+
+Kotlin:
+```kotlin
+val dropInRequest = DropInRequest()
+val clientTokenProvider = ClientTokenProvider { callback ->
+  // fetch client token asynchronously...
+  callback.onSuccess("CLIENT_TOKEN_FROM_SERVER");
+}
+
+val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, clientTokenProvider)
 ```
 
 ## Launch Drop-In 
