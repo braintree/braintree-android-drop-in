@@ -80,7 +80,7 @@ public class DropInClient {
     }
 
     /**
-     * Deprecated.
+     * @deprecated
      *
      * Create a new instance of {@link DropInClient}.
      *
@@ -453,11 +453,13 @@ public class DropInClient {
     }
 
     /**
+     * @deprecated
      * Called to launch a {@link DropInActivity}
      *
      * @param activity    the current {@link FragmentActivity}
      * @param requestCode the request code for the activity that will be launched
      */
+    @Deprecated
     public void launchDropInForResult(FragmentActivity activity, int requestCode) {
         getAuthorization((authorization, authorizationError) -> {
             if (authorization != null) {
@@ -481,6 +483,33 @@ public class DropInClient {
                     Intent intent = new Intent(activity, DropInActivity.class)
                             .putExtra(EXTRA_AUTHORIZATION_ERROR, authorizationError);
                     activity.startActivityForResult(intent, requestCode);
+                }
+            }
+        });
+    }
+
+    /**
+     * Called to launch a {@link DropInActivity}.
+     *
+     * NOTE: This method requires {@link DropInClient} to be instantiated with either an Activity
+     * or with a Fragment.
+     *
+     * @see #DropInClient(Fragment, DropInRequest, String)
+     * @see #DropInClient(Fragment, DropInRequest, ClientTokenProvider)
+     * @see #DropInClient(FragmentActivity, DropInRequest, String)
+     * @see #DropInClient(FragmentActivity, DropInRequest, ClientTokenProvider)
+     */
+    public void launchDropInForResult() {
+        getAuthorization((authorization, authorizationError) -> {
+            if (authorization != null) {
+                if (observer != null) {
+                    DropInIntentData intentData =
+                            new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
+                    observer.launch(intentData);
+                }
+            } else if (authorizationError != null) {
+                if (listener != null) {
+                    listener.onDropInFailure(authorizationError);
                 }
             }
         });
