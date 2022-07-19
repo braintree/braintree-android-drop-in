@@ -155,7 +155,7 @@ val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLI
 
 ### Auth Option 2: Instantiate DropInClient with ClientTokenProvider
 
-See [example `ClientTokenProvider` implementation](https://github.com/braintree/braintree_android/blob/master/v4.9.0+_MIGRATION_GUIDE.md#client-token-provider)
+See [example ClientTokenProvider implementation](https://github.com/braintree/braintree_android/blob/master/v4.9.0+_MIGRATION_GUIDE.md#client-token-provider)
 
 ```java
 DropInRequest dropInRequest = new DropInRequest();
