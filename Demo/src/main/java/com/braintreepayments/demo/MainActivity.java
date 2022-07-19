@@ -141,6 +141,9 @@ public class MainActivity extends BaseActivity implements DropInListener {
             dropInClient.setListener(this);
             addPaymentMethodButton.setVisibility(VISIBLE);
         } else {
+            dropInClient = new DropInClient(this, dropInRequest, callback -> {
+                
+            });
             dropInClient = new DropInClient(this, dropInRequest, new DemoClientTokenProvider(this));
             dropInClient.setListener(this);
             dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {

@@ -159,27 +159,19 @@ See [example ClientTokenProvider implementation](https://github.com/braintree/br
 
 ```java
 // Java
-DropInRequest dropInRequest = new DropInRequest();
-ClientTokenProvider clientTokenProvider = new ClientTokenProvider() {
-  @Override
-  public void getClientToken(@NonNull ClientTokenCallback callback) {
+DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, callback -> {
     // fetch client token asynchronously...
     callback.onSuccess("CLIENT_TOKEN_FROM_SERVER");
-  }
-};
-
-DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, clientTokenProvider);
+});
 ```
 
 ```kotlin
 // Kotlin
 val dropInRequest = DropInRequest()
-val clientTokenProvider = ClientTokenProvider { callback ->
+val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, ClientTokenProvider { callback ->
   // fetch client token asynchronously...
   callback.onSuccess("CLIENT_TOKEN_FROM_SERVER");
-}
-
-val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, clientTokenProvider)
+})
 ```
 
 ## Launch Drop-In 
