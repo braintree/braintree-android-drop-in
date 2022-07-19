@@ -192,52 +192,40 @@ dropInClient.launchDropIn()
 
 ## Handle Drop-In Result
 
-You should handle the result in `onActivityResult`, the same way as you did in your v5 integration.
+Implement `DropInListener` interface in your `Fragment` or `Activity` to listen for DropIn results:
 
-Changes:
-- The key for accessing an error from the Activity result has changed from `DropInActivity.EXTRA_ERROR` to `DropInResult.EXTRA_ERROR`.
-- The method for accessing the `String` payment method nonce from `DropInResult` has been updated from `PaymentMethodNonce#getNonce` to `PaymentMethodNonce#getString`. 
-
-
-Java:
 ```java
+// Java
 @Override
-public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
+public void onDropInSuccess(@NonNull DropInResult result) {
+  // send payment method nonce server
+  String paymentMethodNonce = result.getPaymentMethodNonce().getString();
+}
 
-    if (requestCode == DROP_IN_REQUEST_CODE) {
-        if (resultCode == RESULT_OK) {
-            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-            String paymentMethodNonce = result.getPaymentMethodNonce().getString();
-            // send paymentMethodNonce to your server
-        } else if (resultCode == RESULT_CANCELED) {
-            // canceled
-        } else {
-            // an error occurred, checked the returned exception
-            Exception exception = (Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR);
-        }
-    }
+@Override
+public void onDropInFailure(@NonNull Exception error) {
+  if (error instanceof UserCanceledException) {
+    // canceled
+  } else {
+    // an error occurred, check the returned exception
+  }
 }
 ```
 
-Kotlin:
 ```kotlin
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+// Kotlin
+override fun onDropInSuccess(result: DropInResult) {
+  // send payment method nonce server
+  val paymentMethodNonce = dropInResult.paymentMethodNonce?.string
+}
 
-        if (requestCode == DROP_IN_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                val result: DropInResult? = data?.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT)
-                val paymentMethodNonce = result?.paymentMethodNonce?.string
-                // use the result to update your UI and send the payment method nonce to your server
-            } else if (resultCode == RESULT_CANCELED) {
-                // the user canceled
-            } else {
-                // handle errors here, an exception may be available in
-                val error: Exception? = data?.getSerializableExtra(DropInResult.EXTRA_ERROR) as Exception?
-            }
-        }
-    }
+override fun onDropInFailure(error: Exception) {
+  if (error is UserCanceledException) {
+    // canceled
+  } else {
+    // an error occurred, check the returned exception
+  }
+}
 ```
 
 ## Fetch Last Used Payment Method
