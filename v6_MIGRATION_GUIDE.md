@@ -142,15 +142,13 @@ In v6, authorization should be included when instantiating a `DropInClient` inst
 Java:
 ```java
 DropInRequest dropInRequest = new DropInRequest();
-DropInClient dropInClient =
-    new DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
+DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
 ```
 
 Kotlin:
 ```kotlin
 val dropInRequest = DropInRequest()
-val dropInClient =
-    DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
+val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
 ```
 
 ## Launch Drop-In 
