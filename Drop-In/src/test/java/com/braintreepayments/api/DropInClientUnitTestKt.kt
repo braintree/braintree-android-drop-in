@@ -121,7 +121,7 @@ class DropInClientUnitTestKt {
     }
 
     @Test
-    fun launchDropInForResult_withObserver_launchesWithObserver() {
+    fun legacy_launchDropInForResult_withObserver_launchesWithObserver() {
         every { braintreeClient.sessionId } returns "sample-session-id"
 
         every { braintreeClient.getAuthorization(any()) } answers { call ->
@@ -144,6 +144,54 @@ class DropInClientUnitTestKt {
         assertEquals("sample-session-id", capturedIntentData.sessionId)
         assertEquals(clientToken.toString(), capturedIntentData.authorization.toString())
         assertNotNull(capturedIntentData.dropInRequest)
+    }
+
+    @Test
+    fun launchDropInForResult_withObserver_launchesWithObserver() {
+        every { braintreeClient.sessionId } returns "sample-session-id"
+
+        every { braintreeClient.getAuthorization(any()) } answers { call ->
+            val callback = call.invocation.args[0] as AuthorizationCallback
+            callback.onAuthorizationResult(clientToken, null)
+        }
+
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+            .braintreeClient(braintreeClient)
+        val sut = DropInClient(params)
+        sut.observer = mockk()
+
+        val intentDataSlot = slot<DropInIntentData>()
+        justRun { sut.observer.launch(capture(intentDataSlot)) }
+
+        sut.launchDropInForResult()
+        val capturedIntentData = intentDataSlot.captured
+
+        assertEquals("sample-session-id", capturedIntentData.sessionId)
+        assertEquals(clientToken.toString(), capturedIntentData.authorization.toString())
+        assertNotNull(capturedIntentData.dropInRequest)
+    }
+
+    @Test
+    fun launchDropInForResult_forwardsAuthorizationFetchErrorsToListener() {
+        every { braintreeClient.sessionId } returns "sample-session-id"
+
+        val authError = Exception("auth error")
+        every { braintreeClient.getAuthorization(any()) } answers { call ->
+            val callback = call.invocation.args[0] as AuthorizationCallback
+            callback.onAuthorizationResult(null, authError)
+        }
+
+        val params = DropInClientParams()
+            .dropInRequest(dropInRequest)
+            .braintreeClient(braintreeClient)
+        val sut = DropInClient(params)
+
+        val listener = mockk<DropInListener>(relaxed = true)
+        sut.setListener(listener)
+
+        sut.launchDropInForResult()
+        verify { listener.onDropInFailure(authError)}
     }
 
     @Test
