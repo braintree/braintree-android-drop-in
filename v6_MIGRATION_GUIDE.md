@@ -4,8 +4,6 @@ See the [CHANGELOG](/CHANGELOG.md) for a complete list of changes. This migratio
 
 v6 of the Drop-In SDK requires v4 of the [Braintree Android SDK](https://github.com/braintree/braintree_android).
 
-_Documentation for v6 will be published to https://developer.paypal.com/braintree/docs once it is available for general release._
-
 ## Table of Contents
 
 1. [Gradle](#gradle)
@@ -235,13 +233,10 @@ Note that a payment method will only be returned when using a client token creat
 
 Java:
 ```java
-    DropInClient dropInClient = new DropInClient(this, "CLIENT_TOKEN_WITH_CUSTOMER_ID", dropInRequest);
-    dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
-        @Override
-        public void onResult(DropInResult dropInResult, Exception error) {
-            // handle result
-        }
-    });
+  DropInClient dropInClient = new DropInClient(this, "CLIENT_TOKEN_WITH_CUSTOMER_ID", dropInRequest);
+  dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
+    // handle result
+  });
 ```
 
 Kotlin:
