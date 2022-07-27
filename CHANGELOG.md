@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.2.0
 
 * Check if BottomSheetFragment is visible using Android Fragment API (fixes #348)
 * Fix issue where `UserCanceledException` was not being sent on bottom sheet dismissal (fixes #346)
