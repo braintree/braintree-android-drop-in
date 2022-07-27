@@ -1464,7 +1464,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void launchDropInForResult_withListener_forwardsAuthorizationFetchErrors() {
+    public void legacy_launchDropInForResult_withListener_forwardsAuthorizationFetchErrors() {
         Exception authError = new Exception("auth error");
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .sessionId("session-id")
@@ -1488,7 +1488,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void launchDropInForResult_withoutListener_launchesDropInActivityWithError() {
+    public void legacy_launchDropInForResult_withoutListener_launchesDropInActivityWithError() {
         Exception authError = new Exception("auth error");
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
                 .sessionId("session-id")
@@ -1514,7 +1514,7 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void launchDropInForResult_launchesDropInActivityWithIntentExtras() {
+    public void legacy_launchDropInForResult_launchesDropInActivityWithIntentExtras() {
         Authorization authorization = mock(Authorization.class);
         when(authorization.toString()).thenReturn("authorization");
 

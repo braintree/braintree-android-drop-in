@@ -5,6 +5,8 @@
 * Check if BottomSheetFragment is visible using Android Fragment API (fixes #348)
 * Fix issue where `UserCanceledException` was not being sent on bottom sheet dismissal (fixes #346)
 * Bump braintree_android module dependency versions to `4.12.0`
+* Add `launchDropIn()` method
+* Deprecate `launchDropInForResult(Activity, Int)` in favor of `launchDropIn()` method
 
 ## 6.1.0
 

@@ -154,7 +154,7 @@ public class MainActivity extends BaseActivity implements DropInListener {
     }
 
     public void launchDropIn(View v) {
-        dropInClient.launchDropInForResult(this, DROP_IN_REQUEST);
+        dropInClient.launchDropIn();
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {

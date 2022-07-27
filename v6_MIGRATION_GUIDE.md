@@ -4,8 +4,6 @@ See the [CHANGELOG](/CHANGELOG.md) for a complete list of changes. This migratio
 
 v6 of the Drop-In SDK requires v4 of the [Braintree Android SDK](https://github.com/braintree/braintree_android).
 
-_Documentation for v6 will be published to https://developer.paypal.com/braintree/docs once it is available for general release._
-
 ## Table of Contents
 
 1. [Gradle](#gradle)
@@ -23,7 +21,7 @@ Add the dependency in your `build.gradle`:
 
 ```groovy
 dependencies {
-  implementation 'com.braintreepayments.api:drop-in:6.0.0-beta2'
+  implementation 'com.braintreepayments.api:drop-in:6.1.0'
 }
 ```
 
@@ -139,83 +137,93 @@ See the sections below for code snippets to instantiate a `DropInClient` with au
 The `clientToken`, `tokenizationKey`, and `authorization` fields have been removed from `DropInRequest`. 
 In v6, authorization should be included when instantiating a `DropInClient` instead.
 
-Java:
+### Option 1: DropInClient with Tokenization Key or Client Token
+
 ```java
+// Java
 DropInRequest dropInRequest = new DropInRequest();
-DropInClient dropInClient = new DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
+DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
 ```
 
-Kotlin:
 ```kotlin
+// Kotlin
 val dropInRequest = DropInRequest()
-val dropInClient = DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
+val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
+```
+
+### Option 2: DropInClient with ClientTokenProvider
+
+See [example ClientTokenProvider implementation](https://github.com/braintree/braintree_android/blob/master/v4.9.0+_MIGRATION_GUIDE.md#client-token-provider)
+
+```java
+// Java
+DropInRequest dropInRequest = new DropInRequest();
+DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, callback -> {
+    // fetch client token asynchronously...
+    callback.onSuccess("CLIENT_TOKEN_FROM_SERVER");
+});
+```
+
+```kotlin
+// Kotlin
+val dropInRequest = DropInRequest()
+val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, ClientTokenProvider { callback ->
+  // fetch client token asynchronously...
+  callback.onSuccess("CLIENT_TOKEN_FROM_SERVER");
+})
 ```
 
 ## Launch Drop-In 
 
 `DropInClient` is responsible for launching `DropInActivity`. 
-To launch Drop-In, instantiate a `DropInClient` and call `DropInClient#launchDropInForResult`:
+To launch Drop-In, [instantiate a DropInClient](#authorization) and call `DropInClient#launchDropIn`:
 
 Java:
 ```java
-DropInClient dropInClient = new DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
-dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE);
+dropInClient.launchDrop();
 ```
 
 Kotlin:
 ```kotlin
-val dropInClient = DropInClient(this, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
-dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE)
+dropInClient.launchDropIn()
 ```
 
 ## Handle Drop-In Result
 
-You should handle the result in `onActivityResult`, the same way as you did in your v5 integration.
+Implement `DropInListener` interface in your `Fragment` or `Activity` to listen for DropIn results:
 
-Changes:
-- The key for accessing an error from the Activity result has changed from `DropInActivity.EXTRA_ERROR` to `DropInResult.EXTRA_ERROR`.
-- The method for accessing the `String` payment method nonce from `DropInResult` has been updated from `PaymentMethodNonce#getNonce` to `PaymentMethodNonce#getString`. 
-
-
-Java:
 ```java
+// Java
 @Override
-public void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
+public void onDropInSuccess(@NonNull DropInResult result) {
+  // send payment method nonce server
+  String paymentMethodNonce = result.getPaymentMethodNonce().getString();
+}
 
-    if (requestCode == DROP_IN_REQUEST_CODE) {
-        if (resultCode == RESULT_OK) {
-            DropInResult result = data.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT);
-            String paymentMethodNonce = result.getPaymentMethodNonce().getString();
-            // send paymentMethodNonce to your server
-        } else if (resultCode == RESULT_CANCELED) {
-            // canceled
-        } else {
-            // an error occurred, checked the returned exception
-            Exception exception = (Exception) data.getSerializableExtra(DropInActivity.EXTRA_ERROR);
-        }
-    }
+@Override
+public void onDropInFailure(@NonNull Exception error) {
+  if (error instanceof UserCanceledException) {
+    // canceled
+  } else {
+    // an error occurred, check the returned exception
+  }
 }
 ```
 
-Kotlin:
 ```kotlin
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+// Kotlin
+override fun onDropInSuccess(result: DropInResult) {
+  // send payment method nonce server
+  val paymentMethodNonce = dropInResult.paymentMethodNonce?.string
+}
 
-        if (requestCode == DROP_IN_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                val result: DropInResult? = data?.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT)
-                val paymentMethodNonce = result?.paymentMethodNonce?.string
-                // use the result to update your UI and send the payment method nonce to your server
-            } else if (resultCode == RESULT_CANCELED) {
-                // the user canceled
-            } else {
-                // handle errors here, an exception may be available in
-                val error: Exception? = data?.getSerializableExtra(DropInResult.EXTRA_ERROR) as Exception?
-            }
-        }
-    }
+override fun onDropInFailure(error: Exception) {
+  if (error is UserCanceledException) {
+    // canceled
+  } else {
+    // an error occurred, check the returned exception
+  }
+}
 ```
 
 ## Fetch Last Used Payment Method
@@ -225,13 +233,10 @@ Note that a payment method will only be returned when using a client token creat
 
 Java:
 ```java
-    DropInClient dropInClient = new DropInClient(this, "CLIENT_TOKEN_WITH_CUSTOMER_ID", dropInRequest);
-    dropInClient.fetchMostRecentPaymentMethod(this, new FetchMostRecentPaymentMethodCallback() {
-        @Override
-        public void onResult(DropInResult dropInResult, Exception error) {
-            // handle result
-        }
-    });
+  DropInClient dropInClient = new DropInClient(this, "CLIENT_TOKEN_WITH_CUSTOMER_ID", dropInRequest);
+  dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
+    // handle result
+  });
 ```
 
 Kotlin:
