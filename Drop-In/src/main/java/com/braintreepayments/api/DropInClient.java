@@ -501,16 +501,12 @@ public class DropInClient {
      */
     public void launchDropIn() {
         getAuthorization((authorization, authorizationError) -> {
-            if (authorization != null) {
-                if (observer != null) {
-                    DropInIntentData intentData =
-                            new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
-                    observer.launch(intentData);
-                }
-            } else if (authorizationError != null) {
-                if (listener != null) {
-                    listener.onDropInFailure(authorizationError);
-                }
+            if (authorization != null && observer != null) {
+                DropInIntentData intentData =
+                        new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
+                observer.launch(intentData);
+            } else if (authorizationError != null && listener != null) {
+                listener.onDropInFailure(authorizationError);
             }
         });
     }
