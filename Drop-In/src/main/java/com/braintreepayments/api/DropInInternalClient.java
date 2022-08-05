@@ -38,7 +38,6 @@ class DropInInternalClient {
     private final DropInSharedPreferences dropInSharedPreferences;
 
     private final PaymentMethodInspector paymentMethodInspector = new PaymentMethodInspector();
-    private DropInListener listener;
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest, String sessionId, FragmentActivity activity, Lifecycle lifecycle) {
 
@@ -82,16 +81,6 @@ class DropInInternalClient {
         this.unionPayClient = params.getUnionPayClient();
         this.dataCollector = params.getDataCollector();
         this.dropInSharedPreferences = params.getDropInSharedPreferences();
-    }
-
-    /**
-     * Add a {@link DropInListener} to your client to receive results or errors from DropIn.
-     * Must be used with a {@link DropInClient} constructed with a {@link Fragment} or {@link FragmentActivity}.
-     *
-     * @param listener a {@link DropInListener}
-     */
-    public void setListener(DropInListener listener) {
-        this.listener = listener;
     }
 
     void getAuthorization(AuthorizationCallback callback) {
@@ -393,16 +382,4 @@ class DropInInternalClient {
         Context appContext = context.getApplicationContext();
         dropInSharedPreferences.setLastUsedPaymentMethod(appContext, paymentMethodNonce);
     }
-
-    void onDropInResult(DropInResult dropInResult) {
-        if (dropInResult != null) {
-            Exception error = dropInResult.getError();
-            if (error != null) {
-                listener.onDropInFailure(error);
-            } else {
-                listener.onDropInSuccess(dropInResult);
-            }
-        }
-    }
-
 }
