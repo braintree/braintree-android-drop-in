@@ -1093,7 +1093,7 @@ class DropInActivityUnitTest {
 
         activityController = buildActivity(DropInActivity::class.java, intent)
         activity = activityController.get()
-        activity.dropInClient = dropInClient
+        activity.dropInInternalClient = dropInClient
         activityController.setup()
     }
 

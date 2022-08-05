@@ -83,7 +83,7 @@ class DropInClientUnitTestKt {
 
     @Test
     fun constructor_setsSessionId() {
-        val sut = DropInClient(activity, dropInRequest, "session-id", clientTokenProvider)
+        val sut = DropInClient(activity, dropInRequest, clientTokenProvider)
         assertEquals("session-id", sut.braintreeClient.sessionId)
     }
 
