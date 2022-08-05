@@ -77,8 +77,13 @@ public class DropInClient {
      * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
      * @param authorization a Tokenization Key authorization string
      */
+    @Deprecated
     public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, String authorization) {
         this(activity, activity.getLifecycle(), authorization, dropInRequest);
+    }
+
+    public DropInClient(FragmentActivity activity, String authorization) {
+        this(activity, activity.getLifecycle(), authorization, null);
     }
 
     /**
@@ -88,8 +93,13 @@ public class DropInClient {
      * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
      * @param authorization a Tokenization Key authorization string
      */
+    @Deprecated
     public DropInClient(Fragment fragment, DropInRequest dropInRequest, String authorization) {
         this(fragment.requireActivity(), fragment.getLifecycle(), authorization, dropInRequest);
+    }
+
+    public DropInClient(Fragment fragment, String authorization) {
+        this(fragment.requireActivity(), fragment.getLifecycle(), authorization, null);
     }
 
     /**
@@ -99,8 +109,13 @@ public class DropInClient {
      * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
      * @param clientTokenProvider a {@link ClientTokenProvider}
      */
+    @Deprecated
     public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
         this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, activity, activity.getLifecycle()));
+    }
+
+    public DropInClient(FragmentActivity activity, ClientTokenProvider clientTokenProvider) {
+        this(createDefaultParams(activity, null, clientTokenProvider, null, activity, activity.getLifecycle()));
     }
 
     /**
@@ -110,8 +125,13 @@ public class DropInClient {
      * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
      * @param clientTokenProvider a {@link ClientTokenProvider}
      */
+    @Deprecated
     public DropInClient(Fragment fragment, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
         this(createDefaultParams(fragment.requireActivity(), null, clientTokenProvider, dropInRequest, fragment.requireActivity(), fragment.getLifecycle()));
+    }
+
+    public DropInClient(Fragment fragment, ClientTokenProvider clientTokenProvider) {
+        this(createDefaultParams(fragment.requireActivity(), null, clientTokenProvider, null, fragment.requireActivity(), fragment.getLifecycle()));
     }
 
     DropInClient(FragmentActivity activity, Lifecycle lifecycle, String authorization, DropInRequest dropInRequest) {
@@ -199,11 +219,24 @@ public class DropInClient {
      * @see #DropInClient(FragmentActivity, DropInRequest, String)
      * @see #DropInClient(FragmentActivity, DropInRequest, ClientTokenProvider)
      */
+    @Deprecated
     public void launchDropIn() {
         getAuthorization((authorization, authorizationError) -> {
             if (authorization != null && observer != null) {
                 DropInIntentData intentData =
                         new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
+                observer.launch(intentData);
+            } else if (authorizationError != null && listener != null) {
+                listener.onDropInFailure(authorizationError);
+            }
+        });
+    }
+
+    public void launchDropIn(DropInRequest request) {
+        getAuthorization((authorization, authorizationError) -> {
+            if (authorization != null && observer != null) {
+                DropInIntentData intentData =
+                        new DropInIntentData(request, authorization, braintreeClient.getSessionId());
                 observer.launch(intentData);
             } else if (authorizationError != null && listener != null) {
                 listener.onDropInFailure(authorizationError);

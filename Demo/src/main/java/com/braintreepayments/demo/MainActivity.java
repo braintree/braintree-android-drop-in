@@ -121,6 +121,25 @@ public class MainActivity extends BaseActivity implements DropInListener {
     }
 
     private void configureDropInClient() {
+        if (Settings.useTokenizationKey(this)) {
+            String tokenizationKey = Settings.getEnvironmentTokenizationKey(this);
+            dropInClient = new DropInClient(this, tokenizationKey);
+            dropInClient.setListener(this);
+            addPaymentMethodButton.setVisibility(VISIBLE);
+        } else {
+            dropInClient = new DropInClient(this, new DemoClientTokenProvider(this));
+            dropInClient.setListener(this);
+            dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
+                if (dropInResult != null) {
+                    handleDropInResult(dropInResult);
+                } else {
+                    addPaymentMethodButton.setVisibility(VISIBLE);
+                }
+            });
+        }
+    }
+
+    public void launchDropIn(View v) {
         DropInRequest dropInRequest = new DropInRequest();
         dropInRequest.setGooglePayRequest(getGooglePayRequest());
         dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
@@ -135,26 +154,7 @@ public class MainActivity extends BaseActivity implements DropInListener {
             dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
         }
 
-        if (Settings.useTokenizationKey(this)) {
-            String tokenizationKey = Settings.getEnvironmentTokenizationKey(this);
-            dropInClient = new DropInClient(this, dropInRequest, tokenizationKey);
-            dropInClient.setListener(this);
-            addPaymentMethodButton.setVisibility(VISIBLE);
-        } else {
-            dropInClient = new DropInClient(this, dropInRequest, new DemoClientTokenProvider(this));
-            dropInClient.setListener(this);
-            dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
-                if (dropInResult != null) {
-                    handleDropInResult(dropInResult);
-                } else {
-                    addPaymentMethodButton.setVisibility(VISIBLE);
-                }
-            });
-        }
-    }
-
-    public void launchDropIn(View v) {
-        dropInClient.launchDropIn();
+        dropInClient.launchDropIn(dropInRequest);
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {
@@ -192,7 +192,9 @@ public class MainActivity extends BaseActivity implements DropInListener {
     }
 
     public void handleDropInResult(DropInResult result) {
-        if (result.getPaymentMethodType() == null) {
+        if (result.getPaymentMethodType() == null
+            || result.getPaymentMethodType() == DropInPaymentMethod.GOOGLE_PAY) {
+            // google pay doesn't have a payment method nonce to display; fallback to OG ui
             addPaymentMethodButton.setVisibility(VISIBLE);
         } else {
             addPaymentMethodButton.setVisibility(GONE);
