@@ -38,8 +38,6 @@ import com.google.android.gms.wallet.WalletConstants;
 
 public class MainActivity extends BaseActivity implements DropInListener {
 
-    private static final int DROP_IN_REQUEST = 100;
-
     private static final String KEY_NONCE = "nonce";
 
     private PaymentMethodNonce nonce;
