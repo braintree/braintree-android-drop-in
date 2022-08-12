@@ -10,33 +10,9 @@ class DropInClientParams {
     private BraintreeClient braintreeClient;
     private GooglePayClient googlePayClient;
     private PaymentMethodClient paymentMethodClient;
-    private PayPalClient payPalClient;
-    private VenmoClient venmoClient;
-    private CardClient cardClient;
-    private UnionPayClient unionPayClient;
-    private DataCollector dataCollector;
-    private ThreeDSecureClient threeDSecureClient;
     private DropInSharedPreferences dropInSharedPreferences;
     private FragmentActivity activity;
     private Lifecycle lifecycle;
-
-    ThreeDSecureClient getThreeDSecureClient() {
-        return threeDSecureClient;
-    }
-
-    DropInClientParams threeDSecureClient(ThreeDSecureClient threeDSecureClient) {
-        this.threeDSecureClient = threeDSecureClient;
-        return this;
-    }
-
-    DataCollector getDataCollector() {
-        return dataCollector;
-    }
-
-    DropInClientParams dataCollector(DataCollector dataCollector) {
-        this.dataCollector = dataCollector;
-        return this;
-    }
 
     DropInRequest getDropInRequest() {
         return dropInRequest;
@@ -71,42 +47,6 @@ class DropInClientParams {
 
     DropInClientParams paymentMethodClient(PaymentMethodClient paymentMethodClient) {
         this.paymentMethodClient = paymentMethodClient;
-        return this;
-    }
-
-    PayPalClient getPayPalClient() {
-        return payPalClient;
-    }
-
-    DropInClientParams payPalClient(PayPalClient payPalClient) {
-        this.payPalClient = payPalClient;
-        return this;
-    }
-
-    VenmoClient getVenmoClient() {
-        return venmoClient;
-    }
-
-    DropInClientParams venmoClient(VenmoClient venmoClient) {
-        this.venmoClient = venmoClient;
-        return this;
-    }
-
-    CardClient getCardClient() {
-        return cardClient;
-    }
-
-    DropInClientParams cardClient(CardClient cardClient) {
-        this.cardClient = cardClient;
-        return this;
-    }
-
-    UnionPayClient getUnionPayClient() {
-        return unionPayClient;
-    }
-
-    DropInClientParams unionPayClient(UnionPayClient unionPayClient) {
-        this.unionPayClient = unionPayClient;
         return this;
     }
 

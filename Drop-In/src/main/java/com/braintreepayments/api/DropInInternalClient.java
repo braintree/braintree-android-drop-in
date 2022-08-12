@@ -6,9 +6,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Lifecycle;
 
 import com.braintreepayments.cardform.utils.CardType;
 
@@ -39,18 +37,12 @@ class DropInInternalClient {
 
     private final PaymentMethodInspector paymentMethodInspector = new PaymentMethodInspector();
 
-    private static DropInClientParams createDefaultParams(Context context, String authorization, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest, String sessionId, FragmentActivity activity, Lifecycle lifecycle) {
+    private static DropInInternalClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest, String sessionId) {
 
-        BraintreeClient braintreeClient;
-        if (clientTokenProvider != null) {
-            braintreeClient = new BraintreeClient(context, clientTokenProvider, sessionId, IntegrationType.DROP_IN);
-        } else {
-            braintreeClient = new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
-        }
+        BraintreeClient braintreeClient =
+            new BraintreeClient(context, authorization, sessionId, IntegrationType.DROP_IN);
 
-        return new DropInClientParams()
-                .activity(activity)
-                .lifecycle(lifecycle)
+        return new DropInInternalClientParams()
                 .dropInRequest(dropInRequest)
                 .braintreeClient(braintreeClient)
                 .threeDSecureClient(new ThreeDSecureClient(braintreeClient))
@@ -64,12 +56,12 @@ class DropInInternalClient {
                 .dropInSharedPreferences(DropInSharedPreferences.getInstance());
     }
 
-    DropInInternalClient(FragmentActivity activity, Lifecycle lifecycle, String authorization, String sessionId, DropInRequest dropInRequest) {
-        this(createDefaultParams(activity, authorization, null, dropInRequest, sessionId, activity, lifecycle));
+    DropInInternalClient(FragmentActivity activity, String authorization, String sessionId, DropInRequest dropInRequest) {
+        this(createDefaultParams(activity, authorization, dropInRequest, sessionId));
     }
 
     @VisibleForTesting
-    DropInInternalClient(DropInClientParams params) {
+    DropInInternalClient(DropInInternalClientParams params) {
         this.dropInRequest = params.getDropInRequest();
         this.braintreeClient = params.getBraintreeClient();
         this.googlePayClient = params.getGooglePayClient();
