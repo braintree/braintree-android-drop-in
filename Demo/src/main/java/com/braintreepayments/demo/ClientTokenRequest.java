@@ -1,7 +1,5 @@
 package com.braintreepayments.demo;
 
-import com.braintreepayments.demo.models.ClientToken;
-
 public class ClientTokenRequest {
 
     private final String customerId;
