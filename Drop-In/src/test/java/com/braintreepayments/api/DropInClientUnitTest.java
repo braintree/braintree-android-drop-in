@@ -78,12 +78,6 @@ public class DropInClientUnitTest {
     }
 
     @Test
-    public void internalConstructor_setsBraintreeClientWithSessionId() {
-        DropInClient sut = new DropInClient(ApplicationProvider.getApplicationContext(), Fixtures.TOKENIZATION_KEY, new DropInRequest());
-        assertEquals("session-id", sut.braintreeClient.getSessionId());
-    }
-
-    @Test
     public void getAuthorization_forwardsInvocationToBraintreeClient() {
         Authorization authorization = mock(Authorization.class);
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder()
