@@ -55,28 +55,21 @@ val dropInRequest = DropInRequest()
 `DropInClient` is responsible for launching the Drop-in UI. To launch Drop-in, instantiate a `DropInClient` with [client authorization](https://developer.paypal.com/braintree/docs/guides/authorization/overview) and call `DropInClient#launchDropInForResult` with the `DropInRequest` you configured above and a request code that you have defined for Drop-in:
 
 ```kotlin
-val dropInClient = DropInClient(this, "<#CLIENT_AUTHORIZATION#>", dropInRequest)
-dropInClient.launchDropInForResult(this, DROP_IN_REQUEST_CODE)
+val dropInClient = DropInClient(this, "<#CLIENT_AUTHORIZATION#>")
+dropInClient.setListener(this)
+dropInClient.launchDropIn(dropInRequest)
 ```
 
-To handle the result of the Drop-in flow, override `onActivityResult`:
+To handle the result of the Drop-in flow, implement `DropInListener` methods `onDropInSuccess()` and `onDropInFailure()`:
 
 ```kotlin
-override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
+override fun onDropInSuccess(result: DropInResult) {
+  // use the result to update your UI and send the payment method nonce to your server
+  val paymentMethodNonce = result.paymentMethodNonce?.string
+}
 
-    if (requestCode == DROP_IN_REQUEST_CODE) {
-        if (resultCode == RESULT_OK) {
-            val result: DropInResult? = data?.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT)
-            val paymentMethodNonce = result?.paymentMethodNonce?.string
-            // use the result to update your UI and send the payment method nonce to your server
-        } else if (resultCode == RESULT_CANCELED) {
-            // the user canceled
-        } else {
-            // an error occurred, checked the returned exception
-            val error: Exception? = data?.getSerializableExtra(DropInResult.EXTRA_ERROR) as? Exception
-        }
-    }
+override fun onDropInFailure(error: Exception) {
+  // an error occurred, checked the returned exception
 }
 ```
 
