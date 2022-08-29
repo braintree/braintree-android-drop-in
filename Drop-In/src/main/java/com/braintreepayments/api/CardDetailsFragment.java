@@ -32,6 +32,8 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
+    BraintreeErrorInspector braintreeErrorInspector = new BraintreeErrorInspector();
+
     static CardDetailsFragment from(DropInRequest dropInRequest, String cardNumber, Configuration configuration, boolean hasTokenizationKeyAuth) {
         CardFormConfiguration cardFormConfiguration =
                 new CardFormConfiguration(configuration.isCvvChallengePresent(), configuration.isPostalCodeChallengePresent());
@@ -126,34 +128,39 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
     }
 
     void setErrors(ErrorWithResponse errors) {
-        BraintreeError formErrors = errors.errorFor("unionPayEnrollment");
-        if (formErrors == null) {
-            formErrors = errors.errorFor("creditCard");
-        }
-
-        if (formErrors != null) {
-            if (formErrors.errorFor("expirationYear") != null ||
-                    formErrors.errorFor("expirationMonth") != null ||
-                    formErrors.errorFor("expirationDate") != null) {
-                cardForm.setExpirationError(requireContext().getString(R.string.bt_expiration_invalid));
+        boolean isDuplicatePaymentMethod = braintreeErrorInspector.isDuplicatePaymentError(errors);
+        if (isDuplicatePaymentMethod) {
+            cardForm.setCardNumberError("This credit card already exists as a saved payment method.");
+        } else {
+            BraintreeError formErrors = errors.errorFor("unionPayEnrollment");
+            if (formErrors == null) {
+                formErrors = errors.errorFor("creditCard");
             }
 
-            if (formErrors.errorFor("cvv") != null) {
-                cardForm.setCvvError(requireContext().getString(R.string.bt_cvv_invalid,
-                        requireContext().getString(
-                                cardForm.getCardEditText().getCardType().getSecurityCodeName())));
-            }
+            if (formErrors != null) {
+                if (formErrors.errorFor("expirationYear") != null ||
+                        formErrors.errorFor("expirationMonth") != null ||
+                        formErrors.errorFor("expirationDate") != null) {
+                    cardForm.setExpirationError(requireContext().getString(R.string.bt_expiration_invalid));
+                }
 
-            if (formErrors.errorFor("billingAddress") != null) {
-                cardForm.setPostalCodeError(requireContext().getString(R.string.bt_postal_code_invalid));
-            }
+                if (formErrors.errorFor("cvv") != null) {
+                    cardForm.setCvvError(requireContext().getString(R.string.bt_cvv_invalid,
+                            requireContext().getString(
+                                    cardForm.getCardEditText().getCardType().getSecurityCodeName())));
+                }
 
-            if (formErrors.errorFor("mobileCountryCode") != null) {
-                cardForm.setCountryCodeError(requireContext().getString(R.string.bt_country_code_invalid));
-            }
+                if (formErrors.errorFor("billingAddress") != null) {
+                    cardForm.setPostalCodeError(requireContext().getString(R.string.bt_postal_code_invalid));
+                }
 
-            if (formErrors.errorFor("mobileNumber") != null) {
-                cardForm.setMobileNumberError(requireContext().getString(R.string.bt_mobile_number_invalid));
+                if (formErrors.errorFor("mobileCountryCode") != null) {
+                    cardForm.setCountryCodeError(requireContext().getString(R.string.bt_country_code_invalid));
+                }
+
+                if (formErrors.errorFor("mobileNumber") != null) {
+                    cardForm.setMobileNumberError(requireContext().getString(R.string.bt_mobile_number_invalid));
+                }
             }
         }
     }
