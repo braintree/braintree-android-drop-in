@@ -141,14 +141,12 @@ In v6, authorization should be included when instantiating a `DropInClient` inst
 
 ```java
 // Java
-DropInRequest dropInRequest = new DropInRequest();
-DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest);
+DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN");
 ```
 
 ```kotlin
 // Kotlin
-val dropInRequest = DropInRequest()
-val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN", dropInRequest)
+val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, "TOKENIZATION_KEY_OR_CLIENT_TOKEN")
 ```
 
 ### Option 2: DropInClient with ClientTokenProvider
@@ -157,8 +155,7 @@ See [example ClientTokenProvider implementation](https://github.com/braintree/br
 
 ```java
 // Java
-DropInRequest dropInRequest = new DropInRequest();
-DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, callback -> {
+DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, callback -> {
     // fetch client token asynchronously...
     callback.onSuccess("CLIENT_TOKEN_FROM_SERVER");
 });
@@ -166,8 +163,7 @@ DropInClient dropInClient = new DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInReque
 
 ```kotlin
 // Kotlin
-val dropInRequest = DropInRequest()
-val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, dropInRequest, ClientTokenProvider { callback ->
+val dropInClient = DropInClient(<ACTIVITY_OR_FRAGMENT>, ClientTokenProvider { callback ->
   // fetch client token asynchronously...
   callback.onSuccess("CLIENT_TOKEN_FROM_SERVER");
 })
@@ -180,12 +176,14 @@ To launch Drop-In, [instantiate a DropInClient](#authorization) and call `DropIn
 
 Java:
 ```java
-dropInClient.launchDrop();
+DropInRequest dropInRequest = new DropInRequest();
+dropInClient.launchDropIn(dropInRequest);
 ```
 
 Kotlin:
 ```kotlin
-dropInClient.launchDropIn()
+val dropInRequest = DropInRequest()
+dropInClient.launchDropIn(dropInRequest)
 ```
 
 ## Handle Drop-In Result
@@ -233,7 +231,7 @@ Note that a payment method will only be returned when using a client token creat
 
 Java:
 ```java
-  DropInClient dropInClient = new DropInClient(this, "CLIENT_TOKEN_WITH_CUSTOMER_ID", dropInRequest);
+  DropInClient dropInClient = new DropInClient(this, "CLIENT_TOKEN_WITH_CUSTOMER_ID");
   dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
     // handle result
   });
@@ -241,7 +239,7 @@ Java:
 
 Kotlin:
 ```kotlin
-    val dropInClient = DropInClient(this, "CLIENT_TOKEN_WITH_CUSTOMER_ID", dropInRequest)
+    val dropInClient = DropInClient(this, "CLIENT_TOKEN_WITH_CUSTOMER_ID")
     dropInClient.fetchMostRecentPaymentMethod(this) { dropInResult, error ->
         // handle result
     }

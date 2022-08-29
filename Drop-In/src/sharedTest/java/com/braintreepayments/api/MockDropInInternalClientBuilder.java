@@ -1,22 +1,22 @@
 package com.braintreepayments.api;
 
-import android.content.Intent;
-
-import androidx.fragment.app.FragmentActivity;
-
-import org.mockito.stubbing.Answer;
-
-import java.util.List;
-
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+import android.content.Intent;
+
+import androidx.fragment.app.FragmentActivity;
+
 import com.braintreepayments.cardform.utils.CardType;
 
-public class MockDropInClientBuilder {
+import org.mockito.stubbing.Answer;
+
+import java.util.List;
+
+public class MockDropInInternalClientBuilder {
 
     private DropInResult threeDSecureSuccess;
     private Exception threeDSecureError;
@@ -48,143 +48,143 @@ public class MockDropInClientBuilder {
     private Exception deviceDataError;
     private Exception authorizationError;
 
-    MockDropInClientBuilder shouldPerformThreeDSecureVerification(boolean shouldPerformThreeDSecureVerification) {
+    MockDropInInternalClientBuilder shouldPerformThreeDSecureVerification(boolean shouldPerformThreeDSecureVerification) {
         this.shouldPerformThreeDSecureVerification = shouldPerformThreeDSecureVerification;
         return this;
     }
 
-    MockDropInClientBuilder threeDSecureSuccess(DropInResult dropInResult) {
+    MockDropInInternalClientBuilder threeDSecureSuccess(DropInResult dropInResult) {
         this.threeDSecureSuccess = dropInResult;
         return this;
     }
 
-    MockDropInClientBuilder threeDSecureError(Exception error) {
+    MockDropInInternalClientBuilder threeDSecureError(Exception error) {
         threeDSecureError = error;
         return this;
     }
 
-    MockDropInClientBuilder getVaultedPaymentMethodsSuccess(List<PaymentMethodNonce> nonces) {
+    MockDropInInternalClientBuilder getVaultedPaymentMethodsSuccess(List<PaymentMethodNonce> nonces) {
         this.paymentMethodNonceListSuccess = nonces;
         return this;
     }
 
-    MockDropInClientBuilder getVaultedPaymentMethodsError(Exception error) {
+    MockDropInInternalClientBuilder getVaultedPaymentMethodsError(Exception error) {
         this.getVaultedPaymentMethodsError = error;
         return this;
     }
 
-    MockDropInClientBuilder authorizationSuccess(Authorization authorization) {
+    MockDropInInternalClientBuilder authorizationSuccess(Authorization authorization) {
         this.authorization = authorization;
         return this;
     }
 
-    MockDropInClientBuilder getConfigurationSuccess(Configuration configuration) {
+    MockDropInInternalClientBuilder getConfigurationSuccess(Configuration configuration) {
         this.configuration = configuration;
         return this;
     }
 
-    MockDropInClientBuilder getSupportedPaymentMethodsSuccess(List<DropInPaymentMethod> supportedPaymentMethods) {
+    MockDropInInternalClientBuilder getSupportedPaymentMethodsSuccess(List<DropInPaymentMethod> supportedPaymentMethods) {
         this.supportedPaymentMethods = supportedPaymentMethods;
         return this;
     }
 
-    MockDropInClientBuilder getSupportedPaymentMethodsError(Exception error) {
+    MockDropInInternalClientBuilder getSupportedPaymentMethodsError(Exception error) {
         this.getSupportedPaymentMethodsError = error;
         return this;
     }
 
-    MockDropInClientBuilder getSupportedCardTypesSuccess(List<CardType> supportedCardTypes) {
+    MockDropInInternalClientBuilder getSupportedCardTypesSuccess(List<CardType> supportedCardTypes) {
         this.getSupportedCardTypesSuccess = supportedCardTypes;
         return this;
     }
 
-    MockDropInClientBuilder getSupportedCardTypesError(Exception error) {
+    MockDropInInternalClientBuilder getSupportedCardTypesError(Exception error) {
         this.getSupportedCardTypesError = error;
         return this;
     }
 
-    MockDropInClientBuilder collectDeviceDataSuccess(String deviceDataSuccess) {
+    MockDropInInternalClientBuilder collectDeviceDataSuccess(String deviceDataSuccess) {
         this.deviceDataSuccess = deviceDataSuccess;
         return this;
     }
 
-    MockDropInClientBuilder collectDeviceDataError(Exception deviceDataError) {
+    MockDropInInternalClientBuilder collectDeviceDataError(Exception deviceDataError) {
         this.deviceDataError = deviceDataError;
         return this;
     }
 
-    MockDropInClientBuilder deletePaymentMethodSuccess(PaymentMethodNonce deletedNonce) {
+    MockDropInInternalClientBuilder deletePaymentMethodSuccess(PaymentMethodNonce deletedNonce) {
         this.deletedNonce = deletedNonce;
         return this;
     }
 
-    MockDropInClientBuilder deletePaymentMethodError(Exception error) {
+    MockDropInInternalClientBuilder deletePaymentMethodError(Exception error) {
         this.deletePaymentMethodNonceError = error;
         return this;
     }
 
-    MockDropInClientBuilder cardTokenizeSuccess(CardNonce cardNonce) {
+    MockDropInInternalClientBuilder cardTokenizeSuccess(CardNonce cardNonce) {
         this.cardTokenizeSuccess = cardNonce;
         return this;
     }
 
-    MockDropInClientBuilder cardTokenizeError(Exception error) {
+    MockDropInInternalClientBuilder cardTokenizeError(Exception error) {
         this.cardTokenizeError = error;
         return this;
     }
 
-    MockDropInClientBuilder payPalError(Exception error) {
+    MockDropInInternalClientBuilder payPalError(Exception error) {
         this.payPalError = error;
         return this;
     }
 
-    MockDropInClientBuilder googlePayError(Exception error) {
+    MockDropInInternalClientBuilder googlePayError(Exception error) {
         this.googlePayError = error;
         return this;
     }
 
-    MockDropInClientBuilder venmoError(Exception error) {
+    MockDropInInternalClientBuilder venmoError(Exception error) {
         this.venmoError = error;
         return this;
     }
 
-    MockDropInClientBuilder handleThreeDSecureActivityResultError(Exception error) {
+    MockDropInInternalClientBuilder handleThreeDSecureActivityResultError(Exception error) {
         this.handleThreeDSecureActivityResultError = error;
         return this;
     }
 
-    MockDropInClientBuilder handleThreeDSecureActivityResultSuccess(DropInResult result) {
+    MockDropInInternalClientBuilder handleThreeDSecureActivityResultSuccess(DropInResult result) {
         this.handleThreeDSecureActivityResultSuccess = result;
         return this;
     }
 
-    MockDropInClientBuilder deliverBrowseSwitchResultError(Exception error) {
+    MockDropInInternalClientBuilder deliverBrowseSwitchResultError(Exception error) {
         this.deliverBrowserSwitchResultError = error;
         return this;
     }
 
-    MockDropInClientBuilder deliverBrowserSwitchResultSuccess(DropInResult result) {
+    MockDropInInternalClientBuilder deliverBrowserSwitchResultSuccess(DropInResult result) {
         this.deliverBrowserSwitchResultSuccess = result;
         return this;
     }
 
-    MockDropInClientBuilder getBrowserSwitchResult(BrowserSwitchResult result) {
+    MockDropInInternalClientBuilder getBrowserSwitchResult(BrowserSwitchResult result) {
         this.browserSwitchResult = result;
         return this;
     }
 
-    MockDropInClientBuilder handleActivityResultError(Exception error) {
+    MockDropInInternalClientBuilder handleActivityResultError(Exception error) {
         this.handleActivityResultError = error;
         return this;
     }
 
-    MockDropInClientBuilder handleActivityResultSuccess(DropInResult result) {
+    MockDropInInternalClientBuilder handleActivityResultSuccess(DropInResult result) {
         this.handleActivityResultSuccess = result;
         return this;
     }
 
-    DropInClient build() {
-        DropInClient dropInClient = mock(DropInClient.class);
+    DropInInternalClient build() {
+        DropInInternalClient dropInClient = mock(DropInInternalClient.class);
         when(dropInClient.getBrowserSwitchResult(any(FragmentActivity.class))).thenReturn(browserSwitchResult);
 
         doAnswer((Answer<Void>) invocation -> {

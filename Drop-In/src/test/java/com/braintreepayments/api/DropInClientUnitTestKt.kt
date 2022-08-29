@@ -82,12 +82,6 @@ class DropInClientUnitTestKt {
     }
 
     @Test
-    fun constructor_setsSessionId() {
-        val sut = DropInClient(activity, dropInRequest, "session-id", clientTokenProvider)
-        assertEquals("session-id", sut.braintreeClient.sessionId)
-    }
-
-    @Test
     fun constructor_withFragment_registersLifecycleObserver() {
         val observerSlot = slot<DropInLifecycleObserver>()
         justRun { fragmentLifecycle.addObserver(capture(observerSlot)) }

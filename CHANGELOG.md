@@ -1,5 +1,10 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Deprecate constructors that require a `DropInRequest`.
+* Add DropInClient#launchDropIn(DropInRequest) method.
+
 ## 6.2.0
 
 * Check if BottomSheetFragment is visible using Android Fragment API (fixes #348)
