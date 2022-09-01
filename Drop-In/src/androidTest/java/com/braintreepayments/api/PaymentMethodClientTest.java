@@ -23,6 +23,8 @@ import java.util.concurrent.CountDownLatch;
 @RunWith(AndroidJUnit4ClassRunner.class)
 public class PaymentMethodClientTest {
 
+    private static String TOKENIZATION_KEY = "sandbox_tmxhyf7d_dcpspy2brwdjr3qn";
+
     private Context context;
 
     @Before
@@ -74,7 +76,7 @@ public class PaymentMethodClientTest {
     public void getPaymentMethodNonces_failsWithATokenizationKey() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(1);
 
-        final BraintreeClient braintreeClient = new BraintreeClient(context, Fixtures.TOKENIZATION_KEY);
+        final BraintreeClient braintreeClient = new BraintreeClient(context, TOKENIZATION_KEY);
         CardClient cardClient = new CardClient(braintreeClient);
         final PaymentMethodClient sut = new PaymentMethodClient(braintreeClient);
 
