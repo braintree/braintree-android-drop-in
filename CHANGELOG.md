@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.3.0
 
 * Deprecate constructors that require a `DropInRequest`.
 * Add DropInClient#launchDropIn(DropInRequest) method.
