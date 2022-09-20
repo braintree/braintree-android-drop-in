@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Notify merchant via error message the payment method is duplicated (fixes #357)
+
 ## 6.3.0
 
 * Deprecate constructors that require a `DropInRequest`.
