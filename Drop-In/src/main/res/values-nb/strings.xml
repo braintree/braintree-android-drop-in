@@ -25,7 +25,7 @@
     <string name="bt_sms_code">SMS-kode</string>
     <string name="bt_sms_code_required">SMS-kode er obligatorisk</string>
     <string name="bt_use_a_different_phone_number">Bruk et annet telefonnummer</string>
-    <string name="bt_sms_code_sent_to">Skriv inn SMS-koden som er sendt til %s</string>
+    <string name="bt_sms_code_sent_to">Skriv inn SMS-koden som er sendt til %1$s</string>
     <string name="bt_card_details">Kortdetaljer</string>
     <string name="bt_confirm_enrollment">Bekreft registrering</string>
     <string name="bt_postal_code_invalid">Postnummeret er ugyldig</string>
@@ -46,4 +46,5 @@
     <string name="bt_saved_payments">Lagret betalingsmetode</string>
     <string name="bt_supported_payments">Støttede betalingsmetoder</string>
     <string name="bt_edit_button_description">Rediger lagrede betalingsmetoder</string>
+    <string name="bt_card_already_exists">Dette betalingskortet finnes allerede som en lagret betalingsmetode.</string>
 </resources>
