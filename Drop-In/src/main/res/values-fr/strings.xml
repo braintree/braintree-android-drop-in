@@ -25,7 +25,7 @@
     <string name="bt_sms_code">Code envoyé par SMS</string>
     <string name="bt_sms_code_required">Le code envoyé par SMS est requis.</string>
     <string name="bt_use_a_different_phone_number">Utiliser un autre numéro de téléphone</string>
-    <string name="bt_sms_code_sent_to">Saisissez le code envoyé par SMS au %s.</string>
+    <string name="bt_sms_code_sent_to">Saisissez le code envoyé par SMS au %1$s.</string>
     <string name="bt_card_details">Informations de carte</string>
     <string name="bt_confirm_enrollment">Confirmer l\'inscription</string>
     <string name="bt_postal_code_invalid">Le code postal est incorrect.</string>
@@ -46,4 +46,5 @@
     <string name="bt_saved_payments">Modes de paiement enregistrés</string>
     <string name="bt_supported_payments">Modes de paiement pris en charge</string>
     <string name="bt_edit_button_description">Modifier les modes de paiement enregistrés</string>
+    <string name="bt_card_already_exists">Cette carte bancaire existe déjà en tant que mode de paiement enregistré.</string>
 </resources>
