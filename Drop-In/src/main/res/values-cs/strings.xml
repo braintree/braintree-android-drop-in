@@ -25,7 +25,7 @@
     <string name="bt_sms_code">Kód SMS</string>
     <string name="bt_sms_code_required">Je požadován kód SMS.</string>
     <string name="bt_use_a_different_phone_number">Použít jiné telefonní číslo</string>
-    <string name="bt_sms_code_sent_to">Zadejte kód SMS zaslaný na číslo %s.</string>
+    <string name="bt_sms_code_sent_to">Zadejte kód SMS zaslaný na číslo %1$s.</string>
     <string name="bt_card_details">Údaje o kartě</string>
     <string name="bt_confirm_enrollment">Potvrdit registraci</string>
     <string name="bt_postal_code_invalid">PSČ není platné.</string>
@@ -46,4 +46,5 @@
     <string name="bt_saved_payments">Uložené způsoby platby</string>
     <string name="bt_supported_payments">Podporované způsoby platby</string>
     <string name="bt_edit_button_description">Upravit uložené způsoby platby</string>
+    <string name="bt_card_already_exists">Tato kreditní karta je již jako způsob platby uložena.</string>
 </resources>
