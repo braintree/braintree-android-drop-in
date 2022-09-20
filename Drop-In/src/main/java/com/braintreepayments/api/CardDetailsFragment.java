@@ -130,7 +130,7 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
     void setErrors(ErrorWithResponse errors) {
         boolean isDuplicatePaymentMethod = braintreeErrorInspector.isDuplicatePaymentError(errors);
         if (isDuplicatePaymentMethod) {
-            cardForm.setCardNumberError("This credit card already exists as a saved payment method.");
+            cardForm.setCardNumberError(getString(R.string.bt_card_already_exists));
         } else {
             BraintreeError formErrors = errors.errorFor("unionPayEnrollment");
             if (formErrors == null) {
