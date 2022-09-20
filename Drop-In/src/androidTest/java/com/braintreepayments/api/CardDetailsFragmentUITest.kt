@@ -448,7 +448,8 @@ class CardDetailsFragmentUITest {
             scenario.moveToState(Lifecycle.State.RESUMED)
 
             scenario.onFragment { fragment ->
-                fragment.dropInViewModel.setCardTokenizationError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_NON_NUMBER_ERROR_RESPONSE))
+                fragment.dropInViewModel.setCardTokenizationError(
+                        ErrorWithResponse.fromJson(IntegrationTestFixtures.CREDIT_CARD_NON_NUMBER_ERROR_RESPONSE))
 
                 assertEquals(fragment.context?.getString(R.string.bt_expiration_invalid),
                         fragment.cardForm.expirationDateEditText.textInputLayoutParent?.error)

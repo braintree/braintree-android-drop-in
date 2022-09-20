@@ -325,42 +325,6 @@ object Fixtures {
     """
 
     // language=JSON
-    const val CREDIT_CARD_NON_NUMBER_ERROR_RESPONSE = """
-        {
-          "error": {
-            "message": "Credit card is invalid"
-          },
-          "fieldErrors": [
-            {
-              "field": "creditCard",
-              "fieldErrors": [
-                {
-                  "field": "billingAddress",
-                  "message": "Postal code is invalid"
-                },
-                {
-                  "field": "cvv",
-                  "message": "CVV is invalid"
-                },
-                {
-                  "field": "expirationMonth",
-                  "message": "Expiration month is invalid"
-                },
-                {
-                  "field": "expirationYear",
-                  "message": "Expiration year is invalid"
-                },
-                {
-                  "field": "base",
-                  "message": "Credit card must include number, payment_method_nonce, or venmo_sdk_payment_method_code"
-                }
-              ]
-            }
-          ]
-        }
-    """
-
-    // language=JSON
     const val GET_PAYMENT_METHODS_EMPTY_RESPONSE = """
         {
           "paymentMethods": []
@@ -741,20 +705,4 @@ object Fixtures {
         }
     """
 
-    // language=JSON
-    const val PAYMENT_METHODS_VENMO_ACCOUNT_RESPONSE = """
-        {
-          "venmoAccounts": [{
-            "type": "VenmoAccount",
-            "nonce": "fake-venmo-nonce",
-            "description": "VenmoAccount",
-            "consumed": false,
-            "default": true,
-            "details": {
-              "cardType": "Discover",
-              "username": "venmojoe"
-            }
-          }]
-        }
-    """
 }
