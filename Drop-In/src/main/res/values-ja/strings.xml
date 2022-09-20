@@ -25,7 +25,7 @@
     <string name="bt_sms_code">SMSコード</string>
     <string name="bt_sms_code_required">SMSコードが必要です</string>
     <string name="bt_use_a_different_phone_number">別の電話番号を使用する</string>
-    <string name="bt_sms_code_sent_to">%sに送信されたSMSコードを入力します</string>
+    <string name="bt_sms_code_sent_to">%1$sに送信されたSMSコードを入力します</string>
     <string name="bt_card_details">カードの詳細情報</string>
     <string name="bt_confirm_enrollment">登録の確認</string>
     <string name="bt_postal_code_invalid">郵便番号が正しくありません</string>
@@ -46,4 +46,5 @@
     <string name="bt_saved_payments">保存済みの支払方法</string>
     <string name="bt_supported_payments">サポートされている支払方法</string>
     <string name="bt_edit_button_description">保存済みの支払方法を編集する</string>
+    <string name="bt_card_already_exists">このクレジットカードは、保存済みの支払方法としてすでに登録されています。</string>
 </resources>
