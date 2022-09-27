@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Bump braintree_android module dependency versions to `4.15.0`
 * Notify merchant via error message the payment method is duplicated (fixes #357)
 
 ## 6.3.0
