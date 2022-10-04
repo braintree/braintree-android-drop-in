@@ -31,7 +31,7 @@ class SupportedPaymentMethodsFragmentUITest {
             DropInPaymentMethod.GOOGLE_PAY
     )
 
-    private val vaultedPaymentMethods = listOf(CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE)))
+    private val vaultedPaymentMethods = listOf(CardNonce.fromJSON(JSONObject(IntegrationTestFixtures.VISA_CREDIT_CARD_RESPONSE)))
 
     private lateinit var dropInRequest: DropInRequest
 
@@ -128,9 +128,9 @@ class SupportedPaymentMethodsFragmentUITest {
         val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
-        val payPalNonce = PayPalAccountNonce.fromJSON(JSONObject(Fixtures.PAYPAL_ACCOUNT_JSON))
-        val venmoAccountNonce = VenmoAccountNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VENMO_ACCOUNT_RESPONSE))
+        val cardNonce = CardNonce.fromJSON(JSONObject(IntegrationTestFixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
+        val payPalNonce = PayPalAccountNonce.fromJSON(JSONObject(IntegrationTestFixtures.PAYPAL_ACCOUNT_JSON))
+        val venmoAccountNonce = VenmoAccountNonce.fromJSON(JSONObject(IntegrationTestFixtures.PAYMENT_METHODS_VENMO_ACCOUNT_RESPONSE))
 
         val vaultedPaymentMethods = listOf(cardNonce, payPalNonce, venmoAccountNonce)
 
@@ -170,7 +170,7 @@ class SupportedPaymentMethodsFragmentUITest {
         val scenario = FragmentScenario.launchInContainer(SupportedPaymentMethodsFragment::class.java, bundle)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
-        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
+        val cardNonce = CardNonce.fromJSON(JSONObject(IntegrationTestFixtures.PAYMENT_METHODS_VISA_CREDIT_CARD))
         val vaultedPaymentMethods = listOf(cardNonce)
 
         scenario.onFragment { fragment ->

@@ -25,7 +25,7 @@
     <string name="bt_sms_code">SMS 코드</string>
     <string name="bt_sms_code_required">SMS 코드가 필요합니다.</string>
     <string name="bt_use_a_different_phone_number">다른 전화번호 사용하기</string>
-    <string name="bt_sms_code_sent_to">%s에 전송된 SMS 코드를 입력하세요.</string>
+    <string name="bt_sms_code_sent_to">%1$s에 전송된 SMS 코드를 입력하세요.</string>
     <string name="bt_card_details">카드 세부정보</string>
     <string name="bt_confirm_enrollment">등록 확인</string>
     <string name="bt_postal_code_invalid">우편번호가 올바르지 않습니다.</string>
@@ -46,4 +46,5 @@
     <string name="bt_saved_payments">저장된 결제수단</string>
     <string name="bt_supported_payments">지원되는 결제수단</string>
     <string name="bt_edit_button_description">저장된 결제수단 편집</string>
+    <string name="bt_card_already_exists">이 신용카드는 이미 저장된 결제수단으로 설정되어 있습니다.</string>
 </resources>

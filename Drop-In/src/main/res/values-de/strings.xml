@@ -25,7 +25,7 @@
     <string name="bt_sms_code">SMS-Code</string>
     <string name="bt_sms_code_required">SMS-Code ist erforderlich</string>
     <string name="bt_use_a_different_phone_number">Andere Nummer verwenden</string>
-    <string name="bt_sms_code_sent_to">Geben Sie den SMS-Code ein, der an %s gesendet wurde</string>
+    <string name="bt_sms_code_sent_to">Geben Sie den SMS-Code ein, der an %1$s gesendet wurde</string>
     <string name="bt_card_details">Kartendaten</string>
     <string name="bt_confirm_enrollment">Anmeldung bestätigen</string>
     <string name="bt_postal_code_invalid">Postleitzahl ist ungültig</string>
@@ -46,4 +46,5 @@
     <string name="bt_saved_payments">Gespeicherte Zahlungsquellen</string>
     <string name="bt_supported_payments">Unterstützte Zahlungsquellen</string>
     <string name="bt_edit_button_description">Gespeicherte Zahlungsquellen bearbeiten</string>
+    <string name="bt_card_already_exists">Diese Kreditkarte ist bereits als gespeicherte Zahlungsquelle vorhanden.</string>
 </resources>

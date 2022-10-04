@@ -50,7 +50,8 @@ class AddCardFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
-            fragment.dropInViewModel.setCardTokenizationError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_EXPIRATION_ERROR_RESPONSE))
+            fragment.dropInViewModel.setCardTokenizationError(
+                    ErrorWithResponse.fromJson(IntegrationTestFixtures.CREDIT_CARD_EXPIRATION_ERROR_RESPONSE))
 
             assertNull(fragment.cardForm.cardEditText.textInputLayoutParent?.error)
         }
@@ -151,9 +152,25 @@ class AddCardFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
-            fragment.dropInViewModel.setCardTokenizationError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
+            fragment.dropInViewModel.setCardTokenizationError(
+                    ErrorWithResponse.fromJson(IntegrationTestFixtures.CREDIT_CARD_ERROR_RESPONSE))
 
             assertEquals(fragment.context?.getString(R.string.bt_card_number_invalid),
+                    fragment.cardForm.cardEditText.textInputLayoutParent?.error)
+        }
+    }
+
+    @Test
+    fun whenStateIsRESUMED_whenCardNumberIsDuplicate_displaysErrorsInlineToUser() {
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        scenario.onFragment { fragment ->
+            fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
+            fragment.dropInViewModel.setCardTokenizationError(
+                    ErrorWithResponse.fromJson(IntegrationTestFixtures.ERRORS_CREDIT_CARD_DUPLICATE))
+
+            assertEquals(fragment.context?.getString(R.string.bt_card_already_exists),
                     fragment.cardForm.cardEditText.textInputLayoutParent?.error)
         }
     }
@@ -165,7 +182,8 @@ class AddCardFragmentUITest {
 
         scenario.onFragment { fragment ->
             fragment.dropInViewModel.setSupportedCardTypes(listOf(CardType.VISA))
-            fragment.dropInViewModel.setCardTokenizationError(ErrorWithResponse.fromJson(Fixtures.CREDIT_CARD_ERROR_RESPONSE))
+            fragment.dropInViewModel.setCardTokenizationError(
+                    ErrorWithResponse.fromJson(IntegrationTestFixtures.CREDIT_CARD_ERROR_RESPONSE))
         }
 
         onView(withId(R.id.bt_button)).check(matches(isDisplayed()))

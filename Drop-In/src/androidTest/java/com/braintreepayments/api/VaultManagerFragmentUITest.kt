@@ -26,7 +26,7 @@ class VaultManagerFragmentUITest {
 
     @Before
     fun beforeEach() {
-        cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        cardNonce = CardNonce.fromJSON(JSONObject(IntegrationTestFixtures.VISA_CREDIT_CARD_RESPONSE))
         vaultedPaymentMethodNonces.add(cardNonce)
 
         scenario = FragmentScenario.launchInContainer(VaultManagerFragment::class.java)

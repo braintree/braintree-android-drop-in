@@ -25,7 +25,7 @@
     <string name="bt_sms_code">SMS-kód</string>
     <string name="bt_sms_code_required">Az SMS-kód megadása kötelező</string>
     <string name="bt_use_a_different_phone_number">Másik telefonszám használata</string>
-    <string name="bt_sms_code_sent_to">Adja meg a(z) %s számra küldött SMS-kódot</string>
+    <string name="bt_sms_code_sent_to">Adja meg a(z) %1$s számra küldött SMS-kódot</string>
     <string name="bt_card_details">Kártyaadatok</string>
     <string name="bt_confirm_enrollment">Jelentkezés megerősítése</string>
     <string name="bt_postal_code_invalid">Érvénytelen irányítószám</string>
@@ -46,4 +46,5 @@
     <string name="bt_saved_payments">Mentett fizetési módok</string>
     <string name="bt_supported_payments">Támogatott fizetési módok</string>
     <string name="bt_edit_button_description">Mentett fizetési módok szerkesztése</string>
+    <string name="bt_card_already_exists">Ez a hitelkártya már meg van adva mentett fizetési módként.</string>
 </resources>

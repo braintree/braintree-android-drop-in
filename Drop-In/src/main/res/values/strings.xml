@@ -46,4 +46,5 @@
     <string name="bt_saved_payments">Saved payment methods</string>
     <string name="bt_supported_payments">Supported payment methods</string>
     <string name="bt_edit_button_description">Edit saved payment methods</string>
+    <string name="bt_card_already_exists">This credit card already exists as a saved payment method.</string>
 </resources>

@@ -25,7 +25,7 @@
     <string name="bt_sms_code">קוד הודעת טקסט</string>
     <string name="bt_sms_code_required">נדרש קוד הודעת טקסט</string>
     <string name="bt_use_a_different_phone_number">השתמש במספר טלפון אחר</string>
-    <string name="bt_sms_code_sent_to">עליך להזין את קוד הודעת הטקסט שנשלח אל %s</string>
+    <string name="bt_sms_code_sent_to">עליך להזין את קוד הודעת הטקסט שנשלח אל %1$s</string>
     <string name="bt_card_details">פרטי הכרטיס</string>
     <string name="bt_confirm_enrollment">אישור ההרשמה</string>
     <string name="bt_postal_code_invalid">המיקוד אינו חוקי</string>
@@ -46,4 +46,5 @@
     <string name="bt_saved_payments">שיטות תשלום שמורות</string>
     <string name="bt_supported_payments">שיטות תשלום נתמכות</string>
     <string name="bt_edit_button_description">עריכת שיטות תשלום שמורות</string>
+    <string name="bt_card_already_exists">כרטיס אשראי זה כבר שמור כשיטת תשלום.</string>
 </resources>

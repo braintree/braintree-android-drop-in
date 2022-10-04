@@ -31,6 +31,8 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
     @VisibleForTesting
     DropInViewModel dropInViewModel;
 
+    BraintreeErrorInspector braintreeErrorInspector = new BraintreeErrorInspector();
+
     static AddCardFragment from(DropInRequest dropInRequest, @Nullable String cardNumber) {
         Bundle args = new Bundle();
         args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);
@@ -127,14 +129,17 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
     }
 
     void setErrors(ErrorWithResponse errors) {
-        BraintreeError formErrors = errors.errorFor("creditCard");
-
-        if (formErrors != null) {
-            if (formErrors.errorFor("number") != null) {
-                cardForm.setCardNumberError(requireContext().getString(R.string.bt_card_number_invalid));
+        boolean isDuplicatePaymentMethod = braintreeErrorInspector.isDuplicatePaymentError(errors);
+        if (isDuplicatePaymentMethod) {
+            cardForm.setCardNumberError(getString(R.string.bt_card_already_exists));
+        } else {
+            BraintreeError formErrors = errors.errorFor("creditCard");
+            if (formErrors != null) {
+                if (formErrors.errorFor("number") != null) {
+                    cardForm.setCardNumberError(requireContext().getString(R.string.bt_card_number_invalid));
+                }
             }
         }
-
         animatedButtonView.showButton();
     }
 
