@@ -41,6 +41,26 @@ repositories {
 }
 ```
 
+To preview the latest work in progress builds, add the following SNAPSHOT dependency in your `build.gradle`:
+
+```groovy
+dependencies {
+  implementation 'com.braintreepayments.api:drop-in:6.3.1-SNAPSHOT'
+}
+```
+
+You will also need to add the Sonatype snapshots repo to your top-level `build.gradle` to import SNAPSHOT builds:
+
+```groovy
+allprojects {
+    repositories {
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
+    }
+}
+```
+
 ## Builder Pattern
 
 The builder pattern has been removed in v6 to allow for consistent object creation across Java and Kotlin. 
