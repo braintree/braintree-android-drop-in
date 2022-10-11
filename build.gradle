@@ -52,8 +52,8 @@ nexusStaging {
     packageGroup = "com.braintreepayments"
     // give nexus sonatype more time to close the staging repository
     delayBetweenRetriesInMillis = 20000
-    username = System.env['SONATYPE_USERNAME']
-    password = System.env['SONATYPE_PASSWORD']
+    username = System.getenv('SONATYPE_USERNAME')
+    password = System.getenv('SONATYPE_PASSWORD')
 }
 
 task changeGradleReleaseVersion {
@@ -67,7 +67,7 @@ task changeGradleReleaseVersion {
 task changeREADMEVersion {
     doLast {
         def readmeFile = new File('README.md')
-        def readmeFileText = readmeFile.text.replaceFirst("com.braintreepayments.api:drop-in:\\d+\\.\\d+\\.\\d+(-.*)?'", "com.braintreepayments.api:drop-in:" + versionParam + "'")
+        def readmeFileText = readmeFile.text.replaceFirst("com.braintreepayments.api:drop-in:\\d+\\.\\d+\\.\\d+'", "com.braintreepayments.api:drop-in:" + versionParam + "'")
         readmeFile.write(readmeFileText)
     }
 }
@@ -96,6 +96,11 @@ task incrementSNAPSHOTVersion {
         def newVersion = "$major.$minor.${patchInteger + 1}-SNAPSHOT"
         def gradleFileText = gradleFile.text.replaceFirst("\\nversion '\\d+\\.\\d+\\.\\d+(-.*)?'", "\nversion '" + newVersion + "'")
         gradleFile.write(gradleFileText)
+
+        // update README snapshot version
+        def readmeFile = new File('README.md')
+        def readmeFileText = readmeFile.text.replaceFirst(":drop-in:\\d+\\.\\d+\\.\\d+-SNAPSHOT'", ":drop-in:" + newVersion + "'")
+        readmeFile.write(readmeFileText)
     }
 }
 
