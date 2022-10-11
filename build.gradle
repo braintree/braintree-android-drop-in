@@ -99,7 +99,7 @@ task incrementSNAPSHOTVersion {
 
         // update README snapshot version
         def readmeFile = new File('README.md')
-        def readmeFileText = readmeFile.text.replaceFirst(":drop-in:\\d+\\.\\d+\\.\\d+-SNAPSHOT'", ":drop-in:" + newVersion + "'")
+        def readmeFileText = readmeFile.text.replaceFirst("com.braintreepayments.api:drop-in:\\d+\\.\\d+\\.\\d+-SNAPSHOT'", "com.braintreepayments.api:drop-in:" + newVersion + "'")
         readmeFile.write(readmeFileText)
     }
 }
