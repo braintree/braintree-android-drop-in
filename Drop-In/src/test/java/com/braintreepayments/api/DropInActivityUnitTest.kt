@@ -807,11 +807,12 @@ class DropInActivityUnitTest {
     // region Card Details Submit Event
 
     @Test
-    fun onCardDetailsSubmitEvent_onTokenizeCardSuccess_whenShouldNotRequest3DS_finishesWithResult() {
+    fun onCardDetailsSubmitEvent_onTokenizeCardSuccess_whenShouldNotRequest3DS_finishesWithResultAndDeviceData() {
         val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
         val dropInClient = MockDropInInternalClientBuilder()
             .authorizationSuccess(authorization)
             .cardTokenizeSuccess(cardNonce)
+            .collectDeviceDataSuccess("sample-data")
             .shouldPerformThreeDSecureVerification(false)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -825,6 +826,7 @@ class DropInActivityUnitTest {
         val result =
             shadowActivity.resultIntent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT) as DropInResult?
         assertEquals(cardNonce.string, result!!.paymentMethodNonce!!.string)
+        assertEquals("sample-data", result.deviceData)
         assertTrue(activity.isFinishing)
     }
 
@@ -908,6 +910,27 @@ class DropInActivityUnitTest {
             .getSerializableExtra(DropInResult.EXTRA_ERROR) as Exception?
         assertSame(error, actualError)
         assertTrue(activity.isFinishing)
+    }
+
+    @Test
+    fun onCardDetailsSubmitEvent_onTokenizeCardSuccess_whenShouldNotRequest3DSAndDeviceDataFails_finishesWithError() {
+        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        val dropInClient = MockDropInInternalClientBuilder()
+                .authorizationSuccess(authorization)
+                .cardTokenizeSuccess(cardNonce)
+                .collectDeviceDataError(Exception("device data error"))
+                .shouldPerformThreeDSecureVerification(false)
+                .build()
+        setupDropInActivity(dropInClient, dropInRequest)
+
+        val event = DropInEvent.createCardDetailsSubmitEvent(Card())
+        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
+
+        val shadowActivity = shadowOf(activity)
+        assertEquals(RESULT_FIRST_USER, shadowActivity.resultCode)
+        val actualError = shadowActivity.resultIntent
+                .getSerializableExtra(DropInResult.EXTRA_ERROR) as Exception?
+        assertEquals("device data error", actualError?.message)
     }
 
     // endregion

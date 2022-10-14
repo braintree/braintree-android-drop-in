@@ -4,6 +4,7 @@
 
 * Bump braintree_android module dependency versions to `4.15.0`
 * Notify merchant via error message the payment method is duplicated (fixes #357)
+* Collect device data for Card payments that aren't using 3D Secure (fixes #364)
 
 ## 6.3.0
 
