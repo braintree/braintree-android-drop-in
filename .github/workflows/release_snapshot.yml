@@ -60,10 +60,6 @@ jobs:
         with:
           signing_key_file: ${{ secrets.SIGNING_KEY_FILE }}
           signing_file_path: ${{ env.SIGNING_KEY_FILE_PATH }}
-      - name: Update Versions
-        uses: ./.github/actions/update_versions
-        with:
-          version: ${{ github.event.inputs.version }}
       - name: Publish Drop-in
         uses: ./.github/actions/publish_module
         with:
