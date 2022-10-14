@@ -812,6 +812,7 @@ class DropInActivityUnitTest {
         val dropInClient = MockDropInInternalClientBuilder()
             .authorizationSuccess(authorization)
             .cardTokenizeSuccess(cardNonce)
+            .collectDeviceDataSuccess("sample-data")
             .shouldPerformThreeDSecureVerification(false)
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
@@ -825,6 +826,7 @@ class DropInActivityUnitTest {
         val result =
             shadowActivity.resultIntent.getParcelableExtra(DropInResult.EXTRA_DROP_IN_RESULT) as DropInResult?
         assertEquals(cardNonce.string, result!!.paymentMethodNonce!!.string)
+        assertEquals("sample-data", result.deviceData)
         assertTrue(activity.isFinishing)
     }
 

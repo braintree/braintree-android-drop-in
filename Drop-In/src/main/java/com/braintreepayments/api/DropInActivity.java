@@ -518,7 +518,14 @@ public class DropInActivity extends AppCompatActivity {
             } else {
                 DropInResult dropInResult = new DropInResult();
                 dropInResult.setPaymentMethodNonce(paymentMethod);
-                animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
+                dropInInternalClient.collectDeviceData(this, (deviceData, deviceDataError) -> {
+                    if (deviceData != null) {
+                        dropInResult.setDeviceData(deviceData);
+                        animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
+                    } else {
+                        onError(deviceDataError);
+                    }
+                });
             }
         });
     }
