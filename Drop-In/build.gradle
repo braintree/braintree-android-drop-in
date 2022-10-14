@@ -15,14 +15,14 @@ def GATEWAY_PORT = System.properties['GATEWAY_PORT'] ?: '"3000"';
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion '30.0.3'
 
     defaultConfig {
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
+        versionCode rootProject.versionCode
+        versionName rootProject.versionName
 
         consumerProguardFiles 'proguard.pro'
-
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
     }
 
