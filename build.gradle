@@ -7,8 +7,23 @@ buildscript {
         }
     }
 
+    ext.brainTreeVersion = "4.18.0"
+
+    ext.deps = [
+            "braintreeCore" : "com.braintreepayments.api:braintree-core:$brainTreeVersion",
+            "threeDSecure" :  "com.braintreepayments.api:three-d-secure:$brainTreeVersion",
+            "paypal" : "com.braintreepayments.api:paypal:$brainTreeVersion",
+            "venmo" : "com.braintreepayments.api:venmo:$brainTreeVersion",
+            "googlePlay" :  "com.braintreepayments.api:google-pay:$brainTreeVersion",
+            "googlePay" : "com.braintreepayments.api:google-pay:$brainTreeVersion",
+            "card" : "com.braintreepayments.api:card:$brainTreeVersion",
+            "dataCollector" : "com.braintreepayments.api:data-collector:$brainTreeVersion",
+            "unionPay" : "com.braintreepayments.api:union-pay:$brainTreeVersion",
+            "cardForm" : "com.braintreepayments:card-form:$brainTreeVersion"
+    ]
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.4'
+        classpath 'com.android.tools.build:gradle:7.2.2'
         classpath 'de.marcphilipp.gradle:nexus-publish-plugin:0.4.0'
         classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
@@ -21,9 +36,9 @@ plugins {
 
 version '6.3.1-SNAPSHOT'
 ext {
-    compileSdkVersion = 31
+    compileSdkVersion = 33
     minSdkVersion = 21
-    targetSdkVersion = 31
+    targetSdkVersion = 33
     versionCode = 93
     versionName = version
 }
