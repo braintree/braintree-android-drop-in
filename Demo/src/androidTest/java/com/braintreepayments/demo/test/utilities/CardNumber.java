@@ -9,7 +9,6 @@ public class CardNumber {
     public static final String INVALID_AMEX = "371111111111111";
 
     public static final String THREE_D_SECURE_VERIFICATON = "4000000000000002";
-    public static final String THREE_D_SECURE_VERIFICATON_V2 = "4000000000001000";
     public static final String THREE_D_SECURE_VERIFICATON_NOT_REQUIRED = "4000000000000051";
     public static final String THREE_D_SECURE_LOOKUP_ERROR = "4000000000000077";
     public static final String THREE_D_SECURE_LOOKUP_TIMEOUT = "4000000000000044";

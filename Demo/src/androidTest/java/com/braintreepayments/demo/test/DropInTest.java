@@ -1,32 +1,5 @@
 package com.braintreepayments.demo.test;
 
-import static androidx.test.InstrumentationRegistry.getTargetContext;
-import static com.braintreepayments.AutomatorAction.clearTextField;
-import static com.braintreepayments.AutomatorAction.click;
-import static com.braintreepayments.AutomatorAction.setText;
-import static com.braintreepayments.AutomatorAssertion.text;
-import static com.braintreepayments.DeviceAutomator.onDevice;
-import static com.braintreepayments.UiObjectMatcher.withContentDescription;
-import static com.braintreepayments.UiObjectMatcher.withResourceId;
-import static com.braintreepayments.UiObjectMatcher.withText;
-import static com.braintreepayments.UiObjectMatcher.withTextContaining;
-import static com.braintreepayments.UiObjectMatcher.withTextStartingWith;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_CHALLENGE_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
-import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON_V2;
-import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
-import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
-import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
-import static com.braintreepayments.demo.test.utilities.UiTestActions.clickWebViewText;
-import static junit.framework.Assert.assertFalse;
-import static junit.framework.TestCase.assertTrue;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.StringEndsWith.endsWith;
-import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
-import static org.junit.Assume.assumeFalse;
-
 import android.widget.Button;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -42,6 +15,32 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.IOException;
+
+import static androidx.test.InstrumentationRegistry.getTargetContext;
+import static com.braintreepayments.AutomatorAction.clearTextField;
+import static com.braintreepayments.AutomatorAction.click;
+import static com.braintreepayments.AutomatorAction.setText;
+import static com.braintreepayments.AutomatorAssertion.text;
+import static com.braintreepayments.DeviceAutomator.onDevice;
+import static com.braintreepayments.UiObjectMatcher.withContentDescription;
+import static com.braintreepayments.UiObjectMatcher.withResourceId;
+import static com.braintreepayments.UiObjectMatcher.withText;
+import static com.braintreepayments.UiObjectMatcher.withTextContaining;
+import static com.braintreepayments.UiObjectMatcher.withTextStartingWith;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_CHALLENGE_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_2_FRICTIONLESS_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.THREE_D_SECURE_VERIFICATON;
+import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_CREDIT;
+import static com.braintreepayments.demo.test.utilities.CardNumber.UNIONPAY_SMS_NOT_REQUIRED;
+import static com.braintreepayments.demo.test.utilities.CardNumber.VISA;
+import static com.braintreepayments.demo.test.utilities.UiTestActions.clickWebViewText;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.core.Is.is;
+import static org.hamcrest.core.StringEndsWith.endsWith;
+import static org.hamcrest.text.IsEqualIgnoringCase.equalToIgnoringCase;
+import static org.junit.Assume.assumeFalse;
 
 @RunWith(AndroidJUnit4.class)
 public class DropInTest extends TestHelper {
@@ -91,35 +90,12 @@ public class DropInTest extends TestHelper {
     }
 
     @Test(timeout = 60000)
-    @Ignore("cardinal V1")
     public void performsThreeDSecureVerification() {
         enableThreeDSecure();
         launchApp();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
         tokenizeCard(THREE_D_SECURE_VERIFICATON);
-
-        onDevice(withText("Added Protection")).waitForExists();
-        onDevice().typeText("1234").pressEnter();
-
-        if (onDevice(withText("RETURN TO APP")).exists()) {
-            clickWebViewText("RETURN TO APP");
-        }
-
-        getNonceDetails().check(text(containsString("Card Last Two: 02")));
-        getNonceDetails().check(text(containsString("3DS isLiabilityShifted: true")));
-        getNonceDetails().check(text(containsString("3DS isLiabilityShiftPossible: true")));
-
-        onDevice(withText("Purchase")).perform(click());
-        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
-    }
-
-    public void performsThreeDSecureVerification_V2() {
-        enableThreeDSecure();
-        launchApp();
-        onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
-
-        tokenizeCard(THREE_D_SECURE_VERIFICATON_V2);
 
         onDevice(withText("Added Protection")).waitForExists();
         onDevice().typeText("1234").pressEnter();
