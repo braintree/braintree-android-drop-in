@@ -6,7 +6,6 @@
 * Notify merchant via error message the payment method is duplicated (fixes #357)
 * Android 13 Support
 * Upgrade `targetSdkVersion` and `compileSdkVersion` to API 33
-
 * Collect device data for Card payments that aren't using 3D Secure (fixes #364)
 
 ## 6.3.0
