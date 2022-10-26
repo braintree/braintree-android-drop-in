@@ -2,7 +2,7 @@
 
 ## unreleased
 
-* Bump braintree_android module dependency versions to `4.18.0`
+* Bump braintree_android module dependency versions to `4.19.0`
 * Notify merchant via error message the payment method is duplicated (fixes #357)
 * Android 13 Support
 * Upgrade `targetSdkVersion` and `compileSdkVersion` to API 33
