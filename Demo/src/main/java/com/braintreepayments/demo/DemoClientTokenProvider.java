@@ -1,7 +1,6 @@
 package com.braintreepayments.demo;
 
 import android.content.Context;
-import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
@@ -12,7 +11,6 @@ import com.braintreepayments.demo.models.ClientToken;
 
 import retrofit.Callback;
 import retrofit.RetrofitError;
-import retrofit.client.Client;
 import retrofit.client.Response;
 
 public class DemoClientTokenProvider implements ClientTokenProvider {
@@ -38,10 +36,15 @@ public class DemoClientTokenProvider implements ClientTokenProvider {
 
             @Override
             public void failure(RetrofitError error) {
-                String errorMessage = "Unable to get a client token. Response Code: " +
-                        error.getResponse().getStatus() + " Response body: " +
-                        error.getResponse().getBody();
-                callback.onFailure(new Exception(errorMessage));
+                if (error.getResponse() != null) {
+                    String errorMessage = "Unable to get a client token. Response Code: " +
+                            error.getResponse().getStatus() + " Response body: " +
+                            error.getResponse().getBody();
+                    callback.onFailure(new Exception(errorMessage));
+                } else {
+                    String errorMessage = "Unable to get a client token.";
+                    callback.onFailure(new Exception(errorMessage));
+                }
             }
         });
     }
