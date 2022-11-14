@@ -432,4 +432,15 @@ public class DropInClientUnitTest {
         sut.onDropInResult(null);
         verifyZeroInteractions(listener);
     }
+
+    @Test
+    public void invalidateClientToken_forwardsInvocationIntoBraintreeClient() {
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
+        DropInClientParams params = new DropInClientParams()
+                .braintreeClient(braintreeClient);
+        DropInClient sut = new DropInClient(params);
+
+        sut.invalidateClientToken();
+        verify(braintreeClient).invalidateClientToken();
+    }
 }
