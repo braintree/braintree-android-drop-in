@@ -53,7 +53,7 @@ public class DropInClient {
                 .braintreeClient(braintreeClient)
                 .paymentMethodClient(new PaymentMethodClient(braintreeClient))
                 .googlePayClient(new GooglePayClient(braintreeClient))
-                .dropInSharedPreferences(DropInSharedPreferences.getInstance(activity.getApplicationContext()));
+                .dropInSharedPreferences(DropInSharedPreferences.getInstance(context.getApplicationContext()));
     }
 
     /**
