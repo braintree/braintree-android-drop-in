@@ -34,21 +34,21 @@ public class DropInSharedPreferencesUnitTest {
     public void getLastUsedPaymentMethod_whenPaymentMethodIsValid_returnsPaymentMethod() {
         String key = "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
         when(braintreeSharedPreferences.getString(context, key, null)).thenReturn("VISA");
-        assertEquals(DropInPaymentMethod.VISA, sut.getLastUsedPaymentMethod(context));
+        assertEquals(DropInPaymentMethod.VISA, sut.getLastUsedPaymentMethod());
     }
 
     @Test
     public void getLastUsedPaymentMethod_whenPaymentMethodIsInvalid_returnsNull() {
         String key = "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
         when(braintreeSharedPreferences.getString(context, key, null)).thenReturn("UNKNOWN_PAYMENT_METHOD");
-        assertNull(sut.getLastUsedPaymentMethod(context));
+        assertNull(sut.getLastUsedPaymentMethod());
     }
 
     @Test
     public void getLastUsedPaymentMethod_whenPaymentMethodDoesNotExist_returnsNull() {
         String key = "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
         when(braintreeSharedPreferences.getString(context, key, null)).thenReturn(null);
-        assertNull(sut.getLastUsedPaymentMethod(context));
+        assertNull(sut.getLastUsedPaymentMethod());
     }
 
     @Test
@@ -56,7 +56,7 @@ public class DropInSharedPreferencesUnitTest {
         PaymentMethodNonce nonce = mock(PaymentMethodNonce.class);
         when(paymentMethodInspector.getPaymentMethod(nonce)).thenReturn(DropInPaymentMethod.VISA);
 
-        sut.setLastUsedPaymentMethod(context, nonce);
+        sut.setLastUsedPaymentMethod(nonce);
         String key = "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
         verify(braintreeSharedPreferences).putString(context, key, "VISA");
     }
@@ -66,7 +66,7 @@ public class DropInSharedPreferencesUnitTest {
         PaymentMethodNonce nonce = mock(PaymentMethodNonce.class);
         when(paymentMethodInspector.getPaymentMethod(nonce)).thenReturn(null);
 
-        sut.setLastUsedPaymentMethod(context, nonce);
+        sut.setLastUsedPaymentMethod(nonce);
         verifyZeroInteractions(braintreeSharedPreferences);
     }
 }

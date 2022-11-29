@@ -9,15 +9,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isNull;
-import static org.mockito.Matchers.same;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.FragmentActivity;
@@ -37,8 +34,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 @RunWith(RobolectricTestRunner.class)
@@ -153,7 +148,7 @@ public class DropInClientUnitTest {
                 .googlePayClient(googlePayClient);
 
         when(
-                dropInSharedPreferences.getLastUsedPaymentMethod(activity)
+                dropInSharedPreferences.getLastUsedPaymentMethod()
         ).thenReturn(DropInPaymentMethod.GOOGLE_PAY);
 
         DropInClient sut = new DropInClient(params);
@@ -195,7 +190,7 @@ public class DropInClientUnitTest {
                 .dropInSharedPreferences(dropInSharedPreferences);
 
         when(
-                dropInSharedPreferences.getLastUsedPaymentMethod(activity)
+                dropInSharedPreferences.getLastUsedPaymentMethod()
         ).thenReturn(DropInPaymentMethod.GOOGLE_PAY);
 
         DropInClient sut = new DropInClient(params);

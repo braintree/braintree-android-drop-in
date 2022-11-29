@@ -53,7 +53,7 @@ public class DropInClient {
                 .braintreeClient(braintreeClient)
                 .paymentMethodClient(new PaymentMethodClient(braintreeClient))
                 .googlePayClient(new GooglePayClient(braintreeClient))
-                .dropInSharedPreferences(DropInSharedPreferences.getInstance());
+                .dropInSharedPreferences(DropInSharedPreferences.getInstance(activity.getApplicationContext()));
     }
 
     /**
@@ -307,21 +307,25 @@ public class DropInClient {
                         return;
                     }
 
-                    DropInPaymentMethod lastUsedPaymentMethod =
-                            dropInSharedPreferences.getLastUsedPaymentMethod(activity);
+                    try {
+                        DropInPaymentMethod lastUsedPaymentMethod =
+                                dropInSharedPreferences.getLastUsedPaymentMethod();
 
-                    if (lastUsedPaymentMethod == DropInPaymentMethod.GOOGLE_PAY) {
-                        googlePayClient.isReadyToPay(activity, (isReadyToPay, isReadyToPayError) -> {
-                            if (isReadyToPay) {
-                                DropInResult result = new DropInResult();
-                                result.setPaymentMethodType(DropInPaymentMethod.GOOGLE_PAY);
-                                callback.onResult(result, null);
-                            } else {
-                                getPaymentMethodNonces(callback);
-                            }
-                        });
-                    } else {
-                        getPaymentMethodNonces(callback);
+                        if (lastUsedPaymentMethod == DropInPaymentMethod.GOOGLE_PAY) {
+                            googlePayClient.isReadyToPay(activity, (isReadyToPay, isReadyToPayError) -> {
+                                if (isReadyToPay) {
+                                    DropInResult result = new DropInResult();
+                                    result.setPaymentMethodType(DropInPaymentMethod.GOOGLE_PAY);
+                                    callback.onResult(result, null);
+                                } else {
+                                    getPaymentMethodNonces(callback);
+                                }
+                            });
+                        } else {
+                            getPaymentMethodNonces(callback);
+                        }
+                    } catch (BraintreeSharedPreferencesException sharedPrefsError) {
+                        callback.onResult(null, sharedPrefsError);
                     }
                 } else {
                     callback.onResult(null, authError);

@@ -263,7 +263,13 @@ public class DropInActivity extends AppCompatActivity {
     private void finishDropInWithPendingResult(DropInExitTransition transition) {
         if (pendingDropInResult != null) {
             sendAnalyticsEvent("sdk.exit.success");
-            dropInInternalClient.setLastUsedPaymentMethodType(this, pendingDropInResult.getPaymentMethodNonce());
+
+            try {
+                PaymentMethodNonce paymentMethodNonce = pendingDropInResult.getPaymentMethodNonce();
+                dropInInternalClient.setLastUsedPaymentMethodType(paymentMethodNonce);
+            } catch (BraintreeSharedPreferencesException ignored) {
+                // ignore to allow DropIn to finish even when Shared Preferences isn't working
+            }
 
             Intent intent = new Intent()
                     .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, pendingDropInResult);
