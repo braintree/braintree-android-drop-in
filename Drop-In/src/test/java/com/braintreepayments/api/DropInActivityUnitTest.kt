@@ -168,7 +168,7 @@ class DropInActivityUnitTest {
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
 
-        verify(dropInClient).setLastUsedPaymentMethodType(activity, paymentMethodNonce)
+        verify(dropInClient).setLastUsedPaymentMethodType(paymentMethodNonce)
     }
 
     // endregion

@@ -53,7 +53,7 @@ class DropInInternalClient {
                 .unionPayClient(new UnionPayClient(braintreeClient))
                 .dataCollector(new DataCollector(braintreeClient))
                 .googlePayClient(new GooglePayClient(braintreeClient))
-                .dropInSharedPreferences(DropInSharedPreferences.getInstance());
+                .dropInSharedPreferences(DropInSharedPreferences.getInstance(context.getApplicationContext()));
     }
 
     DropInInternalClient(FragmentActivity activity, String authorization, String sessionId, DropInRequest dropInRequest) {
@@ -370,8 +370,7 @@ class DropInInternalClient {
         });
     }
 
-    void setLastUsedPaymentMethodType(Context context, PaymentMethodNonce paymentMethodNonce) {
-        Context appContext = context.getApplicationContext();
-        dropInSharedPreferences.setLastUsedPaymentMethod(appContext, paymentMethodNonce);
+    void setLastUsedPaymentMethodType(PaymentMethodNonce paymentMethodNonce) throws BraintreeSharedPreferencesException {
+        dropInSharedPreferences.setLastUsedPaymentMethod(paymentMethodNonce);
     }
 }

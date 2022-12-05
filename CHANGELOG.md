@@ -3,6 +3,7 @@
 ## unreleased
 
 * Add `DropInClient#invalidateClientToken()` method (fixes #367)
+* Bump braintree_android module dependency versions to `4.20.0` (fixes #371)
 
 ## 6.4.0
 

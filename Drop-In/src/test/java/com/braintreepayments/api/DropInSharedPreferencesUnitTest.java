@@ -31,42 +31,42 @@ public class DropInSharedPreferencesUnitTest {
     }
 
     @Test
-    public void getLastUsedPaymentMethod_whenPaymentMethodIsValid_returnsPaymentMethod() {
+    public void getLastUsedPaymentMethod_whenPaymentMethodIsValid_returnsPaymentMethod() throws BraintreeSharedPreferencesException {
         String key = "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
-        when(braintreeSharedPreferences.getString(context, key, null)).thenReturn("VISA");
-        assertEquals(DropInPaymentMethod.VISA, sut.getLastUsedPaymentMethod(context));
+        when(braintreeSharedPreferences.getString(key, null)).thenReturn("VISA");
+        assertEquals(DropInPaymentMethod.VISA, sut.getLastUsedPaymentMethod());
     }
 
     @Test
-    public void getLastUsedPaymentMethod_whenPaymentMethodIsInvalid_returnsNull() {
+    public void getLastUsedPaymentMethod_whenPaymentMethodIsInvalid_returnsNull() throws BraintreeSharedPreferencesException {
         String key = "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
-        when(braintreeSharedPreferences.getString(context, key, null)).thenReturn("UNKNOWN_PAYMENT_METHOD");
-        assertNull(sut.getLastUsedPaymentMethod(context));
+        when(braintreeSharedPreferences.getString(key, null)).thenReturn("UNKNOWN_PAYMENT_METHOD");
+        assertNull(sut.getLastUsedPaymentMethod());
     }
 
     @Test
-    public void getLastUsedPaymentMethod_whenPaymentMethodDoesNotExist_returnsNull() {
+    public void getLastUsedPaymentMethod_whenPaymentMethodDoesNotExist_returnsNull() throws BraintreeSharedPreferencesException {
         String key = "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
-        when(braintreeSharedPreferences.getString(context, key, null)).thenReturn(null);
-        assertNull(sut.getLastUsedPaymentMethod(context));
+        when(braintreeSharedPreferences.getString(key, null)).thenReturn(null);
+        assertNull(sut.getLastUsedPaymentMethod());
     }
 
     @Test
-    public void setLastUsedPaymentMethod_whenPaymentMethodExists_setsPaymentMethodInSharedPrefs() {
+    public void setLastUsedPaymentMethod_whenPaymentMethodExists_setsPaymentMethodInSharedPrefs() throws BraintreeSharedPreferencesException {
         PaymentMethodNonce nonce = mock(PaymentMethodNonce.class);
         when(paymentMethodInspector.getPaymentMethod(nonce)).thenReturn(DropInPaymentMethod.VISA);
 
-        sut.setLastUsedPaymentMethod(context, nonce);
+        sut.setLastUsedPaymentMethod(nonce);
         String key = "com.braintreepayments.api.dropin.LAST_USED_PAYMENT_METHOD";
-        verify(braintreeSharedPreferences).putString(context, key, "VISA");
+        verify(braintreeSharedPreferences).putString(key, "VISA");
     }
 
     @Test
-    public void setLastUsedPaymentMethod_whenPaymentMethodDoesNotExist_doesNotSetPaymentMethodInSharedPrefs() {
+    public void setLastUsedPaymentMethod_whenPaymentMethodDoesNotExist_doesNotSetPaymentMethodInSharedPrefs() throws BraintreeSharedPreferencesException {
         PaymentMethodNonce nonce = mock(PaymentMethodNonce.class);
         when(paymentMethodInspector.getPaymentMethod(nonce)).thenReturn(null);
 
-        sut.setLastUsedPaymentMethod(context, nonce);
+        sut.setLastUsedPaymentMethod(nonce);
         verifyZeroInteractions(braintreeSharedPreferences);
     }
 }

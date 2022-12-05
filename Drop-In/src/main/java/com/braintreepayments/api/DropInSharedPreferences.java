@@ -11,12 +11,12 @@ class DropInSharedPreferences {
 
     private static volatile DropInSharedPreferences INSTANCE;
 
-    static DropInSharedPreferences getInstance() {
+    static DropInSharedPreferences getInstance(Context context) {
         if (INSTANCE == null) {
             synchronized (DropInSharedPreferences.class) {
                 // double check that instance was not created in another thread
                 if (INSTANCE == null) {
-                    INSTANCE = new DropInSharedPreferences();
+                    INSTANCE = new DropInSharedPreferences(context);
                 }
             }
         }
@@ -26,8 +26,8 @@ class DropInSharedPreferences {
     private final PaymentMethodInspector paymentMethodInspector;
     private final BraintreeSharedPreferences braintreeSharedPreferences;
 
-    private DropInSharedPreferences() {
-        this(BraintreeSharedPreferences.getInstance(), new PaymentMethodInspector());
+    private DropInSharedPreferences(Context context) {
+        this(BraintreeSharedPreferences.getInstance(context), new PaymentMethodInspector());
     }
 
     @VisibleForTesting
@@ -39,9 +39,9 @@ class DropInSharedPreferences {
         this.paymentMethodInspector = paymentMethodInspector;
     }
 
-    DropInPaymentMethod getLastUsedPaymentMethod(Context context) {
-        String paymentMethodName = braintreeSharedPreferences.getString(
-                context, LAST_USED_PAYMENT_METHOD, null);
+    DropInPaymentMethod getLastUsedPaymentMethod() throws BraintreeSharedPreferencesException {
+        String paymentMethodName =
+            braintreeSharedPreferences.getString(LAST_USED_PAYMENT_METHOD, null);
         if (paymentMethodName != null) {
             try {
                 return DropInPaymentMethod.valueOf(paymentMethodName);
@@ -52,13 +52,13 @@ class DropInSharedPreferences {
         return null;
     }
 
-    void setLastUsedPaymentMethod(Context context, PaymentMethodNonce paymentMethodNonce) {
+    void setLastUsedPaymentMethod(PaymentMethodNonce paymentMethodNonce) throws BraintreeSharedPreferencesException {
         DropInPaymentMethod paymentMethod =
             paymentMethodInspector.getPaymentMethod(paymentMethodNonce);
 
         if (paymentMethod != null) {
             String value = paymentMethod.name();
-            braintreeSharedPreferences.putString(context, LAST_USED_PAYMENT_METHOD, value);
+            braintreeSharedPreferences.putString(LAST_USED_PAYMENT_METHOD, value);
         }
     }
 }
