@@ -49,10 +49,16 @@ class AnimatedButtonView extends RelativeLayout implements OnClickListener {
 
     @Override
     public void onClick(View view) {
-        showLoading();
-        if (onClickListener != null) {
-            onClickListener.onClick(this);
+        if (!isLoading()) {
+            showLoading();
+            if (onClickListener != null) {
+                onClickListener.onClick(this);
+            }
         }
+    }
+
+    private boolean isLoading() {
+        return (viewAnimator.getDisplayedChild() == 1);
     }
 
     public void showButton() {
