@@ -66,7 +66,7 @@ public class AnimatedButtonViewUnitTest {
     }
 
     @Test
-    public void onClick_whenLoaderIsVisible_doesNotCallClickListener() {
+    public void onClick_whenLoaderIsVisible_doesNotCallOnClickListener() {
         view.showLoading();
 
         OnClickListener listener = mock(OnClickListener.class);
