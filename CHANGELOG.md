@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Fix issue that caused Add Card button to attempt tokenization multiple times when double tapped.
+
 ## 6.5.0
 
 * Add `DropInClient#invalidateClientToken()` method (fixes #367)

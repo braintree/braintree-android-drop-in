@@ -2,6 +2,7 @@ package com.braintreepayments.api;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 import android.util.AttributeSet;
@@ -55,13 +56,24 @@ public class AnimatedButtonViewUnitTest {
     }
 
     @Test
-    public void onClick_callsOnClickListener() {
+    public void onClick_whenLoaderIsHidden_callsOnClickListener() {
         OnClickListener listener = mock(OnClickListener.class);
         view.setClickListener(listener);
 
         view.onClick(null);
 
         verify(listener).onClick(view);
+    }
+
+    @Test
+    public void onClick_whenLoaderIsVisible_doesNotCallOnClickListener() {
+        view.showLoading();
+
+        OnClickListener listener = mock(OnClickListener.class);
+        view.setClickListener(listener);
+        view.onClick(null);
+
+        verify(listener, never()).onClick(view);
     }
 
     @Test
