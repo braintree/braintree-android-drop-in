@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.5.1
 
 * Fix issue that caused Add Card button to attempt tokenization multiple times when double tapped.
 
