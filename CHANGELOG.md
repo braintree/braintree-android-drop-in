@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Bump braintree_android module dependency versions to `4.21.1`
+
 ## 6.5.1
 
 * Fix issue that caused Add Card button to attempt tokenization multiple times when double tapped.
