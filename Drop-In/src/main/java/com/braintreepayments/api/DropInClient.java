@@ -29,8 +29,9 @@ public class DropInClient {
     private final GooglePayClient googlePayClient;
 
     private final DropInRequest dropInRequest;
-
     private final DropInSharedPreferences dropInSharedPreferences;
+
+    private final PayPalDataCollector payPalDataCollector;
 
     private DropInListener listener;
 
@@ -51,6 +52,7 @@ public class DropInClient {
                 .lifecycle(lifecycle)
                 .dropInRequest(dropInRequest)
                 .braintreeClient(braintreeClient)
+                .payPalDataCollector(new PayPalDataCollector(braintreeClient))
                 .paymentMethodClient(new PaymentMethodClient(braintreeClient))
                 .googlePayClient(new GooglePayClient(braintreeClient))
                 .dropInSharedPreferences(DropInSharedPreferences.getInstance(context.getApplicationContext()));
@@ -172,6 +174,7 @@ public class DropInClient {
         this.googlePayClient = params.getGooglePayClient();
         this.paymentMethodClient = params.getPaymentMethodClient();
         this.dropInSharedPreferences = params.getDropInSharedPreferences();
+        this.payPalDataCollector = params.getPayPalDataCollector();
 
         FragmentActivity activity = params.getActivity();
         Lifecycle lifecycle = params.getLifecycle();
@@ -368,5 +371,18 @@ public class DropInClient {
      */
     public void invalidateClientToken() {
         braintreeClient.invalidateClientToken();
+    }
+
+    public void getClientMetadataId(GetClientMetadataIdCallback callback) {
+        braintreeClient.getConfiguration((configuration, error) -> {
+            if (configuration != null) {
+                Context appContext = braintreeClient.getApplicationContext();
+                String clientMetadataId =
+                    payPalDataCollector.getClientMetadataId(appContext, configuration);
+                callback.onResult(clientMetadataId, null);
+            } else {
+                callback.onResult(null, error);
+            }
+        });
     }
 }
