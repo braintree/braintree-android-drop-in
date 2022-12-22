@@ -10,6 +10,7 @@ class DropInClientParams {
     private BraintreeClient braintreeClient;
     private GooglePayClient googlePayClient;
     private PaymentMethodClient paymentMethodClient;
+    private PayPalDataCollector payPalDataCollector;
     private DropInSharedPreferences dropInSharedPreferences;
     private FragmentActivity activity;
     private Lifecycle lifecycle;
@@ -29,6 +30,15 @@ class DropInClientParams {
 
     DropInClientParams braintreeClient(BraintreeClient braintreeClient) {
         this.braintreeClient = braintreeClient;
+        return this;
+    }
+
+    PayPalDataCollector getPayPalDataCollector() {
+        return payPalDataCollector;
+    }
+
+    DropInClientParams payPalDataCollector(PayPalDataCollector payPalDataCollector) {
+        this.payPalDataCollector = payPalDataCollector;
         return this;
     }
 

@@ -29,8 +29,9 @@ public class DropInClient {
     private final GooglePayClient googlePayClient;
 
     private final DropInRequest dropInRequest;
-
     private final DropInSharedPreferences dropInSharedPreferences;
+
+    private final PayPalDataCollector payPalDataCollector;
 
     private DropInListener listener;
 
@@ -51,6 +52,7 @@ public class DropInClient {
                 .lifecycle(lifecycle)
                 .dropInRequest(dropInRequest)
                 .braintreeClient(braintreeClient)
+                .payPalDataCollector(new PayPalDataCollector(braintreeClient))
                 .paymentMethodClient(new PaymentMethodClient(braintreeClient))
                 .googlePayClient(new GooglePayClient(braintreeClient))
                 .dropInSharedPreferences(DropInSharedPreferences.getInstance(context.getApplicationContext()));
@@ -172,6 +174,7 @@ public class DropInClient {
         this.googlePayClient = params.getGooglePayClient();
         this.paymentMethodClient = params.getPaymentMethodClient();
         this.dropInSharedPreferences = params.getDropInSharedPreferences();
+        this.payPalDataCollector = params.getPayPalDataCollector();
 
         FragmentActivity activity = params.getActivity();
         Lifecycle lifecycle = params.getLifecycle();
@@ -368,5 +371,28 @@ public class DropInClient {
      */
     public void invalidateClientToken() {
         braintreeClient.invalidateClientToken();
+    }
+
+    /**
+     * Gets a Client Metadata ID at the time of payment activity. Once a user initiates a PayPal payment
+     * from their device, PayPal uses the Client Metadata ID to verify that the payment is
+     * originating from a valid, user-consented device and application. This helps reduce fraud and
+     * decrease declines. This method MUST be called prior to initiating a pre-consented payment (a
+     * "future payment") from a mobile device. Pass the result to your server, to include in the
+     * payment request sent to PayPal. Do not otherwise cache or store this value.
+     *
+     * @param callback
+     */
+    public void getClientMetadataId(GetClientMetadataIdCallback callback) {
+        braintreeClient.getConfiguration((configuration, error) -> {
+            if (configuration != null) {
+                Context appContext = braintreeClient.getApplicationContext();
+                String clientMetadataId =
+                    payPalDataCollector.getClientMetadataId(appContext, configuration);
+                callback.onResult(clientMetadataId, null);
+            } else {
+                callback.onResult(null, error);
+            }
+        });
     }
 }

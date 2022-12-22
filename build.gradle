@@ -18,6 +18,7 @@ buildscript {
             "googlePay" : "com.braintreepayments.api:google-pay:$brainTreeVersion",
             "card" : "com.braintreepayments.api:card:$brainTreeVersion",
             "dataCollector" : "com.braintreepayments.api:data-collector:$brainTreeVersion",
+            "payPalDataCollector" : "com.braintreepayments.api:paypal-data-collector:$brainTreeVersion",
             "unionPay" : "com.braintreepayments.api:union-pay:$brainTreeVersion",
             "cardForm" : "com.braintreepayments:card-form:$brainTreeVersion"
     ]
