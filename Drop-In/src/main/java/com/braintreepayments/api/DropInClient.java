@@ -373,6 +373,16 @@ public class DropInClient {
         braintreeClient.invalidateClientToken();
     }
 
+    /**
+     * Gets a Client Metadata ID at the time of payment activity. Once a user initiates a PayPal payment
+     * from their device, PayPal uses the Client Metadata ID to verify that the payment is
+     * originating from a valid, user-consented device and application. This helps reduce fraud and
+     * decrease declines. This method MUST be called prior to initiating a pre-consented payment (a
+     * "future payment") from a mobile device. Pass the result to your server, to include in the
+     * payment request sent to PayPal. Do not otherwise cache or store this value.
+     *
+     * @param callback
+     */
     public void getClientMetadataId(GetClientMetadataIdCallback callback) {
         braintreeClient.getConfiguration((configuration, error) -> {
             if (configuration != null) {
