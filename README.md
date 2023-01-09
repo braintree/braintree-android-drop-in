@@ -36,7 +36,7 @@ To preview the latest work in progress builds, add the following SNAPSHOT depend
 
 ```groovy
 dependencies {
-  implementation 'com.braintreepayments.api:drop-in:6.6.1-SNAPSHOT'
+  implementation 'com.braintreepayments.api:drop-in:6.7.1-SNAPSHOT'
 }
 ```
 
