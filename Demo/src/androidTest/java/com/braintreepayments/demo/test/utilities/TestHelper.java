@@ -204,6 +204,6 @@ public class TestHelper {
         onDevice(withText("Credit or Debit Card")).waitForExists().perform(click());
         onDevice(withText("Card Number")).waitForExists().perform(setText(cardNumber));
         performCardDetailsEntry();
-        onDevice(withTextContaining("Add Card")).perform(click());
+        onDevice(withTextContaining("ADD CARD")).perform(click());
     }
 }
