@@ -890,6 +890,7 @@ class DropInActivityUnitTest {
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         assertEquals(error, activity.dropInViewModel.cardTokenizationError.value)
+        assertEquals(DropInState.IDLE, activity.dropInViewModel.dropInState.value)
     }
 
     @Test

@@ -502,6 +502,7 @@ public class DropInActivity extends AppCompatActivity {
             if (error != null) {
                 if (error instanceof ErrorWithResponse) {
                     dropInViewModel.setCardTokenizationError(error);
+                    dropInViewModel.setDropInState(DropInState.IDLE);
                 } else {
                     onError(error);
                 }
