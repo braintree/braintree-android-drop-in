@@ -437,6 +437,11 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void startAddCardFlow(@Nullable String cardNumber) {
+        // clear card tokenization error to prevent Error UI from a previous duplicate card submission
+        // TODO: migrate card tokenization error state from activity view model into fragments own
+        // view model to prevent UI bugs with previous submissions
+        dropInViewModel.setCardTokenizationError(null);
+
         if (shouldAddFragment(ADD_CARD_TAG)) {
             AddCardFragment addCardFragment = AddCardFragment.from(dropInRequest, cardNumber);
             replaceExistingFragment(addCardFragment, ADD_CARD_TAG);
