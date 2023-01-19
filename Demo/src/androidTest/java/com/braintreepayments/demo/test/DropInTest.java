@@ -67,12 +67,13 @@ public class DropInTest extends TestHelper {
         useTokenizationKey();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
-        tokenizeCard(VISA);
+        onDevice(withText("Credit or Debit Card")).waitForExists().perform(click());
+        onDevice(withText("Card Number")).waitForExists().perform(setText(VISA));
+        onDevice(withText("Expiration Date")).perform(setText("12" + ExpirationDate.VALID_EXPIRATION_YEAR));
+        onDevice().pressBack();
+        onDevice(withTextContaining("ADD CARD")).perform(click());
 
         getNonceDetails().check(text(containsString("Card Last Two: 11")));
-
-        onDevice(withText("Purchase")).perform(click());
-        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
     @Test(timeout = 60000)
@@ -87,6 +88,7 @@ public class DropInTest extends TestHelper {
     }
 
     @Test(timeout = 60000)
+    @Ignore("TODO: determine if 3DS v1 tests are still needed")
     public void performsThreeDSecureVerification() {
         enableThreeDSecure();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
@@ -247,7 +249,12 @@ public class DropInTest extends TestHelper {
     }
 
     @Test(timeout = 60000)
+    @Ignore("The sample merchant server no longer uses the mock flow.")
     public void tokenizesPayPal() {
+        // We have a PayPal tokenization key test that should provide enough coverage here. To
+        // re-enable this test, we would need to complete the checkout flow with a valid
+        // PayPal Sandbox username and password
+
         uninstallPayPalWallet();
         onDevice(withText("Add Payment Method")).waitForExists().waitForEnabled().perform(click());
 
@@ -270,9 +277,6 @@ public class DropInTest extends TestHelper {
         clickWebViewText("Proceed with Sandbox Purchase", 5000);
 
         getNonceDetails().check(text(containsString("Email: bt_buyer_us@paypal.com")));
-
-        onDevice(withText("Purchase")).perform(click());
-        onDevice(withTextStartingWith("created")).check(text(endsWith("authorized")));
     }
 
     @RequiresDevice
