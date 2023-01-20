@@ -39,13 +39,11 @@ public class DropInClient {
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest, FragmentActivity activity, Lifecycle lifecycle) {
 
-        BraintreeClient braintreeClient;
-        if (clientTokenProvider != null) {
-            braintreeClient = new BraintreeClient(context, clientTokenProvider, null, IntegrationType.DROP_IN);
-        } else {
-            braintreeClient = new BraintreeClient(context, authorization, null, IntegrationType.DROP_IN);
-        }
+        BraintreeOptions options = new BraintreeOptions(context, IntegrationType.DROP_IN)
+                .authorization(authorization)
+                .clientTokenProvider(clientTokenProvider);
 
+        BraintreeClient braintreeClient = new BraintreeClient(options);
         return new DropInClientParams()
                 .activity(activity)
                 .lifecycle(lifecycle)

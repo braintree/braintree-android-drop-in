@@ -1,14 +1,12 @@
 package com.braintreepayments.api;
 
-import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.Nullable;
 
+import com.braintreepayments.cardform.view.CardEditText;
 import com.braintreepayments.cardform.view.CardForm;
-
-import java.io.Serializable;
 
 /**
  * Used to start {@link DropInActivity} with specified options.
@@ -31,6 +29,7 @@ public class DropInRequest implements Parcelable {
     private boolean allowVaultCardOverride = false;
 
     private int cardholderNameStatus = CardForm.FIELD_DISABLED;
+    private String returnUrlScheme;
 
     public DropInRequest() {}
 
@@ -116,7 +115,7 @@ public class DropInRequest implements Parcelable {
      * This method is optional.
      *
      * @param maskCardNumber {@code true} to mask the card number when the field is not focused.
-     * See {@link com.braintreepayments.cardform.view.CardEditText} for more details. Defaults to
+     * See {@link CardEditText} for more details. Defaults to
      * {@code false}.
      */
     public void setMaskCardNumber(boolean maskCardNumber) {
@@ -276,6 +275,15 @@ public class DropInRequest implements Parcelable {
         return allowVaultCardOverride;
     }
 
+    @Nullable
+    public String getReturnUrlScheme() {
+        return returnUrlScheme;
+    }
+
+    public void setReturnUrlScheme(@Nullable String returnUrlScheme) {
+        this.returnUrlScheme = returnUrlScheme;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -297,6 +305,7 @@ public class DropInRequest implements Parcelable {
         dest.writeInt(cardholderNameStatus);
         dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
+        dest.writeString(returnUrlScheme);
     }
 
     protected DropInRequest(Parcel in) {
@@ -314,6 +323,7 @@ public class DropInRequest implements Parcelable {
         cardholderNameStatus = in.readInt();
         vaultCardDefaultValue = in.readByte() != 0;
         allowVaultCardOverride = in.readByte() != 0;
+        returnUrlScheme = in.readString();
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {
