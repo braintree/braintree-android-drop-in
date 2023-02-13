@@ -55,7 +55,7 @@ class DropInClientUnitTestKt {
         clientToken = Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN)
         clientTokenProvider = mockk()
 
-        activity = mockk()
+        activity = mockk(relaxed = true)
         every { activity.applicationContext } returns applicationContext
 
         resultRegistry = mockk()

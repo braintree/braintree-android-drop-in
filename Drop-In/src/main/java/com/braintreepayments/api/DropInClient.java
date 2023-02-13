@@ -298,7 +298,7 @@ public class DropInClient {
             public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception authError) {
                 if (authorization != null) {
 
-                    boolean isClientToken = authorization instanceof ClientToken;
+                    boolean isClientToken = (authorization instanceof ClientToken);
                     if (!isClientToken) {
                         InvalidArgumentException clientTokenRequiredError =
                                 new InvalidArgumentException("DropInClient#fetchMostRecentPaymentMethods() must " +
@@ -307,25 +307,21 @@ public class DropInClient {
                         return;
                     }
 
-                    try {
-                        DropInPaymentMethod lastUsedPaymentMethod =
-                                dropInSharedPreferences.getLastUsedPaymentMethod();
+                    DropInPaymentMethod lastUsedPaymentMethod =
+                            dropInSharedPreferences.getLastUsedPaymentMethod();
 
-                        if (lastUsedPaymentMethod == DropInPaymentMethod.GOOGLE_PAY) {
-                            googlePayClient.isReadyToPay(activity, (isReadyToPay, isReadyToPayError) -> {
-                                if (isReadyToPay) {
-                                    DropInResult result = new DropInResult();
-                                    result.setPaymentMethodType(DropInPaymentMethod.GOOGLE_PAY);
-                                    callback.onResult(result, null);
-                                } else {
-                                    getPaymentMethodNonces(callback);
-                                }
-                            });
-                        } else {
-                            getPaymentMethodNonces(callback);
-                        }
-                    } catch (BraintreeSharedPreferencesException sharedPrefsError) {
-                        callback.onResult(null, sharedPrefsError);
+                    if (lastUsedPaymentMethod == DropInPaymentMethod.GOOGLE_PAY) {
+                        googlePayClient.isReadyToPay(activity, (isReadyToPay, isReadyToPayError) -> {
+                            if (isReadyToPay) {
+                                DropInResult result = new DropInResult();
+                                result.setPaymentMethodType(DropInPaymentMethod.GOOGLE_PAY);
+                                callback.onResult(result, null);
+                            } else {
+                                getPaymentMethodNonces(callback);
+                            }
+                        });
+                    } else {
+                        getPaymentMethodNonces(callback);
                     }
                 } else {
                     callback.onResult(null, authError);

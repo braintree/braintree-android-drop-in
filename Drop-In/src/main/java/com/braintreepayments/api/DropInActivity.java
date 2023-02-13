@@ -264,12 +264,8 @@ public class DropInActivity extends AppCompatActivity {
         if (pendingDropInResult != null) {
             sendAnalyticsEvent("sdk.exit.success");
 
-            try {
-                PaymentMethodNonce paymentMethodNonce = pendingDropInResult.getPaymentMethodNonce();
-                dropInInternalClient.setLastUsedPaymentMethodType(paymentMethodNonce);
-            } catch (BraintreeSharedPreferencesException ignored) {
-                // ignore to allow DropIn to finish even when Shared Preferences isn't working
-            }
+            PaymentMethodNonce paymentMethodNonce = pendingDropInResult.getPaymentMethodNonce();
+            dropInInternalClient.setLastUsedPaymentMethodType(paymentMethodNonce);
 
             Intent intent = new Intent()
                     .putExtra(DropInResult.EXTRA_DROP_IN_RESULT, pendingDropInResult);
@@ -349,8 +345,7 @@ public class DropInActivity extends AppCompatActivity {
                 if (authorization != null) {
                     dropInInternalClient.getConfiguration((configuration, configurationError) -> {
                         if (configuration != null) {
-                            boolean hasTokenizationKeyAuth =
-                                    Authorization.isTokenizationKey(authorization.toString());
+                            boolean hasTokenizationKeyAuth = (authorization instanceof TokenizationKey);
 
                             CardDetailsFragment cardDetailsFragment = CardDetailsFragment.from(
                                     dropInRequest, cardNumber, configuration, hasTokenizationKeyAuth);
