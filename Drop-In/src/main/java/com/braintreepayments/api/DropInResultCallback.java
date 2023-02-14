@@ -4,7 +4,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
 /**
- * Callback for receiving the result of {@link DropInClient#deliverBrowserSwitchResult(FragmentActivity, DropInResultCallback)}
+ * Callback for receiving the result of {@link DropInInternalClient#deliverBrowserSwitchResult(FragmentActivity, DropInResultCallback)}
  */
 interface DropInResultCallback {
     /**

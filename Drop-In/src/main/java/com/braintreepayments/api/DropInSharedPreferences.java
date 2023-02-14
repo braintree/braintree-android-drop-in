@@ -39,7 +39,7 @@ class DropInSharedPreferences {
         this.paymentMethodInspector = paymentMethodInspector;
     }
 
-    DropInPaymentMethod getLastUsedPaymentMethod() throws BraintreeSharedPreferencesException {
+    DropInPaymentMethod getLastUsedPaymentMethod() {
         String paymentMethodName =
             braintreeSharedPreferences.getString(LAST_USED_PAYMENT_METHOD, null);
         if (paymentMethodName != null) {
@@ -52,7 +52,7 @@ class DropInSharedPreferences {
         return null;
     }
 
-    void setLastUsedPaymentMethod(PaymentMethodNonce paymentMethodNonce) throws BraintreeSharedPreferencesException {
+    void setLastUsedPaymentMethod(PaymentMethodNonce paymentMethodNonce) {
         DropInPaymentMethod paymentMethod =
             paymentMethodInspector.getPaymentMethod(paymentMethodNonce);
 

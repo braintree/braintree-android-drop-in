@@ -370,7 +370,7 @@ class DropInInternalClient {
         });
     }
 
-    void setLastUsedPaymentMethodType(PaymentMethodNonce paymentMethodNonce) throws BraintreeSharedPreferencesException {
+    void setLastUsedPaymentMethodType(PaymentMethodNonce paymentMethodNonce) {
         dropInSharedPreferences.setLastUsedPaymentMethod(paymentMethodNonce);
     }
 }

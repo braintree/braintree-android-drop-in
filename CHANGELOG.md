@@ -2,6 +2,7 @@
 
 ## unreleased
 
+* Bump braintree_android module dependency versions to `4.26.0`
 * Fix issue that causes the DropIn UI to hang when a duplicate payment method is entered and user returns to Bottom Sheet view (fixes #370)
 
 ## 6.7.0
