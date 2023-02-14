@@ -688,13 +688,14 @@ class DropInActivityUnitTest {
     }
 
     @Test
-    fun onSupportedPaymentMethodSelectedEvent_withTypeUnknown_showsAddCardFragment() {
+    fun onSupportedPaymentMethodSelectedEvent_withTypeUnknown_showsAddCardFragmentAndClearsCardTokenizationError() {
         val dropInClient = MockDropInInternalClientBuilder()
             .authorizationSuccess(authorization)
             .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
             .getSupportedPaymentMethodsSuccess(ArrayList())
             .build()
         setupDropInActivity(dropInClient, dropInRequest)
+        activity.dropInViewModel.setCardTokenizationError(Exception("card tokenization error"))
 
         val event =
             DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.UNKNOWN)
@@ -702,6 +703,7 @@ class DropInActivityUnitTest {
         activity.supportFragmentManager.executePendingTransactions()
 
         assertNotNull(activity.supportFragmentManager.findFragmentByTag("ADD_CARD"))
+        assertNull(activity.dropInViewModel.cardTokenizationError.value)
     }
 
     @Test
@@ -767,7 +769,7 @@ class DropInActivityUnitTest {
     // region Add Card Submit Event
 
     @Test
-    fun onAddCardSubmitEvent_showsCardDetailsFragment() {
+    fun onAddCardSubmitEvent_showsCardDetailsFragmentAndClearsCardTokenizationError() {
         val dropInClient = MockDropInInternalClientBuilder()
             .authorizationSuccess(authorization)
             .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
@@ -890,6 +892,7 @@ class DropInActivityUnitTest {
         activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
 
         assertEquals(error, activity.dropInViewModel.cardTokenizationError.value)
+        assertEquals(DropInState.IDLE, activity.dropInViewModel.dropInState.value)
     }
 
     @Test

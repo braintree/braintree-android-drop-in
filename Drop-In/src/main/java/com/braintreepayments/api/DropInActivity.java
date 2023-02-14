@@ -437,6 +437,13 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void startAddCardFlow(@Nullable String cardNumber) {
+        // clear card tokenization error to prevent Error UI from a previous duplicate card submission
+        dropInViewModel.setCardTokenizationError(null);
+        // TODO: 👆 isolate transactional state within the calling fragment to prevent stale data
+        // in the activity view model from causing UI bugs; in this case, we should migrate the card
+        // tokenization error out of the activity view model's scope and contain the error state
+        // within the scope of the CardDetailsFragment that's making the request
+
         if (shouldAddFragment(ADD_CARD_TAG)) {
             AddCardFragment addCardFragment = AddCardFragment.from(dropInRequest, cardNumber);
             replaceExistingFragment(addCardFragment, ADD_CARD_TAG);
@@ -502,6 +509,7 @@ public class DropInActivity extends AppCompatActivity {
             if (error != null) {
                 if (error instanceof ErrorWithResponse) {
                     dropInViewModel.setCardTokenizationError(error);
+                    dropInViewModel.setDropInState(DropInState.IDLE);
                 } else {
                     onError(error);
                 }
