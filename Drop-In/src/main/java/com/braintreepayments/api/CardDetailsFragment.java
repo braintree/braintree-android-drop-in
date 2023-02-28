@@ -1,13 +1,16 @@
 package com.braintreepayments.api;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
@@ -111,6 +114,7 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
         cardForm.maskCardNumber(dropInRequest.getMaskCardNumber());
         cardForm.maskCvv(dropInRequest.getMaskSecurityCode());
         cardForm.setOnFormFieldFocusedListener(this);
+        cardForm.setOnCardFormSubmitListener(this);
 
         cardForm.getCardEditText().setText(cardNumber);
 
@@ -167,6 +171,7 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
 
     @Override
     public void onCardFormSubmit() {
+        hideSoftKeyboard();
         if (cardForm.isValid()) {
             animatedButtonView.showLoading();
 
@@ -193,6 +198,17 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
         if (view instanceof CardEditText) {
             String cardNumber = cardForm.getCardNumber();
             sendDropInEvent(DropInEvent.createEditCardNumberEvent(cardNumber));
+        }
+    }
+
+    private void hideSoftKeyboard() {
+        // Ref: https://stackoverflow.com/a/3553811
+        FragmentActivity activity = getActivity();
+        if (activity != null) {
+            InputMethodManager imm =
+                    (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            View focusedView = activity.getCurrentFocus();
+            imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
         }
     }
 }
