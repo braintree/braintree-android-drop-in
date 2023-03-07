@@ -248,5 +248,5 @@ Kotlin:
 
 ## Browser Switch
 
-DropIn handles browser switching internally. Any payment method that requires a browser switch will work automatically.
+DropIn handles browser switching internally. Specifying an `<intent-filter />` in `AndroidManifest.xml` is no longer required. Any payment method that requires a browser switch will work automatically.
 
