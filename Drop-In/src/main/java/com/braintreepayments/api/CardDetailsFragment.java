@@ -205,10 +205,10 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
         // Ref: https://stackoverflow.com/a/3553811
         FragmentActivity activity = getActivity();
         if (activity != null) {
-            InputMethodManager imm =
+            InputMethodManager inputMethodManager =
                     (InputMethodManager)activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             View focusedView = activity.getCurrentFocus();
-            imm.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
+            inputMethodManager.hideSoftInputFromWindow(focusedView.getWindowToken(), 0);
         }
     }
 }
