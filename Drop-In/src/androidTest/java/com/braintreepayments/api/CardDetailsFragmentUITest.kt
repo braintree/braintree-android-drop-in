@@ -5,8 +5,7 @@ import android.os.Parcelable
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
@@ -422,6 +421,37 @@ class CardDetailsFragmentUITest {
         onView(withId(R.id.bt_card_form_expiration)).perform(typeText(ExpirationDate.VALID_EXPIRATION))
         onView(withId(R.id.bt_card_form_cardholder_name)).perform(typeText("Brian Tree"))
         onView(withId(R.id.bt_button)).perform(click())
+
+        scenario.onFragment { fragment ->
+            val activity = fragment.requireActivity()
+            val fragmentManager = fragment.parentFragmentManager
+            fragmentManager.setFragmentResultListener(DropInEvent.REQUEST_KEY, activity) { _, result ->
+                val event = DropInEvent.fromBundle(result)
+                assertEquals(DropInEventType.CARD_DETAILS_SUBMIT, event.type)
+
+                val card = event.getCard(DropInEventProperty.CARD)
+                assertEquals(VISA, card.number)
+                assertEquals("Brian Tree", card.cardholderName)
+            }
+        }
+    }
+
+    @Test
+    fun whenStateIsRESUMED_onKeyboardGoActionPress_whenCardholderNameRequired_sendsCardDetailsEventWithCardholderName() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.cardholderNameStatus = FIELD_REQUIRED
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
+        args.putParcelable("EXTRA_CARD_FORM_CONFIGURATION", CardFormConfiguration(false, false))
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+
+        val scenario = FragmentScenario.launchInContainer(CardDetailsFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+        onView(withId(R.id.bt_card_form_expiration)).perform(typeText(ExpirationDate.VALID_EXPIRATION))
+        onView(withId(R.id.bt_card_form_cardholder_name)).perform(typeText("Brian Tree"))
+        onView(withId(R.id.bt_card_form_expiration)).perform(pressImeActionButton())
 
         scenario.onFragment { fragment ->
             val activity = fragment.requireActivity()

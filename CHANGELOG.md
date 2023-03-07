@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Dismiss keyboard and submit form on Card Details when form is complete and `Enter` is pressed
+
 ## 6.8.0
 
 * Bump braintree_android module dependency versions to `4.26.0`
