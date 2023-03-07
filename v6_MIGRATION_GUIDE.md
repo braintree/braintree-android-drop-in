@@ -14,6 +14,7 @@ v6 of the Drop-In SDK requires v4 of the [Braintree Android SDK](https://github.
 1. [Launch Drop-In](#launch-drop-in)
 1. [Handle Drop-In Result](#handle-drop-in-result)
 1. [Fetch Last Used Payment Method](#fetch-last-used-payment-method)
+1. [Browser Switch](#browser-switch)
 
 ## Gradle
 
@@ -244,3 +245,8 @@ Kotlin:
         // handle result
     }
 ```
+
+## Browser Switch
+
+DropIn handles browser switching internally. Specifying an `<intent-filter />` in `AndroidManifest.xml` is no longer required. Any payment method that requires a browser switch will work automatically.
+
