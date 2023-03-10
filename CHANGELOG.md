@@ -3,6 +3,7 @@
 ## unreleased
 
 * Dismiss keyboard and submit form on Card Details when form is complete and `Enter` is pressed
+* Fix bug where payment methods can be selected multiple times
 
 ## 6.8.0
 
