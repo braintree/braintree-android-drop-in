@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.8.1
 
 * Dismiss keyboard and submit form on Card Details when form is complete and `Enter` is pressed
 * Fix bug where payment methods can be selected multiple times
