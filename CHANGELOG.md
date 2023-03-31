@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Prevent Google Pay from launching twice when double tapped
+
 ## 6.8.1
 
 * Dismiss keyboard and submit form on Card Details when form is complete and `Enter` is pressed
