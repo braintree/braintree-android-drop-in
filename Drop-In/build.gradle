@@ -90,29 +90,26 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
-    testImplementation 'org.powermock:powermock-module-junit4:1.6.6'
-    testImplementation 'org.powermock:powermock-module-junit4-rule:1.6.6'
-    testImplementation 'org.powermock:powermock-api-mockito:1.6.6'
-    testImplementation 'org.powermock:powermock-classloading-xstream:1.6.6'
+    testImplementation 'androidx.test:rules:1.4.0'
+    testImplementation 'androidx.test:runner:1.4.0'
+    testImplementation 'androidx.test:core:1.4.0'
+
+    testImplementation 'junit:junit:4.13'
     testImplementation 'org.robolectric:robolectric:4.7.3'
     testImplementation 'org.skyscreamer:jsonassert:1.4.0'
 
-    testImplementation "androidx.core:core-ktx:1.6.0"
-    testImplementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10"
-    testImplementation "androidx.test:core:1.4.0"
+    testImplementation 'androidx.core:core-ktx:1.6.0'
+    testImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10'
+    testImplementation 'androidx.test:core:1.4.0'
     testImplementation 'androidx.work:work-testing:2.5.0'
     testImplementation 'io.mockk:mockk:1.12.0'
+    testImplementation 'org.mockito:mockito-core:3.6.0'
 
     androidTestImplementation 'androidx.test:rules:1.4.0'
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.fragment:fragment-testing:1.3.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
-    androidTestCompileOnly 'org.powermock:powermock-module-junit4:1.6.6'
-    androidTestCompileOnly 'org.powermock:powermock-module-junit4-rule:1.6.6'
-    androidTestCompileOnly 'org.powermock:powermock-api-mockito:1.6.6'
-    androidTestCompileOnly 'org.powermock:powermock-classloading-xstream:1.6.6'
 }
 
 // region signing and publishing
