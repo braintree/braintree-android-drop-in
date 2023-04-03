@@ -3,6 +3,7 @@
 ## unreleased
 
 * Prevent Google Pay from launching twice when double tapped
+* Bump braintree_android module dependency versions to `4.27.0`
 
 ## 6.8.1
 
