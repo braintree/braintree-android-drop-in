@@ -667,6 +667,26 @@ class DropInActivityUnitTest {
     }
 
     @Test
+    fun onSupportedPaymentMethodSelectedEvent_withTypeGooglePay_doesNothingWhenActivityIsPaused() {
+        val dropInClient = MockDropInInternalClientBuilder()
+            .authorizationSuccess(authorization)
+            .getConfigurationSuccess(Configuration.fromJson(Fixtures.CONFIGURATION_WITH_GOOGLE_PAY_AND_CARD_AND_PAYPAL))
+            .getSupportedPaymentMethodsSuccess(ArrayList())
+            .build()
+        setupDropInActivity(dropInClient, dropInRequest)
+        activityController.pause()
+
+        val event =
+            DropInEvent.createSupportedPaymentMethodSelectedEvent(DropInPaymentMethod.GOOGLE_PAY)
+        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
+
+        verify(dropInClient, never()).requestGooglePayPayment(
+            same(activity),
+            any(GooglePayRequestPaymentCallback::class.java)
+        )
+    }
+
+    @Test
     fun onSupportedPaymentMethodSelectedEvent_withTypeGooglePay_onGooglePayError_finishesWithError() {
         val error = Exception("error")
         val dropInClient = MockDropInInternalClientBuilder()

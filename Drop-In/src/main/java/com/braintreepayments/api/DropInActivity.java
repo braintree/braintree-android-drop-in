@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.braintreepayments.api.dropin.R;
@@ -155,9 +156,11 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private void onSupportedPaymentMethodSelected(DropInEvent event) {
-        DropInPaymentMethod paymentMethodType =
-                event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD);
-        startPaymentFlow(paymentMethodType);
+        if (getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
+            DropInPaymentMethod paymentMethodType =
+                    event.getDropInPaymentMethodType(DropInEventProperty.SUPPORTED_PAYMENT_METHOD);
+            startPaymentFlow(paymentMethodType);
+        }
     }
 
     private void startPaymentFlow(DropInPaymentMethod paymentMethodType) {
