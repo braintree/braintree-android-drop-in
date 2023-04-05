@@ -9,13 +9,15 @@ import android.os.Bundle
 import androidx.test.platform.app.InstrumentationRegistry
 import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
 import com.braintreepayments.cardform.utils.CardType
-import junit.framework.TestCase.*
 import org.json.JSONObject
 import org.junit.After
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.same
 import org.mockito.Mockito.*
 import org.robolectric.Robolectric.buildActivity
 import org.robolectric.RobolectricTestRunner

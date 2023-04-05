@@ -24,30 +24,20 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.MockitoAnnotations;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @RunWith(RobolectricTestRunner.class)
 public class DropInClientUnitTest {
-
-    @Captor
-    ArgumentCaptor<List<DropInPaymentMethod>> paymentMethodTypesCaptor;
-
-    @Captor
-    ArgumentCaptor<List<PaymentMethodNonce>> paymentMethodNoncesCaptor;
 
     private FragmentActivity activity;
     private DropInSharedPreferences dropInSharedPreferences;
 
     @Before
     public void beforeEach() {
-        MockitoAnnotations.initMocks(this);
 
         dropInSharedPreferences = mock(DropInSharedPreferences.class);
         ActivityController<FragmentActivity> activityController =
