@@ -4,7 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 import android.content.Context;
@@ -67,6 +67,6 @@ public class DropInSharedPreferencesUnitTest {
         when(paymentMethodInspector.getPaymentMethod(nonce)).thenReturn(null);
 
         sut.setLastUsedPaymentMethod(nonce);
-        verifyZeroInteractions(braintreeSharedPreferences);
+        verifyNoInteractions(braintreeSharedPreferences);
     }
 }
