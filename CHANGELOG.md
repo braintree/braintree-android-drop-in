@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Bump braintree_android module dependency versions to `4.27.1`
+
 ## 6.9.0
 
 * Prevent Google Pay from launching twice when double tapped
