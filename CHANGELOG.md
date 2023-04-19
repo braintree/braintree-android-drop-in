@@ -2,7 +2,7 @@
 
 ## unreleased
 
-* Bump braintree_android module dependency versions to `4.27.1`
+* Bump braintree_android module dependency versions to `4.27.2`
 
 ## 6.9.0
 
