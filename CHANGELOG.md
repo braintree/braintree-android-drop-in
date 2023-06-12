@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Bump braintree_android version to 3.21.0
+
 ## 5.4.1
 
 * Bump braintree_android version to 3.20.1
