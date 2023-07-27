@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">サポートされている支払方法</string>
     <string name="bt_edit_button_description">保存済みの支払方法を編集する</string>
     <string name="bt_card_already_exists">このクレジットカードは、保存済みの支払方法としてすでに登録されています。</string>
+    <string name="bt_notice_of_collection">カードで支払うことにより、PayPalプライバシーステートメントに同意したものとみなされます。</string>
 </resources>

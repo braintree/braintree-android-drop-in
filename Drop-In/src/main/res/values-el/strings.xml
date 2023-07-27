@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Υποστηριζόμενες μέθοδοι πληρωμής</string>
     <string name="bt_edit_button_description">Επεξεργασία αποθηκευμένων μεθόδων πληρωμής</string>
     <string name="bt_card_already_exists">Αυτή η πιστωτική κάρτα υπάρχει ήδη ως αποθηκευμένη μέθοδος πληρωμής.</string>
+    <string name="bt_notice_of_collection">Πληρώνοντας με την κάρτα μου, αποδέχομαι τη Δήλωση απορρήτου της PayPal.</string>
 </resources>

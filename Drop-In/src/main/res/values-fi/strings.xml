@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Tuetut maksutavat</string>
     <string name="bt_edit_button_description">Muokkaa tallennettuja maksutapoja</string>
     <string name="bt_card_already_exists">Tämä luottokortti on jo tallennettu maksutavaksi.</string>
+    <string name="bt_notice_of_collection">Maksamalla kortillani hyväksyn PayPal tietosuojaselosteen.</string>
 </resources>

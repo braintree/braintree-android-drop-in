@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Obsługiwane źródła finansowania płatności</string>
     <string name="bt_edit_button_description">Edytuj zapisane źródła finansowania płatności</string>
     <string name="bt_card_already_exists">Ta karta kredytowa istnieje jako zapisana forma płatności.</string>
+    <string name="bt_notice_of_collection">Dokonując płatności kartą, akceptuję Informacje dotyczące zasad ochrony danych firmy PayPal.</string>
 </resources>

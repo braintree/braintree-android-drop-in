@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Поддерживаемые способы оплаты</string>
     <string name="bt_edit_button_description">Изменить сохраненные способы оплаты</string>
     <string name="bt_card_already_exists">Данная кредитная карта уже существует как сохраненный способ оплаты.</string>
+    <string name="bt_notice_of_collection">Выполняя оплату с помощью карты, я соглашаюсь с условиями Положения о конфиденциальности PayPal.</string>
 </resources>

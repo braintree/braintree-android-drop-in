@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Betalningsmetoder som stöds</string>
     <string name="bt_edit_button_description">Ändra sparade betalningsmetoder</string>
     <string name="bt_card_already_exists">Det här kreditkortet finns redan som en sparad betalningsmetod.</string>
+    <string name="bt_notice_of_collection">Genom att betala med mitt kort godkänner jag PayPals sekretessmeddelande.</string>
 </resources>

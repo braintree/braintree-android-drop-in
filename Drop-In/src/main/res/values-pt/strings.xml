@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Meios de pagamento suportados</string>
     <string name="bt_edit_button_description">Editar meios de pagamento guardados</string>
     <string name="bt_card_already_exists">Este cartão de crédito já existe como meio de pagamento guardado.</string>
+    <string name="bt_notice_of_collection">Ao pagar com o meu cartão, aceito a Declaração de Privacidade da PayPal.</string>
 </resources>

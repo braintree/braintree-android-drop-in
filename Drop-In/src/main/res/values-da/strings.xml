@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Understøttede betalingsmetoder</string>
     <string name="bt_edit_button_description">Rediger gemte betalingsmetoder</string>
     <string name="bt_card_already_exists">Dette betalingskort er allerede gemt som betalingsmetode.</string>
+    <string name="bt_notice_of_collection">Når jeg betaler med mit kort, accepterer jeg PayPals erklæring om personlige oplysninger.</string>
 </resources>

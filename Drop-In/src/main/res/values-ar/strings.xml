@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">وسائل الدفع المدعومة</string>
     <string name="bt_edit_button_description">تحرير وسائل الدفع المحفوظة</string>
     <string name="bt_card_already_exists">هذه البطاقة الائتمانية محفوظة وسيلة للدفع.</string>
+    <string name="bt_notice_of_collection">عندما أدفع ببطاقتي، فأنا أوافق على \"بيان الخصوصية لدى PayPal\".</string>
 </resources>

@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Metode pembayaran yang didukung</string>
     <string name="bt_edit_button_description">Edit metode pembayaran tersimpan</string>
     <string name="bt_card_already_exists">Kartu kredit ini telah ada sebelumnya sebagai metode pembayaran tersimpan.</string>
+    <string name="bt_notice_of_collection">Dengan membayar menggunakan kartu, saya menyetujui Pernyataan Privasi PayPal.</string>
 </resources>

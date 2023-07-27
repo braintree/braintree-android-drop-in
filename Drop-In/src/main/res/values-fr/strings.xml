@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Modes de paiement pris en charge</string>
     <string name="bt_edit_button_description">Modifier les modes de paiement enregistrés</string>
     <string name="bt_card_already_exists">Cette carte bancaire existe déjà en tant que mode de paiement enregistré.</string>
+    <string name="bt_notice_of_collection">En payant avec ma carte, j\'accepte la Politique de confidentialité de PayPal.</string>
 </resources>
