@@ -43,6 +43,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginTop="35dp"
+                android:autoLink="web"
+                android:linksClickable="true"
                 android:text="@string/bt_notice_of_collection" />
         </LinearLayout>
 

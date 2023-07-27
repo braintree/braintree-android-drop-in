@@ -1,9 +1,13 @@
 package com.braintreepayments.api;
 
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
@@ -52,6 +56,22 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
         cardForm = view.findViewById(R.id.bt_card_form);
         supportedCardTypesView = view.findViewById(R.id.bt_supported_card_types);
         animatedButtonView = view.findViewById(R.id.bt_animated_button_view);
+
+        TextView textView = view.findViewById(R.id.bt_privacy_policy);
+//        textView.setClickable(true);
+        String noticeOfCollection = getString(R.string.bt_notice_of_collection);
+        String privacyPolicyUrlString = "https://www.paypal.com/us/legalhub/home?locale.x=en_US";
+        String html = String.format("<a href=\"%s\">%s</a>", privacyPolicyUrlString, noticeOfCollection);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N){
+            textView.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
+        } else{
+            textView.setText(Html.fromHtml(html));
+        }
+
+        textView.setMovementMethod(LinkMovementMethod.getInstance());
+        textView.setLinksClickable(true);
+        textView.setLinkTextColor(Color.BLUE);
 
         animatedButtonView.setClickListener(v -> onCardFormSubmit());
 
