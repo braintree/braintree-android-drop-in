@@ -63,7 +63,7 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
         String privacyPolicyUrlString = "https://www.paypal.com/us/legalhub/home?locale.x=en_US";
         String html = String.format("<a href=\"%s\">%s</a>", privacyPolicyUrlString, noticeOfCollection);
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N){
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
             textView.setText(Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT));
         } else{
             textView.setText(Html.fromHtml(html));
