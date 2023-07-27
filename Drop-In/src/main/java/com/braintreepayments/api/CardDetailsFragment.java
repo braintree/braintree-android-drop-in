@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.VisibleForTesting;
@@ -74,6 +75,10 @@ public class CardDetailsFragment extends DropInFragment implements OnCardFormSub
         animatedButtonView = view.findViewById(R.id.bt_animated_button_view);
 
         animatedButtonView.setClickListener(v -> onCardFormSubmit());
+
+        TextView textView = view.findViewById(R.id.bt_privacy_policy);
+        String noticeOfCollection = getString(R.string.bt_notice_of_collection);
+        NoticeOfCollectionHelper.setNoticeOfCollectionText(textView, noticeOfCollection);
 
         dropInViewModel = new ViewModelProvider(requireActivity()).get(DropInViewModel.class);
 

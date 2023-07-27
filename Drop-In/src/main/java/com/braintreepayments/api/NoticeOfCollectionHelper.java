@@ -20,7 +20,6 @@ public class NoticeOfCollectionHelper {
         }
 
         textView.setMovementMethod(LinkMovementMethod.getInstance());
-        textView.setLinksClickable(true);
-        textView.setLinkTextColor(Color.BLUE);
+        textView.setLinkTextColor(Color.parseColor("#2489F6"));
     }
 }
