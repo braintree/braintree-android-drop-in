@@ -10,7 +10,7 @@ public class NoticeOfCollectionHelper {
     private NoticeOfCollectionHelper() {}
 
     static void setNoticeOfCollectionText(TextView textView, String notificeOfCollectionText) {
-        String privacyPolicyUrlString = "https://www.paypal.com/us/legalhub/home?locale.x=en_US";
+        String privacyPolicyUrlString = "https://www.paypal.com/us/legalhub/home";
         String html = String.format("<a href=\"%s\">%s</a>", privacyPolicyUrlString, notificeOfCollectionText);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
