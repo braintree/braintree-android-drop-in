@@ -2,8 +2,11 @@
 
 ## unreleased
 
-* Bump braintree_android module dependency versions to `4.33.0`
 * Add California Privacy Laws notice of collection to credit card form
+
+## 6.10.0
+
+* Bump braintree_android module dependency versions to `4.33.0`
 
 ## 6.9.0
 

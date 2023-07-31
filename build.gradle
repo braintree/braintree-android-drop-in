@@ -34,12 +34,12 @@ plugins {
     id 'io.codearte.nexus-staging' version '0.21.2'
 }
 
-version '6.9.1-SNAPSHOT'
+version '6.10.1-SNAPSHOT'
 ext {
     compileSdkVersion = 33
     minSdkVersion = 21
     targetSdkVersion = 33
-    versionCode = 101
+    versionCode = 102
     versionName = version
 }
 
