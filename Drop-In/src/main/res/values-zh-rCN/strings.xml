@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">受支持的付款方式</string>
     <string name="bt_edit_button_description">编辑已保存的付款方式</string>
     <string name="bt_card_already_exists">此信用卡已存在于已保存的付款方式。</string>
+    <string name="bt_notice_of_collection">使用我的卡付款即表示我同意PayPal隐私声明。</string>
 </resources>

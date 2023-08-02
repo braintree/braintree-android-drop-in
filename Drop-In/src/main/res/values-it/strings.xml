@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Metodi di pagamento supportati</string>
     <string name="bt_edit_button_description">Modifica metodi di pagamento salvati</string>
     <string name="bt_card_already_exists">Questa carta di credito esiste già come metodo di pagamento salvato.</string>
+    <string name="bt_notice_of_collection">Pagando con la carta, accetto la Dichiarazione sulla privacy di PayPal.</string>
 </resources>

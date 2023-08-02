@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">שיטות תשלום נתמכות</string>
     <string name="bt_edit_button_description">עריכת שיטות תשלום שמורות</string>
     <string name="bt_card_already_exists">כרטיס אשראי זה כבר שמור כשיטת תשלום.</string>
+    <string name="bt_notice_of_collection">בכך שאני משלם/ת באמצעות כרטיס האשראי שלי, אני מסכים/ה להצהרת הפרטיות של PayPal.</string>
 </resources>

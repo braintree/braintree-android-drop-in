@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.Nullable;
@@ -52,6 +53,10 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
         cardForm = view.findViewById(R.id.bt_card_form);
         supportedCardTypesView = view.findViewById(R.id.bt_supported_card_types);
         animatedButtonView = view.findViewById(R.id.bt_animated_button_view);
+
+        TextView textView = view.findViewById(R.id.bt_privacy_policy);
+        String noticeOfCollection = getString(R.string.bt_notice_of_collection);
+        NoticeOfCollectionHelper.setNoticeOfCollectionText(textView, noticeOfCollection);
 
         animatedButtonView.setClickListener(v -> onCardFormSubmit());
 

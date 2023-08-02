@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">วิธีการชําระเงินที่รองรับ</string>
     <string name="bt_edit_button_description">แก้ไขวิธีการชําระเงินที่บันทึกไว้</string>
     <string name="bt_card_already_exists">บัตรเครดิตนี้เป็นวิธีการชำระเงินที่บันทึกไว้แล้ว</string>
+    <string name="bt_notice_of_collection">การชําระเงินด้วยบัตรนี้ถือว่าข้าพเจ้ายอมรับนโยบายความเป็นส่วนตัวของ PayPal</string>
 </resources>

@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Támogatott fizetési módok</string>
     <string name="bt_edit_button_description">Mentett fizetési módok szerkesztése</string>
     <string name="bt_card_already_exists">Ez a hitelkártya már meg van adva mentett fizetési módként.</string>
+    <string name="bt_notice_of_collection">A kártyámmal történő fizetés révén elfogadom a PayPal Adatvédelmi nyilatkozatát.</string>
 </resources>

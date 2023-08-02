@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Unterstützte Zahlungsquellen</string>
     <string name="bt_edit_button_description">Gespeicherte Zahlungsquellen bearbeiten</string>
     <string name="bt_card_already_exists">Diese Kreditkarte ist bereits als gespeicherte Zahlungsquelle vorhanden.</string>
+    <string name="bt_notice_of_collection">Indem ich mit meiner Karte bezahle, stimme ich der PayPal-Datenschutzerklärung zu.</string>
 </resources>

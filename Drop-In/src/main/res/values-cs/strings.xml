@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Podporované způsoby platby</string>
     <string name="bt_edit_button_description">Upravit uložené způsoby platby</string>
     <string name="bt_card_already_exists">Tato kreditní karta je již jako způsob platby uložena.</string>
+    <string name="bt_notice_of_collection">Zaplacením kartou vyjadřuji souhlas s prohlášením o ochraně osobních údajů společnosti PayPal.</string>
 </resources>

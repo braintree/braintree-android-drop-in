@@ -47,4 +47,5 @@
     <string name="bt_supported_payments">Ondersteunde betaalmethoden</string>
     <string name="bt_edit_button_description">Opgeslagen betaalmethoden bewerken</string>
     <string name="bt_card_already_exists">Deze creditcard bestaat al als opgeslagen betaalmethode.</string>
+    <string name="bt_notice_of_collection">Door met mijn kaart te betalen, ga ik akkoord met de PayPal Privacyverklaring.</string>
 </resources>
