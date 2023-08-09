@@ -192,7 +192,7 @@ class AddCardFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_andCardLogosDisabled_supportedCardTypesViewisGONE() {
+    fun whenStateIsRESUMED_andCardLogosDisabled_supportedCardTypesViewIsGONE() {
         val dropInRequest = DropInRequest()
         dropInRequest.setCardLogosDisabled(true);
 
@@ -207,6 +207,24 @@ class AddCardFragmentUITest {
 
         scenario.onFragment { fragment ->
             assertEquals(View.GONE, fragment.supportedCardTypesView.visibility);
+        }
+    }
+
+    @Test
+    fun whenStateIsRESUMED_andCardLogosEnabled_supportedCardTypesViewIsVISIBLE() {
+        val dropInRequest = DropInRequest()
+
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+
+        scenario.onFragment { fragment ->
+            assertEquals(View.VISIBLE, fragment.supportedCardTypesView.visibility);
         }
     }
 }
