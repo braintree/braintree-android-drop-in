@@ -73,6 +73,7 @@ public class DropInRequestUnitTest {
         dropInRequest.setAllowVaultCardOverride(true);
         dropInRequest.setVaultCardDefaultValue(true);
         dropInRequest.setCardholderNameStatus(CardForm.FIELD_OPTIONAL);
+        dropInRequest.setCardLogosDisabled(true);
 
         assertNotNull(dropInRequest.getGooglePayRequest());
         assertEquals("10", dropInRequest.getGooglePayRequest().getTransactionInfo().getTotalPrice());
@@ -94,6 +95,7 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.isPayPalDisabled());
         assertTrue(dropInRequest.isVenmoDisabled());
         assertTrue(dropInRequest.isCardDisabled());
+        assertTrue(dropInRequest.areCardLogosDisabled());
         assertNotNull(dropInRequest.getThreeDSecureRequest());
         assertEquals("abc-123", dropInRequest.getThreeDSecureRequest().getNonce());
         assertEquals("2", dropInRequest.getThreeDSecureRequest().getVersionRequested());

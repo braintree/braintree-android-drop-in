@@ -1,5 +1,7 @@
 package com.braintreepayments.api
 
+import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.testing.FragmentScenario
 import androidx.lifecycle.Lifecycle
 import androidx.test.espresso.Espresso.onView
@@ -187,5 +189,24 @@ class AddCardFragmentUITest {
         }
 
         onView(withId(R.id.bt_button)).check(matches(isDisplayed()))
+    }
+
+    @Test
+    fun whenStateIsRESUMED_andCardholderNameDisabled_expirationDateFieldIsFocused() {
+        val dropInRequest = DropInRequest()
+        dropInRequest.setCardLogosDisabled(true);
+
+        val args = Bundle()
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
+        args.putString("EXTRA_CARD_NUMBER", VISA)
+
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
+        scenario.moveToState(Lifecycle.State.RESUMED)
+
+        onView(isRoot()).perform(waitFor(500))
+
+        scenario.onFragment { fragment ->
+            assertEquals(View.GONE, fragment.supportedCardTypesView.visibility);
+        }
     }
 }

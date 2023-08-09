@@ -26,7 +26,9 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
     @VisibleForTesting
     CardForm cardForm;
 
-    private AccessibleSupportedCardTypesView supportedCardTypesView;
+    @VisibleForTesting
+    AccessibleSupportedCardTypesView supportedCardTypesView;
+
     private AnimatedButtonView animatedButtonView;
 
     @VisibleForTesting
