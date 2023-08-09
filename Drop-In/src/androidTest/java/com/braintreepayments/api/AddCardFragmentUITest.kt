@@ -192,7 +192,7 @@ class AddCardFragmentUITest {
     }
 
     @Test
-    fun whenStateIsRESUMED_andCardholderNameDisabled_expirationDateFieldIsFocused() {
+    fun whenStateIsRESUMED_andCardLogosDisabled_supportedCardTypesViewisGONE() {
         val dropInRequest = DropInRequest()
         dropInRequest.setCardLogosDisabled(true);
 
