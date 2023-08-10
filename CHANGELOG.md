@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.11.0
 
 * Add California Privacy Laws notice of collection to credit card form
 * Add `DropInRequest.setCardLogosDisabled()` to hide card logos on the credit card form if desired
