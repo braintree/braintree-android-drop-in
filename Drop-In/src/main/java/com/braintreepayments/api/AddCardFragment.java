@@ -26,7 +26,9 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
     @VisibleForTesting
     CardForm cardForm;
 
-    private AccessibleSupportedCardTypesView supportedCardTypesView;
+    @VisibleForTesting
+    AccessibleSupportedCardTypesView supportedCardTypesView;
+
     private AnimatedButtonView animatedButtonView;
 
     @VisibleForTesting
@@ -52,6 +54,14 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
 
         cardForm = view.findViewById(R.id.bt_card_form);
         supportedCardTypesView = view.findViewById(R.id.bt_supported_card_types);
+
+        Bundle args = getArguments();
+        DropInRequest dropInRequest = (DropInRequest) args.getParcelable("EXTRA_DROP_IN_REQUEST");
+
+        if (dropInRequest.areCardLogosDisabled()) {
+            supportedCardTypesView.setVisibility(View.GONE);
+        }
+
         animatedButtonView = view.findViewById(R.id.bt_animated_button_view);
 
         TextView textView = view.findViewById(R.id.bt_privacy_policy);

@@ -24,6 +24,7 @@ public class DropInRequest implements Parcelable {
     private boolean payPalDisabled = false;
     private boolean venmoDisabled = false;
     private boolean cardDisabled = false;
+    private boolean cardLogosDisabled = false;
     private boolean vaultCardDefaultValue = true;
     private boolean allowVaultCardOverride = false;
 
@@ -96,6 +97,15 @@ public class DropInRequest implements Parcelable {
      */
     public void setCardDisabled(boolean disableCard) {
         cardDisabled = disableCard;
+    }
+
+    /**
+     * This method is optional.
+     *
+     * @param disableCardLogos If set to true, hides all card logos in Drop-in. Default value is false.
+     */
+    public void setCardLogosDisabled(boolean disableCardLogos) {
+        cardLogosDisabled = disableCardLogos;
     }
 
     /**
@@ -211,6 +221,13 @@ public class DropInRequest implements Parcelable {
     }
 
     /**
+     * @return If card logos are disabled in Drop-in
+     */
+    public boolean areCardLogosDisabled() {
+        return cardLogosDisabled;
+    }
+
+    /**
      * @return The Google Pay Request {@link GooglePayRequest} for the transaction.
      */
     @Nullable
@@ -287,6 +304,7 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(payPalDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(venmoDisabled ? (byte) 1 : (byte) 0);
         dest.writeByte(cardDisabled ? (byte) 1 : (byte) 0);
+        dest.writeByte(cardLogosDisabled ? (byte) 1 : (byte) 0);
         dest.writeParcelable(threeDSecureRequest, 0);
         dest.writeByte(maskCardNumber ? (byte) 1 : (byte) 0);
         dest.writeByte(maskSecurityCode ? (byte) 1 : (byte) 0);
@@ -304,6 +322,7 @@ public class DropInRequest implements Parcelable {
         payPalDisabled = in.readByte() != 0;
         venmoDisabled = in.readByte() != 0;
         cardDisabled = in.readByte() != 0;
+        cardLogosDisabled = in.readByte() != 0;
         threeDSecureRequest = in.readParcelable(ThreeDSecureRequest.class.getClassLoader());
         maskCardNumber = in.readByte() != 0;
         maskSecurityCode = in.readByte() != 0;

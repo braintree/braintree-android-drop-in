@@ -3,6 +3,7 @@
 ## unreleased
 
 * Add California Privacy Laws notice of collection to credit card form
+* Add `DropInRequest.setCardLogosDisabled()` to hide card logos on the credit card form if desired
 
 ## 6.10.0
 
