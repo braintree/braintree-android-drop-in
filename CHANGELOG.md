@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Reset bundle arguments for AddCardFragment after prefill card text is applied to Card Form (fixes #429)
+
 ## 6.11.0
 
 * Add California Privacy Laws notice of collection to credit card form
