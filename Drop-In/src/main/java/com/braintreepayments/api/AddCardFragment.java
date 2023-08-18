@@ -119,9 +119,10 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
                 cardForm.getCardEditText().setText(cardNumber);
                 CardType cardType = cardForm.getCardEditText().getCardType();
                 onCardTypeChanged(cardType);
+
+                // prevent card number from overriding existing input
+                args.remove("EXTRA_CARD_NUMBER");
             }
-            // prevent card number from overriding existing input
-            setArguments(null);
         }
     }
 
