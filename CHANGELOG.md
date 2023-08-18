@@ -2,7 +2,7 @@
 
 ## unreleased
 
-* Bump braintree_android version to 3.21.0
+* Bump braintree_android version to 3.21.1
 
 ## 5.4.1
 
