@@ -23,6 +23,9 @@ import com.braintreepayments.cardform.view.SupportedCardTypesView;
 public class AddCardFragment extends DropInFragment implements OnCardFormSubmitListener,
         CardEditText.OnCardTypeChangedListener {
 
+    private static final String EXTRA_DROP_IN_REQUEST = "EXTRA_DROP_IN_REQUEST";
+    private static final String EXTRA_CARD_NUMBER = "EXTRA_CARD_NUMBER";
+
     @VisibleForTesting
     CardForm cardForm;
 
@@ -38,9 +41,9 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
 
     static AddCardFragment from(DropInRequest dropInRequest, @Nullable String cardNumber) {
         Bundle args = new Bundle();
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest);
+        args.putParcelable(EXTRA_DROP_IN_REQUEST, dropInRequest);
         if (cardNumber != null) {
-            args.putString("EXTRA_CARD_NUMBER", cardNumber);
+            args.putString(EXTRA_CARD_NUMBER, cardNumber);
         }
 
         AddCardFragment instance = new AddCardFragment();
@@ -120,8 +123,11 @@ public class AddCardFragment extends DropInFragment implements OnCardFormSubmitL
                 CardType cardType = cardForm.getCardEditText().getCardType();
                 onCardTypeChanged(cardType);
 
-                // prevent card number from overriding existing input
-                args.remove("EXTRA_CARD_NUMBER");
+                // reset bundle args to prevent existing input from being overriden
+                // when the fragment is re-created (e.g. on configuration change)
+                Bundle newArgs = new Bundle();
+                newArgs.putString(EXTRA_DROP_IN_REQUEST, args.getString(EXTRA_DROP_IN_REQUEST));
+                setArguments(newArgs);
             }
         }
     }
