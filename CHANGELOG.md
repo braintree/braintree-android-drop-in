@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.11.1
 
 * Reset bundle arguments for AddCardFragment after prefill card text is applied to Card Form (fixes #429)
 
