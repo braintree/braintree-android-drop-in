@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * Class used to retrieve a customer's payment methods.
  */
-class PaymentMethodClient {
+public class PaymentMethodClient {
 
     private static final String PAYMENT_METHOD_NONCE_COLLECTION_KEY = "paymentMethods";
     private static final String PAYMENT_METHOD_TYPE_KEY = "type";
@@ -33,7 +33,12 @@ class PaymentMethodClient {
 
     private final BraintreeClient braintreeClient;
 
-    PaymentMethodClient(BraintreeClient braintreeClient) {
+    /**
+     * Creates a new instance of {@link PaymentMethodClient}
+     *
+     * @param braintreeClient a {@link BraintreeClient}
+     */
+    public PaymentMethodClient(BraintreeClient braintreeClient) {
         this.braintreeClient = braintreeClient;
     }
 
@@ -68,7 +73,14 @@ class PaymentMethodClient {
         }
     }
 
-    void getPaymentMethodNonces(boolean defaultFirst, final GetPaymentMethodNoncesCallback callback) {
+    /**
+     * Retrieves the current list of {@link PaymentMethodNonce} for the current user.
+     *
+     * @param defaultFirst when {@code true}, the user's default payment method will be first in the
+     *                     list
+     * @param callback a {@link GetPaymentMethodNoncesCallback} to handle results
+     */
+    public void getPaymentMethodNonces(boolean defaultFirst, final GetPaymentMethodNoncesCallback callback) {
         final Uri uri = Uri.parse(ApiClient.versionedPath(ApiClient.PAYMENT_METHOD_ENDPOINT))
                 .buildUpon()
                 .appendQueryParameter("default_first", String.valueOf(defaultFirst))
@@ -95,7 +107,16 @@ class PaymentMethodClient {
         getPaymentMethodNonces(false, callback);
     }
 
-    void deletePaymentMethod(final Context context, final PaymentMethodNonce paymentMethodNonce, final DeletePaymentMethodNonceCallback callback) {
+    /**
+     * Deletes a payment method for the user whose ID was used to generate the {@link ClientToken}
+     * used to instantiate the {@link BraintreeClient}.
+     *
+     * @param context an Android {@link Context}
+     * @param paymentMethodNonce the {@link PaymentMethodNonce} that references a vaulted payment
+     *                           method to be deleted.
+     * @param callback a {@link DeletePaymentMethodNonceCallback} to handle results
+     */
+    public void deletePaymentMethod(final Context context, final PaymentMethodNonce paymentMethodNonce, final DeletePaymentMethodNonceCallback callback) {
         braintreeClient.getAuthorization(new AuthorizationCallback() {
             @Override
             public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception error) {

@@ -7,7 +7,7 @@ import androidx.annotation.Nullable;
 /**
  * Callback for receiving result of {@link PaymentMethodClient#deletePaymentMethod(Context, PaymentMethodNonce, DeletePaymentMethodNonceCallback)}.
  */
-interface DeletePaymentMethodNonceCallback {
+public interface DeletePaymentMethodNonceCallback {
 
     /**
      * @param deletedNonce {@link PaymentMethodNonce}
