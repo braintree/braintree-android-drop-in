@@ -193,6 +193,10 @@
 
 **Note:** The credentials for integrating with 3DS have changed. If you are using 3DS please update the credentials in your app-level `build.gradle`
 
+## 5.4.2
+
+* Bump braintree_android version to 3.21.1
+
 ## 5.4.1
 
 * Bump braintree_android version to 3.20.1
