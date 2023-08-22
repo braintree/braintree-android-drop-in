@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Add `PaymentMethodClient` with API `getPaymentMethodNonces` and `deletePaymentMethod`
+
 ## 6.11.0
 
 * Add California Privacy Laws notice of collection to credit card form
