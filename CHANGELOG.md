@@ -3,6 +3,7 @@
 ## unreleased
 
 * Add `PaymentMethodClient` with API `getPaymentMethodNonces` and `deletePaymentMethod`
+* Bump braintree_android module dependency versions to `4.37.0`
 
 ## 6.11.1
 
