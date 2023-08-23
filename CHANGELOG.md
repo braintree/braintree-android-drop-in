@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Bump braintree_android module dependency versions to `4.37.0`
+
 ## 6.11.1
 
 * Reset bundle arguments for AddCardFragment after prefill card text is applied to Card Form (fixes #429)
