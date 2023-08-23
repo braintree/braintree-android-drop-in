@@ -16,15 +16,23 @@ import com.braintreepayments.cardform.utils.CardType
 import junit.framework.TestCase.assertNull
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class AddCardFragmentUITest {
 
+    private val args: Bundle = Bundle()
+
+    @Before
+    fun setup() {
+        args.putParcelable("EXTRA_DROP_IN_REQUEST", DropInRequest())
+    }
+
     @Test
     fun whenStateIsRESUMED_buttonTextIsAddCard() {
-        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onFragment { fragment ->
@@ -39,7 +47,7 @@ class AddCardFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_cardNumberFieldIsFocused() {
-        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         onView(withId(R.id.bt_card_form_card_number)).check(matches(isFocused()))
@@ -47,7 +55,7 @@ class AddCardFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_andNonCardNumberError_doesNotShowError() {
-        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onFragment { fragment ->
@@ -61,7 +69,7 @@ class AddCardFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_sendsAnalyticsEvent() {
-        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onFragment { fragment ->
@@ -77,7 +85,7 @@ class AddCardFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_onSubmitButtonClick_whenCardFormValid_showsLoader() {
-        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onFragment { fragment ->
@@ -93,7 +101,7 @@ class AddCardFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_onSubmitButtonClick_whenCardFormNotValid_showsSubmitButton() {
-        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onFragment { fragment ->
@@ -109,7 +117,7 @@ class AddCardFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_onSubmitButtonClick_whenCardTypeNotSupported_showsSubmitButton() {
-        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onFragment { fragment ->
@@ -125,7 +133,7 @@ class AddCardFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_onSubmitButtonClickWithValidCardNumber_sendsAddCardEvent() {
-        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onFragment { fragment ->
@@ -149,7 +157,7 @@ class AddCardFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_whenCardNumberValidationErrorsArePresentInViewModel_displaysErrorsInlineToUser() {
-        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onFragment { fragment ->
@@ -164,7 +172,7 @@ class AddCardFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_whenCardNumberIsDuplicate_displaysErrorsInlineToUser() {
-        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onFragment { fragment ->
@@ -179,7 +187,7 @@ class AddCardFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_whenCardFromInvalid_showsSubmitButton() {
-        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, null, R.style.bt_drop_in_activity_theme)
+        val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
         scenario.moveToState(Lifecycle.State.RESUMED)
 
         scenario.onFragment { fragment ->
@@ -196,7 +204,6 @@ class AddCardFragmentUITest {
         val dropInRequest = DropInRequest()
         dropInRequest.setCardLogosDisabled(true);
 
-        val args = Bundle()
         args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putString("EXTRA_CARD_NUMBER", VISA)
 
@@ -212,10 +219,6 @@ class AddCardFragmentUITest {
 
     @Test
     fun whenStateIsRESUMED_andCardLogosEnabled_supportedCardTypesViewIsVISIBLE() {
-        val dropInRequest = DropInRequest()
-
-        val args = Bundle()
-        args.putParcelable("EXTRA_DROP_IN_REQUEST", dropInRequest)
         args.putString("EXTRA_CARD_NUMBER", VISA)
 
         val scenario = FragmentScenario.launchInContainer(AddCardFragment::class.java, args, R.style.bt_drop_in_activity_theme)
