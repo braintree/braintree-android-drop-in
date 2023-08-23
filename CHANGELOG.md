@@ -4,6 +4,10 @@
 
 * Add `PaymentMethodClient` with API `getPaymentMethodNonces` and `deletePaymentMethod`
 
+## 6.11.1
+
+* Reset bundle arguments for AddCardFragment after prefill card text is applied to Card Form (fixes #429)
+
 ## 6.11.0
 
 * Add California Privacy Laws notice of collection to credit card form
@@ -192,6 +196,10 @@
     * Remove `EnrollmentCardView`
 
 **Note:** The credentials for integrating with 3DS have changed. If you are using 3DS please update the credentials in your app-level `build.gradle`
+
+## 5.4.2
+
+* Bump braintree_android version to 3.21.1
 
 ## 5.4.1
 
