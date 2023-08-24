@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.12.0
 
 * Add `PaymentMethodClient` with API `getPaymentMethodNonces` and `deletePaymentMethod`
 * Bump braintree_android module dependency versions to `4.37.0`
