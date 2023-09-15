@@ -28,6 +28,8 @@ public class DropInRequest implements Parcelable {
     private boolean vaultCardDefaultValue = true;
     private boolean allowVaultCardOverride = false;
 
+    private String customUrlScheme = null;
+
     private int cardholderNameStatus = CardForm.FIELD_DISABLED;
 
     public DropInRequest() {}
@@ -290,6 +292,15 @@ public class DropInRequest implements Parcelable {
         return allowVaultCardOverride;
     }
 
+    public void setCustomUrlScheme(@Nullable String customUrlScheme) {
+        this.customUrlScheme = customUrlScheme;
+    }
+
+    @Nullable
+    public String getCustomUrlScheme() {
+        return customUrlScheme;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -312,6 +323,7 @@ public class DropInRequest implements Parcelable {
         dest.writeInt(cardholderNameStatus);
         dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
+        dest.writeString(customUrlScheme);
     }
 
     protected DropInRequest(Parcel in) {
@@ -330,6 +342,7 @@ public class DropInRequest implements Parcelable {
         cardholderNameStatus = in.readInt();
         vaultCardDefaultValue = in.readByte() != 0;
         allowVaultCardOverride = in.readByte() != 0;
+        customUrlScheme = in.readString();
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {

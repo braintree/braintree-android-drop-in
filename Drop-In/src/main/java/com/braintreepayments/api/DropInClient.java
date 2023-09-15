@@ -39,13 +39,15 @@ public class DropInClient {
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest, FragmentActivity activity, Lifecycle lifecycle) {
 
-        BraintreeClient braintreeClient;
-        if (clientTokenProvider != null) {
-            braintreeClient = new BraintreeClient(context, clientTokenProvider, null, IntegrationType.DROP_IN);
-        } else {
-            braintreeClient = new BraintreeClient(context, authorization, null, IntegrationType.DROP_IN);
+        String customUrlScheme = null;
+        if (dropInRequest != null) {
+            customUrlScheme = dropInRequest.getCustomUrlScheme();
         }
 
+        BraintreeOptions braintreeOptions =
+                new BraintreeOptions(context, null, customUrlScheme, authorization, clientTokenProvider, IntegrationType.DROP_IN);
+
+        BraintreeClient braintreeClient = new BraintreeClient(braintreeOptions);
         return new DropInClientParams()
                 .activity(activity)
                 .lifecycle(lifecycle)
@@ -359,7 +361,7 @@ public class DropInClient {
     /**
      * For clients using a {@link ClientTokenProvider}, call this method to invalidate the existing,
      * cached client token. A new client token will be fetched by the SDK when it is needed.
-     *
+     * <p>
      * For clients not using a {@link ClientTokenProvider}, this method does nothing.
      */
     public void invalidateClientToken() {
