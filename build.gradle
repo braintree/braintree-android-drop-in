@@ -7,7 +7,7 @@ buildscript {
         }
     }
 
-    ext.brainTreeVersion = "4.38.1"
+    ext.brainTreeVersion = "4.38.1-DEVELOPMENT"
 
     ext.deps = [
             "braintreeCore" : "com.braintreepayments.api:braintree-core:$brainTreeVersion",
@@ -46,6 +46,7 @@ ext {
 allprojects {
     repositories {
         google()
+        mavenLocal()
         mavenCentral()
     }
 }
