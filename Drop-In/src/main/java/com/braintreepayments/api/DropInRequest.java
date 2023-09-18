@@ -295,7 +295,7 @@ public class DropInRequest implements Parcelable {
     /**
      * Use this property to customize the return url scheme used to construct deep link return urls
      * for browser-based flows. You must also override the intent-filter entry for
-     * {@link DropInActivity} in your app's AndroidManifest.xml."
+     * {@link DropInActivity} in your app's AndroidManifest.xml.
      *
      * @param customUrlScheme A custom return url scheme to use for browser-based flows.
      */
