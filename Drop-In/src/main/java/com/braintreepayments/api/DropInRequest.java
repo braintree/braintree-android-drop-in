@@ -292,10 +292,20 @@ public class DropInRequest implements Parcelable {
         return allowVaultCardOverride;
     }
 
+    /**
+     * Use this property to customize the return url scheme used to construct deep link return urls
+     * for browser-based flows. You must also override the intent-filter entry for
+     * {@link DropInActivity} in your app's AndroidManifest.xml."
+     *
+     * @param customUrlScheme A custom return url scheme to use for browser-based flows.
+     */
     public void setCustomUrlScheme(@Nullable String customUrlScheme) {
         this.customUrlScheme = customUrlScheme;
     }
 
+    /**
+     * @return If set, the custom return url scheme used for browser-based flows.
+     */
     @Nullable
     public String getCustomUrlScheme() {
         return customUrlScheme;
