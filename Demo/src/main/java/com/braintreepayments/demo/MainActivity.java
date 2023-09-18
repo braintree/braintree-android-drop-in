@@ -147,7 +147,6 @@ public class MainActivity extends BaseActivity implements DropInListener {
         dropInRequest.setVaultCardDefaultValue(Settings.defaultVaultSetting(this));
         dropInRequest.setVaultManagerEnabled(Settings.isVaultManagerEnabled(this));
         dropInRequest.setCardholderNameStatus(Settings.getCardholderNameStatus(this));
-        dropInRequest.setCustomUrlScheme("my-custom-drop-in-url-scheme");
 
         if (Settings.isThreeDSecureEnabled(this)) {
             dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
