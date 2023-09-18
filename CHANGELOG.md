@@ -2,7 +2,8 @@
 
 ## unreleased
 
-* Bump braintree_android module dependency versions to `4.38.0`
+* Bump braintree_android module dependency versions to `4.38.1`
+* Upgrade `compileSdkVersion` and `targetSdkVersion` to API 34
 
 ## 6.12.0
 
