@@ -47,7 +47,9 @@ android {
         warning 'GradleCompatible'
         textReport true
         textOutput 'stdout'
-        disable 'InvalidPackage' // The Cardinal SDK is referencing the `javax.naming` package but it is unavailable
+        // RestrictedApi - Accessing Braintree Core SDK non-public methods
+        // InvalidPackage - The Cardinal SDK is referencing the `javax.naming` package but it is unavailable
+        disable 'RestrictedApi', 'InvalidPackage'
     }
 
     sourceSets {
