@@ -46,7 +46,6 @@ ext {
 allprojects {
     repositories {
         google()
-        mavenLocal()
         mavenCentral()
     }
 }
