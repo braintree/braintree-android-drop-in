@@ -5,6 +5,7 @@
 * Bump braintree_android module dependency versions to `4.38.1`
 * Android 14 Support
   * Upgrade `compileSdkVersion` and `targetSdkVersion` to API 34
+* Add `customUrlScheme` property to `DropInRequest` to allow for custom URL schemes to be set for browser-based flow deep links
 
 ## 6.12.0
 
