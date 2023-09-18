@@ -44,12 +44,10 @@ android {
     }
 
     lintOptions {
-        warning 'GradleCompatible'
+        // RestrictedApi - Accessing Braintree Core SDK non-public methods
+        warning 'GradleCompatible', 'RestrictedApi'
         textReport true
         textOutput 'stdout'
-        // RestrictedApi - Accessing Braintree Core SDK non-public methods
-        // InvalidPackage - The Cardinal SDK is referencing the `javax.naming` package but it is unavailable
-        disable 'RestrictedApi', 'InvalidPackage'
     }
 
     sourceSets {
