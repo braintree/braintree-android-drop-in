@@ -28,6 +28,8 @@ public class DropInRequest implements Parcelable {
     private boolean vaultCardDefaultValue = true;
     private boolean allowVaultCardOverride = false;
 
+    private String customUrlScheme = null;
+
     private int cardholderNameStatus = CardForm.FIELD_DISABLED;
 
     public DropInRequest() {}
@@ -290,6 +292,25 @@ public class DropInRequest implements Parcelable {
         return allowVaultCardOverride;
     }
 
+    /**
+     * Use this property to customize the return url scheme used to construct deep link return urls
+     * for browser-based flows. You must also override the intent-filter entry for
+     * {@link DropInActivity} in your app's AndroidManifest.xml.
+     *
+     * @param customUrlScheme A custom return url scheme to use for browser-based flows.
+     */
+    public void setCustomUrlScheme(@Nullable String customUrlScheme) {
+        this.customUrlScheme = customUrlScheme;
+    }
+
+    /**
+     * @return If set, the custom return url scheme used for browser-based flows.
+     */
+    @Nullable
+    public String getCustomUrlScheme() {
+        return customUrlScheme;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -312,6 +333,7 @@ public class DropInRequest implements Parcelable {
         dest.writeInt(cardholderNameStatus);
         dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
+        dest.writeString(customUrlScheme);
     }
 
     protected DropInRequest(Parcel in) {
@@ -330,6 +352,7 @@ public class DropInRequest implements Parcelable {
         cardholderNameStatus = in.readInt();
         vaultCardDefaultValue = in.readByte() != 0;
         allowVaultCardOverride = in.readByte() != 0;
+        customUrlScheme = in.readString();
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {

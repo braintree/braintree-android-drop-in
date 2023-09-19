@@ -75,6 +75,22 @@ public class DropInInternalClientUnitTest {
     }
 
     @Test
+    public void internalConstructor_usesDefaultBraintreeCustomUrlScheme() {
+        DropInInternalClient sut =
+                new DropInInternalClient(activity, Fixtures.TOKENIZATION_KEY, "session-id", new DropInRequest());
+        assertEquals("com.braintreepayments.api.dropin.test.braintree", sut.braintreeClient.getReturnUrlScheme());
+    }
+
+    @Test
+    public void internalConstructor_overridesBraintreeCustomUrlSchemeIfSet() {
+        DropInRequest request = new DropInRequest();
+        request.setCustomUrlScheme("sample-custom-url-scheme");
+        DropInInternalClient sut =
+                new DropInInternalClient(activity, Fixtures.TOKENIZATION_KEY, "session-id", request);
+        assertEquals("sample-custom-url-scheme", sut.braintreeClient.getReturnUrlScheme());
+    }
+
+    @Test
     public void getConfiguration_forwardsInvocationToBraintreeClient() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
         DropInInternalClientParams params = new DropInInternalClientParams()
