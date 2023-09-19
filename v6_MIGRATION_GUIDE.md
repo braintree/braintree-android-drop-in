@@ -250,3 +250,30 @@ Kotlin:
 
 DropIn handles browser switching internally. Specifying an `<intent-filter />` in `AndroidManifest.xml` is no longer required. Any payment method that requires a browser switch will work automatically.
 
+On the other hand, there are some scenarios that will require you to set a custom URL scheme for browser switch deep linking. For example, if your `applicationId` contains uppercase letters, you will need to override the default deep link configuration set by the DropIn library.
+
+Internally we use a manifest placeholder to support deep linking into `DropInActivity`. You can override the deep link intent filter for `DropInActivity` by placing the following xml snippet in your app's `AndroidManifest.xml`:
+
+```xml
+<activity android:name="com.braintreepayments.api.DropInActivity"
+  android:exported="true"
+  tools:node="merge"
+  >
+  <intent-filter tools:node="removeAll" />
+  <intent-filter>
+    <action android:name="android.intent.action.VIEW" />
+    <data android:scheme="my-custom-url-scheme" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <category android:name="android.intent.category.BROWSABLE" />
+  </intent-filter>
+</activity>
+```
+
+You can then set the custom url scheme on `DropInRequest` to align with the overridden `AndroidManifest.xml` value:
+
+```kotlin
+dropInRequest.customUrlScheme = "my-custom-url-scheme"
+```
+
+Once set, the DropIn SDK will use this custom url scheme when deep linking instead of the default one.
+
