@@ -259,6 +259,7 @@ Internally we use a manifest placeholder to support deep linking into `DropInAct
   android:exported="true"
   tools:node="merge"
   >
+  <intent-filter tools:node="removeAll" />
   <intent-filter>
     <action android:name="android.intent.action.VIEW" />
     <data android:scheme="my-custom-url-scheme" />
