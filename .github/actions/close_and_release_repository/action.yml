@@ -24,7 +24,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: ./gradlew --stacktrace closeAndReleaseRepository
+    - run: ./gradlew --stacktrace closeAndReleaseSonatypeStagingRepository
       shell: bash
       env:
         SONATYPE_USERNAME: ${{ inputs.sonatype_usr }}
