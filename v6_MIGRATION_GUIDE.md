@@ -256,6 +256,7 @@ Internally we use a manifest placeholder to support deep linking into `DropInAct
 
 ```xml
 <activity android:name="com.braintreepayments.api.DropInActivity"
+  android:exported="true"
   tools:node="merge"
   >
   <intent-filter>
