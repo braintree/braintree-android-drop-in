@@ -47,6 +47,10 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+
+        maven {
+            url 'https://oss.sonatype.org/content/repositories/snapshots/'
+        }
     }
 }
 
@@ -64,12 +68,12 @@ subprojects {
 
 nexusPublishing {
     useStaging = !rootProject.versionName.endsWith("SNAPSHOT")
+    packageGroup = "com.braintreepayments"
 
     repositories {
         sonatype {
             username = System.getenv('SONATYPE_NEXUS_USERNAME') ?: ''
             password = System.getenv('SONATYPE_NEXUS_PASSWORD') ?: ''
-            packageGroup = "com.braintreepayments"
         }
     }
 
