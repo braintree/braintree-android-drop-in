@@ -109,28 +109,14 @@ dependencies {
 
 // region signing and publishing
 
-task javadocs(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    failOnError false
-}
-
-task javadocsJar(type: Jar, dependsOn: javadocs) {
-    archiveClassifier.set('javadoc')
-    from javadocs.destinationDir
-}
-
-task sourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
-    from android.sourceSets.main.java.srcDirs
-}
-
 repositories {
     mavenCentral()
 }
 
 project.ext.name = "drop-in"
 project.ext.pom_name = "drop-in"
+project.ext.group_id = "com.braintreepayments.api"
+project.ext.version = rootProject.version
 project.ext.pom_desc = "Drop-in payment form for Braintree\'s Android SDK. Integrate this library to add a readymade UI for your payments."
 
 apply from: rootProject.file("gradle/gradle-publish.gradle")
