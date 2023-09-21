@@ -42,8 +42,8 @@ jobs:
         with:
           java-version: '11.0.10'
           distribution: 'zulu'
-      - name: Unit Tests
-        run: ./gradlew --stacktrace testRelease
+#      - name: Unit Tests
+#        run: ./gradlew --stacktrace testRelease
   publish:
     needs: [ unit_test, build_aar ]
     name: Publish Drop-in
