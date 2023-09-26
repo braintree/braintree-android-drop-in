@@ -93,6 +93,7 @@ jobs:
         uses: ./.github/actions/set_github_user
       - name: Update Version
         run: |
+          ./gradlew dokkaHtmlMultiModule
           ./gradlew -PversionParam=${{ github.event.inputs.version }} changeGradleReleaseVersion
           ./gradlew -PversionParam=${{ github.event.inputs.version }} changeREADMEVersion
           ./gradlew -PversionParam=${{ github.event.inputs.version }} changeMigrationGuideVersion
