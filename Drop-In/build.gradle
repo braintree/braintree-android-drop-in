@@ -1,13 +1,7 @@
 plugins {
     id 'com.android.library'
-    id 'de.marcphilipp.nexus-publish'
-    id 'signing'
     id 'kotlin-android'
 }
-
-ext["signing.keyId"] = System.getenv('SIGNING_KEY_ID') ?: ''
-ext["signing.password"] = System.getenv('SIGNING_KEY_PASSWORD') ?: ''
-ext["signing.secretKeyRingFile"] = System.getenv('SIGNING_KEY_FILE') ?: ''
 
 def LOCALHOST_IP = System.properties['LOCALHOST_IP'] ?: '"10.0.2.2"';
 def GATEWAY_IP = System.properties['GATEWAY_IP'] ?: '"10.0.2.2"';
@@ -115,84 +109,16 @@ dependencies {
 
 // region signing and publishing
 
-task javadocs(type: Javadoc) {
-    source = android.sourceSets.main.java.srcDirs
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    failOnError false
-}
-
-task javadocsJar(type: Jar, dependsOn: javadocs) {
-    archiveClassifier.set('javadoc')
-    from javadocs.destinationDir
-}
-
-task sourcesJar(type: Jar) {
-    archiveClassifier.set('sources')
-    from android.sourceSets.main.java.srcDirs
-}
-
-signing {
-    required {
-        !version.endsWith("SNAPSHOT") && !version.endsWith("DEVELOPMENT")
-    }
-    sign publishing.publications
-}
-
-nexusPublishing {
-    // give nexus sonatype more time to initialize the staging repository
-    clientTimeout = Duration.ofMinutes(3)
-    useStaging = !rootProject.versionName.endsWith("SNAPSHOT")
-    repositories {
-        sonatype()
-    }
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            release(MavenPublication) {
-                from components.release
-
-                artifact sourcesJar
-                artifact javadocsJar
-
-                groupId = 'com.braintreepayments.api'
-                artifactId = 'drop-in'
-                version = rootProject.versionName
-
-                pom {
-                    name = 'drop-in'
-                    packaging = 'aar'
-                    description = 'Drop-in payment form for Braintree\'s Android SDK. Integrate this library to add a readymade UI for your payments.'
-                    url = 'https://github.com/braintree/braintree-android-drop-in'
-
-                    scm {
-                        url = 'scm:git@github.com:braintree/braintree-android-drop-in.git'
-                        connection = 'scm:git@github.com:braintree/braintree-android-drop-in.git'
-                        developerConnection = 'scm:git@github.com:braintree/braintree-android-drop-in.git'
-                    }
-
-                    developers {
-                        developer {
-                            id = 'devs'
-                            name = 'Braintree Payments'
-                        }
-                    }
-
-                    licenses {
-                        license {
-                            name = 'MIT'
-                            url = 'http://opensource.org/licenses/MIT'
-                            distribution = 'repo'
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 repositories {
     mavenCentral()
 }
+
+project.ext.name = "drop-in"
+project.ext.pom_name = "drop-in"
+project.ext.group_id = "com.braintreepayments.api"
+project.ext.version = rootProject.version
+project.ext.pom_desc = "Drop-in payment form for Braintree\'s Android SDK. Integrate this library to add a readymade UI for your payments."
+
+apply from: rootProject.file("gradle/gradle-publish.gradle")
 
 // endregion
