@@ -1,0 +1,282 @@
+<!doctype html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
+    <title>DropInClient</title>
+<link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+    if (storage == null) {
+        const osDarkSchemePreferred = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+        if (osDarkSchemePreferred === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    } else {
+        const savedDarkMode = JSON.parse(storage)
+        if(savedDarkMode === true) {
+            document.getElementsByTagName("html")[0].classList.add("theme-dark")
+        }
+    }
+    </script>
+<script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script>
+<link href="../../../styles/style.css" rel="Stylesheet">
+<link href="../../../styles/jetbrains-mono.css" rel="Stylesheet">
+<link href="../../../styles/main.css" rel="Stylesheet">
+<link href="../../../styles/prism.css" rel="Stylesheet">
+<link href="../../../styles/logo-styles.css" rel="Stylesheet">
+<script type="text/javascript" src="../../../scripts/clipboard.js" async></script>
+<script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script>
+<script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script>
+<script type="text/javascript" src="../../../scripts/main.js" defer></script>
+<script type="text/javascript" src="../../../scripts/prism.js" async></script>
+<script type="text/javascript" src="../../../scripts/symbol-parameters-wrapper_deferred.js" defer></script></head>
+<body>
+<div class="navigation-wrapper" id="navigation-wrapper">
+    <div id="leftToggler"><span class="icon-toggler"></span></div>
+    <div class="library-name">
+<a href="../../../index.html">
+<span>braintree-android-drop-in</span>            </a>    </div>
+    <div>6.13.0
+    </div>
+    <div class="pull-right d-flex">
+        <button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+    </div>
+</div>
+<div id="container">
+    <div id="leftColumn">
+        <div id="sideMenu"></div>
+    </div>
+    <div id="main">
+<div class="main-content" id="content" pageids="Drop-In::com.braintreepayments.api/DropInClient///PointingToDeclaration//-1681582654">
+  <div class="breadcrumbs"><a href="../../index.html">Drop-In</a><span class="delimiter">/</span><a href="../index.html">com.braintreepayments.api</a><span class="delimiter">/</span><span class="current">DropInClient</span></div>
+  <div class="cover ">
+    <h1 class="cover"><span>Drop</span><wbr><span>In</span><wbr><span><span>Client</span></span></h1>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword">class </span><a href="index.html">DropInClient</a></div><p class="paragraph">Used to launch Drop-in and handle results</p></div></div>
+  </div>
+  <div class="tabbedcontent">
+    <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Constructors">Constructors</button><button class="section-tab" data-togglable="Functions">Functions</button></div>
+    <div class="tabs-section-body">
+      <h2 class="tabbedcontent">Constructors</h2>
+      <div class="table" data-togglable="Constructors"><a data-name="-716707866%2FConstructors%2F-1681582654" anchor-label="DropInClient" id="-716707866%2FConstructors%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-drop-in-client.html"><span>Drop</span><wbr><span>In</span><wbr><span><span>Client</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-716707866%2FConstructors%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-drop-in-client.html"><span class="token function"><strike>DropInClient</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">context<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/android/content/Context.html">Context</a><span class="token punctuation">, </span></span><span class="parameter ">authorization<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/lang/String.html">String</a><span class="token punctuation">, </span></span><span class="parameter ">dropInRequest<span class="token operator">: </span><a href="../-drop-in-request/index.html">DropInRequest</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1501002092%2FConstructors%2F-1681582654" anchor-label="DropInClient" id="1501002092%2FConstructors%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-drop-in-client.html"><span>Drop</span><wbr><span>In</span><wbr><span><span>Client</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1501002092%2FConstructors%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-drop-in-client.html"><span class="token function"><strike>DropInClient</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">activity<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentActivity.html">FragmentActivity</a><span class="token punctuation">, </span></span><span class="parameter ">dropInRequest<span class="token operator">: </span><a href="../-drop-in-request/index.html">DropInRequest</a><span class="token punctuation">, </span></span><span class="parameter ">authorization<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1458865342%2FConstructors%2F-1681582654" anchor-label="DropInClient" id="-1458865342%2FConstructors%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-drop-in-client.html"><span>Drop</span><wbr><span>In</span><wbr><span><span>Client</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1458865342%2FConstructors%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-drop-in-client.html"><span class="token function">DropInClient</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">activity<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentActivity.html">FragmentActivity</a><span class="token punctuation">, </span></span><span class="parameter ">authorization<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Create a new instance of <a href="index.html">DropInClient</a> from within an Activity using a Tokenization Key authorization.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="62161469%2FConstructors%2F-1681582654" anchor-label="DropInClient" id="62161469%2FConstructors%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-drop-in-client.html"><span>Drop</span><wbr><span>In</span><wbr><span><span>Client</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="62161469%2FConstructors%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-drop-in-client.html"><span class="token function"><strike>DropInClient</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">fragment<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/fragment/app/Fragment.html">Fragment</a><span class="token punctuation">, </span></span><span class="parameter ">dropInRequest<span class="token operator">: </span><a href="../-drop-in-request/index.html">DropInRequest</a><span class="token punctuation">, </span></span><span class="parameter ">authorization<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1363777261%2FConstructors%2F-1681582654" anchor-label="DropInClient" id="-1363777261%2FConstructors%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-drop-in-client.html"><span>Drop</span><wbr><span>In</span><wbr><span><span>Client</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1363777261%2FConstructors%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-drop-in-client.html"><span class="token function">DropInClient</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">fragment<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/fragment/app/Fragment.html">Fragment</a><span class="token punctuation">, </span></span><span class="parameter ">authorization<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/java/lang/String.html">String</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Create a new instance of <a href="index.html">DropInClient</a> from within a Fragment using a Tokenization Key authorization.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="778416352%2FConstructors%2F-1681582654" anchor-label="DropInClient" id="778416352%2FConstructors%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-drop-in-client.html"><span>Drop</span><wbr><span>In</span><wbr><span><span>Client</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="778416352%2FConstructors%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-drop-in-client.html"><span class="token function"><strike>DropInClient</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">activity<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentActivity.html">FragmentActivity</a><span class="token punctuation">, </span></span><span class="parameter ">dropInRequest<span class="token operator">: </span><a href="../-drop-in-request/index.html">DropInRequest</a><span class="token punctuation">, </span></span><span class="parameter ">clientTokenProvider<span class="token operator">: </span><a href="../../../Drop-In/com.braintreepayments.api/-client-token-provider/index.html">ClientTokenProvider</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1269512502%2FConstructors%2F-1681582654" anchor-label="DropInClient" id="-1269512502%2FConstructors%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-drop-in-client.html"><span>Drop</span><wbr><span>In</span><wbr><span><span>Client</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1269512502%2FConstructors%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-drop-in-client.html"><span class="token function">DropInClient</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">activity<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentActivity.html">FragmentActivity</a><span class="token punctuation">, </span></span><span class="parameter ">clientTokenProvider<span class="token operator">: </span><a href="../../../Drop-In/com.braintreepayments.api/-client-token-provider/index.html">ClientTokenProvider</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Create a new instance of <a href="index.html">DropInClient</a> from within an Activity using a <a href="../../../Drop-In/com.braintreepayments.api/-client-token-provider/index.html">ClientTokenProvider</a> to fetch authorization.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1684159057%2FConstructors%2F-1681582654" anchor-label="DropInClient" id="-1684159057%2FConstructors%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-drop-in-client.html"><span>Drop</span><wbr><span>In</span><wbr><span><span>Client</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1684159057%2FConstructors%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-drop-in-client.html"><span class="token function"><strike>DropInClient</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">fragment<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/fragment/app/Fragment.html">Fragment</a><span class="token punctuation">, </span></span><span class="parameter ">dropInRequest<span class="token operator">: </span><a href="../-drop-in-request/index.html">DropInRequest</a><span class="token punctuation">, </span></span><span class="parameter ">clientTokenProvider<span class="token operator">: </span><a href="../../../Drop-In/com.braintreepayments.api/-client-token-provider/index.html">ClientTokenProvider</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="784668313%2FConstructors%2F-1681582654" anchor-label="DropInClient" id="784668313%2FConstructors%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue TabbedContent">
+            <div class=""><span class="inline-flex">
+                <div><a href="-drop-in-client.html"><span>Drop</span><wbr><span>In</span><wbr><span><span>Client</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="784668313%2FConstructors%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="-drop-in-client.html"><span class="token function">DropInClient</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">fragment<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/fragment/app/Fragment.html">Fragment</a><span class="token punctuation">, </span></span><span class="parameter ">clientTokenProvider<span class="token operator">: </span><a href="../../../Drop-In/com.braintreepayments.api/-client-token-provider/index.html">ClientTokenProvider</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Create a new instance of <a href="index.html">DropInClient</a> from within a Fragment using a <a href="../../../Drop-In/com.braintreepayments.api/-client-token-provider/index.html">ClientTokenProvider</a> to fetch authorization.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="">Functions</h2>
+      <div class="table" data-togglable="Functions"><a data-name="-504700651%2FFunctions%2F-1681582654" anchor-label="fetchMostRecentPaymentMethod" id="-504700651%2FFunctions%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="fetch-most-recent-payment-method.html"><span>fetch</span><wbr><span>Most</span><wbr><span>Recent</span><wbr><span>Payment</span><wbr><span><span>Method</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-504700651%2FFunctions%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="fetch-most-recent-payment-method.html"><span class="token function">fetchMostRecentPaymentMethod</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">activity<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentActivity.html">FragmentActivity</a><span class="token punctuation">, </span></span><span class="parameter ">callback<span class="token operator">: </span><a href="../-fetch-most-recent-payment-method-callback/index.html">FetchMostRecentPaymentMethodCallback</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Called to get a user's existing payment method, if any.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="2077729835%2FFunctions%2F-1681582654" anchor-label="invalidateClientToken" id="2077729835%2FFunctions%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="invalidate-client-token.html"><span>invalidate</span><wbr><span>Client</span><wbr><span><span>Token</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2077729835%2FFunctions%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="invalidate-client-token.html"><span class="token function">invalidateClientToken</span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><div class="brief ">For clients using a <a href="../../../Drop-In/com.braintreepayments.api/-client-token-provider/index.html">ClientTokenProvider</a>, call this method to invalidate the existing, cached client token.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="-1817718249%2FFunctions%2F-1681582654" anchor-label="launchDropIn" id="-1817718249%2FFunctions%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="launch-drop-in.html"><span>launch</span><wbr><span>Drop</span><wbr><span><span>In</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1817718249%2FFunctions%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="launch-drop-in.html"><span class="token function"><strike>launchDropIn</strike></span></a><span class="token punctuation">(</span><span class="token punctuation">)</span></div><br><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="launch-drop-in.html"><span class="token function">launchDropIn</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">request<span class="token operator">: </span><a href="../-drop-in-request/index.html">DropInRequest</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Called to launch a <a href="../-drop-in-activity/index.html">DropInActivity</a>.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="495229934%2FFunctions%2F-1681582654" anchor-label="launchDropInForResult" id="495229934%2FFunctions%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="launch-drop-in-for-result.html"><span>launch</span><wbr><span>Drop</span><wbr><span>In</span><wbr><span>For</span><wbr><span><span>Result</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="495229934%2FFunctions%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="launch-drop-in-for-result.html"><span class="token function"><strike>launchDropInForResult</strike></span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">activity<span class="token operator">: </span><a href="https://developer.android.com/reference/kotlin/androidx/fragment/app/FragmentActivity.html">FragmentActivity</a><span class="token punctuation">, </span></span><span class="parameter ">requestCode<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a></span></span><span class="token punctuation">)</span></div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+<a data-name="1406924850%2FFunctions%2F-1681582654" anchor-label="setListener" id="1406924850%2FFunctions%2F-1681582654" data-filterable-set=":Drop-In:dokkaHtmlPartial/release"></a>
+        <div class="table-row" data-filterable-current=":Drop-In:dokkaHtmlPartial/release" data-filterable-set=":Drop-In:dokkaHtmlPartial/release">
+          <div class="main-subrow keyValue ">
+            <div class=""><span class="inline-flex">
+                <div><a href="set-listener.html"><span>set</span><wbr><span><span>Listener</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1406924850%2FFunctions%2F-1681582654"></span>
+                  <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
+                </span></span></div>
+            <div>
+              <div class="title">
+                <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-dependent-content" data-active="" data-togglable=":Drop-In:dokkaHtmlPartial/release"><div class="symbol monospace"><span class="token keyword">open </span><span class="token keyword"></span><span class="token keyword">fun </span><a href="set-listener.html"><span class="token function">setListener</span></a><span class="token punctuation">(</span><span class="parameters "><span class="parameter ">listener<span class="token operator">: </span><a href="../-drop-in-listener/index.html">DropInListener</a></span></span><span class="token punctuation">)</span></div><div class="brief ">Add a <a href="../-drop-in-listener/index.html">DropInListener</a> to your client to receive results or errors from DropIn.</div></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      <div class="footer">
+        <span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2023 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span>
+      </div>
+    </div>
+</div>
+
+</body></html>
+

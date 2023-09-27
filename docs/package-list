@@ -1,0 +1,5 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+
+module:Drop-In
+com.braintreepayments.api

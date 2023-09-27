@@ -27,11 +27,13 @@ buildscript {
         classpath 'de.marcphilipp.gradle:nexus-publish-plugin:0.4.0'
         classpath 'io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.7.20'
     }
 }
 
 plugins {
     id 'io.github.gradle-nexus.publish-plugin' version '1.1.0'
+    id 'org.jetbrains.dokka' version '1.7.10'
 }
 
 version '6.13.1-SNAPSHOT'
@@ -79,6 +81,11 @@ nexusPublishing {
         // give nexus sonatype more time to close the staging repository
         delayBetween.set(Duration.ofSeconds(20))
     }
+}
+
+dokkaHtmlMultiModule.configure {
+    // redirect dokka output to GitHub pages root directory
+    outputDirectory.set(project.file("docs"))
 }
 
 task changeGradleReleaseVersion {
