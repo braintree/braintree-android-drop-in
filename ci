@@ -13,3 +13,4 @@ case $command_name in
     ./gradlew --continue connectedAndroidTest
     ;;
 esac
+
