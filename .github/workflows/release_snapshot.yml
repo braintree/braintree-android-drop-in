@@ -63,7 +63,6 @@ jobs:
       - name: Publish Drop-in
         uses: ./.github/actions/publish_module
         with:
-          module: Drop-In
           sonatype_usr: ${{ secrets.SONATYPE_NEXUS_USERNAME }}
           sonatype_pwd: ${{ secrets.SONATYPE_NEXUS_PASSWORD }}
           signing_key_id: ${{ secrets.SIGNING_KEY_ID }}

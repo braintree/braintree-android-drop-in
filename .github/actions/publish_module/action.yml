@@ -1,10 +1,6 @@
 name: 'Publish Module'
 description: 'Publishes module'
 inputs:
-  module:
-    description: 'Module'
-    required: true
-    default: ''
   sonatype_usr:
     description: 'Sonatype user'
     required: true
@@ -28,7 +24,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: ./gradlew --stacktrace clean :${{ inputs.module }}:publishToSonatype
+    - run: ./gradlew --stacktrace publishToSonatype closeAndReleaseSonatypeStagingRepository
       shell: bash
       env:
         SONATYPE_NEXUS_USERNAME: ${{ inputs.sonatype_usr }}
