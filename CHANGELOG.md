@@ -2,7 +2,8 @@
 
 ## unreleased
 
-* Bump brinatree_android module dependency versions to `4.39.0`
+* Bump braintree_android module dependency versions to `4.40.1`
+* Fix NPE when `DropInListener` is null
 
 ## 6.13.0
 
