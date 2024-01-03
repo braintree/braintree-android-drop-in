@@ -416,6 +416,16 @@ public class DropInClientUnitTest {
     }
 
     @Test
+    public void onDropInResult_whenListenerIsNull_doesNothing() {
+        DropInClientParams params = new DropInClientParams();
+        DropInClient sut = new DropInClient(params);
+
+
+        DropInResult dropInResult = new DropInResult();
+        sut.onDropInResult(dropInResult);
+    }
+
+    @Test
     public void invalidateClientToken_forwardsInvocationIntoBraintreeClient() {
         BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
         DropInClientParams params = new DropInClientParams()

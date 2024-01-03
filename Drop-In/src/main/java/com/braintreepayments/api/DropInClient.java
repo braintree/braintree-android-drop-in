@@ -348,7 +348,7 @@ public class DropInClient {
     }
 
     void onDropInResult(DropInResult dropInResult) {
-        if (dropInResult != null) {
+        if (dropInResult != null && listener != null) {
             Exception error = dropInResult.getError();
             if (error != null) {
                 listener.onDropInFailure(error);
