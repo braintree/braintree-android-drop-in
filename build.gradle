@@ -7,7 +7,7 @@ buildscript {
         }
     }
 
-    ext.brainTreeVersion = "4.39.0"
+    ext.brainTreeVersion = "4.40.1"
 
     ext.deps = [
             "braintreeCore" : "com.braintreepayments.api:braintree-core:$brainTreeVersion",
