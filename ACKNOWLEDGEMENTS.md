@@ -17,3 +17,4 @@ The Braintree SDK uses code from the following libraries:
  * [Robolectric](https://github.com/robolectric/robolectric), MIT License
  * [SDK Manager Plugin](https://github.com/JakeWharton/sdk-manager-plugin), Apache License Version 2.0
  * [Stetho](https://github.com/facebook/stetho), BSD License
+ * [Android Device Art Generator](https://developer.android.com/distribute/marketing-tools/device-art-generator?authuser=2)
