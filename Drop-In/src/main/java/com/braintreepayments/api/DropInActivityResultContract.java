@@ -22,7 +22,7 @@ class DropInActivityResultContract extends ActivityResultContract<DropInIntentDa
     public Intent createIntent(@NonNull Context context, DropInIntentData input) {
         Bundle dropInRequestBundle = new Bundle();
         dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, input.getDropInRequest());
-        return new Intent(context, DropInActivity.class)
+        return new Intent(context, NewDropInActivity.class)
                 .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
                 .putExtra(EXTRA_SESSION_ID, input.getSessionId())
                 .putExtra(EXTRA_AUTHORIZATION, input.getAuthorization().toString());

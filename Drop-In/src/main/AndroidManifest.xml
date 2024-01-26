@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         tools:ignore="UnusedAttribute">
         <activity
+            android:name="com.braintreepayments.api.NewDropInActivity"
+            android:exported="true"
+            android:theme="@style/bt_drop_in_activity_theme"/>
+
+        <activity
             android:name="com.braintreepayments.api.DropInActivity"
             android:exported="true"
             android:launchMode="singleTask"

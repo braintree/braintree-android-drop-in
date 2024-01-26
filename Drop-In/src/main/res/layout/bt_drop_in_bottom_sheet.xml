@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp">
+
+
+            <com.braintreepayments.cardform.view.CardForm
+                android:id="@+id/card_form"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/bt_margin"/>
+            <com.paypal.android.paymentbuttons.PayPalButton
+                android:id="@+id/paypal_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"/>
+            <ImageButton
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:src="@drawable/blue_venmo_button"
+                android:layout_marginBottom="10dp"/>
+            <com.google.android.gms.wallet.button.PayButton
+                android:id="@+id/google_pay_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
+            </com.google.android.gms.wallet.button.PayButton>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
