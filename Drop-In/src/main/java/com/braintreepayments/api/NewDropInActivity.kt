@@ -2,6 +2,7 @@ package com.braintreepayments.api
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import com.braintreepayments.api.dropin.R
 import com.braintreepayments.cardform.view.CardForm
@@ -32,6 +33,7 @@ class NewDropInActivity : AppCompatActivity() {
             .cvvRequired(true)
             .postalCodeRequired(true)
             .setup(this)
+        cardForm.visibility = View.GONE
 
         val payPalButton = bottomSheetDialog.findViewById<PayPalButton>(R.id.paypal_button)
         payPalButton?.shape = PaymentButtonShape.PILL
@@ -46,8 +48,14 @@ class NewDropInActivity : AppCompatActivity() {
                 .build()
         )
 
-//        cardForm.visibility = View.GONE
+        val submitButton = bottomSheetDialog.findViewById<Button>(R.id.submit_button)
 
+        val cardButton = bottomSheetDialog.findViewById<Button>(R.id.card_button)
+        cardButton?.setOnClickListener {
+            cardForm.visibility = View.VISIBLE
+            submitButton?.visibility = View.VISIBLE
+            cardButton.visibility = View.GONE
+        }
 
         bottomSheetDialog.show()
     }

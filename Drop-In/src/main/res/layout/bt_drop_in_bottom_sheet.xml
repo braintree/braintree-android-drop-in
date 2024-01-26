@@ -15,32 +15,23 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <Button
-                style="@style/Widget.Material3.Button.Icon"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="CREDIT OR DEBIT CARD"
-                android:textSize="18dp"
-                app:icon="@drawable/bt_ic_card"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                />
-
-
             <com.braintreepayments.cardform.view.CardForm
                 android:id="@+id/card_form"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/bt_margin"/>
+                android:layout_margin="@dimen/bt_margin"
+                android:visibility="gone"
+                />
 
             <com.google.android.material.button.MaterialButton
-                style="@style/Widget.Material3.Button.TextButton"
+                android:id="@+id/submit_button"
+                style="@style/Widget.Material3.Button.IconButton.Outlined"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:icon="@drawable/bt_ic_card"
-                android:text="Submit"
+                android:text="PAY WITH CARD"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
+                android:visibility="gone"
                 />
 
         <LinearLayout
@@ -49,6 +40,17 @@
             android:orientation="vertical"
             android:layout_marginRight="10dp"
             android:layout_marginLeft="10dp">
+
+            <Button
+                android:id="@+id/card_button"
+                style="@style/Widget.Material3.Button.IconButton.Outlined"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CREDIT OR DEBIT CARD"
+                app:icon="@drawable/bt_ic_card"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                />
 
             <com.paypal.android.paymentbuttons.PayPalButton
                 android:id="@+id/paypal_button"
