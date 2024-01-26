@@ -77,7 +77,8 @@ dependencies {
     api deps.dataCollector
     api deps.unionPay
 
-    api 'com.braintreepayments:card-form:5.4.0'
+    api 'com.braintreepayments:card-form:5.4.1-SNAPSHOT'
+    implementation 'com.google.android.material:material:1.11.0'
 
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.gms:play-services-wallet:16.0.0'

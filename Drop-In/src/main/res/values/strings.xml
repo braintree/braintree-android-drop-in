@@ -48,4 +48,5 @@
     <string name="bt_edit_button_description">Edit saved payment methods</string>
     <string name="bt_card_already_exists">This credit card already exists as a saved payment method.</string>
     <string name="bt_notice_of_collection">By paying with my card, I agree to the PayPal Privacy Statement.</string>
+    <string name="bt_supported_card_types_description">Supported card types</string>
 </resources>

@@ -10,7 +10,7 @@
         <item name="android:windowExitAnimation">@anim/bt_slide_out_down</item>
     </style>
 
-    <style name="bt_drop_in_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="bt_drop_in_activity_theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
@@ -26,7 +26,7 @@
         <item name="colorError">@color/bt_error_red</item>
     </style>
 
-    <style name="bt_add_card_activity_theme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="bt_add_card_activity_theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/bt_color_primary</item>
         <item name="colorPrimaryDark">@color/bt_color_primary_dark</item>
@@ -35,7 +35,7 @@
         <item name="colorError">@color/bt_error_red</item>
     </style>
 
-    <style name="bt_vault_manager_activity_theme" parent="Theme.AppCompat.NoActionBar">
+    <style name="bt_vault_manager_activity_theme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
