@@ -5,8 +5,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content">-->
+
+<!--        <HorizontalScrollView-->
+<!--            android:id="@+id/vaulted_cards_scroll"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:layout_constraintRight_toLeftOf="@+id/edit_button"-->
+<!--            app:layout_constraintLeft_toLeftOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent">-->
+
+<!--            <com.google.android.material.card.MaterialCardView-->
+<!--                android:layout_width="100dp"-->
+<!--                android:layout_height="100dp"-->
+<!--                style="@style/Widget.Material3.CardView.Outlined">-->
+<!--            </com.google.android.material.card.MaterialCardView>-->
+
+<!--        </HorizontalScrollView>-->
+
+<!--        <ImageButton-->
+<!--            android:id="@+id/edit_button"-->
+<!--            style="@style/Widget.Material3.Button.OutlinedButton.Icon"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:src="@drawable/baseline_edit_24"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintLeft_toRightOf="@+id/vaulted_cards_scroll"-->
+<!--            app:layout_constraintRight_toRightOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="parent"></ImageButton>-->
+
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
     <ScrollView
+        android:id="@+id/payment_methods_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -29,8 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="PAY WITH CARD"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_margin="10dp"
                 android:visibility="gone"
                 />
 
