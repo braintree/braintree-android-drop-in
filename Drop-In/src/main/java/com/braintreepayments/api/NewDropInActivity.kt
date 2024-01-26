@@ -46,7 +46,7 @@ class NewDropInActivity : AppCompatActivity() {
                 .build()
         )
 
-        cardForm.visibility = View.GONE
+//        cardForm.visibility = View.GONE
 
 
         bottomSheetDialog.show()

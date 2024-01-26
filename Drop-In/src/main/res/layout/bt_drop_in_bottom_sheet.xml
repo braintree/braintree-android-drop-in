@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
 
@@ -12,9 +13,18 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginRight="10dp"
-            android:layout_marginLeft="10dp">
+            android:orientation="vertical">
+
+            <Button
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CREDIT OR DEBIT CARD"
+                android:textSize="18dp"
+                app:icon="@drawable/bt_ic_card"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                />
 
 
             <com.braintreepayments.cardform.view.CardForm
@@ -22,22 +32,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/bt_margin"/>
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:icon="@drawable/bt_ic_card"
+                android:text="Submit"
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="10dp"
+                />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp">
+
             <com.paypal.android.paymentbuttons.PayPalButton
                 android:id="@+id/paypal_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"/>
-            <ImageButton
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:src="@drawable/blue_venmo_button"
-                android:layout_marginBottom="10dp"/>
+
+<!--            <ImageButton-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:src="@drawable/blue_venmo_button"-->
+<!--                android:layout_marginBottom="10dp"/>-->
+
             <com.google.android.gms.wallet.button.PayButton
                 android:id="@+id/google_pay_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp">
             </com.google.android.gms.wallet.button.PayButton>
+        </LinearLayout>
 
         </LinearLayout>
 
