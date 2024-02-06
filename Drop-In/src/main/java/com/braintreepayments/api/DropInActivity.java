@@ -41,6 +41,7 @@ public class DropInActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        refreshVaultedPaymentMethods();
 
         if (willDeliverSuccessfulBrowserSwitchResult()) {
             // when browser switch is successful, a tokenization http call will be made by DropInClient

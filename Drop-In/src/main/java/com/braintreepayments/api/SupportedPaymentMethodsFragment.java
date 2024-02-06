@@ -126,6 +126,8 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
     @Override
     public void onResume() {
         super.onResume();
+        // Hide vaulted payment methods until they are refreshed in DropInActivity
+        hideVaultedPaymentMethods();
 
         if (viewState == ViewState.LOADING && hasSupportedPaymentMethods()) {
             setViewState(ViewState.SHOW_PAYMENT_METHODS);
@@ -222,9 +224,13 @@ public class SupportedPaymentMethodsFragment extends DropInFragment implements S
             }
 
         } else {
-            supportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
-            vaultedPaymentMethodsContainer.setVisibility(View.GONE);
+            hideVaultedPaymentMethods();
         }
+    }
+
+    private void hideVaultedPaymentMethods() {
+        supportedPaymentMethodsHeader.setText(R.string.bt_select_payment_method);
+        vaultedPaymentMethodsContainer.setVisibility(View.GONE);
     }
 
     private static boolean containsCardNonce(@Nullable List<PaymentMethodNonce> paymentMethodNonces) {
