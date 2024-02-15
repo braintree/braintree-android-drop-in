@@ -458,6 +458,7 @@ public class DropInActivity extends AppCompatActivity {
         if (dropInResult != null) {
             animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
         } else if (error instanceof UserCanceledException) {
+            updateVaultedPaymentMethodNonces(true);
             dropInViewModel.setUserCanceledError(error);
         } else {
             onError(error);
