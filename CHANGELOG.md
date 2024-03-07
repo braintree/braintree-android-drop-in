@@ -3,6 +3,7 @@
 ## unreleased
 
 * Refresh vaulted payment methods list after 3DS is canceled (fixes #455)
+* Bump braintree_android module dependency versions to `4.41.0`
 
 ## 6.14.0
 
