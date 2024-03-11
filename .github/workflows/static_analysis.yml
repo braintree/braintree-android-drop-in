@@ -17,3 +17,10 @@ jobs:
           distribution: 'microsoft'
       - name: Lint
         run: ./ci lint
+  # Ref: https://github.com/gradle/wrapper-validation-action
+  validation:
+    name: "Gradle Wrapper Validation"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gradle/wrapper-validation-action@v2
