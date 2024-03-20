@@ -1,6 +1,6 @@
 # Braintree Android Drop-In Release Notes
 
-## unreleased
+## 6.15.0
 
 * Refresh vaulted payment methods list after 3DS is canceled (fixes #455)
 * Bump braintree_android module dependency versions to `4.41.0`
