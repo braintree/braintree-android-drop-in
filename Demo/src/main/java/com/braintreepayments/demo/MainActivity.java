@@ -17,6 +17,7 @@ import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
 import com.braintreepayments.api.DropInClient;
+import com.braintreepayments.api.DropInLauncher;
 import com.braintreepayments.api.DropInListener;
 import com.braintreepayments.api.DropInPaymentMethod;
 import com.braintreepayments.api.DropInRequest;
@@ -54,6 +55,15 @@ public class MainActivity extends BaseActivity implements DropInListener {
     private Button purchaseButton;
 
     private DropInClient dropInClient;
+
+    private DropInLauncher dropInLauncher = new DropInLauncher(this, (dropInResult) -> {
+        Exception error = dropInResult.getError();
+        if (error != null) {
+            onDropInFailure(error);
+        } else {
+            onDropInSuccess(dropInResult);
+        }
+    });
 
     private boolean purchased = false;
 
@@ -152,7 +162,10 @@ public class MainActivity extends BaseActivity implements DropInListener {
             dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
         }
 
-        dropInClient.launchDropIn(dropInRequest);
+        dropInClient.getAuthorization((authorization, e) -> {
+            dropInRequest.setAuthorization(authorization.toString());
+            dropInLauncher.launchDropIn(dropInRequest);
+        });
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {
@@ -191,7 +204,7 @@ public class MainActivity extends BaseActivity implements DropInListener {
 
     public void handleDropInResult(DropInResult result) {
         if (result.getPaymentMethodType() == null
-            || result.getPaymentMethodType() == DropInPaymentMethod.GOOGLE_PAY) {
+                || result.getPaymentMethodType() == DropInPaymentMethod.GOOGLE_PAY) {
             // google pay doesn't have a payment method nonce to display; fallback to OG ui
             addPaymentMethodButton.setVisibility(VISIBLE);
         } else {

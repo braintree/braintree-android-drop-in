@@ -14,14 +14,17 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class DropInLifecycleObserverUnitTest : TestCase() {
+class DropInLauncherUnitTest : TestCase() {
 
     @Test
     fun onCreate_registersForAnActivityResult() {
         val activityResultRegistry = mockk<ActivityResultRegistry>(relaxed = true)
         val dropInClient = mockk<DropInClient>(relaxed = true)
 
-        val sut = DropInLifecycleObserver(activityResultRegistry, dropInClient)
+        val sut = DropInLauncher(
+            activityResultRegistry,
+            dropInClient
+        )
 
         val lifecycleOwner = FragmentActivity()
         sut.onCreate(lifecycleOwner)
@@ -54,7 +57,10 @@ class DropInLifecycleObserverUnitTest : TestCase() {
         } returns activityLauncher
 
         val lifecycleOwner = FragmentActivity()
-        val sut = DropInLifecycleObserver(activityResultRegistry, dropInClient)
+        val sut = DropInLauncher(
+            activityResultRegistry,
+            dropInClient
+        )
         sut.onCreate(lifecycleOwner)
 
         val dropInResult = DropInResult()
@@ -80,7 +86,10 @@ class DropInLifecycleObserverUnitTest : TestCase() {
             )
         } returns activityLauncher
 
-        val sut = DropInLifecycleObserver(activityResultRegistry, dropInClient)
+        val sut = DropInLauncher(
+            activityResultRegistry,
+            dropInClient
+        )
 
         val lifecycleOwner = FragmentActivity()
         sut.onCreate(lifecycleOwner)

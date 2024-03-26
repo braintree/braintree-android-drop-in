@@ -30,9 +30,12 @@ public class DropInRequest implements Parcelable {
 
     private String customUrlScheme = null;
 
+    private String authorization = null;
+
     private int cardholderNameStatus = CardForm.FIELD_DISABLED;
 
-    public DropInRequest() {}
+    public DropInRequest() {
+    }
 
     /**
      * This method is optional.
@@ -47,8 +50,8 @@ public class DropInRequest implements Parcelable {
      * This method is optional.
      *
      * @param request The PayPal Request {@link PayPalRequest} for the transaction.
-     * If no amount is set, PayPal will default to the billing agreement (Vault) flow.
-     * If amount is set, PayPal will follow the one time payment (Checkout) flow.
+     *                If no amount is set, PayPal will default to the billing agreement (Vault) flow.
+     *                If amount is set, PayPal will follow the one time payment (Checkout) flow.
      */
     public void setPayPalRequest(@Nullable PayPalRequest request) {
         payPalRequest = request;
@@ -59,7 +62,6 @@ public class DropInRequest implements Parcelable {
      *
      * @param request The Venmo Request {@link VenmoRequest} for the transaction. If the Venmo
      *                Request is not set, Venmo will follow the single use flow without vaulting.
-     *
      */
     public void setVenmoRequest(@Nullable VenmoRequest request) {
         venmoRequest = request;
@@ -114,8 +116,8 @@ public class DropInRequest implements Parcelable {
      * This method is optional.
      *
      * @param threeDSecureRequest {@link ThreeDSecureRequest} to specify options and additional information for 3D Secure.
-     * To encourage 3DS 2.0 flows, set {@link ThreeDSecureRequest#setBillingAddress(ThreeDSecurePostalAddress)},
-     * {@link ThreeDSecureRequest#setEmail(String)}, and {@link ThreeDSecureRequest#setMobilePhoneNumber(String)} for best results.
+     *                            To encourage 3DS 2.0 flows, set {@link ThreeDSecureRequest#setBillingAddress(ThreeDSecurePostalAddress)},
+     *                            {@link ThreeDSecureRequest#setEmail(String)}, and {@link ThreeDSecureRequest#setMobilePhoneNumber(String)} for best results.
      */
     public void setThreeDSecureRequest(@Nullable ThreeDSecureRequest threeDSecureRequest) {
         this.threeDSecureRequest = threeDSecureRequest;
@@ -125,8 +127,8 @@ public class DropInRequest implements Parcelable {
      * This method is optional.
      *
      * @param maskCardNumber {@code true} to mask the card number when the field is not focused.
-     * See {@link com.braintreepayments.cardform.view.CardEditText} for more details. Defaults to
-     * {@code false}.
+     *                       See {@link com.braintreepayments.cardform.view.CardEditText} for more details. Defaults to
+     *                       {@code false}.
      */
     public void setMaskCardNumber(boolean maskCardNumber) {
         this.maskCardNumber = maskCardNumber;
@@ -145,7 +147,7 @@ public class DropInRequest implements Parcelable {
      * This method is optional.
      *
      * @param vaultManager {@code true} to allow customers to manage their vaulted payment methods.
-     * Defaults to {@code false}.
+     *                     Defaults to {@code false}.
      */
     public void setVaultManagerEnabled(boolean vaultManager) {
         vaultManagerEnabled = vaultManager;
@@ -155,12 +157,12 @@ public class DropInRequest implements Parcelable {
      * This method is optional.
      *
      * @param defaultValue the default value used to determine if Drop-in should vault the customer's card. This setting can be overwritten by the customer if the save card checkbox is visible using {@link #setAllowVaultCardOverride(boolean)}
-     * If the save card CheckBox is shown, and default vault value is true: the save card CheckBox will appear pre-checked.
-     * If the save card CheckBox is shown, and default vault value is false: the save card Checkbox will appear un-checked.
-     * If the save card CheckBox is not shown, and default vault value is true: card always vaults.
-     * If the save card CheckBox is not shown, and default vault value is false: card never vaults.
-     *
-     * This value is {@code true} by default.
+     *                     If the save card CheckBox is shown, and default vault value is true: the save card CheckBox will appear pre-checked.
+     *                     If the save card CheckBox is shown, and default vault value is false: the save card Checkbox will appear un-checked.
+     *                     If the save card CheckBox is not shown, and default vault value is true: card always vaults.
+     *                     If the save card CheckBox is not shown, and default vault value is false: card never vaults.
+     *                     <p>
+     *                     This value is {@code true} by default.
      */
     public void setVaultCardDefaultValue(boolean defaultValue) {
         vaultCardDefaultValue = defaultValue;
@@ -170,7 +172,7 @@ public class DropInRequest implements Parcelable {
      * This method is optional.
      *
      * @param customerCheckBoxEnabled {@code true} shows save card CheckBox to allow user to choose whether or not to vault their card.
-     * {@code false} does not show Save Card CheckBox. Default value is false.
+     *                                {@code false} does not show Save Card CheckBox. Default value is false.
      */
     public void setAllowVaultCardOverride(boolean customerCheckBoxEnabled) {
         allowVaultCardOverride = customerCheckBoxEnabled;
@@ -178,10 +180,10 @@ public class DropInRequest implements Parcelable {
 
     /**
      * This method is optional.
-     *
+     * <p>
      * Sets the Cardholder Name field status, which is how it will behave in {@link CardForm}.
      * Default is {@link CardForm#FIELD_DISABLED}.
-     *
+     * <p>
      * Can be {@link CardForm#FIELD_DISABLED}, {@link CardForm#FIELD_OPTIONAL}, or
      * {@link CardForm#FIELD_REQUIRED}.
      */
@@ -200,7 +202,9 @@ public class DropInRequest implements Parcelable {
      * @return The PayPal Request {@link PayPalRequest} for the transaction.
      */
     @Nullable
-    public PayPalRequest getPayPalRequest() { return payPalRequest; }
+    public PayPalRequest getPayPalRequest() {
+        return payPalRequest;
+    }
 
     /**
      * @return If Venmo is disabled in Drop-in
@@ -213,7 +217,9 @@ public class DropInRequest implements Parcelable {
      * @return The Venmo Request {@link VenmoRequest} for the transaction.
      */
     @Nullable
-    public VenmoRequest getVenmoRequest() { return venmoRequest; }
+    public VenmoRequest getVenmoRequest() {
+        return venmoRequest;
+    }
 
     /**
      * @return If card payments are disabled in Drop-in
@@ -248,7 +254,9 @@ public class DropInRequest implements Parcelable {
      * @return The {@link ThreeDSecureRequest} for the transaction.
      */
     @Nullable
-    public ThreeDSecureRequest getThreeDSecureRequest() { return threeDSecureRequest; }
+    public ThreeDSecureRequest getThreeDSecureRequest() {
+        return threeDSecureRequest;
+    }
 
     /**
      * @return If the card number field should be masked when the field is not focused.
@@ -316,6 +324,14 @@ public class DropInRequest implements Parcelable {
         return 0;
     }
 
+    public String getAuthorization() {
+        return authorization;
+    }
+
+    public void setAuthorization(String authorization) {
+        this.authorization = authorization;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(googlePayRequest, 0);
@@ -334,6 +350,7 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
         dest.writeString(customUrlScheme);
+        dest.writeString(authorization);
     }
 
     protected DropInRequest(Parcel in) {
@@ -353,6 +370,7 @@ public class DropInRequest implements Parcelable {
         vaultCardDefaultValue = in.readByte() != 0;
         allowVaultCardOverride = in.readByte() != 0;
         customUrlScheme = in.readString();
+        authorization = in.readString();
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {

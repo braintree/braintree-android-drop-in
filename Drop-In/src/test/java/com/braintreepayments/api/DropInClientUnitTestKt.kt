@@ -83,7 +83,7 @@ class DropInClientUnitTestKt {
 
     @Test
     fun constructor_withFragment_registersLifecycleObserver() {
-        val observerSlot = slot<DropInLifecycleObserver>()
+        val observerSlot = slot<DropInLauncher>()
         justRun { fragmentLifecycle.addObserver(capture(observerSlot)) }
 
         val sut = DropInClient(fragment, dropInRequest, clientTokenProvider)
@@ -96,7 +96,7 @@ class DropInClientUnitTestKt {
 
     @Test
     fun constructor_withActivity_registersLifecycleObserver() {
-        val observerSlot = slot<DropInLifecycleObserver>()
+        val observerSlot = slot<DropInLauncher>()
         justRun { activityLifecycle.addObserver(capture(observerSlot)) }
 
         val sut = DropInClient(activity, dropInRequest, clientTokenProvider)

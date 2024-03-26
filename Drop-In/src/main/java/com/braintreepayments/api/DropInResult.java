@@ -34,7 +34,8 @@ public class DropInResult implements Parcelable {
     private DropInPaymentMethod paymentMethodType;
     private PaymentMethodNonce paymentMethodNonce;
 
-    DropInResult() {}
+    DropInResult() {
+    }
 
     void setPaymentMethodNonce(@Nullable PaymentMethodNonce paymentMethodNonce) {
         setPaymentMethodNonce(paymentMethodNonce, new PaymentMethodInspector());
@@ -90,7 +91,7 @@ public class DropInResult implements Parcelable {
         return deviceData;
     }
 
-    Exception getError() {
+    public Exception getError() {
         return error;
     }
 
