@@ -15,7 +15,7 @@ public class RecentPaymentMethodsClient {
     private final PaymentMethodClient paymentMethodClient;
     private final DropInSharedPreferences sharedPreferences;
 
-    RecentPaymentMethodsClient(@NonNull Context context, @NonNull String authorization) {
+    public RecentPaymentMethodsClient(@NonNull Context context, @NonNull String authorization) {
         this(context, new BraintreeClient(context, authorization));
     }
 

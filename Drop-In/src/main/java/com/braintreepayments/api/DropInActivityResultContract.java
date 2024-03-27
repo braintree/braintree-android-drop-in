@@ -1,9 +1,9 @@
 package com.braintreepayments.api;
 
-import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
-import static com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST;
-import static com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE;
-import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
+import static com.braintreepayments.api.DropInLauncher.EXTRA_AUTHORIZATION;
+import static com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST;
+import static com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST_BUNDLE;
+import static com.braintreepayments.api.DropInLauncher.EXTRA_SESSION_ID;
 import static com.braintreepayments.api.DropInResult.EXTRA_ERROR;
 
 import android.content.Context;

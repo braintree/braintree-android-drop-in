@@ -5,8 +5,6 @@ import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -15,13 +13,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat.OnRequestPermissionsResultCallback;
-
-import com.braintreepayments.api.DropInClient;
-import com.braintreepayments.demo.models.ClientToken;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 @SuppressWarnings("deprecation")
 public abstract class BaseActivity extends AppCompatActivity implements OnRequestPermissionsResultCallback,

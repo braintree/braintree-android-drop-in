@@ -5,6 +5,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.slot
 import io.mockk.verify
 import junit.framework.TestCase
 import org.junit.Test
@@ -28,7 +29,7 @@ class DropInLauncherUnitTest : TestCase() {
         verify {
             activityResultRegistry.register(
                 expectedKey,
-                activity,
+                same(activity),
                 any<DropInActivityResultContract>(),
                 same(callback)
             )
@@ -55,11 +56,14 @@ class DropInLauncherUnitTest : TestCase() {
         val sut = DropInLauncher(activity, callback)
 
         val dropInRequest = DropInRequest()
-        val authorization = Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN)
-        val dropInLaunchIntent =
-            DropInLaunchIntent(dropInRequest, authorization, "fake-session-id")
+        sut.launchDropIn(Fixtures.BASE64_CLIENT_TOKEN, dropInRequest)
 
-        sut.launchDropIn(dropInLaunchIntent)
-        verify { activityLauncher.launch(dropInLaunchIntent) }
+        val slot = slot<DropInLaunchIntent>()
+        verify { activityLauncher.launch(capture(slot)) }
+
+        val capturedLaunchIntent = slot.captured
+        assertSame(capturedLaunchIntent.dropInRequest, dropInRequest)
+        assertEquals(Fixtures.BASE64_CLIENT_TOKEN, capturedLaunchIntent.authorization.toString())
+        assertEquals("fake-session-id", capturedLaunchIntent.sessionId)
     }
 }
