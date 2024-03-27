@@ -17,7 +17,7 @@ public class DropInLauncher implements DefaultLifecycleObserver {
 
 
     @VisibleForTesting
-    private ActivityResultLauncher<DropInLaunchIntent> activityLauncher;
+    private ActivityResultLauncher<DropInLaunchInput> activityLauncher;
 
     public DropInLauncher(ComponentActivity activity, DropInLauncherCallback callback) {
         ActivityResultRegistry registry = activity.getActivityResultRegistry();
@@ -27,8 +27,8 @@ public class DropInLauncher implements DefaultLifecycleObserver {
 
     public void launchDropIn(String authString, DropInRequest dropInRequest) {
         Authorization authorization = Authorization.fromString(authString);
-        DropInLaunchIntent launchIntent =
-            new DropInLaunchIntent(dropInRequest, authorization);
+        DropInLaunchInput launchIntent =
+            new DropInLaunchInput(dropInRequest, authorization);
         activityLauncher.launch(launchIntent);
     }
 }

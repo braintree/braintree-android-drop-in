@@ -41,7 +41,7 @@ class DropInLauncherUnitTest : TestCase() {
         val activityResultRegistry = mockk<ActivityResultRegistry>(relaxed = true)
         every { activity.activityResultRegistry } returns activityResultRegistry
 
-        val activityLauncher: ActivityResultLauncher<DropInLaunchIntent> = mockk(relaxed = true)
+        val activityLauncher: ActivityResultLauncher<DropInLaunchInput> = mockk(relaxed = true)
         every {
             activityResultRegistry.register(
                 any(),
@@ -57,7 +57,7 @@ class DropInLauncherUnitTest : TestCase() {
         val dropInRequest = DropInRequest()
         sut.launchDropIn(Fixtures.BASE64_CLIENT_TOKEN, dropInRequest)
 
-        val slot = slot<DropInLaunchIntent>()
+        val slot = slot<DropInLaunchInput>()
         verify { activityLauncher.launch(capture(slot)) }
 
         val capturedLaunchIntent = slot.captured
