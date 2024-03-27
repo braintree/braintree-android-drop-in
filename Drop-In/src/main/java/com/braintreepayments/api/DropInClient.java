@@ -121,14 +121,4 @@ public class DropInClient {
             }
         });
     }
-
-    /**
-     * For clients using a {@link ClientTokenProvider}, call this method to invalidate the existing,
-     * cached client token. A new client token will be fetched by the SDK when it is needed.
-     * <p>
-     * For clients not using a {@link ClientTokenProvider}, this method does nothing.
-     */
-    public void invalidateClientToken() {
-        braintreeClient.invalidateClientToken();
-    }
 }
