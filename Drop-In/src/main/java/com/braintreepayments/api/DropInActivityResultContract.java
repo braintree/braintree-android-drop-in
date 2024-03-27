@@ -3,7 +3,6 @@ package com.braintreepayments.api;
 import static com.braintreepayments.api.DropInLauncher.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST_BUNDLE;
-import static com.braintreepayments.api.DropInLauncher.EXTRA_SESSION_ID;
 import static com.braintreepayments.api.DropInResult.EXTRA_ERROR;
 
 import android.content.Context;
@@ -24,7 +23,6 @@ class DropInActivityResultContract extends ActivityResultContract<DropInLaunchIn
         dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, input.getDropInRequest());
         return new Intent(context, DropInActivity.class)
                 .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
-                .putExtra(EXTRA_SESSION_ID, input.getSessionId())
                 .putExtra(EXTRA_AUTHORIZATION, input.getAuthorization().toString());
     }
 

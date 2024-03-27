@@ -24,7 +24,6 @@ public class RecentPaymentMethodsClient {
             @NonNull BraintreeClient braintreeClient
     ) {
         this(
-                context,
                 braintreeClient,
                 new GooglePayClient(braintreeClient),
                 new PaymentMethodClient(braintreeClient),
@@ -34,15 +33,14 @@ public class RecentPaymentMethodsClient {
 
     @VisibleForTesting
     RecentPaymentMethodsClient(
-            @NonNull Context context,
             @NonNull BraintreeClient braintreeClient,
             @NonNull GooglePayClient googlePayClient,
             @NonNull PaymentMethodClient paymentMethodClient,
             @NonNull DropInSharedPreferences sharedPreferences
     ) {
         this.braintreeClient = braintreeClient;
-        this.googlePayClient = new GooglePayClient(braintreeClient);
-        this.paymentMethodClient = new PaymentMethodClient(braintreeClient);
+        this.googlePayClient = googlePayClient;
+        this.paymentMethodClient = paymentMethodClient;
         this.sharedPreferences = sharedPreferences;
     }
 

@@ -10,7 +10,6 @@ import io.mockk.verify
 import junit.framework.TestCase
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentMatchers.same
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -29,9 +28,9 @@ class DropInLauncherUnitTest : TestCase() {
         verify {
             activityResultRegistry.register(
                 expectedKey,
-                same(activity),
+                activity,
                 any<DropInActivityResultContract>(),
-                same(callback)
+                callback
             )
         }
     }
@@ -64,6 +63,5 @@ class DropInLauncherUnitTest : TestCase() {
         val capturedLaunchIntent = slot.captured
         assertSame(capturedLaunchIntent.dropInRequest, dropInRequest)
         assertEquals(Fixtures.BASE64_CLIENT_TOKEN, capturedLaunchIntent.authorization.toString())
-        assertEquals("fake-session-id", capturedLaunchIntent.sessionId)
     }
 }

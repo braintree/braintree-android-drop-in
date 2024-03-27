@@ -55,7 +55,6 @@ public class RecentPaymentMethodsClientUnitTest {
                 .build();
 
         RecentPaymentMethodsClient sut = new RecentPaymentMethodsClient(
-                context,
                 braintreeClient,
                 new GooglePayClient(braintreeClient),
                 new PaymentMethodClient(braintreeClient),
@@ -75,7 +74,6 @@ public class RecentPaymentMethodsClientUnitTest {
                 .build();
 
         RecentPaymentMethodsClient sut = new RecentPaymentMethodsClient(
-                context,
                 braintreeClient,
                 new GooglePayClient(braintreeClient),
                 new PaymentMethodClient(braintreeClient),
@@ -104,7 +102,6 @@ public class RecentPaymentMethodsClientUnitTest {
                 .build();
 
         RecentPaymentMethodsClient sut = new RecentPaymentMethodsClient(
-                context,
                 braintreeClient,
                 googlePayClient,
                 new PaymentMethodClient(braintreeClient),
@@ -149,7 +146,6 @@ public class RecentPaymentMethodsClientUnitTest {
         ).thenReturn(DropInPaymentMethod.GOOGLE_PAY);
 
         RecentPaymentMethodsClient sut = new RecentPaymentMethodsClient(
-                context,
                 braintreeClient,
                 googlePayClient,
                 paymentMethodClient,
@@ -179,7 +175,6 @@ public class RecentPaymentMethodsClientUnitTest {
                 .build();
 
         RecentPaymentMethodsClient sut = new RecentPaymentMethodsClient(
-                context,
                 braintreeClient,
                 new GooglePayClient(braintreeClient),
                 paymentMethodClient,
@@ -212,7 +207,6 @@ public class RecentPaymentMethodsClientUnitTest {
                 .build();
 
         RecentPaymentMethodsClient sut = new RecentPaymentMethodsClient(
-                context,
                 braintreeClient,
                 new GooglePayClient(braintreeClient),
                 paymentMethodClient,
@@ -245,7 +239,6 @@ public class RecentPaymentMethodsClientUnitTest {
                 .build();
 
         RecentPaymentMethodsClient sut = new RecentPaymentMethodsClient(
-                context,
                 braintreeClient,
                 new GooglePayClient(braintreeClient),
                 paymentMethodClient,

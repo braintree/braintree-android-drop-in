@@ -4,10 +4,8 @@ public class DropInLaunchIntent {
 
     private final Authorization authorization;
     private final DropInRequest dropInRequest;
-    private final String sessionId;
 
-    DropInLaunchIntent(DropInRequest dropInRequest, Authorization authorization, String sessionId) {
-        this.sessionId = sessionId;
+    DropInLaunchIntent(DropInRequest dropInRequest, Authorization authorization) {
         this.dropInRequest = dropInRequest;
         this.authorization = authorization;
     }
@@ -18,9 +16,5 @@ public class DropInLaunchIntent {
 
     Authorization getAuthorization() {
         return authorization;
-    }
-
-    String getSessionId() {
-        return sessionId;
     }
 }
