@@ -59,32 +59,6 @@ public class DropInClient {
     }
 
     /**
-     * @param context       a {@link Context}
-     * @param authorization a Tokenization Key or Client Token authorization String.
-     * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
-     * @deprecated use {@link #DropInClient(FragmentActivity, String)} or {@link #DropInClient(Fragment, String)} instead.
-     * <p>
-     * Create a new instance of {@link DropInClient}.
-     */
-    @Deprecated
-    public DropInClient(Context context, String authorization, DropInRequest dropInRequest) {
-        this(createDefaultParams(context, authorization, null, dropInRequest, null, null));
-    }
-
-    /**
-     * @param activity      a {@link FragmentActivity}
-     * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
-     * @param authorization a Tokenization Key authorization string
-     * @deprecated use {@link #DropInClient(FragmentActivity, String)} instead.
-     * <p>
-     * Create a new instance of {@link DropInClient} from within an Activity using a Tokenization Key authorization.
-     */
-    @Deprecated
-    public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, String authorization) {
-        this(activity, activity.getLifecycle(), authorization, dropInRequest);
-    }
-
-    /**
      * Create a new instance of {@link DropInClient} from within an Activity using a Tokenization Key authorization.
      *
      * @param activity      a {@link FragmentActivity}
@@ -92,19 +66,6 @@ public class DropInClient {
      */
     public DropInClient(FragmentActivity activity, String authorization) {
         this(activity, activity.getLifecycle(), authorization, null);
-    }
-
-    /**
-     * @param fragment      a {@link Fragment}
-     * @param dropInRequest a {@link DropInRequest} configured with options for launching Drop-in
-     * @param authorization a Tokenization Key authorization string
-     * @deprecated use {@link #DropInClient(Fragment, String)} instead.
-     * <p>
-     * Create a new instance of {@link DropInClient} from within a Fragment using a Tokenization Key authorization.
-     */
-    @Deprecated
-    public DropInClient(Fragment fragment, DropInRequest dropInRequest, String authorization) {
-        this(fragment.requireActivity(), fragment.getLifecycle(), authorization, dropInRequest);
     }
 
     /**
@@ -118,19 +79,6 @@ public class DropInClient {
     }
 
     /**
-     * @param activity            a {@link FragmentActivity}
-     * @param dropInRequest       a {@link DropInRequest} configured with options for launching Drop-in
-     * @param clientTokenProvider a {@link ClientTokenProvider}
-     * @deprecated use {@link #DropInClient(FragmentActivity, ClientTokenProvider)} instead.
-     * <p>
-     * Create a new instance of {@link DropInClient} from within an Activity using a {@link ClientTokenProvider} to fetch authorization.
-     */
-    @Deprecated
-    public DropInClient(FragmentActivity activity, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
-        this(createDefaultParams(activity, null, clientTokenProvider, dropInRequest, activity, activity.getLifecycle()));
-    }
-
-    /**
      * Create a new instance of {@link DropInClient} from within an Activity using a {@link ClientTokenProvider} to fetch authorization.
      *
      * @param activity            a {@link FragmentActivity}
@@ -138,19 +86,6 @@ public class DropInClient {
      */
     public DropInClient(FragmentActivity activity, ClientTokenProvider clientTokenProvider) {
         this(createDefaultParams(activity, null, clientTokenProvider, null, activity, activity.getLifecycle()));
-    }
-
-    /**
-     * @param fragment            a {@link Fragment}
-     * @param dropInRequest       a {@link DropInRequest} configured with options for launching Drop-in
-     * @param clientTokenProvider a {@link ClientTokenProvider}
-     * @deprecated use {@link #DropInClient(Fragment, ClientTokenProvider)} instead.
-     * <p>
-     * Create a new instance of {@link DropInClient} from within a Fragment using a {@link ClientTokenProvider} to fetch authorization.
-     */
-    @Deprecated
-    public DropInClient(Fragment fragment, DropInRequest dropInRequest, ClientTokenProvider clientTokenProvider) {
-        this(createDefaultParams(fragment.requireActivity(), null, clientTokenProvider, dropInRequest, fragment.requireActivity(), fragment.getLifecycle()));
     }
 
     /**
@@ -199,64 +134,6 @@ public class DropInClient {
 
     void getAuthorization(AuthorizationCallback callback) {
         braintreeClient.getAuthorization(callback);
-    }
-
-    /**
-     * @param activity    the current {@link FragmentActivity}
-     * @param requestCode the request code for the activity that will be launched
-     * @deprecated use {@link #launchDropIn(DropInRequest)} instead
-     */
-    @Deprecated
-    public void launchDropInForResult(FragmentActivity activity, int requestCode) {
-        getAuthorization((authorization, authorizationError) -> {
-            if (authorization != null) {
-                if (observer != null) {
-                    DropInLaunchIntent intentData =
-                            new DropInLaunchIntent(dropInRequest, authorization, braintreeClient.getSessionId());
-                    observer.launch(intentData);
-                } else {
-                    Bundle dropInRequestBundle = new Bundle();
-                    dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest);
-                    Intent intent = new Intent(activity, DropInActivity.class)
-                            .putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
-                            .putExtra(EXTRA_SESSION_ID, braintreeClient.getSessionId())
-                            .putExtra(EXTRA_AUTHORIZATION, authorization.toString());
-                    activity.startActivityForResult(intent, requestCode);
-                }
-            } else if (authorizationError != null) {
-                if (listener != null) {
-                    listener.onDropInFailure(authorizationError);
-                } else {
-                    Intent intent = new Intent(activity, DropInActivity.class)
-                            .putExtra(EXTRA_AUTHORIZATION_ERROR, authorizationError);
-                    activity.startActivityForResult(intent, requestCode);
-                }
-            }
-        });
-    }
-
-    /**
-     * @see #DropInClient(Fragment, DropInRequest, String)
-     * @see #DropInClient(Fragment, DropInRequest, ClientTokenProvider)
-     * @see #DropInClient(FragmentActivity, DropInRequest, String)
-     * @see #DropInClient(FragmentActivity, DropInRequest, ClientTokenProvider)
-     * @deprecated use {@link #launchDropIn(DropInRequest)} instead.
-     * Called to launch a {@link DropInActivity}.
-     * <p>
-     * NOTE: This method requires {@link DropInClient} to be instantiated with either an Activity
-     * or with a Fragment.
-     */
-    @Deprecated
-    public void launchDropIn() {
-        getAuthorization((authorization, authorizationError) -> {
-            if (authorization != null && observer != null) {
-                DropInLaunchIntent intentData =
-                        new DropInLaunchIntent(dropInRequest, authorization, braintreeClient.getSessionId());
-                observer.launch(intentData);
-            } else if (authorizationError != null && listener != null) {
-                listener.onDropInFailure(authorizationError);
-            }
-        });
     }
 
     /**
