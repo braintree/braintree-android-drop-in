@@ -37,11 +37,11 @@ class DropInInternalClient {
 
     private final PaymentMethodInspector paymentMethodInspector = new PaymentMethodInspector();
 
-    private static DropInInternalClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest, String sessionId) {
+    private static DropInInternalClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest) {
 
         String customUrlScheme = dropInRequest.getCustomUrlScheme();
         BraintreeOptions braintreeOptions =
-                new BraintreeOptions(context, sessionId, customUrlScheme, authorization, null, IntegrationType.DROP_IN);
+                new BraintreeOptions(context, null, customUrlScheme, authorization, null, IntegrationType.DROP_IN);
 
         BraintreeClient braintreeClient = new BraintreeClient(braintreeOptions);
 
@@ -59,8 +59,8 @@ class DropInInternalClient {
                 .dropInSharedPreferences(DropInSharedPreferences.getInstance(context.getApplicationContext()));
     }
 
-    DropInInternalClient(FragmentActivity activity, String authorization, String sessionId, DropInRequest dropInRequest) {
-        this(createDefaultParams(activity, authorization, dropInRequest, sessionId));
+    DropInInternalClient(FragmentActivity activity, String authorization, DropInRequest dropInRequest) {
+        this(createDefaultParams(activity, authorization, dropInRequest));
     }
 
     @VisibleForTesting

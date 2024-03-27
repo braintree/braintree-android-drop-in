@@ -3,10 +3,9 @@ package com.braintreepayments.api;
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_FIRST_USER;
 import static android.app.Activity.RESULT_OK;
-import static com.braintreepayments.api.DropInClient.EXTRA_AUTHORIZATION;
-import static com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST;
-import static com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE;
-import static com.braintreepayments.api.DropInClient.EXTRA_SESSION_ID;
+import static com.braintreepayments.api.DropInLauncher.EXTRA_AUTHORIZATION;
+import static com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST;
+import static com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST_BUNDLE;
 import static com.braintreepayments.api.DropInResult.EXTRA_DROP_IN_RESULT;
 import static com.braintreepayments.api.DropInResult.EXTRA_ERROR;
 import static org.junit.Assert.assertEquals;
@@ -42,14 +41,13 @@ public class DropInActivityResultContractUnitTest {
         DropInRequest dropInRequest = new DropInRequest();
         Authorization authorization = Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN);
 
-        DropInIntentData input = new DropInIntentData(dropInRequest, authorization, sessionId);
+        DropInLaunchInput input = new DropInLaunchInput(dropInRequest, authorization);
 
         Intent intent = sut.createIntent(context, input);
 
         String expectedClass = "com.braintreepayments.api.DropInActivity";
         assertEquals(expectedClass, intent.getComponent().getClassName());
 
-        assertEquals("sample-session-id", intent.getStringExtra(EXTRA_SESSION_ID));
         assertEquals(Fixtures.BASE64_CLIENT_TOKEN, intent.getStringExtra(EXTRA_AUTHORIZATION));
 
         Bundle requestBundle = intent.getBundleExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE);
