@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
-import androidx.fragment.app.FragmentActivity;
 
 import com.braintreepayments.api.CardNonce;
 import com.braintreepayments.api.ClientTokenCallback;
@@ -149,16 +148,7 @@ public class MainActivity extends BaseActivity implements DropInListener {
                 public void onSuccess(@NonNull String clientToken) {
                     MainActivity activity = activityRef.get();
                     if (activity != null) {
-                        dropInClient = new DropInClient(activity, clientToken);
-                        activity.addPaymentMethodButton.setVisibility(VISIBLE);
-
-                        dropInClient.fetchMostRecentPaymentMethod(activity, (dropInResult, error) -> {
-                            if (dropInResult != null) {
-                                handleDropInResult(dropInResult);
-                            } else {
-                                addPaymentMethodButton.setVisibility(VISIBLE);
-                            }
-                        });
+                        activity.handleClientTokenFetchSuccess(clientToken);
                     }
                 }
 
@@ -168,6 +158,17 @@ public class MainActivity extends BaseActivity implements DropInListener {
                 }
             });
         }
+    }
+
+    private void handleClientTokenFetchSuccess(String clientToken) {
+        dropInClient = new DropInClient(this, clientToken);
+        dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
+            if (dropInResult != null) {
+                handleDropInResult(dropInResult);
+            } else {
+                addPaymentMethodButton.setVisibility(VISIBLE);
+            }
+        });
     }
 
     public void launchDropIn(View v) {
