@@ -1,6 +1,6 @@
 package com.braintreepayments.api;
 
-class DropInLaunchIntent {
+public class DropInLaunchIntent {
 
     private final Authorization authorization;
     private final DropInRequest dropInRequest;

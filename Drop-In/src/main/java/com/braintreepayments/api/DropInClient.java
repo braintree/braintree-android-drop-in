@@ -2,12 +2,10 @@ package com.braintreepayments.api;
 
 import android.content.Context;
 
-import androidx.annotation.NonNull;
+import androidx.activity.ComponentActivity;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Lifecycle;
 
 /**
  * Used to launch Drop-in and handle results
@@ -26,135 +24,37 @@ public class DropInClient {
     private final PaymentMethodClient paymentMethodClient;
     private final GooglePayClient googlePayClient;
 
-    private final DropInRequest dropInRequest;
+    private final Authorization authorization;
 
     private final DropInSharedPreferences dropInSharedPreferences;
 
-    private DropInListener listener;
-
-    @VisibleForTesting
-    DropInLauncher observer;
-
-    private static DropInClientParams createDefaultParams(Context context, String authorization, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest, FragmentActivity activity, Lifecycle lifecycle) {
-
-        String customUrlScheme = null;
-        if (dropInRequest != null) {
-            customUrlScheme = dropInRequest.getCustomUrlScheme();
-        }
-
-        BraintreeOptions braintreeOptions =
-                new BraintreeOptions(context, null, customUrlScheme, authorization, clientTokenProvider, IntegrationType.DROP_IN);
-
-        BraintreeClient braintreeClient = new BraintreeClient(braintreeOptions);
-        return new DropInClientParams()
-                .activity(activity)
-                .lifecycle(lifecycle)
-                .dropInRequest(dropInRequest)
-                .braintreeClient(braintreeClient)
-                .paymentMethodClient(new PaymentMethodClient(braintreeClient))
-                .googlePayClient(new GooglePayClient(braintreeClient))
-                .dropInSharedPreferences(DropInSharedPreferences.getInstance(context.getApplicationContext()));
+    public DropInClient(ComponentActivity activity, String authorization) {
+        this(activity, authorization, null);
     }
 
-    /**
-     * Create a new instance of {@link DropInClient} from within an Activity using a Tokenization Key authorization.
-     *
-     * @param activity      a {@link FragmentActivity}
-     * @param authorization a Tokenization Key authorization string
-     */
-    public DropInClient(FragmentActivity activity, String authorization) {
-        this(activity, activity.getLifecycle(), authorization, null);
-    }
-
-    /**
-     * Create a new instance of {@link DropInClient} from within a Fragment using a Tokenization Key authorization.
-     *
-     * @param fragment      a {@link Fragment}
-     * @param authorization a Tokenization Key authorization string
-     */
-    public DropInClient(Fragment fragment, String authorization) {
-        this(fragment.requireActivity(), fragment.getLifecycle(), authorization, null);
-    }
-
-    /**
-     * Create a new instance of {@link DropInClient} from within an Activity using a {@link ClientTokenProvider} to fetch authorization.
-     *
-     * @param activity            a {@link FragmentActivity}
-     * @param clientTokenProvider a {@link ClientTokenProvider}
-     */
-    public DropInClient(FragmentActivity activity, ClientTokenProvider clientTokenProvider) {
-        this(createDefaultParams(activity, null, clientTokenProvider, null, activity, activity.getLifecycle()));
-    }
-
-    /**
-     * Create a new instance of {@link DropInClient} from within a Fragment using a {@link ClientTokenProvider} to fetch authorization.
-     *
-     * @param fragment            a {@link Fragment}
-     * @param clientTokenProvider a {@link ClientTokenProvider}
-     */
-    public DropInClient(Fragment fragment, ClientTokenProvider clientTokenProvider) {
-        this(createDefaultParams(fragment.requireActivity(), null, clientTokenProvider, null, fragment.requireActivity(), fragment.getLifecycle()));
-    }
-
-    DropInClient(FragmentActivity activity, Lifecycle lifecycle, String authorization, DropInRequest dropInRequest) {
-        this(createDefaultParams(activity, authorization, null, dropInRequest, activity, lifecycle));
-    }
-
-    @VisibleForTesting
-    DropInClient(DropInClientParams params) {
-        this.dropInRequest = params.getDropInRequest();
-        this.braintreeClient = params.getBraintreeClient();
-        this.googlePayClient = params.getGooglePayClient();
-        this.paymentMethodClient = params.getPaymentMethodClient();
-        this.dropInSharedPreferences = params.getDropInSharedPreferences();
-
-        FragmentActivity activity = params.getActivity();
-        Lifecycle lifecycle = params.getLifecycle();
-        if (activity != null && lifecycle != null) {
-            addObserver(activity, lifecycle);
-        }
-    }
-
-    private void addObserver(@NonNull FragmentActivity activity, @NonNull Lifecycle lifecycle) {
-        observer = new DropInLauncher(activity.getActivityResultRegistry(), this);
-        lifecycle.addObserver(observer);
-    }
-
-    /**
-     * Add a {@link DropInListener} to your client to receive results or errors from DropIn.
-     * Must be used with a {@link DropInClient} constructed with a {@link Fragment} or {@link FragmentActivity}.
-     *
-     * @param listener a {@link DropInListener}
-     */
-    public void setListener(DropInListener listener) {
-        this.listener = listener;
+    public DropInClient(ComponentActivity activity, String authorization, String customUrlScheme) {
+        Context applicationContext = activity.getApplicationContext();
+        BraintreeOptions braintreeOptions = new BraintreeOptions(
+                applicationContext,
+                null,
+                customUrlScheme,
+                authorization,
+                null,
+                IntegrationType.DROP_IN
+        );
+        this.braintreeClient = new BraintreeClient(braintreeOptions);
+        this.googlePayClient = new GooglePayClient(braintreeClient);
+        this.paymentMethodClient = new PaymentMethodClient(braintreeClient);
+        this.dropInSharedPreferences = DropInSharedPreferences.getInstance(applicationContext);
+        this.authorization = Authorization.fromString(authorization);
     }
 
     void getAuthorization(AuthorizationCallback callback) {
         braintreeClient.getAuthorization(callback);
     }
 
-    /**
-     * Called to launch a {@link DropInActivity}.
-     * <p>
-     * NOTE: This method requires {@link DropInClient} to be instantiated with either an Activity
-     * or with a Fragment.
-     *
-     * @see #DropInClient(Fragment, String)
-     * @see #DropInClient(Fragment, ClientTokenProvider)
-     * @see #DropInClient(FragmentActivity, String)
-     * @see #DropInClient(FragmentActivity, ClientTokenProvider)
-     */
-    public void launchDropIn(DropInRequest request) {
-        getAuthorization((authorization, authorizationError) -> {
-            if (authorization != null && observer != null) {
-                DropInLaunchIntent intentData =
-                        new DropInLaunchIntent(request, authorization, braintreeClient.getSessionId());
-                observer.launch(intentData);
-            } else if (authorizationError != null && listener != null) {
-                listener.onDropInFailure(authorizationError);
-            }
-        });
+    public DropInLaunchIntent createLaunchIntent(DropInRequest dropInRequest) {
+        return new DropInLaunchIntent(dropInRequest, authorization, braintreeClient.getSessionId());
     }
 
     /**
@@ -220,17 +120,6 @@ public class DropInClient {
                 callback.onResult(null, error);
             }
         });
-    }
-
-    void onDropInResult(DropInResult dropInResult) {
-        if (dropInResult != null && listener != null) {
-            Exception error = dropInResult.getError();
-            if (error != null) {
-                listener.onDropInFailure(error);
-            } else {
-                listener.onDropInSuccess(dropInResult);
-            }
-        }
     }
 
     /**
