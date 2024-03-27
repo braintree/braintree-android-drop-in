@@ -211,8 +211,8 @@ public class DropInClient {
         getAuthorization((authorization, authorizationError) -> {
             if (authorization != null) {
                 if (observer != null) {
-                    DropInIntentData intentData =
-                            new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
+                    DropInLaunchIntent intentData =
+                            new DropInLaunchIntent(dropInRequest, authorization, braintreeClient.getSessionId());
                     observer.launch(intentData);
                 } else {
                     Bundle dropInRequestBundle = new Bundle();
@@ -250,8 +250,8 @@ public class DropInClient {
     public void launchDropIn() {
         getAuthorization((authorization, authorizationError) -> {
             if (authorization != null && observer != null) {
-                DropInIntentData intentData =
-                        new DropInIntentData(dropInRequest, authorization, braintreeClient.getSessionId());
+                DropInLaunchIntent intentData =
+                        new DropInLaunchIntent(dropInRequest, authorization, braintreeClient.getSessionId());
                 observer.launch(intentData);
             } else if (authorizationError != null && listener != null) {
                 listener.onDropInFailure(authorizationError);
@@ -273,8 +273,8 @@ public class DropInClient {
     public void launchDropIn(DropInRequest request) {
         getAuthorization((authorization, authorizationError) -> {
             if (authorization != null && observer != null) {
-                DropInIntentData intentData =
-                        new DropInIntentData(request, authorization, braintreeClient.getSessionId());
+                DropInLaunchIntent intentData =
+                        new DropInLaunchIntent(request, authorization, braintreeClient.getSessionId());
                 observer.launch(intentData);
             } else if (authorizationError != null && listener != null) {
                 listener.onDropInFailure(authorizationError);

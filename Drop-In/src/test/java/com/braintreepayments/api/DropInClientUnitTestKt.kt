@@ -128,7 +128,7 @@ class DropInClientUnitTestKt {
         val sut = DropInClient(params)
         sut.observer = mockk()
 
-        val intentDataSlot = slot<DropInIntentData>()
+        val intentDataSlot = slot<DropInLaunchIntent>()
         justRun { sut.observer.launch(capture(intentDataSlot)) }
 
         sut.launchDropInForResult(activity, 123)
@@ -154,7 +154,7 @@ class DropInClientUnitTestKt {
         val sut = DropInClient(params)
         sut.observer = mockk()
 
-        val intentDataSlot = slot<DropInIntentData>()
+        val intentDataSlot = slot<DropInLaunchIntent>()
         justRun { sut.observer.launch(capture(intentDataSlot)) }
 
         sut.launchDropIn()

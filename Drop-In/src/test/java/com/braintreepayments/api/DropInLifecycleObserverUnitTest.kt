@@ -43,7 +43,7 @@ class DropInLifecycleObserverUnitTest : TestCase() {
         val dropInClient = mockk<DropInClient>(relaxed = true)
 
         val callbackSlot = slot<ActivityResultCallback<DropInResult>>()
-        val activityLauncher: ActivityResultLauncher<DropInIntentData> = mockk(relaxed = true)
+        val activityLauncher: ActivityResultLauncher<DropInLaunchIntent> = mockk(relaxed = true)
         every {
             activityResultRegistry.register(
                 any(),
@@ -70,7 +70,7 @@ class DropInLifecycleObserverUnitTest : TestCase() {
         val activityResultRegistry = mockk<ActivityResultRegistry>(relaxed = true)
         val dropInClient = mockk<DropInClient>(relaxed = true)
 
-        val activityLauncher: ActivityResultLauncher<DropInIntentData> = mockk(relaxed = true)
+        val activityLauncher: ActivityResultLauncher<DropInLaunchIntent> = mockk(relaxed = true)
         every {
             activityResultRegistry.register(
                 any(),
@@ -85,9 +85,13 @@ class DropInLifecycleObserverUnitTest : TestCase() {
         val lifecycleOwner = FragmentActivity()
         sut.onCreate(lifecycleOwner)
 
-        val dropInIntentData = DropInIntentData(dropInRequest, authorization, "sample-session-id")
-        sut.launch(dropInIntentData)
+        val dropInLaunchIntent = DropInLaunchIntent(
+            dropInRequest,
+            authorization,
+            "sample-session-id"
+        )
+        sut.launch(dropInLaunchIntent)
 
-        verify { activityLauncher.launch(dropInIntentData) }
+        verify { activityLauncher.launch(dropInLaunchIntent) }
     }
 }

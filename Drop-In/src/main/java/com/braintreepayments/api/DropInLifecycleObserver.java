@@ -18,7 +18,7 @@ class DropInLifecycleObserver implements DefaultLifecycleObserver {
     final ActivityResultRegistry activityResultRegistry;
 
     @VisibleForTesting
-    ActivityResultLauncher<DropInIntentData> activityLauncher;
+    ActivityResultLauncher<DropInLaunchIntent> activityLauncher;
 
     DropInLifecycleObserver(ActivityResultRegistry activityResultRegistry, DropInClient dropInClient) {
         this.dropInClient = dropInClient;
@@ -34,7 +34,7 @@ class DropInLifecycleObserver implements DefaultLifecycleObserver {
                 dropInResult -> dropInClient.onDropInResult(dropInResult));
     }
 
-    void launch(DropInIntentData intentData) {
+    void launch(DropInLaunchIntent intentData) {
         activityLauncher.launch(intentData);
     }
 }
