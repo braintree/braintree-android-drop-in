@@ -1,80 +1,45 @@
 package com.braintreepayments.api
 
-import androidx.activity.result.ActivityResultCallback
+import androidx.activity.ComponentActivity
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.ActivityResultRegistry
-import androidx.fragment.app.FragmentActivity
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.slot
 import io.mockk.verify
 import junit.framework.TestCase
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers.same
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class DropInLauncherUnitTest : TestCase() {
 
     @Test
-    fun onCreate_registersForAnActivityResult() {
+    fun constructor_registersForActivityResultAndForwardsResultCallback() {
+        val activity = mockk<ComponentActivity>(relaxed = true)
         val activityResultRegistry = mockk<ActivityResultRegistry>(relaxed = true)
-        val dropInClient = mockk<DropInClient>(relaxed = true)
+        every { activity.activityResultRegistry } returns activityResultRegistry
 
-        val sut = DropInLauncher(
-            activityResultRegistry,
-            dropInClient
-        )
-
-        val lifecycleOwner = FragmentActivity()
-        sut.onCreate(lifecycleOwner)
+        val callback = mockk<DropInLauncherCallback>(relaxed = true)
+        DropInLauncher(activity, callback)
 
         val expectedKey = "com.braintreepayments.api.DropIn.RESULT"
         verify {
             activityResultRegistry.register(
                 expectedKey,
-                lifecycleOwner,
+                activity,
                 any<DropInActivityResultContract>(),
-                any()
+                same(callback)
             )
         }
     }
 
     @Test
-    fun onCreate_whenActivityResultReceived_forwardsResultToDropInClient() {
-        val activityResultRegistry = mockk<ActivityResultRegistry>(relaxed = true)
-        val dropInClient = mockk<DropInClient>(relaxed = true)
-
-        val callbackSlot = slot<ActivityResultCallback<DropInResult>>()
-        val activityLauncher: ActivityResultLauncher<DropInLaunchIntent> = mockk(relaxed = true)
-        every {
-            activityResultRegistry.register(
-                any(),
-                any(),
-                any<DropInActivityResultContract>(),
-                capture(callbackSlot)
-            )
-        } returns activityLauncher
-
-        val lifecycleOwner = FragmentActivity()
-        val sut = DropInLauncher(
-            activityResultRegistry,
-            dropInClient
-        )
-        sut.onCreate(lifecycleOwner)
-
-        val dropInResult = DropInResult()
-        callbackSlot.captured.onActivityResult(dropInResult)
-        verify { dropInClient.onDropInResult(dropInResult) }
-    }
-
-    @Test
     fun launch_launchesActivity() {
-        val dropInRequest = DropInRequest()
-        val authorization = Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN)
-
+        val activity = mockk<ComponentActivity>(relaxed = true)
         val activityResultRegistry = mockk<ActivityResultRegistry>(relaxed = true)
-        val dropInClient = mockk<DropInClient>(relaxed = true)
+        every { activity.activityResultRegistry } returns activityResultRegistry
 
         val activityLauncher: ActivityResultLauncher<DropInLaunchIntent> = mockk(relaxed = true)
         every {
@@ -86,21 +51,15 @@ class DropInLauncherUnitTest : TestCase() {
             )
         } returns activityLauncher
 
-        val sut = DropInLauncher(
-            activityResultRegistry,
-            dropInClient
-        )
+        val callback = mockk<DropInLauncherCallback>(relaxed = true)
+        val sut = DropInLauncher(activity, callback)
 
-        val lifecycleOwner = FragmentActivity()
-        sut.onCreate(lifecycleOwner)
+        val dropInRequest = DropInRequest()
+        val authorization = Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN)
+        val dropInLaunchIntent =
+            DropInLaunchIntent(dropInRequest, authorization, "fake-session-id")
 
-        val dropInLaunchIntent = DropInLaunchIntent(
-            dropInRequest,
-            authorization,
-            "sample-session-id"
-        )
-        sut.launch(dropInLaunchIntent)
-
+        sut.launchDropIn(dropInLaunchIntent)
         verify { activityLauncher.launch(dropInLaunchIntent) }
     }
 }
