@@ -42,7 +42,7 @@ public class DropInActivityResultContractUnitTest {
         DropInRequest dropInRequest = new DropInRequest();
         Authorization authorization = Authorization.fromString(Fixtures.BASE64_CLIENT_TOKEN);
 
-        DropInIntentData input = new DropInIntentData(dropInRequest, authorization, sessionId);
+        DropInLaunchIntent input = new DropInLaunchIntent(dropInRequest, authorization, sessionId);
 
         Intent intent = sut.createIntent(context, input);
 

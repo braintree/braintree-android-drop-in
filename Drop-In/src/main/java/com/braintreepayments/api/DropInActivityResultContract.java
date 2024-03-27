@@ -15,11 +15,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-class DropInActivityResultContract extends ActivityResultContract<DropInIntentData, DropInResult> {
+class DropInActivityResultContract extends ActivityResultContract<DropInLaunchIntent, DropInResult> {
 
     @NonNull
     @Override
-    public Intent createIntent(@NonNull Context context, DropInIntentData input) {
+    public Intent createIntent(@NonNull Context context, DropInLaunchIntent input) {
         Bundle dropInRequestBundle = new Bundle();
         dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, input.getDropInRequest());
         return new Intent(context, DropInActivity.class)

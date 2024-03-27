@@ -30,8 +30,6 @@ public class DropInRequest implements Parcelable {
 
     private String customUrlScheme = null;
 
-    private String authorization = null;
-
     private int cardholderNameStatus = CardForm.FIELD_DISABLED;
 
     public DropInRequest() {
@@ -324,14 +322,6 @@ public class DropInRequest implements Parcelable {
         return 0;
     }
 
-    public String getAuthorization() {
-        return authorization;
-    }
-
-    public void setAuthorization(String authorization) {
-        this.authorization = authorization;
-    }
-
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(googlePayRequest, 0);
@@ -350,7 +340,6 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
         dest.writeString(customUrlScheme);
-        dest.writeString(authorization);
     }
 
     protected DropInRequest(Parcel in) {
@@ -370,7 +359,6 @@ public class DropInRequest implements Parcelable {
         vaultCardDefaultValue = in.readByte() != 0;
         allowVaultCardOverride = in.readByte() != 0;
         customUrlScheme = in.readString();
-        authorization = in.readString();
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {
