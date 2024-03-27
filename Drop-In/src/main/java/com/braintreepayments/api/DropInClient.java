@@ -1,8 +1,6 @@
 package com.braintreepayments.api;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,7 +33,7 @@ public class DropInClient {
     private DropInListener listener;
 
     @VisibleForTesting
-    DropInLifecycleObserver observer;
+    DropInLauncher observer;
 
     private static DropInClientParams createDefaultParams(Context context, String authorization, ClientTokenProvider clientTokenProvider, DropInRequest dropInRequest, FragmentActivity activity, Lifecycle lifecycle) {
 
@@ -118,7 +116,7 @@ public class DropInClient {
     }
 
     private void addObserver(@NonNull FragmentActivity activity, @NonNull Lifecycle lifecycle) {
-        observer = new DropInLifecycleObserver(activity.getActivityResultRegistry(), this);
+        observer = new DropInLauncher(activity.getActivityResultRegistry(), this);
         lifecycle.addObserver(observer);
     }
 

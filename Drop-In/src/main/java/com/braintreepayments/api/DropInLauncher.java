@@ -7,7 +7,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.lifecycle.DefaultLifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 
-class DropInLifecycleObserver implements DefaultLifecycleObserver {
+class DropInLauncher implements DefaultLifecycleObserver {
 
     private static final String DROP_IN_RESULT = "com.braintreepayments.api.DropIn.RESULT";
 
@@ -20,7 +20,7 @@ class DropInLifecycleObserver implements DefaultLifecycleObserver {
     @VisibleForTesting
     ActivityResultLauncher<DropInLaunchIntent> activityLauncher;
 
-    DropInLifecycleObserver(ActivityResultRegistry activityResultRegistry, DropInClient dropInClient) {
+    DropInLauncher(ActivityResultRegistry activityResultRegistry, DropInClient dropInClient) {
         this.dropInClient = dropInClient;
         this.activityResultRegistry = activityResultRegistry;
     }
