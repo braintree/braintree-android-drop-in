@@ -6,6 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
 
+/**
+ * Fetches recently used payment method nonces for the user associated with a given client token.
+ */
 public class RecentPaymentMethodsClient {
 
     private final BraintreeClient braintreeClient;
@@ -15,8 +18,14 @@ public class RecentPaymentMethodsClient {
     private final PaymentMethodClient paymentMethodClient;
     private final DropInSharedPreferences sharedPreferences;
 
-    public RecentPaymentMethodsClient(@NonNull Context context, @NonNull String authorization) {
-        this(context, new BraintreeClient(context, authorization));
+    /**
+     * Create a new instance of {@link RecentPaymentMethodsClient}.
+     *
+     * @param context     Android context
+     * @param clientToken Client Token
+     */
+    public RecentPaymentMethodsClient(@NonNull Context context, @NonNull String clientToken) {
+        this(context, new BraintreeClient(context, clientToken));
     }
 
     private RecentPaymentMethodsClient(
