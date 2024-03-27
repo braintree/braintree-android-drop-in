@@ -2,7 +2,6 @@ package com.braintreepayments.api;
 
 import android.content.Context;
 
-import androidx.activity.ComponentActivity;
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
@@ -28,12 +27,12 @@ public class DropInClient {
 
     private final DropInSharedPreferences dropInSharedPreferences;
 
-    public DropInClient(@NonNull ComponentActivity activity, @NonNull String authorization) {
-        this(activity, authorization, null);
+    public DropInClient(@NonNull Context context, @NonNull String authorization) {
+        this(context, authorization, null);
     }
 
-    public DropInClient(@NonNull ComponentActivity activity, @NonNull String authorization, @NonNull String customUrlScheme) {
-        Context applicationContext = activity.getApplicationContext();
+    public DropInClient(@NonNull Context context, @NonNull String authorization, @NonNull String customUrlScheme) {
+        Context applicationContext = context.getApplicationContext();
         BraintreeOptions braintreeOptions = new BraintreeOptions(
                 applicationContext,
                 null,
