@@ -3,7 +3,7 @@ package com.braintreepayments.api;
 import android.content.Context;
 
 import androidx.activity.ComponentActivity;
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.fragment.app.FragmentActivity;
 
@@ -28,11 +28,11 @@ public class DropInClient {
 
     private final DropInSharedPreferences dropInSharedPreferences;
 
-    public DropInClient(ComponentActivity activity, String authorization) {
+    public DropInClient(@NonNull ComponentActivity activity, @NonNull String authorization) {
         this(activity, authorization, null);
     }
 
-    public DropInClient(ComponentActivity activity, String authorization, String customUrlScheme) {
+    public DropInClient(@NonNull ComponentActivity activity, @NonNull String authorization, @NonNull String customUrlScheme) {
         Context applicationContext = activity.getApplicationContext();
         BraintreeOptions braintreeOptions = new BraintreeOptions(
                 applicationContext,
@@ -47,10 +47,6 @@ public class DropInClient {
         this.paymentMethodClient = new PaymentMethodClient(braintreeClient);
         this.dropInSharedPreferences = DropInSharedPreferences.getInstance(applicationContext);
         this.authorization = Authorization.fromString(authorization);
-    }
-
-    void getAuthorization(AuthorizationCallback callback) {
-        braintreeClient.getAuthorization(callback);
     }
 
     public DropInLaunchIntent createLaunchIntent(DropInRequest dropInRequest) {
@@ -70,41 +66,31 @@ public class DropInClient {
      */
     // NEXT_MAJOR_VERSION: - update this function name to more accurately represent the behavior of the function
     public void fetchMostRecentPaymentMethod(FragmentActivity activity, final FetchMostRecentPaymentMethodCallback callback) {
-        getAuthorization(new AuthorizationCallback() {
-            @Override
-            public void onAuthorizationResult(@Nullable Authorization authorization, @Nullable Exception authError) {
-                if (authorization != null) {
+        boolean isClientToken = (authorization instanceof ClientToken);
+        if (!isClientToken) {
+            InvalidArgumentException clientTokenRequiredError =
+                    new InvalidArgumentException("DropInClient#fetchMostRecentPaymentMethods() must " +
+                            "be called with a client token");
+            callback.onResult(null, clientTokenRequiredError);
+            return;
+        }
 
-                    boolean isClientToken = (authorization instanceof ClientToken);
-                    if (!isClientToken) {
-                        InvalidArgumentException clientTokenRequiredError =
-                                new InvalidArgumentException("DropInClient#fetchMostRecentPaymentMethods() must " +
-                                        "be called with a client token");
-                        callback.onResult(null, clientTokenRequiredError);
-                        return;
-                    }
+        DropInPaymentMethod lastUsedPaymentMethod =
+                dropInSharedPreferences.getLastUsedPaymentMethod();
 
-                    DropInPaymentMethod lastUsedPaymentMethod =
-                            dropInSharedPreferences.getLastUsedPaymentMethod();
-
-                    if (lastUsedPaymentMethod == DropInPaymentMethod.GOOGLE_PAY) {
-                        googlePayClient.isReadyToPay(activity, (isReadyToPay, isReadyToPayError) -> {
-                            if (isReadyToPay) {
-                                DropInResult result = new DropInResult();
-                                result.setPaymentMethodType(DropInPaymentMethod.GOOGLE_PAY);
-                                callback.onResult(result, null);
-                            } else {
-                                getPaymentMethodNonces(callback);
-                            }
-                        });
-                    } else {
-                        getPaymentMethodNonces(callback);
-                    }
+        if (lastUsedPaymentMethod == DropInPaymentMethod.GOOGLE_PAY) {
+            googlePayClient.isReadyToPay(activity, (isReadyToPay, isReadyToPayError) -> {
+                if (isReadyToPay) {
+                    DropInResult result = new DropInResult();
+                    result.setPaymentMethodType(DropInPaymentMethod.GOOGLE_PAY);
+                    callback.onResult(result, null);
                 } else {
-                    callback.onResult(null, authError);
+                    getPaymentMethodNonces(callback);
                 }
-            }
-        });
+            });
+        } else {
+            getPaymentMethodNonces(callback);
+        }
     }
 
     private void getPaymentMethodNonces(final FetchMostRecentPaymentMethodCallback callback) {
