@@ -12,6 +12,7 @@ import org.robolectric.RobolectricTestRunner;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
+import static junit.framework.TestCase.assertFalse;
 import static junit.framework.TestCase.assertNotNull;
 
 @RunWith(RobolectricTestRunner.class)
@@ -58,7 +59,7 @@ public class DropInRequestUnitTest {
         additionalInformation.setShippingMethodIndicator("GEN");
         threeDSecureRequest.setAdditionalInformation(additionalInformation);
 
-        DropInRequest dropInRequest = new DropInRequest();
+        DropInRequest dropInRequest = new DropInRequest(true);
         dropInRequest.setGooglePayRequest(googlePayRequest);
         dropInRequest.setGooglePayDisabled(true);
         dropInRequest.setPayPalRequest(paypalRequest);
@@ -120,6 +121,7 @@ public class DropInRequestUnitTest {
         assertTrue(dropInRequest.getVaultCardDefaultValue());
         assertTrue(dropInRequest.getAllowVaultCardOverride());
         assertEquals(CardForm.FIELD_OPTIONAL, dropInRequest.getCardholderNameStatus());
+        assertTrue(dropInRequest.hasUserLocationConsent());
     }
 
     @Test
@@ -164,7 +166,7 @@ public class DropInRequestUnitTest {
         additionalInformation.setShippingMethodIndicator("GEN");
         threeDSecureRequest.setAdditionalInformation(additionalInformation);
 
-        DropInRequest dropInRequest = new DropInRequest();
+        DropInRequest dropInRequest = new DropInRequest(true);
         dropInRequest.setGooglePayRequest(googlePayRequest);
         dropInRequest.setGooglePayDisabled(true);
         dropInRequest.setPayPalRequest(paypalRequest);
@@ -229,13 +231,20 @@ public class DropInRequestUnitTest {
         assertTrue(parceledDropInRequest.getVaultCardDefaultValue());
         assertTrue(parceledDropInRequest.getAllowVaultCardOverride());
         assertEquals(CardForm.FIELD_OPTIONAL, parceledDropInRequest.getCardholderNameStatus());
+        assertTrue(parceledDropInRequest.hasUserLocationConsent());
     }
 
     @Test
     public void getCardholderNameStatus_includesCardHolderNameStatus() {
-        DropInRequest dropInRequest = new DropInRequest();
+        DropInRequest dropInRequest = new DropInRequest(true);
         dropInRequest.setCardholderNameStatus(CardForm.FIELD_REQUIRED);
 
         assertEquals(CardForm.FIELD_REQUIRED, dropInRequest.getCardholderNameStatus());
+    }
+
+    @Test
+    public void no_argument_constructor_defaults_hasUserLocationConsent_to_false() {
+        DropInRequest request = new DropInRequest();
+        assertFalse(request.hasUserLocationConsent());
     }
 }

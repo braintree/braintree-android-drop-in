@@ -90,7 +90,12 @@ class DropInInternalClient {
         braintreeClient.sendAnalyticsEvent(eventName);
     }
 
-    void collectDeviceData(FragmentActivity activity, DataCollectorCallback callback) {
+    void collectDeviceData(
+        FragmentActivity activity,
+        boolean hasUserLocationConsent,
+        DataCollectorCallback callback
+    ) {
+        // TODO: pass in hasUserLocationConsent
         dataCollector.collectDeviceData(activity, callback);
     }
 
@@ -106,7 +111,7 @@ class DropInInternalClient {
                     } else if (threeDSecureResult != null) {
                         final DropInResult dropInResult = new DropInResult();
                         dropInResult.setPaymentMethodNonce(threeDSecureResult.getTokenizedCard());
-                        dataCollector.collectDeviceData(activity, (deviceData, dataCollectionError) -> {
+                        collectDeviceData(activity, dropInRequest.hasUserLocationConsent(), (deviceData, dataCollectionError) -> {
                             if (deviceData != null) {
                                 dropInResult.setDeviceData(deviceData);
                                 callback.onResult(dropInResult, null);
@@ -145,6 +150,8 @@ class DropInInternalClient {
         if (paypalRequest == null) {
             paypalRequest = new PayPalVaultRequest();
         }
+        // TODO: set hasUserLocationConsent on paypalRequest
+        dropInRequest.hasUserLocationConsent();
         payPalClient.tokenizePayPalAccount(activity, paypalRequest, callback);
     }
 
@@ -248,7 +255,7 @@ class DropInInternalClient {
 
         final DropInResult dropInResult = new DropInResult();
         dropInResult.setPaymentMethodNonce(paymentMethodNonce);
-        dataCollector.collectDeviceData(activity, (deviceData, dataCollectionError) -> {
+        collectDeviceData(activity, dropInRequest.hasUserLocationConsent(), (deviceData, dataCollectionError) -> {
             if (dataCollectionError != null) {
                 callback.onResult(null, dataCollectionError);
                 return;

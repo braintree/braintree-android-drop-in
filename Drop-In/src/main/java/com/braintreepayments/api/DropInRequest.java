@@ -29,10 +29,21 @@ public class DropInRequest implements Parcelable {
     private boolean allowVaultCardOverride = false;
 
     private String customUrlScheme = null;
+    private final boolean hasUserLocationConsent;
 
     private int cardholderNameStatus = CardForm.FIELD_DISABLED;
 
-    public DropInRequest() {}
+    /**
+     * Deprecated. Use {@link DropInRequest#DropInRequest(boolean)} instead.
+     **/
+    @Deprecated
+    public DropInRequest() {
+        hasUserLocationConsent = false;
+    }
+
+    public DropInRequest(boolean hasUserLocationConsent) {
+        this.hasUserLocationConsent = hasUserLocationConsent;
+    }
 
     /**
      * This method is optional.
@@ -311,6 +322,13 @@ public class DropInRequest implements Parcelable {
         return customUrlScheme;
     }
 
+    /**
+     * @return If the user has consented to sharing location data.
+     */
+    boolean hasUserLocationConsent() {
+        return hasUserLocationConsent;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -334,6 +352,7 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
         dest.writeString(customUrlScheme);
+        dest.writeByte(hasUserLocationConsent ? (byte) 1 : (byte) 0);
     }
 
     protected DropInRequest(Parcel in) {
@@ -353,6 +372,7 @@ public class DropInRequest implements Parcelable {
         vaultCardDefaultValue = in.readByte() != 0;
         allowVaultCardOverride = in.readByte() != 0;
         customUrlScheme = in.readString();
+        hasUserLocationConsent = in.readByte() != 0;
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {

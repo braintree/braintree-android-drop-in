@@ -34,6 +34,7 @@ public class MockDataCollectorBuilder {
                 callback.onResult(null, collectDeviceDataError);
             }
             return null;
+            // TODO: add hasUserLocationConsent argument
         }).when(dataCollector).collectDeviceData(any(Context.class), any(DataCollectorCallback.class));
 
         return dataCollector;

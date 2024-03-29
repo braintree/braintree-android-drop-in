@@ -1,6 +1,7 @@
 package com.braintreepayments.api;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
@@ -253,14 +254,14 @@ public class MockDropInInternalClientBuilder {
         }).when(dropInClient).getSupportedCardTypes(any(GetSupportedCardTypesCallback.class));
 
         doAnswer((Answer<Void>) invocation -> {
-            DataCollectorCallback callback = (DataCollectorCallback) invocation.getArguments()[1];
+            DataCollectorCallback callback = (DataCollectorCallback) invocation.getArguments()[2];
             if (deviceDataSuccess != null) {
                 callback.onResult(deviceDataSuccess, null);
             } else if (deviceDataError != null) {
                 callback.onResult(null, deviceDataError);
             }
             return null;
-        }).when(dropInClient).collectDeviceData(any(FragmentActivity.class), any(DataCollectorCallback.class));
+        }).when(dropInClient).collectDeviceData(any(FragmentActivity.class), anyBoolean(), any(DataCollectorCallback.class));
 
         doAnswer((Answer<Void>) invocation -> {
             DeletePaymentMethodNonceCallback callback = (DeletePaymentMethodNonceCallback) invocation.getArguments()[2];

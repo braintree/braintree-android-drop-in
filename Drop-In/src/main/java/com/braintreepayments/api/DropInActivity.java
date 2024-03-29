@@ -487,7 +487,7 @@ public class DropInActivity extends AppCompatActivity {
             } else {
                 final DropInResult dropInResult = new DropInResult();
                 dropInResult.setPaymentMethodNonce(paymentMethodNonce);
-                dropInInternalClient.collectDeviceData(DropInActivity.this, (deviceData, error) -> {
+                dropInInternalClient.collectDeviceData(DropInActivity.this, dropInRequest.hasUserLocationConsent(), (deviceData, error) -> {
                     if (deviceData != null) {
                         dropInResult.setDeviceData(deviceData);
                         animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);
@@ -531,7 +531,7 @@ public class DropInActivity extends AppCompatActivity {
             } else {
                 DropInResult dropInResult = new DropInResult();
                 dropInResult.setPaymentMethodNonce(paymentMethod);
-                dropInInternalClient.collectDeviceData(this, (deviceData, deviceDataError) -> {
+                dropInInternalClient.collectDeviceData(this, dropInRequest.hasUserLocationConsent(), (deviceData, deviceDataError) -> {
                     if (deviceData != null) {
                         dropInResult.setDeviceData(deviceData);
                         animateBottomSheetClosedAndFinishDropInWithResult(dropInResult);

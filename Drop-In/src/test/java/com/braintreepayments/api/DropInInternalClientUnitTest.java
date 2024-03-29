@@ -127,8 +127,9 @@ public class DropInInternalClientUnitTest {
         DataCollectorCallback callback = mock(DataCollectorCallback.class);
 
         DropInInternalClient sut = new DropInInternalClient(params);
-        sut.collectDeviceData(activity, callback);
+        sut.collectDeviceData(activity, true, callback);
 
+        // TODO: add hasUserLocationConsent to verify
         verify(dataCollector).collectDeviceData(activity, callback);
     }
 
