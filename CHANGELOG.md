@@ -1,5 +1,13 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Fixes Google Play Store Rejection
+  * See [developer documentation](link) for required updates for user location data compliance
+  * Add `PayPalDataCollectorRequest` to pass in `hasUserLocationConsent`
+  * Add `hasUserLocationConsent` property to `DropInRequest`
+  * Deprecate existing constructor that does not pass in `hasUserLocationConsent`
+
 ## 6.15.0
 
 * Refresh vaulted payment methods list after 3DS is canceled (fixes #455)

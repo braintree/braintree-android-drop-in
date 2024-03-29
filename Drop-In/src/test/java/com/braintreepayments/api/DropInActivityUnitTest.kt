@@ -35,7 +35,7 @@ class DropInActivityUnitTest {
     @Before
     fun beforeEach() {
         authorization = Authorization.fromString(Fixtures.TOKENIZATION_KEY)
-        dropInRequest = DropInRequest()
+        dropInRequest = DropInRequest(true)
     }
 
     @After
@@ -423,6 +423,39 @@ class DropInActivityUnitTest {
             same(cardNonce),
             any(DropInResultCallback::class.java)
         )
+    }
+
+    @Test
+    fun threeDS_collectDeviceData_passes_in_hasUserLocationConsent() {
+        val dropInClient = MockDropInInternalClientBuilder()
+            .authorizationSuccess(authorization)
+            .shouldPerformThreeDSecureVerification(false)
+            .build()
+        setupDropInActivity(dropInClient, dropInRequest)
+
+        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        activity.supportFragmentManager.setFragmentResult(
+            DropInEvent.REQUEST_KEY,
+            DropInEvent.createVaultedPaymentMethodSelectedEvent(cardNonce).toBundle()
+        )
+
+        verify(dropInClient).collectDeviceData(same(activity), eq(true), any())
+    }
+
+    @Test
+    fun card_collectDeviceData_passes_in_hasUserLocationConsent() {
+        val cardNonce = CardNonce.fromJSON(JSONObject(Fixtures.VISA_CREDIT_CARD_RESPONSE))
+        val dropInClient = MockDropInInternalClientBuilder()
+            .authorizationSuccess(authorization)
+            .shouldPerformThreeDSecureVerification(false)
+            .cardTokenizeSuccess(cardNonce)
+            .build()
+        setupDropInActivity(dropInClient, dropInRequest)
+
+        val event = DropInEvent.createCardDetailsSubmitEvent(Card())
+        activity.supportFragmentManager.setFragmentResult(DropInEvent.REQUEST_KEY, event.toBundle())
+
+        verify(dropInClient).collectDeviceData(same(activity), eq(true), any())
     }
 
     @Test
