@@ -1,6 +1,5 @@
 package com.braintreepayments.api;
 
-import static com.braintreepayments.api.DropInLauncher.EXTRA_AUTHORIZATION;
 import static com.braintreepayments.api.DropInLauncher.EXTRA_AUTHORIZATION_ERROR;
 import static com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST;
 import static com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST_BUNDLE;
@@ -78,9 +77,8 @@ public class DropInActivity extends AppCompatActivity {
         }
 
         if (dropInInternalClient == null) {
-            String authorization = intent.getStringExtra(EXTRA_AUTHORIZATION);
             DropInRequest dropInRequest = getDropInRequest(intent);
-            dropInInternalClient = new DropInInternalClient(this, authorization, dropInRequest);
+            dropInInternalClient = new DropInInternalClient(this, dropInRequest);
         }
 
         alertPresenter = new AlertPresenter();

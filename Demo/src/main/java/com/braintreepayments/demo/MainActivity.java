@@ -173,7 +173,7 @@ public class MainActivity extends BaseActivity implements DropInListener {
     }
 
     public void launchDropIn(View v) {
-        DropInRequest dropInRequest = new DropInRequest();
+        DropInRequest dropInRequest = new DropInRequest(authString);
         dropInRequest.setGooglePayRequest(getGooglePayRequest());
         dropInRequest.setVenmoRequest(new VenmoRequest(VenmoPaymentMethodUsage.SINGLE_USE));
         dropInRequest.setMaskCardNumber(true);
@@ -187,7 +187,7 @@ public class MainActivity extends BaseActivity implements DropInListener {
             dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
         }
 
-        dropInLauncher.launchDropIn(authString, dropInRequest);
+        dropInLauncher.launchDropIn(dropInRequest);
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {
