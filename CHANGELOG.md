@@ -1,5 +1,12 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Breaking Changes
+  * Remove `DropInClient` and replace it with `DropInLauncher`
+  * Add `DropInLauncherCallback` to receive a result from `DropInActivity` via the Activity Result API
+  * Create `RecentPaymentMethodsClient` with `fetchMostRecentPaymentMethod()`
+
 ## 6.15.0
 
 * Refresh vaulted payment methods list after 3DS is canceled (fixes #455)
