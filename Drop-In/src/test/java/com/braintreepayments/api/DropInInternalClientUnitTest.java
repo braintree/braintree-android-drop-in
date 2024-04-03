@@ -63,14 +63,14 @@ public class DropInInternalClientUnitTest {
     @Test
     public void constructor_setsIntegrationTypeDropIn() {
         DropInInternalClient sut =
-                new DropInInternalClient(activity, new DropInRequest());
+                new DropInInternalClient(activity, Fixtures.TOKENIZATION_KEY, new DropInRequest());
         assertEquals(IntegrationType.DROP_IN, sut.braintreeClient.getIntegrationType());
     }
 
     @Test
     public void internalConstructor_usesDefaultBraintreeCustomUrlScheme() {
         DropInInternalClient sut =
-                new DropInInternalClient(activity, new DropInRequest());
+                new DropInInternalClient(activity, Fixtures.TOKENIZATION_KEY, new DropInRequest());
         assertEquals("com.braintreepayments.api.dropin.test.braintree", sut.braintreeClient.getReturnUrlScheme());
     }
 
@@ -79,7 +79,7 @@ public class DropInInternalClientUnitTest {
         DropInRequest request = new DropInRequest();
         request.setCustomUrlScheme("sample-custom-url-scheme");
         DropInInternalClient sut =
-                new DropInInternalClient(activity, request);
+                new DropInInternalClient(activity, Fixtures.TOKENIZATION_KEY, request);
         assertEquals("sample-custom-url-scheme", sut.braintreeClient.getReturnUrlScheme());
     }
 

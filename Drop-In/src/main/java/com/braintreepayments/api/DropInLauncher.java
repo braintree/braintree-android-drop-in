@@ -12,11 +12,12 @@ public class DropInLauncher implements DefaultLifecycleObserver {
 
     static final String EXTRA_CHECKOUT_REQUEST = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST";
     static final String EXTRA_CHECKOUT_REQUEST_BUNDLE = "com.braintreepayments.api.EXTRA_CHECKOUT_REQUEST_BUNDLE";
+    static final String EXTRA_AUTHORIZATION = "com.braintreepayments.api.EXTRA_AUTHORIZATION";
     static final String EXTRA_AUTHORIZATION_ERROR = "com.braintreepayments.api.EXTRA_AUTHORIZATION_ERROR";
 
 
     @VisibleForTesting
-    private ActivityResultLauncher<DropInRequest> activityLauncher;
+    private ActivityResultLauncher<DropInLaunchInput> activityLauncher;
 
     public DropInLauncher(ComponentActivity activity, DropInLauncherCallback callback) {
         ActivityResultRegistry registry = activity.getActivityResultRegistry();
@@ -24,7 +25,10 @@ public class DropInLauncher implements DefaultLifecycleObserver {
                 DROP_IN_RESULT, activity, new DropInActivityResultContract(), callback);
     }
 
-    public void launchDropIn(DropInRequest dropInRequest) {
-        activityLauncher.launch(dropInRequest);
+    public void launchDropIn(String authString, DropInRequest dropInRequest) {
+        Authorization authorization = Authorization.fromString(authString);
+        DropInLaunchInput launchIntent =
+            new DropInLaunchInput(dropInRequest, authorization);
+        activityLauncher.launch(launchIntent);
     }
 }

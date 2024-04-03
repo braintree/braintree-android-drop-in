@@ -3,7 +3,6 @@ package com.braintreepayments.api;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.braintreepayments.cardform.view.CardForm;
@@ -31,13 +30,9 @@ public class DropInRequest implements Parcelable {
 
     private String customUrlScheme = null;
 
-    private String authorization;
-
     private int cardholderNameStatus = CardForm.FIELD_DISABLED;
 
-    public DropInRequest(@NonNull String authorization) {
-        this.authorization = authorization;
-    }
+    public DropInRequest() {}
 
     /**
      * This method is optional.
@@ -308,11 +303,6 @@ public class DropInRequest implements Parcelable {
         this.customUrlScheme = customUrlScheme;
     }
 
-    @NonNull
-    public String getAuthorization() {
-        return authorization;
-    }
-
     /**
      * @return If set, the custom return url scheme used for browser-based flows.
      */
@@ -344,7 +334,6 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
         dest.writeString(customUrlScheme);
-        dest.writeString(authorization);
     }
 
     protected DropInRequest(Parcel in) {
@@ -364,7 +353,6 @@ public class DropInRequest implements Parcelable {
         vaultCardDefaultValue = in.readByte() != 0;
         allowVaultCardOverride = in.readByte() != 0;
         customUrlScheme = in.readString();
-        authorization = in.readString();
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {

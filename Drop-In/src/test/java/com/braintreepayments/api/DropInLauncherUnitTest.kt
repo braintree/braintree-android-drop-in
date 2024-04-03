@@ -55,7 +55,7 @@ class DropInLauncherUnitTest : TestCase() {
         val sut = DropInLauncher(activity, callback)
 
         val dropInRequest = DropInRequest()
-        sut.launchDropIn(dropInRequest)
+        sut.launchDropIn(Fixtures.BASE64_CLIENT_TOKEN, dropInRequest)
 
         val slot = slot<DropInLaunchInput>()
         verify { activityLauncher.launch(capture(slot)) }
