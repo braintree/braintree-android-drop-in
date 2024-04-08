@@ -188,7 +188,7 @@ public class MainActivity extends BaseActivity implements DropInListener {
         }
 
         // TODO: make auth string a required DropInRequest constructor parameter
-        dropInLauncher.launchDropIn(authString, dropInRequest);
+        dropInLauncher.start(authString, dropInRequest);
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {

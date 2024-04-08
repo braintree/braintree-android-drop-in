@@ -25,7 +25,7 @@ public class DropInLauncher implements DefaultLifecycleObserver {
                 DROP_IN_RESULT, activity, new DropInActivityResultContract(), callback);
     }
 
-    public void launchDropIn(String authString, DropInRequest dropInRequest) {
+    public void start(String authString, DropInRequest dropInRequest) {
         Authorization authorization = Authorization.fromString(authString);
         DropInLaunchInput launchIntent =
             new DropInLaunchInput(dropInRequest, authorization);
