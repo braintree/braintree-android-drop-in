@@ -1,13 +1,11 @@
 package com.braintreepayments.api;
 
-class DropInIntentData {
+class DropInLaunchInput {
 
     private final Authorization authorization;
     private final DropInRequest dropInRequest;
-    private final String sessionId;
 
-    DropInIntentData(DropInRequest dropInRequest, Authorization authorization, String sessionId) {
-        this.sessionId = sessionId;
+    DropInLaunchInput(DropInRequest dropInRequest, Authorization authorization) {
         this.dropInRequest = dropInRequest;
         this.authorization = authorization;
     }
@@ -18,9 +16,5 @@ class DropInIntentData {
 
     Authorization getAuthorization() {
         return authorization;
-    }
-
-    String getSessionId() {
-        return sessionId;
     }
 }

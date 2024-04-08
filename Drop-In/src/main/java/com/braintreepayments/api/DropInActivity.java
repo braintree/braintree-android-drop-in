@@ -1,5 +1,10 @@
 package com.braintreepayments.api;
 
+import static com.braintreepayments.api.DropInLauncher.EXTRA_AUTHORIZATION;
+import static com.braintreepayments.api.DropInLauncher.EXTRA_AUTHORIZATION_ERROR;
+import static com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST;
+import static com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST_BUNDLE;
+
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -65,7 +70,7 @@ public class DropInActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         Exception error =
-            (Exception) intent.getSerializableExtra(DropInClient.EXTRA_AUTHORIZATION_ERROR);
+            (Exception) intent.getSerializableExtra(EXTRA_AUTHORIZATION_ERROR);
         if (error != null) {
             // echo back error to merchant via activity result
             finishDropInWithError(error);
@@ -73,10 +78,9 @@ public class DropInActivity extends AppCompatActivity {
         }
 
         if (dropInInternalClient == null) {
-            String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
-            String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
+            String authorization = intent.getStringExtra(EXTRA_AUTHORIZATION);
             DropInRequest dropInRequest = getDropInRequest(intent);
-            dropInInternalClient = new DropInInternalClient(this, authorization, sessionId, dropInRequest);
+            dropInInternalClient = new DropInInternalClient(this, authorization, dropInRequest);
         }
 
         alertPresenter = new AlertPresenter();
@@ -120,9 +124,9 @@ public class DropInActivity extends AppCompatActivity {
     }
 
     private DropInRequest getDropInRequest(Intent intent) {
-        Bundle bundle = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE);
+        Bundle bundle = intent.getParcelableExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE);
         bundle.setClassLoader(DropInRequest.class.getClassLoader());
-        return bundle.getParcelable(DropInClient.EXTRA_CHECKOUT_REQUEST);
+        return bundle.getParcelable(EXTRA_CHECKOUT_REQUEST);
     }
 
     @VisibleForTesting

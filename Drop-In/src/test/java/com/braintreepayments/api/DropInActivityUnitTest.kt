@@ -7,7 +7,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.test.platform.app.InstrumentationRegistry
-import com.braintreepayments.api.DropInClient.EXTRA_CHECKOUT_REQUEST
+import com.braintreepayments.api.DropInLauncher.EXTRA_AUTHORIZATION_ERROR
+import com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST
+import com.braintreepayments.api.DropInLauncher.EXTRA_CHECKOUT_REQUEST_BUNDLE
 import com.braintreepayments.cardform.utils.CardType
 import org.json.JSONObject
 import org.junit.After
@@ -1125,7 +1127,7 @@ class DropInActivityUnitTest {
     private fun setupDropInActivityWithError(authError: Exception) {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
         val intent = Intent(context, DropInActivity::class.java)
-            .putExtra(DropInClient.EXTRA_AUTHORIZATION_ERROR, authError)
+            .putExtra(EXTRA_AUTHORIZATION_ERROR, authError)
 
         activityController = buildActivity(DropInActivity::class.java, intent)
         activity = activityController.get()
@@ -1137,7 +1139,7 @@ class DropInActivityUnitTest {
         val dropInRequestBundle = Bundle()
         dropInRequestBundle.putParcelable(EXTRA_CHECKOUT_REQUEST, dropInRequest)
         val intent = Intent(context, DropInActivity::class.java)
-        intent.putExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
+        intent.putExtra(EXTRA_CHECKOUT_REQUEST_BUNDLE, dropInRequestBundle)
 
         activityController = buildActivity(DropInActivity::class.java, intent)
         activity = activityController.get()

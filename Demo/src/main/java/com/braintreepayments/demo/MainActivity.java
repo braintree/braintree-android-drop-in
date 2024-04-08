@@ -3,6 +3,7 @@ package com.braintreepayments.demo;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,7 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 
 import com.braintreepayments.api.CardNonce;
-import com.braintreepayments.api.DropInClient;
+import com.braintreepayments.api.ClientTokenCallback;
+import com.braintreepayments.api.DropInLauncher;
 import com.braintreepayments.api.DropInListener;
 import com.braintreepayments.api.DropInPaymentMethod;
 import com.braintreepayments.api.DropInRequest;
@@ -26,6 +28,7 @@ import com.braintreepayments.api.GooglePayRequest;
 import com.braintreepayments.api.PayPalAccountNonce;
 import com.braintreepayments.api.PaymentMethodNonce;
 import com.braintreepayments.api.PostalAddress;
+import com.braintreepayments.api.RecentPaymentMethodsClient;
 import com.braintreepayments.api.ThreeDSecureAdditionalInformation;
 import com.braintreepayments.api.ThreeDSecurePostalAddress;
 import com.braintreepayments.api.ThreeDSecureRequest;
@@ -35,6 +38,8 @@ import com.braintreepayments.api.VenmoPaymentMethodUsage;
 import com.braintreepayments.api.VenmoRequest;
 import com.google.android.gms.wallet.TransactionInfo;
 import com.google.android.gms.wallet.WalletConstants;
+
+import java.lang.ref.WeakReference;
 
 public class MainActivity extends BaseActivity implements DropInListener {
 
@@ -53,16 +58,31 @@ public class MainActivity extends BaseActivity implements DropInListener {
     private Button addPaymentMethodButton;
     private Button purchaseButton;
 
-    private DropInClient dropInClient;
+    private RecentPaymentMethodsClient recentPaymentMethodsClient;
 
     private boolean purchased = false;
 
     private SharedPreferences.OnSharedPreferenceChangeListener sharedPreferenceChangeListener;
 
+    private DemoClientTokenProvider clientTokenProvider;
+
+    private String authString;
+
+    private final DropInLauncher dropInLauncher = new DropInLauncher(this, (dropInResult) -> {
+        Exception error = dropInResult.getError();
+        if (error != null) {
+            onDropInFailure(error);
+        } else {
+            onDropInSuccess(dropInResult);
+        }
+    });
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity);
+
+        clientTokenProvider = new DemoClientTokenProvider(this);
 
         paymentMethod = findViewById(R.id.payment_method);
         paymentMethodIcon = findViewById(R.id.payment_method_icon);
@@ -120,18 +140,33 @@ public class MainActivity extends BaseActivity implements DropInListener {
 
     private void configureDropInClient() {
         if (Settings.useTokenizationKey(this)) {
-            String tokenizationKey = Settings.getEnvironmentTokenizationKey(this);
-            dropInClient = new DropInClient(this, tokenizationKey);
-            dropInClient.setListener(this);
+            authString = Settings.getEnvironmentTokenizationKey(this);
             addPaymentMethodButton.setVisibility(VISIBLE);
         } else {
-            dropInClient = new DropInClient(this, new DemoClientTokenProvider(this));
-            dropInClient.setListener(this);
-            dropInClient.fetchMostRecentPaymentMethod(this, (dropInResult, error) -> {
-                if (dropInResult != null) {
-                    handleDropInResult(dropInResult);
-                } else {
-                    addPaymentMethodButton.setVisibility(VISIBLE);
+            Context appContext = getApplicationContext();
+            WeakReference<MainActivity> activityRef = new WeakReference<>(this);
+            clientTokenProvider.getClientToken(new ClientTokenCallback() {
+                @Override
+                public void onSuccess(@NonNull String clientToken) {
+                    MainActivity activity = activityRef.get();
+                    if (activity != null) {
+                        authString = clientToken;
+                        recentPaymentMethodsClient = new RecentPaymentMethodsClient(appContext, clientToken);
+                        activity.addPaymentMethodButton.setVisibility(VISIBLE);
+
+                        recentPaymentMethodsClient.fetchMostRecentPaymentMethod(activity, (dropInResult, error) -> {
+                            if (dropInResult != null) {
+                                handleDropInResult(dropInResult);
+                            } else {
+                                addPaymentMethodButton.setVisibility(VISIBLE);
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    onDropInFailure(e);
                 }
             });
         }
@@ -152,7 +187,8 @@ public class MainActivity extends BaseActivity implements DropInListener {
             dropInRequest.setThreeDSecureRequest(demoThreeDSecureRequest());
         }
 
-        dropInClient.launchDropIn(dropInRequest);
+        // TODO: make auth string a required DropInRequest constructor parameter
+        dropInLauncher.start(authString, dropInRequest);
     }
 
     private ThreeDSecureRequest demoThreeDSecureRequest() {
@@ -191,7 +227,7 @@ public class MainActivity extends BaseActivity implements DropInListener {
 
     public void handleDropInResult(DropInResult result) {
         if (result.getPaymentMethodType() == null
-            || result.getPaymentMethodType() == DropInPaymentMethod.GOOGLE_PAY) {
+                || result.getPaymentMethodType() == DropInPaymentMethod.GOOGLE_PAY) {
             // google pay doesn't have a payment method nonce to display; fallback to OG ui
             addPaymentMethodButton.setVisibility(VISIBLE);
         } else {

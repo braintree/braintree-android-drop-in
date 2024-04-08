@@ -90,7 +90,8 @@ public class DropInResult implements Parcelable {
         return deviceData;
     }
 
-    Exception getError() {
+    @Nullable
+    public Exception getError() {
         return error;
     }
 
