@@ -129,8 +129,8 @@ public class DropInInternalClientUnitTest {
         DropInInternalClient sut = new DropInInternalClient(params);
         sut.collectDeviceData(activity, true, callback);
 
-        // TODO: add hasUserLocationConsent to verify
-        verify(dataCollector).collectDeviceData(activity, callback);
+        DataCollectorRequest request = new DataCollectorRequest(true);
+        verify(dataCollector).collectDeviceData(activity, request, callback);
     }
 
     @Test
@@ -857,6 +857,26 @@ public class DropInInternalClientUnitTest {
         sut.tokenizePayPalRequest(activity, callback);
 
         verify(payPalClient).tokenizePayPalAccount(same(activity), same(payPalRequest), same(callback));
+    }
+
+    @Test
+    public void tokenizePayPalRequest_when_dropInRequest_is_null_hasUserLocationConsent_is_set_from_dropInRequest() {
+        BraintreeClient braintreeClient = new MockBraintreeClientBuilder().build();
+        DropInRequest dropInRequest = new DropInRequest(true);
+        PayPalClient payPalClient = mock(PayPalClient.class);
+        DropInInternalClientParams params = new DropInInternalClientParams()
+            .dropInRequest(dropInRequest)
+            .payPalClient(payPalClient)
+            .braintreeClient(braintreeClient);
+
+        PayPalFlowStartedCallback callback = mock(PayPalFlowStartedCallback.class);
+        DropInInternalClient sut = new DropInInternalClient(params);
+
+        sut.tokenizePayPalRequest(activity, callback);
+
+        ArgumentCaptor<PayPalRequest> captor = ArgumentCaptor.forClass(PayPalRequest.class);
+        verify(payPalClient).tokenizePayPalAccount(same(activity), captor.capture(), same(callback));
+        assertTrue(captor.getValue().hasUserLocationConsent());
     }
 
     @Test
