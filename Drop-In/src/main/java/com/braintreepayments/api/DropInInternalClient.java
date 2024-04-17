@@ -148,7 +148,7 @@ class DropInInternalClient {
     void tokenizePayPalRequest(FragmentActivity activity, PayPalFlowStartedCallback callback) {
         PayPalRequest paypalRequest = dropInRequest.getPayPalRequest();
         if (paypalRequest == null) {
-            paypalRequest = new PayPalVaultRequest(false);
+            paypalRequest = new PayPalVaultRequest(dropInRequest.hasUserLocationConsent());
         }
         payPalClient.tokenizePayPalAccount(activity, paypalRequest, callback);
     }
