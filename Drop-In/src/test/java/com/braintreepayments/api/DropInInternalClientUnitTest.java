@@ -129,8 +129,8 @@ public class DropInInternalClientUnitTest {
         DropInInternalClient sut = new DropInInternalClient(params);
         sut.collectDeviceData(activity, true, callback);
 
-        // TODO: add hasUserLocationConsent to verify
-        verify(dataCollector).collectDeviceData(activity, callback);
+        DataCollectorRequest request = new DataCollectorRequest(true);
+        verify(dataCollector).collectDeviceData(activity, request, callback);
     }
 
     @Test

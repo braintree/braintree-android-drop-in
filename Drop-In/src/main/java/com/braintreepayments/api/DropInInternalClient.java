@@ -95,8 +95,8 @@ class DropInInternalClient {
         boolean hasUserLocationConsent,
         DataCollectorCallback callback
     ) {
-        // TODO: pass in hasUserLocationConsent
-        dataCollector.collectDeviceData(activity, callback);
+        DataCollectorRequest request = new DataCollectorRequest(hasUserLocationConsent);
+        dataCollector.collectDeviceData(activity, request, callback);
     }
 
     void performThreeDSecureVerification(final FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, final DropInResultCallback callback) {
@@ -148,10 +148,8 @@ class DropInInternalClient {
     void tokenizePayPalRequest(FragmentActivity activity, PayPalFlowStartedCallback callback) {
         PayPalRequest paypalRequest = dropInRequest.getPayPalRequest();
         if (paypalRequest == null) {
-            paypalRequest = new PayPalVaultRequest();
+            paypalRequest = new PayPalVaultRequest(false);
         }
-        // TODO: set hasUserLocationConsent on paypalRequest
-        dropInRequest.hasUserLocationConsent();
         payPalClient.tokenizePayPalAccount(activity, paypalRequest, callback);
     }
 
