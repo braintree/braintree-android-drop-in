@@ -2,9 +2,8 @@
 
 ## unreleased
 
+* Bump braintree_android module dependency versions to `4.45.0`
 * Fixes Google Play Store Rejection
-  * See [developer documentation](link) for required updates for user location data compliance
-  * Add `PayPalDataCollectorRequest` to pass in `hasUserLocationConsent`
   * Add `hasUserLocationConsent` property to `DropInRequest`
   * Deprecate existing constructor that does not pass in `hasUserLocationConsent`
 
