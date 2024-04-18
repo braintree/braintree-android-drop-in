@@ -36,7 +36,7 @@ plugins {
     id 'org.jetbrains.dokka' version '1.7.10'
 }
 
-version '6.15.1-SNAPSHOT'
+version '6.16.0'
 group "com.braintreepayments"
 
 ext {
