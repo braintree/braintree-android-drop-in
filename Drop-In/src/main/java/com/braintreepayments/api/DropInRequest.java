@@ -29,10 +29,30 @@ public class DropInRequest implements Parcelable {
     private boolean allowVaultCardOverride = false;
 
     private String customUrlScheme = null;
+    private final boolean hasUserLocationConsent;
 
     private int cardholderNameStatus = CardForm.FIELD_DISABLED;
 
-    public DropInRequest() {}
+    /**
+     * Deprecated. Use {@link DropInRequest#DropInRequest(boolean)} instead.
+     **/
+    @Deprecated
+    public DropInRequest() {
+        hasUserLocationConsent = false;
+    }
+
+    /**
+     * @param hasUserLocationConsent informs the SDK if your application has obtained consent from
+     * the user to collect location data in compliance with
+     * <a href="https://support.google.com/googleplay/android-developer/answer/10144311#personal-sensitive">Google Play Developer Program policies</a>
+     * This flag enables PayPal to collect necessary information required for Fraud Detection and Risk Management.
+     *
+     * @see <a href="https://support.google.com/googleplay/android-developer/answer/10144311#personal-sensitive">User Data policies for the Google Play Developer Program </a>
+     * @see <a href="https://support.google.com/googleplay/android-developer/answer/9799150?hl=en#Prominent%20in-app%20disclosure">Examples of prominent in-app disclosures</a>
+     */
+    public DropInRequest(boolean hasUserLocationConsent) {
+        this.hasUserLocationConsent = hasUserLocationConsent;
+    }
 
     /**
      * This method is optional.
@@ -311,6 +331,13 @@ public class DropInRequest implements Parcelable {
         return customUrlScheme;
     }
 
+    /**
+     * @return If the user has consented to sharing location data.
+     */
+    boolean hasUserLocationConsent() {
+        return hasUserLocationConsent;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -334,6 +361,7 @@ public class DropInRequest implements Parcelable {
         dest.writeByte(vaultCardDefaultValue ? (byte) 1 : (byte) 0);
         dest.writeByte(allowVaultCardOverride ? (byte) 1 : (byte) 0);
         dest.writeString(customUrlScheme);
+        dest.writeByte(hasUserLocationConsent ? (byte) 1 : (byte) 0);
     }
 
     protected DropInRequest(Parcel in) {
@@ -353,6 +381,7 @@ public class DropInRequest implements Parcelable {
         vaultCardDefaultValue = in.readByte() != 0;
         allowVaultCardOverride = in.readByte() != 0;
         customUrlScheme = in.readString();
+        hasUserLocationConsent = in.readByte() != 0;
     }
 
     public static final Creator<DropInRequest> CREATOR = new Creator<DropInRequest>() {

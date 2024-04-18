@@ -90,8 +90,13 @@ class DropInInternalClient {
         braintreeClient.sendAnalyticsEvent(eventName);
     }
 
-    void collectDeviceData(FragmentActivity activity, DataCollectorCallback callback) {
-        dataCollector.collectDeviceData(activity, callback);
+    void collectDeviceData(
+        FragmentActivity activity,
+        boolean hasUserLocationConsent,
+        DataCollectorCallback callback
+    ) {
+        DataCollectorRequest request = new DataCollectorRequest(hasUserLocationConsent);
+        dataCollector.collectDeviceData(activity, request, callback);
     }
 
     void performThreeDSecureVerification(final FragmentActivity activity, PaymentMethodNonce paymentMethodNonce, final DropInResultCallback callback) {
@@ -106,7 +111,7 @@ class DropInInternalClient {
                     } else if (threeDSecureResult != null) {
                         final DropInResult dropInResult = new DropInResult();
                         dropInResult.setPaymentMethodNonce(threeDSecureResult.getTokenizedCard());
-                        dataCollector.collectDeviceData(activity, (deviceData, dataCollectionError) -> {
+                        collectDeviceData(activity, dropInRequest.hasUserLocationConsent(), (deviceData, dataCollectionError) -> {
                             if (deviceData != null) {
                                 dropInResult.setDeviceData(deviceData);
                                 callback.onResult(dropInResult, null);
@@ -143,7 +148,7 @@ class DropInInternalClient {
     void tokenizePayPalRequest(FragmentActivity activity, PayPalFlowStartedCallback callback) {
         PayPalRequest paypalRequest = dropInRequest.getPayPalRequest();
         if (paypalRequest == null) {
-            paypalRequest = new PayPalVaultRequest();
+            paypalRequest = new PayPalVaultRequest(dropInRequest.hasUserLocationConsent());
         }
         payPalClient.tokenizePayPalAccount(activity, paypalRequest, callback);
     }
@@ -248,7 +253,7 @@ class DropInInternalClient {
 
         final DropInResult dropInResult = new DropInResult();
         dropInResult.setPaymentMethodNonce(paymentMethodNonce);
-        dataCollector.collectDeviceData(activity, (deviceData, dataCollectionError) -> {
+        collectDeviceData(activity, dropInRequest.hasUserLocationConsent(), (deviceData, dataCollectionError) -> {
             if (dataCollectionError != null) {
                 callback.onResult(null, dataCollectionError);
                 return;

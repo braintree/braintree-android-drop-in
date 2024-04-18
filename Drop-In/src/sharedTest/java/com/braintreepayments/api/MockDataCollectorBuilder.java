@@ -27,14 +27,18 @@ public class MockDataCollectorBuilder {
         DataCollector dataCollector = mock(DataCollector.class);
 
         doAnswer((Answer<Void>) invocation -> {
-            DataCollectorCallback callback = (DataCollectorCallback) invocation.getArguments()[1];
+            DataCollectorCallback callback = (DataCollectorCallback) invocation.getArguments()[2];
             if (collectDeviceDataSuccess != null) {
                 callback.onResult(collectDeviceDataSuccess, null);
             } else if (collectDeviceDataError != null) {
                 callback.onResult(null, collectDeviceDataError);
             }
             return null;
-        }).when(dataCollector).collectDeviceData(any(Context.class), any(DataCollectorCallback.class));
+        }).when(dataCollector).collectDeviceData(
+            any(Context.class),
+            any(DataCollectorRequest.class),
+            any(DataCollectorCallback.class)
+        );
 
         return dataCollector;
     }

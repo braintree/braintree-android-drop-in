@@ -1,5 +1,12 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Bump braintree_android module dependency versions to `4.45.0`
+* Fixes Google Play Store Rejection
+  * Add `hasUserLocationConsent` property to `DropInRequest`
+  * Deprecate existing constructor that does not pass in `hasUserLocationConsent`
+
 ## 6.15.0
 
 * Refresh vaulted payment methods list after 3DS is canceled (fixes #455)
