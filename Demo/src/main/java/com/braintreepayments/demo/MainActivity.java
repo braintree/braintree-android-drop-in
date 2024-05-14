@@ -284,6 +284,7 @@ public class MainActivity extends BaseActivity implements DropInListener {
                 .setTotalPriceStatus(WalletConstants.TOTAL_PRICE_STATUS_FINAL)
                 .build());
         googlePayRequest.setEmailRequired(true);
+        googlePayRequest.setCountryCode("BR");
         return googlePayRequest;
     }
 
