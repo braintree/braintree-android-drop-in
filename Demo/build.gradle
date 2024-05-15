@@ -63,7 +63,6 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.4.0-alpha03'
     implementation 'androidx.cardview:cardview:1.0.0'
 
-    implementation 'com.google.android.gms:play-services-wallet:16.0.1'
     implementation 'com.squareup.retrofit:retrofit:1.9.0'
     implementation 'io.card:android-sdk:5.5.1'
 

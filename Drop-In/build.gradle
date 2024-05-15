@@ -80,7 +80,6 @@ dependencies {
     api 'com.braintreepayments:card-form:5.4.0'
 
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.gms:play-services-wallet:16.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.1'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
