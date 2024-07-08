@@ -44,8 +44,15 @@ public class DropInClient {
             customUrlScheme = dropInRequest.getCustomUrlScheme();
         }
 
-        BraintreeOptions braintreeOptions =
-                new BraintreeOptions(context, null, customUrlScheme, authorization, clientTokenProvider, IntegrationType.DROP_IN);
+        BraintreeOptions braintreeOptions = new BraintreeOptions(
+                context,
+                null,
+                customUrlScheme,
+                null,
+                authorization,
+                clientTokenProvider,
+                IntegrationType.DROP_IN
+        );
 
         BraintreeClient braintreeClient = new BraintreeClient(braintreeOptions);
         return new DropInClientParams()

@@ -40,8 +40,15 @@ class DropInInternalClient {
     private static DropInInternalClientParams createDefaultParams(Context context, String authorization, DropInRequest dropInRequest, String sessionId) {
 
         String customUrlScheme = dropInRequest.getCustomUrlScheme();
-        BraintreeOptions braintreeOptions =
-                new BraintreeOptions(context, sessionId, customUrlScheme, authorization, null, IntegrationType.DROP_IN);
+        BraintreeOptions braintreeOptions = new BraintreeOptions(
+                context,
+                sessionId,
+                customUrlScheme,
+                null,
+                authorization,
+                null,
+                IntegrationType.DROP_IN
+        );
 
         BraintreeClient braintreeClient = new BraintreeClient(braintreeOptions);
 
