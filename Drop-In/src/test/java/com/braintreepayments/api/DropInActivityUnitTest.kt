@@ -1200,7 +1200,7 @@ class DropInActivityUnitTest {
         val metadata = JSONObject()
         val returnUrlScheme = "sample-scheme"
         val browserSwitchRequest =
-            BrowserSwitchRequest(requestCode, url, metadata, returnUrlScheme, true)
+            BrowserSwitchRequest(requestCode, url, metadata, returnUrlScheme, null, true)
         return BrowserSwitchResult(BrowserSwitchStatus.SUCCESS, browserSwitchRequest)
     }
 

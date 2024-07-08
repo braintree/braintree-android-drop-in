@@ -1591,7 +1591,7 @@ public class DropInInternalClientUnitTest {
         Uri url = Uri.parse("www.example.com");
         String returnUrlScheme = "sample-scheme";
         BrowserSwitchRequest browserSwitchRequest = new BrowserSwitchRequest(
-                requestCode, url, new JSONObject(), returnUrlScheme, true);
+                requestCode, url, new JSONObject(), returnUrlScheme, null, true);
         return new BrowserSwitchResult(BrowserSwitchStatus.SUCCESS, browserSwitchRequest);
     }
 }
