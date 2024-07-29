@@ -152,7 +152,7 @@ public class PaymentMethodClient {
                     callback.onResult(null, graphQLError);
                 }
 
-                braintreeClient.sendGraphQLPOST(base.toString(), (responseBody, httpError) -> {
+                braintreeClient.sendGraphQLPOST(base, (responseBody, httpError) -> {
                     if (responseBody != null) {
                         callback.onResult(paymentMethodNonce, null);
                         braintreeClient.sendAnalyticsEvent("delete-payment-methods.succeeded");

@@ -291,7 +291,7 @@ public class PaymentMethodClientUnitTest {
         assertEquals("A client token with a customer id must be used to delete a payment method nonce.",
                 captor.getValue().getMessage());
 
-        verify(braintreeClient, never()).sendGraphQLPOST(anyString(), any(HttpResponseCallback.class));
+        verify(braintreeClient, never()).sendGraphQLPOST(any(), any(HttpResponseCallback.class));
     }
 
     @Test
@@ -374,10 +374,10 @@ public class PaymentMethodClientUnitTest {
 
         verify(braintreeClient).getIntegrationType();
 
-        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<JSONObject> captor = ArgumentCaptor.forClass(JSONObject.class);
         verify(braintreeClient).sendGraphQLPOST(captor.capture(), any(HttpResponseCallback.class));
 
-        JSONObject graphQlRequest = new JSONObject(captor.getValue());
+        JSONObject graphQlRequest = captor.getValue();
 
         String expectedGraphQLQuery = GraphQLQueryHelper.getQuery(
                 ApplicationProvider.getApplicationContext(), R.raw.delete_payment_method_mutation);

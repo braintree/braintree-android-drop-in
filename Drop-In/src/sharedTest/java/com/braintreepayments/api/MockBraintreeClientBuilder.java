@@ -118,7 +118,7 @@ public class MockBraintreeClientBuilder {
                 callback.onResult(null, sendGraphQLPOSTError);
             }
             return null;
-        }).when(braintreeClient).sendGraphQLPOST(anyString(), any(HttpResponseCallback.class));
+        }).when(braintreeClient).sendGraphQLPOST(any(), any(HttpResponseCallback.class));
 
         return braintreeClient;
     }
