@@ -7,8 +7,15 @@ Braintree Android Drop-In is a readymade UI that allows you to accept card and a
 <img alt="Screenshot of Drop-In" src="screenshots/vaulted-payment-methods.png" width="200"/>
 
 ## 📣 Announcements
-- A new major version of the SDK is now available. See the [v6 migration guide](v6_MIGRATION_GUIDE.md) for details.
-- Upgrade your integration to continue accepting Braintree payments The SSL certificates for the Android SDK are set to expire by June 31, 2025. Upgrade to v6.16.0+ to continue using the Braintree SDK.
+**The Android Drop-In SDK is currently inactive and will be unsupported by November 2025**. As of December 2024, the Android Drop-In SDK is inactive. No additional features will be added with the exception of security updates. As an alternative, we recommend using the ![Braintree SDK](https://github.com/braintree/braintree_ios) for unbranded checkout.
+
+This SDK abides by our Client SDK Deprecation Policy. For more information on the potential statuses of an SDK check our ![developer docs](https://developer.paypal.com/braintree/docs/guides/client-sdk/deprecation-policy/ios/v5).
+
+| Status      | Date          |
+| --------    | ------------- |
+| Inactive    | December 2024 |
+| Deprecated  | June 2025     |
+| Unsupported | November 2025 |
 
 ## Adding it to your project
 
