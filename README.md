@@ -2,12 +2,10 @@
 
 [![Tests](https://github.com/braintree/braintree-android-drop-in/actions/workflows/tests.yml/badge.svg)](https://github.com/braintree/braintree-android-drop-in/actions/workflows/tests.yml)
 
-Braintree Android Drop-In is a readymade UI that allows you to accept card and alternative payments in your Android app.
-
-<img alt="Screenshot of Drop-In" src="screenshots/vaulted-payment-methods.png" width="200"/>
-
 ## 📣 Announcements
-**The Android Drop-In SDK is currently inactive and will be unsupported by November 2025**. As of December 2024, the Android Drop-In SDK is inactive. No additional features will be added with the exception of security updates. As an alternative, we recommend using the ![Braintree SDK](https://github.com/braintree/braintree_android) for unbranded checkout.
+🚨🚨🚨 **The Android Drop-In SDK is currently inactive and will be unsupported by November 2025** 🚨🚨🚨 
+
+As of December 2024, the Android Drop-In SDK is inactive. No additional features will be added with the exception of security updates. Instead, implement a custom UI using the ![Braintree SDK (braintree_android)](https://github.com/braintree/braintree_android).
 
 This SDK abides by our Client SDK Deprecation Policy. For more information on the potential statuses of an SDK check our ![developer docs](https://developer.paypal.com/braintree/docs/guides/client-sdk/deprecation-policy/android/v5).
 
@@ -17,7 +15,16 @@ This SDK abides by our Client SDK Deprecation Policy. For more information on th
 | Deprecated  | June 2025     |
 | Unsupported | November 2025 |
 
+## Welcome
+
+Braintree Android Drop-In is a readymade UI that allows you to accept card and alternative payments in your Android app.
+
+<img alt="Screenshot of Drop-In" src="screenshots/vaulted-payment-methods.png" width="200"/>
+
+
 ## Adding it to your project
+
+🚨🚨🚨 **WARNING: The Android Drop-In SDK is currently inactive and will be unsupported by November 2025. See the Announcements section for more details** 🚨🚨🚨
 
 Add the dependency in your `build.gradle`:
 
@@ -62,6 +69,8 @@ allprojects {
 ```
 
 ## Versions
+
+🚨🚨🚨 **WARNING: The Android Drop-In SDK is currently inactive and will be unsupported by November 2025. See the Announcements section for more details** 🚨🚨🚨
 
 This SDK abides by our Client SDK Deprecation Policy. For more information on the potential statuses of an SDK, check our [developer docs](https://developer.paypal.com/braintree/docs/guides/client-sdk/deprecation-policy/android/v4).
 
@@ -172,18 +181,16 @@ dropInClient.fetchMostRecentPaymentMethod(this) { dropInResult, error ->
 
 ## Help
 
+The Braintree Android Drop-in SDK is no longer in active development. Please see the "Announcements" section for more details.
+
 * [Read the javadocs](https://braintree.github.io/braintree-android-drop-in/)
 * [Read the docs](https://developer.paypal.com/braintree/docs/guides/drop-in/overview/android/v4)
-* Find a bug? [Open an issue](https://github.com/braintree/braintree-android-drop-in/issues)
-* Want to contribute? [Check out contributing guidelines](CONTRIBUTING.md) and [submit a pull request](https://help.github.com/articles/creating-a-pull-request).
 
 ## Feedback
 
-Here are a few ways to get in touch:
+The Braintree Android Drop-in SDK is no longer in active development. Please see the "Announcements" section for more details.
 
-* [GitHub Issues](https://github.com/braintree/braintree-android-drop-in/issues) - For generally applicable issues and feedback
-* [Braintree Support](https://developer.paypal.com/braintree/articles) / [Get Help](https://developer.paypal.com/braintree/help) -
-for personal support at any phase of integration
+For support on implement a custom UI using the ![Braintree SDK (braintree_ios)](https://github.com/braintree/braintree_ios), go to [Braintree Support](https://help.braintreepayments.com).
 
 ## License
 
