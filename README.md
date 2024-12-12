@@ -3,7 +3,7 @@
 [![Tests](https://github.com/braintree/braintree-android-drop-in/actions/workflows/tests.yml/badge.svg)](https://github.com/braintree/braintree-android-drop-in/actions/workflows/tests.yml)
 
 ## 📣 Announcements
-🚨🚨🚨 **The Android Drop-In SDK is currently inactive and will be unsupported by November 2025** 🚨🚨🚨 
+🚨🚨🚨 **The Android Drop-In SDK is currently inactive and will be unsupported and sunset by November 2025** 🚨🚨🚨 
 
 As of December 2024, the Android Drop-In SDK is inactive. No additional features will be added with the exception of security updates. Instead, implement a custom UI using the ![Braintree SDK (braintree_android)](https://github.com/braintree/braintree_android).
 
@@ -13,7 +13,7 @@ This SDK abides by our Client SDK Deprecation Policy. For more information on th
 | --------    | ------------- |
 | Inactive    | December 2024 |
 | Deprecated  | June 2025     |
-| Unsupported | November 2025 |
+| Unsupported & Sunset | November 2025 |
 
 ## Welcome
 
