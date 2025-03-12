@@ -3,6 +3,7 @@
 ## unreleased
 
 * Bump braintree_android module dependency versions to `4.49.1`
+* Fix DropInActivity crash when Intent extras unavailable
 
 ## 6.16.0
 

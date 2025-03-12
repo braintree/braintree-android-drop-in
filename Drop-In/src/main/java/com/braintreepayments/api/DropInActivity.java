@@ -72,16 +72,19 @@ public class DropInActivity extends AppCompatActivity {
             return;
         }
 
+        dropInRequest = getDropInRequest(intent);
+        if (dropInRequest == null) {
+            finishDropInWithError(new IllegalStateException("DropInRequest not found in Intent extras"));
+            return;
+        }
+
         if (dropInInternalClient == null) {
             String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
             String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
-            DropInRequest dropInRequest = getDropInRequest(intent);
             dropInInternalClient = new DropInInternalClient(this, authorization, sessionId, dropInRequest);
         }
 
         alertPresenter = new AlertPresenter();
-        dropInRequest = getDropInRequest(getIntent());
-
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
 
@@ -121,6 +124,9 @@ public class DropInActivity extends AppCompatActivity {
 
     private DropInRequest getDropInRequest(Intent intent) {
         Bundle bundle = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE);
+        if (bundle == null) {
+            return null;
+        }
         bundle.setClassLoader(DropInRequest.class.getClassLoader());
         return bundle.getParcelable(DropInClient.EXTRA_CHECKOUT_REQUEST);
     }
