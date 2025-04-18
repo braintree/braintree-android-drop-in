@@ -40,7 +40,7 @@ version '6.16.1-SNAPSHOT'
 group "com.braintreepayments"
 
 ext {
-    compileSdkVersion = 35
+    compileSdkVersion = 34
     minSdkVersion = 21
     targetSdkVersion = 35
     versionCode = 109
