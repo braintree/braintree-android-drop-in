@@ -13,6 +13,6 @@ class StreamHelperUnitTest {
     @Test
     fun getString_readsAStringFromAStream() {
         val inputStream = ByteArrayInputStream("Test string".toByteArray(StandardCharsets.UTF_8));
-        assertEquals("Test string", StreamHelper.getString(inputStream))
+        assertEquals("Test string", StreamHelper2.getString(inputStream))
     }
 }

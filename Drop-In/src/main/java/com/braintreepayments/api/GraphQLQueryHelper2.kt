@@ -12,7 +12,7 @@ internal object GraphQLQueryHelper2 {
         var inputStream: InputStream? = null
         return try {
             inputStream = context.resources.openRawResource(queryResource)
-            StreamHelper.getString(inputStream)
+            StreamHelper2.getString(inputStream)
         } finally {
             inputStream?.close()
         }
