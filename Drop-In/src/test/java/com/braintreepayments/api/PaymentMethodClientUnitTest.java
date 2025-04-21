@@ -389,7 +389,7 @@ public class PaymentMethodClientUnitTest {
                 .getJSONObject("input").getString("singleUseTokenId"));
 
         assertEquals("DeletePaymentMethodFromSingleUseToken", graphQlRequest
-                .getString(GraphQLConstants.Keys.OPERATION_NAME));
+                .getString("operationName"));
 
         assertEquals("test-integration", metadata.getString("integration"));
         assertEquals("test-session-id", metadata.getString("sessionId"));

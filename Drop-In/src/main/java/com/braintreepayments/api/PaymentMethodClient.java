@@ -145,7 +145,7 @@ public class PaymentMethodClient {
                     input.put(SINGLE_USE_TOKEN_ID, paymentMethodNonce.getString());
                     variables.put(INPUT, input);
                     base.put(VARIABLES, variables);
-                    base.put(GraphQLConstants.Keys.OPERATION_NAME,
+                    base.put("operationName",
                             "DeletePaymentMethodFromSingleUseToken");
                 } catch (Resources.NotFoundException | IOException | JSONException e) {
                     Exception graphQLError = new BraintreeException("Unable to read GraphQL query");
