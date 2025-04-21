@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -379,7 +378,7 @@ public class PaymentMethodClientUnitTest {
 
         JSONObject graphQlRequest = captor.getValue();
 
-        String expectedGraphQLQuery = GraphQLQueryHelper.getQuery(
+        String expectedGraphQLQuery = GraphQLQueryHelper2.getQuery(
                 ApplicationProvider.getApplicationContext(), R.raw.delete_payment_method_mutation);
         assertEquals(expectedGraphQLQuery, graphQlRequest.getString(GraphQLConstants.Keys.QUERY));
 

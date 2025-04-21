@@ -140,7 +140,7 @@ public class PaymentMethodClient {
                             .integration(braintreeClient.getIntegrationType())
                             .build());
 
-                    base.put(GraphQLConstants.Keys.QUERY, GraphQLQueryHelper.getQuery(
+                    base.put(GraphQLConstants.Keys.QUERY, GraphQLQueryHelper2.getQuery(
                             context, R.raw.delete_payment_method_mutation));
                     input.put(SINGLE_USE_TOKEN_ID, paymentMethodNonce.getString());
                     variables.put(INPUT, input);
