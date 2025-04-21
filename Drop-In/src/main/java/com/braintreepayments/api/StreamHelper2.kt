@@ -4,10 +4,9 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStream
 import java.io.InputStreamReader
-import java.lang.StringBuilder
 import java.nio.charset.Charset
 
-internal object StreamHelper {
+internal object StreamHelper2 {
     @Throws(IOException::class)
     fun getString(inputStream: InputStream?): String {
         val buffReader = BufferedReader(InputStreamReader(inputStream, Charset.forName("UTF-8")))
