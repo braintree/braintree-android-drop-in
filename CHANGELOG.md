@@ -1,5 +1,9 @@
 # Braintree Android Drop-In Release Notes
 
+## unreleased
+
+* Fix lifecycle crashes (fixes #494, #487, #404, #403, #379, #356)
+
 ## 6.17.0
 
 * Bump braintree_android module dependency versions to `4.50.0`
