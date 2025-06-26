@@ -2,6 +2,7 @@ package com.braintreepayments.api;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.SavedStateHandle;
 import androidx.lifecycle.ViewModel;
 
 import com.braintreepayments.cardform.utils.CardType;
@@ -12,14 +13,25 @@ import java.util.List;
 
 public class DropInViewModel extends ViewModel {
 
-    private final MutableLiveData<BottomSheetState> bottomSheetState = new MutableLiveData<>(BottomSheetState.HIDDEN);
-    private final MutableLiveData<DropInState> dropInState = new MutableLiveData<>(DropInState.IDLE);
+    public DropInViewModel(SavedStateHandle savedStateHandle) {
+        bottomSheetState = savedStateHandle.getLiveData("bottomSheetState", BottomSheetState.HIDDEN);
+        dropInState = savedStateHandle.getLiveData("dropInState", DropInState.IDLE);
 
-    private final MutableLiveData<List<DropInPaymentMethod>> supportedPaymentMethods = new MutableLiveData<>();
-    private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethods = new MutableLiveData<>();
-    private final MutableLiveData<List<CardType>> supportedCardTypes = new MutableLiveData<>();
-    private final MutableLiveData<Exception> cardTokenizationError = new MutableLiveData<>();
-    private final MutableLiveData<Exception> userCanceledError = new MutableLiveData<>();
+        supportedPaymentMethods = savedStateHandle.getLiveData("supportedPaymentMethods");
+        vaultedPaymentMethods = savedStateHandle.getLiveData("vaultedPaymentMethods");
+        supportedCardTypes  = savedStateHandle.getLiveData("supportedCardTypes");
+        cardTokenizationError = savedStateHandle.getLiveData("cardTokenizationError");
+        userCanceledError = savedStateHandle.getLiveData("userCanceledError");
+    }
+
+    private final MutableLiveData<BottomSheetState> bottomSheetState;
+    private final MutableLiveData<DropInState> dropInState;
+
+    private final MutableLiveData<List<DropInPaymentMethod>> supportedPaymentMethods;
+    private final MutableLiveData<List<PaymentMethodNonce>> vaultedPaymentMethods;
+    private final MutableLiveData<List<CardType>> supportedCardTypes;
+    private final MutableLiveData<Exception> cardTokenizationError;
+    private final MutableLiveData<Exception> userCanceledError;
 
     LiveData<BottomSheetState> getBottomSheetState() {
         return bottomSheetState;

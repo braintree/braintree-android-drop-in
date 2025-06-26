@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.appcompat.app.AppCompatActivity;
@@ -37,6 +38,10 @@ public class DropInActivity extends AppCompatActivity {
 
     @VisibleForTesting
     AlertPresenter alertPresenter;
+
+    private String authorization;
+    private String sessionId;
+    private Bundle checkoutRequestBundle;
 
     @Override
     protected void onResume() {
@@ -72,15 +77,26 @@ public class DropInActivity extends AppCompatActivity {
             return;
         }
 
+        if (savedInstanceState == null) {
+            checkoutRequestBundle = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE);
+        } else {
+            checkoutRequestBundle = savedInstanceState.getParcelable(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE);
+        }
+
+        dropInRequest = getDropInRequest(checkoutRequestBundle);
+
         if (dropInInternalClient == null) {
-            String authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
-            String sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
-            DropInRequest dropInRequest = getDropInRequest(intent);
+            if (savedInstanceState == null) {
+                authorization = intent.getStringExtra(DropInClient.EXTRA_AUTHORIZATION);
+                sessionId = intent.getStringExtra(DropInClient.EXTRA_SESSION_ID);
+            } else {
+                authorization = savedInstanceState.getString(DropInClient.EXTRA_AUTHORIZATION);
+                sessionId = savedInstanceState.getString(DropInClient.EXTRA_SESSION_ID);
+            }
             dropInInternalClient = new DropInInternalClient(this, authorization, sessionId, dropInRequest);
         }
 
         alertPresenter = new AlertPresenter();
-        dropInRequest = getDropInRequest(getIntent());
 
         dropInViewModel = new ViewModelProvider(this).get(DropInViewModel.class);
         fragmentContainerView = findViewById(R.id.fragment_container_view);
@@ -119,10 +135,9 @@ public class DropInActivity extends AppCompatActivity {
         finish();
     }
 
-    private DropInRequest getDropInRequest(Intent intent) {
-        Bundle bundle = intent.getParcelableExtra(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE);
-        bundle.setClassLoader(DropInRequest.class.getClassLoader());
-        return bundle.getParcelable(DropInClient.EXTRA_CHECKOUT_REQUEST);
+    private DropInRequest getDropInRequest(Bundle checkoutRequestBundle) {
+        checkoutRequestBundle.setClassLoader(DropInRequest.class.getClassLoader());
+        return checkoutRequestBundle.getParcelable(DropInClient.EXTRA_CHECKOUT_REQUEST);
     }
 
     @VisibleForTesting
@@ -446,6 +461,14 @@ public class DropInActivity extends AppCompatActivity {
             AddCardFragment addCardFragment = AddCardFragment.from(dropInRequest, cardNumber);
             replaceExistingFragment(addCardFragment, ADD_CARD_TAG);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putString(DropInClient.EXTRA_AUTHORIZATION, authorization);
+        outState.putString(DropInClient.EXTRA_SESSION_ID, sessionId);
+        outState.putParcelable(DropInClient.EXTRA_CHECKOUT_REQUEST_BUNDLE, checkoutRequestBundle);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
