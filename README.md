@@ -3,12 +3,11 @@
 [![Tests](https://github.com/braintree/braintree-android-drop-in/actions/workflows/tests.yml/badge.svg)](https://github.com/braintree/braintree-android-drop-in/actions/workflows/tests.yml)
 
 # ⚠️ Important
-Starting July 14, 2025 the Drop-in SDK will move to a [deprecated status](https://developer.paypal.com/braintree/docs/guides/client-sdk/deprecation-policy/android/v5/#status-categories) and we will no longer make any updates to this SDK. Processing will be supported for 1 year after the deprecation date, but you should upgrade immediately to avoid any disruption.
+The Drop-in SDK is now in an [inactive status](https://developer.paypal.com/braintree/docs/guides/client-sdk/deprecation-policy/android/v5/#status-categories). Starting September 1, 2026 the Drop-in SDK will move to a [deprecated status](https://developer.paypal.com/braintree/docs/guides/client-sdk/deprecation-policy/android/v5/#status-categories) and we will no longer make any updates to this SDK. Processing will be supported for 1 year after the deprecation date, but you should upgrade immediately to avoid any disruption.
 
-Starting July 14, 2026 the Drop-in SDK will move to an [unsupported status](https://developer.paypal.com/braintree/docs/guides/client-sdk/deprecation-policy/android/v5/#status-categories) and will no longer supported by Braintree developers or Braintree Support. Processing for unsupported SDKs can be suspended at any time.
+Starting September 1, 2027 the Drop-in SDK will move to an [unsupported status](https://developer.paypal.com/braintree/docs/guides/client-sdk/deprecation-policy/android/v5/#status-categories) and will no longer supported by Braintree developers or Braintree Support. Processing for unsupported SDKs can be suspended at any time.
 
 Please migrate to the [Braintree SDK](https://github.com/braintree/braintree_android) to continue processing and receiving updates.
-
 ----------
 
 Braintree Android Drop-In is a readymade UI that allows you to accept card and alternative payments in your Android app.
@@ -69,7 +68,7 @@ This SDK abides by our Client SDK Deprecation Policy. For more information on th
 
 | Major version number | Status | Released | Deprecated | Unsupported |
 | -------------------- | ------ | -------- | ---------- | ----------- |
-| 6.x.x | Active | November 2021 | July 2025 | July 2026 |
+| 6.x.x | Inactive | November 2021 | September 2026 | September 2027 |
 | 5.x.x | Unsupported | September 2020 | November 2022 | November 2023 |
 | 4.x.x | Unsupported | February 2019 | September 2021 | September 2022 |
 
