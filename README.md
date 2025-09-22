@@ -8,6 +8,7 @@ The Drop-in SDK is now in an [inactive status](https://developer.paypal.com/brai
 Starting September 1, 2027 the Drop-in SDK will move to an [unsupported status](https://developer.paypal.com/braintree/docs/guides/client-sdk/deprecation-policy/android/v5/#status-categories) and will no longer supported by Braintree developers or Braintree Support. Processing for unsupported SDKs can be suspended at any time.
 
 Please migrate to the [Braintree SDK](https://github.com/braintree/braintree_android) to continue processing and receiving updates.
+
 ----------
 
 Braintree Android Drop-In is a readymade UI that allows you to accept card and alternative payments in your Android app.
