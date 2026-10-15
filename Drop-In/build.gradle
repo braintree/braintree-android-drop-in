@@ -88,7 +88,7 @@ dependencies {
     testImplementation 'androidx.test:runner:1.4.0'
     testImplementation 'androidx.test:core:1.4.0'
 
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.robolectric:robolectric:4.7.3'
     testImplementation 'org.skyscreamer:jsonassert:1.4.0'
 
@@ -105,6 +105,11 @@ dependencies {
     androidTestImplementation 'androidx.fragment:fragment-testing:1.7.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
     androidTestImplementation 'org.mockito:mockito-core:5.2.0'
+
+    // Dokka 1.9.20 still pulls vulnerable transitive versions of jsoup and
+    // freemarker into this module's doc-generation plugin classpath.
+    dokkaPlugin 'org.jsoup:jsoup:1.23.1'
+    dokkaPlugin 'org.freemarker:freemarker:2.3.35'
 }
 
 // region signing and publishing
